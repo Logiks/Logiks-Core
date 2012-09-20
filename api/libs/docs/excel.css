@@ -1,0 +1,64 @@
+table.excel {
+	border-style:ridge;
+	border-width:1;
+	border-collapse:collapse;
+	font-family:sans-serif;
+	font-size:12px;
+}
+table.excel thead th, table.excel tbody th {
+	background:#CCCCCC;
+	border-style:ridge;
+	border-width:1;
+	text-align: center;
+	vertical-align:bottom;
+	
+	border: 1px solid #cadcea;
+    background-color: #cdf;
+    background-image: -o-linear-gradient(top,  #eef,  #cdf);
+    background-image: -ms-linear-gradient(top,  #eef,  #cdf);
+    background-image: -moz-linear-gradient(top,  #eef,  #cdf);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#eef), to(#cdf));
+    background-image: -webkit-linear-gradient(top,  #eef,  #cdf);
+    background-image: linear-gradient(top,  #eef,  #cdf);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EEEEFF', endColorstr='#CCDDFF');
+    color: #225b86;
+    text-shadow: 0 1px 1px #fff;
+}
+table.excel tbody th {
+	text-align:center;
+	width:20px;
+}
+table.excel tbody td {
+	vertical-align:bottom;
+	padding: 0 3px;
+	border: 1px solid #EEEEEE;	
+}
+table.excel tbody tr:hover {
+	background:yellow;
+	cursor:arrow;
+	
+	border: 1px solid #e5dbaa;
+    background-color: #ffffc0;
+    background-image: -o-linear-gradient(top,  #ffffc0,  #f9ee9c);
+    background-image: -ms-linear-gradient(top,  #ffffc0,  #f9ee9c);
+    background-image: -moz-linear-gradient(top,  #ffffc0,  #f9ee9c);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffc0), to(#f9ee9c));
+    background-image: -webkit-linear-gradient(top,  #ffffc0,  #f9ee9c);
+    background-image: linear-gradient(top,  #ffffc0,  #f9ee9c);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffc0', endColorstr='#f9ee9c');
+    color: #6d7829;
+    text-shadow: 0 1px 1px #fff;
+}
+table.excel tbody tr:active, table.excel tbody tr.current {
+	border: 1px solid #b8c97b;
+    background-color: #e5edc4;
+    background-image: -o-linear-gradient(top,  #e5edc4,  #d9e4ac);
+    background-image: -ms-linear-gradient(top,  #e5edc4,  #d9e4ac);
+    background-image: -moz-linear-gradient(top,  #e5edc4,  #d9e4ac);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#e5edc4), to(#d9e4ac));
+    background-image: -webkit-linear-gradient(top,  #e5edc4,  #d9e4ac);
+    background-image: linear-gradient(top,  #e5edc4,  #d9e4ac);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e5edc4', endColorstr='#d9e4ac');
+    color: #3f7227;
+    text-shadow: 0 1px 1px #fff;
+}

@@ -1,0 +1,48 @@
+/*CSS3 Compatible Print CSS*/
+/** { margin:0; padding:0; }*/
+html { height:100%;width:100%;margin:0px;padding:0px; }
+body {
+	/*background:white  url(../../res/logo/watermark.png) no-repeat center center;
+	font: 0.8em/21px arial,sans-serif;*/
+	font:9px georgia,verdana,san-seriff,arial;
+	color:#000;
+	padding:0px 0 0;
+	border:0px dotted #000;
+}
+a,a:visited,a:link {color:#000; text-decoration:none}  
+/*Tables*/
+table {
+	border:1px dotted #000;
+	width:100%
+}
+tr:first-of-type {
+	border-bottom:1px solid #000;
+}
+th {
+	border-bottom:1px solid #000;
+}
+td {
+	border-right:1px solid #000;
+	text-align:center;
+	vertical-align:top;
+}
+td:last-of-type {
+	border-right:0px;
+}
+/*Form Elements*/
+select { display:none;}
+.postselect {display:block;height:25px;width:200px;}
+
+button,input[type=file] {display:none; }
+
+input,textarea {border:0px solid #fff; background:#fff;}
+
+#header, #banner, #sidebar, #sidebar_left, #sidebar_right, #postcontent, #footer {
+	display:none;
+}
+/*Extra Classes Needed For Smooth Functioning*/
+.noscreen {display:block;}
+.noshow {visibility:hidden;}
+.noprint {display:none;}
+.onlyprint {display:block;}
+.pagebreak { page-break-before: always; }

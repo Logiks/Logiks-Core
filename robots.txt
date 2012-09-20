@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /api 
+Disallow: /apps
+Disallow: /config
+Disallow: /media
+Disallow: /misc
+Disallow: /modules
+Disallow: /services
+Disallow: /tmp
+Disallow: /xtras
+

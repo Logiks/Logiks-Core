@@ -1,0 +1,54 @@
+#ibox_wrapper {
+    line-height:25px;
+    border:10px solid #666;
+    
+    -moz-border-radius:10px;
+    -webkit-border-radius:10px;
+    border-radius:10px;
+    -moz-box-shadow:inset 0 2px 3px rgba(255,255,255,0.5), 0 2px 3px rgba(0,0,0,0.1);
+    -webkit-box-shadow:inset 0 2px 3px rgba(255,255,255,0.5), 0 2px 3px rgba(0,0,0,0.1);
+    box-shadow:inset 0 2px 3px rgba(255,255,255,0.5), 0 2px 3px rgba(0,0,0,0.1);
+    zoom: 1;
+		
+	background-color:#fff;
+    padding:0px;
+    margin:0px;
+    overflow-x:hidden;
+}
+
+#ibox_content { background-color:#fff; border:0; margin: 5px 5px 5px 5px; margin-top:37px;margin-bottom:-10px;}
+
+#ibox_footer_wrapper {
+    background:#5E77A6;
+    color:#fff;
+    top:0px;
+    left:0px;
+    width:99%;
+    height:28px;
+    line-height:25px;
+    padding:0px;
+    margin:0px;
+    padding-left:2%;    
+}
+
+#ibox_footer_wrapper a { 
+	background:#fff;
+	color:#000; 
+	font:13px bold Georgia;
+	text-decoration: none; 
+	padding-top:2px;	
+	margin:4px;
+	margin-right:10px;
+	width:55px;
+	height:16px;
+	text-align:center;	
+}
+
+#ibox_footer_wrapper a:hover { color:#777; background:#E6E6E6;}
+
+#ibox_loading {
+    text-indent: -100000px;
+    width: 200px;
+    height: 200px;
+    background: #fff url('images/loading.gif') center center no-repeat;
+}

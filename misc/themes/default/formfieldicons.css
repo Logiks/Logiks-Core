@@ -1,0 +1,101 @@
+/*Special Fields With Support Icons*/
+.field_searchable {background:transparent url(images/forms/find.png) no-repeat center right; width:16px; height:16px;}
+.field_popup {background:transparent url(images/forms/popup.png) no-repeat center center;}
+
+.field_progress {background:transparent url(images/forms/progress/pbar.gif) no-repeat center center;}
+
+.field_required, .required {background:transparent url(images/forms/notify/required.png) no-repeat center right; width:16px; height:16px;}
+.field_autocomplete {background:transparent url(images/forms/notify/autocomplete.png) no-repeat center right; width:16px; height:16px;cursor:pointer;}
+.field_unique {background:transparent url(images/forms/notify/unique.png) no-repeat center right; width:16px; height:16px;cursor:pointer;}
+
+.field_check {background:transparent url(images/forms/notify/check.png) no-repeat center right; width:16px; height:16px;}
+.field_error {background:transparent url(images/forms/notify/error.png) no-repeat center right; width:16px; height:16px;}
+.field_warns {background:transparent url(images/forms/notify/alert.png) no-repeat center right; width:16px; height:16px;}
+.field_info {background:transparent url(images/forms/notify/info.png) no-repeat center right; width:16px; height:16px;}
+
+.stars_on,.stars_off {background:transparent url(images/forms/stars/star.png) no-repeat center center; width:16px; height:16px;}
+.stars_off {background:transparent url(images/forms/stars/staroff.png) no-repeat center center;}
+
+.imageholder {background:transparent url(images/forms/img/imageholder.png) no-repeat center center;border:1px solid #aaa;height:98%;width:100%;margin:auto;}
+.imageuploader {background:transparent url(images/forms/img/image_up.png) no-repeat center center;border:1px solid #aaa;height:98%;width:100%;margin:auto;}
+
+/*TextField Icons*/
+.password {	
+	background: #fff url(images/forms/key.png) no-repeat;
+	background-position: right;
+}
+.datefield {
+	text-align:center;
+	background: #fff url(images/forms/cal.png) no-repeat;
+	background-position: right;
+}
+.timefield {
+	text-align:center;
+	background: #fff url(images/forms/clock.png) no-repeat;
+	background-position: right;
+}
+.datetimefield {
+	text-align:center;
+	background: #fff url(images/forms/date.png) no-repeat;
+	background-position: right;
+}
+
+.emailfield {
+	text-align:left;
+	background: #fff url(images/forms/email.png) no-repeat;
+	background-position: right;
+}
+
+.urlfield {
+	text-align:left;
+	background: #fff url(images/forms/url.png) no-repeat;
+	background-position: right;
+}
+
+.phonefield, .telephonefield {
+	text-align:left;
+	background: #fff url(images/forms/call.png) no-repeat;
+	background-position: right;
+}
+.mobilefield {
+	text-align:left;
+	background: #fff url(images/forms/mobile.png) no-repeat;
+	background-position:right;
+}
+
+.creditcardfield {
+	text-align:left;
+	background: #fff url(images/forms/creditcard.png) no-repeat;
+	background-position:right;
+}
+.currencyfield {
+	text-align:left;
+	background: #fff url(images/forms/money.png) no-repeat;
+	background-position:right;
+}
+.calculatorfield {
+	text-align:left;
+	background: #fff url(images/forms/calculator.png) no-repeat;
+	background-position:right;
+}
+.barcodefield {
+	text-align:left;
+	background: #fff url(images/forms/barcodes.png) no-repeat;
+	background-position:right;
+}
+.filefield {
+	background: transparent url(images/forms/folder.png) no-repeat;
+	background-position: right;
+}
+.photouploadedfield {
+	background: #fff url(images/forms/photo_uploaded.png) no-repeat;
+	background-position: right;
+}
+.fileuploadedfield {
+	background: white url(images/forms/folder_uploaded.png) no-repeat;
+	background-position: right;
+}
+.searchfield {
+	background: #fff url(images/forms/find.png) no-repeat;
+	background-position: right;	
+}

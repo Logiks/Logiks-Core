@@ -1,0 +1,55 @@
+/*CSS 3.0*/
+form {
+	margin:0px;
+	padding:0px;
+	font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+}
+form img {
+	border:0px;
+}
+form img.top {vertical-align:text-top;}
+form img.bottom {vertical-align:text-bottom;}
+
+fieldset {
+	border: 1px solid #c9c9e0;
+	padding:5px;
+	margin:5px;
+}
+
+legend {
+	/*background: #fb0; */
+	/*border: #26a solid 1px;*/
+	padding: 1px 8px;
+	font-weight: bold;
+	color:#444;
+	font-size: 11px;
+}
+
+form button {
+	width: 115px;
+	height: 35px;
+	text-align:center;
+	margin-top:10px;
+	margin-left:10px;
+	font: bold 12px arial, sans-serif;
+}
+form button.mini {
+	width:35px;
+	height:25px;
+	text-align:center;
+	margin-top:10px;
+	margin-left:10px;
+	font: bold 12px arial, sans-serif;
+	padding:0px;
+}
+
+form .readonly {
+	background-color:efefef;
+}
+
+form .progressbar,form .slider {
+	width:95%;
+}
+
+.postselect,.onlyprint {display:none;}
+

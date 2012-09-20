@@ -1,0 +1,21 @@
+#canvas,#traceholder,#footermessage {
+	display:none;
+}
+#onlyprint {
+	display:block;
+}
+#onlyprint pre, #onlyprint h1,#onlyprint h2,#onlyprint h3,#onlyprint h4,#onlyprint h5,#onlyprint h6,#onlyprint b {
+	font-size:12px;
+	font-weight:normal;
+	margin:0px;
+	display:inline;	
+}
+#onlyprint pre {
+	display:block;	
+}
+
+#onlyprint h1.header {
+	font-weight:bold;
+	font-size:25px;
+	border-bottom:1px solid #aaa;	
+}

@@ -1,0 +1,29 @@
+//Support Classes
+.hidden,.noscreen {display:none !important;}
+.noshow {visibility:hidden !important;}
+
+.alignleft {text-align:left !important;}
+.alignright {text-align:right !important;}
+.aligncenter {text-align:center !important;}
+
+.overline {text-decoration:overline !important;}
+.linethrough {text-decoration:line-through !important;}
+.underline {text-decoration:underline !important;}
+.blink {text-decoration:blink !important;}
+
+.uppercase {text-transform:uppercase !important;}
+.capitalize {text-transform:capitalize !important;}
+.lowercase {text-transform:lowercase !important;}
+
+.fontbold {font-weight:bold !important;}
+.fontitallic {font-style:italic !important;}
+.fontoblique {font-style:oblique !important;}
+
+.nowrap {white-space:nowrap !important;}
+.nospace {word-spacing:0px !important;}
+
+.notext {font-size:0px !important;}
+
+.noresize {resize:none !important;}
+.nooverflow {overflow:hidden !important;}
+.autooverflow {overflow:auto !important;}

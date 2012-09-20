@@ -1,0 +1,20 @@
+#topbar {
+	position:fixed;
+	top:0px;left:0px;
+	width:100%;
+}
+#bottombar {
+	position:fixed;
+	bottom:0px;left:0px;
+	width:100%;
+}
+#leftbar {
+	position:fixed;
+	top:0px;left:0px;
+	height:100%;
+}
+#rightbar {
+	position:fixed;
+	top:0px;right:0px;
+	height:100%;
+}

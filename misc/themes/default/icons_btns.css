@@ -1,0 +1,38 @@
+.btnhover:hover {
+	opacity:0.5;
+}
+.btnhover {
+	background:transparent;		
+}
+
+.add_btnicn {background:transparent url(images/icons/buttons/button-add.png) no-repeat left center;}
+.remove_btnicn {background:transparent url(images/icons/buttons/button-remove.png) no-repeat left center;}
+.check_btnicn {background:transparent url(images/icons/buttons/button-check.png) no-repeat left center;}
+.reload_btnicn {background:transparent url(images/icons/buttons/button-load.png) no-repeat left center;}
+.help_btnicn {background:transparent url(images/icons/buttons/button-help.png) no-repeat left center;}
+.info_btnicn {background:transparent url(images/icons/buttons/button-info.png) no-repeat left center;}
+.transfer_btnicn {background:transparent url(images/icons/buttons/button-transfer.png) no-repeat left center;}
+
+.color_btnicn {background:transparent url(images/icons/buttons/button-color.png) no-repeat left center;}
+.rss_btnicn {background:transparent url(images/icons/buttons/button-rss.png) no-repeat left center;}
+.task_btnicn {background:transparent url(images/icons/buttons/button-task.png) no-repeat left center;}
+.mail_btnicn {background:transparent url(images/icons/buttons/button-mail.png) no-repeat left center;}
+.chat_btnicn {background:transparent url(images/icons/buttons/button-chat.png) no-repeat left center;}
+.link_btnicn {background:transparent url(images/icons/buttons/button-link.png) no-repeat left center;}
+
+.burn_btnicn {background:transparent url(images/icons/buttons/button-burn.png) no-repeat left center;}
+.eject_btnicn {background:transparent url(images/icons/buttons/button-eject.png) no-repeat left center;}
+.favorite_btnicn {background:transparent url(images/icons/buttons/button-favorite.png) no-repeat left center;}
+
+.next_btnicn {background:transparent url(images/icons/buttons/button-next.png) no-repeat left center;}
+.previous_btnicn {background:transparent url(images/icons/buttons/button-previous.png) no-repeat left center;}
+.play_btnicn {background:transparent url(images/icons/buttons/button-play.png) no-repeat left center;}
+.pause_btnicn {background:transparent url(images/icons/buttons/button-pause.png) no-repeat left center;}
+.stop_btnicn {background:transparent url(images/icons/buttons/button-stop.png) no-repeat left center;}
+.record-on_btnicn {background:transparent url(images/icons/buttons/button-record-on.png) no-repeat left center;}
+.recordbtnicn {background:transparent url(images/icons/buttons/button-record.png) no-repeat left center;}
+
+.circle_btnicn {background:transparent url(images/icons/buttons/button-circle.png) no-repeat left center;}
+.rect_btnicn {background:transparent url(images/icons/buttons/button-rect.png) no-repeat left center;}
+.pulse_btnicn {background:transparent url(images/icons/buttons/button-pulse.png) no-repeat left center;}
+.star_btnicn {background:transparent url(images/icons/buttons/button-star.png) no-repeat left center;}

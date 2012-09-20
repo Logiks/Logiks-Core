@@ -1,0 +1,81 @@
+/*CSS Tabs 2.0*/
+.ajaxloading, .ajaxloading1, .ajaxloading2, .ajaxloading3, .ajaxloading4, .ajaxloading5, .ajaxloading6, .ajaxloading7, .ajaxloading8 {
+	text-align:center;
+	padding-left:auto;
+	padding-right:auto;
+	font: bold 14px Georgia, Verdana, Arial, Helvetica, sans-serif;
+	color:#777;
+}
+
+.ajaxloading {
+	background: transparent url(images/ajax/loading.gif) no-repeat;
+	background-position:center;
+	padding-top:35px;
+}
+
+.ajaxloading1 {
+	background: transparent url(images/ajax/loading1.gif) no-repeat;
+	background-position:center;
+	padding-top:75px;
+}
+
+.ajaxloading2 {
+	background: transparent url(images/ajax/loading2.gif) no-repeat;
+	background-position:center;
+	padding-top:35px;
+}
+
+.ajaxloading3 {
+	background: transparent url(images/ajax/loading3.gif) no-repeat top center;
+	background-position:center;
+	padding-top:75px;
+}
+
+.ajaxloading4 {
+	background: transparent url(images/ajax/loading4.gif) no-repeat;
+	background-position:left;
+	padding-top:15px;
+}
+
+.ajaxloading5 {
+	background: transparent url(images/ajax/loading5.gif) no-repeat;
+	background-position:center;
+	padding-top:110px;
+}
+
+.ajaxloading6 {
+	background: transparent url(images/ajax/loading6.gif) no-repeat;
+	background-position:center;
+	padding-top:35px;
+}
+.ajaxloading7 {
+	background: transparent url(images/ajax/loading7.gif) no-repeat;
+	background-position:center;
+	padding-top:35px;
+}
+.ajaxloading8 {
+	background: transparent url(images/ajax/loading8.gif) no-repeat;
+	background-position:center;
+	padding-top:45px;
+}
+
+.ajaxerror {
+	background: transparent url(images/ajax/error.png) no-repeat;
+	background-position:center;
+	text-align:center;
+	padding-left:auto;
+	padding-right:auto;
+	padding-top:75px;
+	font: bold 16px Georgia, Verdana, Arial, Helvetica, sans-serif;
+	color:#777;
+}
+.ajaxbug {
+	background: transparent url(images/ajax/bug.png) no-repeat;
+	background-position:center;
+	text-align:center;
+	padding-left:auto;
+	padding-right:auto;
+	padding-top:75px;
+	font: bold 16px Georgia, Verdana, Arial, Helvetica, sans-serif;
+	color:#777;
+}

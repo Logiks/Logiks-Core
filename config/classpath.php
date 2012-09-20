@@ -1,0 +1,13 @@
+<?php
+$classpath=array(
+	"api/",
+	"api/libs/",
+	"api/helpers/"
+	);
+$helperpath=array(	
+	);
+$modulespath=array(	
+	);
+$widgetspath=array(	
+	);
+?>

@@ -1,0 +1,83 @@
+/*CSS Tables 2.0*/
+
+thead {
+	background: transparent url(images/tables/header-selected-bg.gif) repeat; padding: 6px 2px 6px 4px; text-align:center; font: 13px Verdana, Arial, Helvetica, sans-serif; font-weight:bold; color:#FFFFFF;
+}
+
+tbody {
+	color:black;
+}
+
+tr,td {cursor:arrow;}
+
+
+.tablediv {font:10px Verdana,Arial; margin:25px; background:#fff url(images/tables/bg.gif) repeat-x; color:#091f30}
+
+/*.tablecontainer { padding: 7px 5px 10px 5px; border-top:1px solid #ddd;border-bottom:1px solid #ddd; border-right:1px solid #ddd; border-left:1px solid #ddd;}*/
+.tablecontainer,.sortable { padding: 3px 3px 3px 3px; border-color:#BBDAEC;border-width:1px;border-style:solid;}
+.tablecontentheading {font: 13px Verdana, Arial, Helvetica, sans-serif; color:#064764; font-weight:bold; text-align:left; padding-left:10px; height:0px;}
+.tablelistingheader {background: transparent url(images/tables/boxbg.gif) repeat; padding: 6px 2px 6px 4px; text-align:center; font: 13px Verdana, Arial, Helvetica, sans-serif; font-weight:bold; color:#FFFFFF;white-space:nowrap;}
+.tablelistingheaderDark {background: transparent url(images/tables/header-bg.gif) repeat-x; padding: 6px 2px 6px 4px; text-align:center; font: 13px Verdana, Arial, Helvetica, sans-serif; font-weight:bold; color:#cfdce7;white-space:nowrap;}
+.tablelistingheaderSelectedDark {background: transparent url(images/tables/header-selected-bg.gif) repeat-x; padding: 6px 2px 6px 4px; text-align:center; font: 13px Verdana, Arial, Helvetica, sans-serif; font-weight:bold; color:#FFFFFF;white-space:nowrap;}
+
+
+.tablelistodd {background-color: #DEF2FB; padding: 6px 2px 6px 4px; text-align:left; font-size:13px; font-family:Arial, Helvetica, sans-serif }
+.tablelisteven {background-color: #ffffff; padding: 6px 2px 6px 4px; text-align:left; font-size:13px; font-family:Arial, Helvetica, sans-serif}
+.tablelistselected {background-color: #FFFF99; padding: 6px 2px 6px 4px; text-align:left; font-size:13px; font-family:Arial, Helvetica, sans-serif }
+
+.tablelisteven:hover {background-color: #FFFFCC; padding: 6px 2px 6px 4px; text-align:left; font-size:13px; font-family:Arial, Helvetica, sans-serif}
+.tablelistodd:hover {background-color: #FFFFCC; padding: 6px 2px 6px 4px; text-align:left; font-size:13px; font-family:Arial, Helvetica, sans-serif}
+.tablelistselected:hover {background-color: #FFD3A9; padding: 6px 2px 6px 4px; text-align:left; font-size:13px; font-family:Arial, Helvetica, sans-serif }
+
+.tablelisteven:active {background-color: #FFFF99; padding: 6px 2px 6px 4px; text-align:left; font-size:13px; font-family:Arial, Helvetica, sans-serif }
+.tablelistodd:active {background-color: #FFFF99; padding: 6px 2px 6px 4px; text-align:left; font-size:13px; font-family:Arial, Helvetica, sans-serif }
+
+.tablefooter {background: transparent url(images/tables/footer.png) repeat-x; background-color: #ccc; font:14px arial; padding:3px;height:20px;}
+
+.last {background: transparent url(images/tables/2rightarrow.png) no-repeat center; width:30px; height:20px;cursor:pointer}
+.first {background: transparent url(images/tables/2leftarrow.png) no-repeat center; width:30px; height:20px;cursor:pointer}
+.next {background: transparent url(images/tables/1rightarrow.png) no-repeat center; width:30px; height:20px;cursor:pointer}
+.previous {background: transparent url(images/tables/1leftarrow.png) no-repeat center; width:30px; height:20px;cursor:pointer}
+
+.noscreen { display:none; }
+
+/*
+ODD:#C1CBD9
+EVEN:#E1EAEB
+*/
+
+.tablelistingheader div,.tablelistingheaderDark div, .tablelistingheaderSelectedDark div {background:url(images/tables/sort.gif) 7px center no-repeat; cursor:pointer; padding-left:18px; text-decoration:none;}
+.tablelistingheader:hover,.tablelistingheaderDark:hover, .tablelistingheaderSelectedDark:hover {color:#fff}
+
+.tabletoolbar {
+	background: transparent url(images/tables/footer.png) repeat-x;
+	background-color: #ccc;
+	margin-left:10px;
+	margin-right:10px;
+	margin-top:10px;
+	font:14px arial;
+	padding:1px;
+	height:23px;
+	width:75%;
+	border:2px solid #888;
+}
+
+.downsort{
+	background: url(images/tables/bullet_z1.png) no-repeat center center;
+	float:right;
+}
+.upsort{
+	background: url(images/tables/bullet_z2.png) no-repeat center center;
+	float:right;
+}
+.nosort{
+	background: transparent;
+	float:right;
+}
+
+.sortheader {
+	background:url(images/tables/sort.gif) 7px center no-repeat; cursor:pointer; padding-left:18px; text-decoration:none;color:white;
+}
+.onlyprint {display:none;}
+.noscreen {display:none;}
+.noshow {visibhility:hidden;}
