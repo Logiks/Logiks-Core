@@ -170,10 +170,18 @@ else
 //All Functions Required By Authentication System
 function relink($msg,$domain) {
 	$_SESSION['SESS_ERROR_MSG']=$msg;
-	$s="../login.php";
-	if(strlen($domain)>0) $s.="?site=$domain";
-	header("Location:$s");
-	exit("$msg");
+	
+	$onerror="";
+	if((ALLOW_LOGIN_RELINKING=="true" || ALLOW_LOGIN_RELINKING)) {
+		if(isset($_REQUEST['onerror'])) $onerror=$_REQUEST['onerror'];
+	}
+	if(strlen($onerror)==0 || $onerror=="*") {
+		$s="../login.php";
+		if(strlen($domain)>0) $s.="?site=$domain";
+		$onerror=$s;
+	}
+	header("Location:$onerror");
+	exit($msg);
 }
 function getAccessibleSitesArray() {
 	$arr=scandir(ROOT.APPS_FOLDER);
