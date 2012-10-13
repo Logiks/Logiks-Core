@@ -205,7 +205,7 @@ class PCronQueue {
 		$sql.="(0, '$title', '$script', '$desc', '$serialized_params', '$method', $schdulle, now(), '$run_only_once', '$task_md5_hash', now(), '$site', '$user', 'false')";
 		
 		_dbQuery($sql,true);
-		return "Task Created ".mysql_insert_id();
+		return "Task Created "._db()->insert_id();
 	}
 	
 	public static function taskExists($run_script, Array $params) {

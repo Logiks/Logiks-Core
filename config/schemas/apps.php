@@ -39,6 +39,10 @@ $cfgSchema["ALT_SITE"]=array(
 		"type"=>"list",
 		"function"=>"getAppList"
 	);
+$cfgSchema["LINKED_APPS"]=array(
+		"type"=>"list",
+		"function"=>"getAppList"
+	);
 $cfgSchema["DEV_MODE_IP"]=array(
 		"tips"=>"Comma separated IP Address will load Developer Mode Providing Access Only To These IP.",
 	);

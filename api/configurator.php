@@ -104,7 +104,7 @@ if(!function_exists('LoadConfigFile')) {
 		if(!file_exists($dir)) return;
 		$arr=scandir($dir);	
 		foreach($arr as $a) {
-			if($a!="." && $a!="..") {
+			if($a!="." && $a!=".." && is_file($dir.$a)) {
 				$b=$dir.$a;
 				if(strrchr(strtolower($a),".")==".cfg") {
 					LoadConfigFile($b);
@@ -209,7 +209,24 @@ if(!function_exists('LoadConfigFile')) {
 		}
 		return true;
 	}
+	function loadFeature($fname,$debug=false) {
+		$f=APPROOT;
+		if(defined("APPS_CONFIG_FOLDER"))  $f.=APPS_CONFIG_FOLDER;
+		else $f.="config/";
+		$f.="features/{$fname}.cfg";
+		if(!file_exists($f)) return array();
+		$ftrs=parseConfigFile($f);
+		if($debug) {
+			return $ftrs;
+		}
+		$arr=array();
+		foreach($ftrs as $a=>$b) {
+			$arr[$a]=$b['value'];
+		}
+		return $arr;
+	}
 	function parseConfigFile($path) {
+		$mode="DATABUS";
 		$outArr=array();
 		if(file_exists($path))	{
 			$file=fopen($path,"r") or die("Unable to open file");

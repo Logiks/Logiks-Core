@@ -90,4 +90,99 @@ function getServiceCMD() {
 	$scmd=$_REQUEST['scmd'];
 	return $scmd;
 }
+
+function printServiceErrorMsg($errCode,$errMsg,$errorImg="") {
+	$envelop=getMsgEnvelop();
+	
+	if($errorImg!=null && strlen($errorImg)>0) {
+		$errorImg=SiteLocation.$errorImg;
+	}
+	$arr=array();
+	$arr['ErrorCode']=$errCode;
+	$arr['ErrorMessage']=$errMsg;
+	$arr['ErrorIcon']=$errorImg;
+	$arr['RequestedCommand']=$_REQUEST['scmd'];
+	$arr['RequestedSite']=$_REQUEST['site'];
+	
+	if($_REQUEST['format']=="html") {
+		if($errorImg!=null && strlen($errorImg)>0) {
+			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>
+				<img src='{$errorImg}'  width=48 height=48><p style='color:#AA0000;font:20px Arial;'>" . 
+				getErrorMsg($errCode) . "</p>$errMsg</td></tr></table>{$envelop['end']}";
+		} else {
+			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'><h3 style='color:#AA0000;font:20px Arial;'>" .
+				getErrorMsg($errCode) . "</h3>$errMsg</td></tr></table>{$envelop['end']}";
+		}
+	} elseif($_REQUEST['format']=="xml") {
+		$xml=new SimpleXMLElement("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><service></service>");
+		$arr=arrayToXML($arr,$xml);
+		echo $xml->asXML();
+	} elseif($_REQUEST['format']=="json") {
+		echo json_encode($arr);
+	} elseif($_REQUEST['format']=="text") {
+		$s="";
+		foreach($arr as $a=>$b) {
+			$s.="$a=$b\n";
+		}
+		echo $s;
+	} else {
+		//html
+		if($errorImg!=null && strlen($errorImg)>0) {
+			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>
+				<img src='{$errorImg}'  width=48 height=48><p style='color:#AA0000;font:20px Arial;'>" . 
+				getErrorMsg($errCode) . "</p>$errMsg</td></tr></table>{$envelop['end']}";
+		} else {
+			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'><h3 style='color:#AA0000;font:20px Arial;'>" .
+				getErrorMsg($errCode) . "</h3>$errMsg</td></tr></table>{$envelop['end']}";
+		}
+	}
+}
+
+function printServiceMsg($msgData,$msgCode=200,$msgImage="") {
+	$envelop=getMsgEnvelop();
+	
+	if($msgImage!=null && strlen($msgImage)>0) {
+		$msgImage=SiteLocation.$msgImage;
+	}
+	
+	$arr=array();
+	$arr['MessageCode']=$msgCode;
+	$arr['Data']="";
+	$arr['MessageIcon']=$msgImage;
+	$arr['RequestedCommand']=$_REQUEST['scmd'];
+	$arr['RequestedSite']=$_REQUEST['site'];
+	
+	if($_REQUEST['format']=="html") {
+		if(is_array($msgData)) {
+			printFormattedArray($msgData,true,"table");
+		} else {
+			echo $msgData;
+		}
+	} elseif($_REQUEST['format']=="xml") {
+		$arr['Data']=$msgData;
+		
+		foreach($arr as $a=>$b) {
+			if($b==null) $arr[$a]="";
+		}
+		$xml=new SimpleXMLElement("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><service></service>");
+		$arr=arrayToXML($arr,$xml);
+		echo $xml->asXML();
+	} elseif($_REQUEST['format']=="json") {
+		$arr['Data']=$msgData;
+		echo json_encode($arr);
+	} elseif($_REQUEST['format']=="text") {
+		if(is_array($msgData)) {
+			printFormattedArray($msgData);
+		} else {
+			$msgData=strip_tags($msgData);
+			echo $msgData;
+		}
+	} else {
+		if(is_array($msgData)) {
+			printFormattedArray($msgData);
+		} else {
+			echo $msgData;
+		}
+	}
+}
 ?>

@@ -55,29 +55,19 @@ function servicesExceptionHandler($exception) {
 
 //All Error Printing Funcs
 function printErr($str,$msg="",$noimage=false) {
-	global $errorImg;
 	if(strlen($msg)<=0) {
 		$msg=DEFAULT_ERROR_MESSAGE;
 	}
-	$envelop=getMsgEnvelop();
-	if($noimage) {
-		echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'><h3 style='color:#AA0000;font:20px Arial;'>" .
-			getErrorMsg($str) . "</h3>$msg</td></tr></table>{$envelop['end']}";
-	} else {
-		echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>$errorImg<p style='color:#AA0000;font:20px Arial;'>" . 
-			getErrorMsg($str) . "</p>$msg</td></tr></table>{$envelop['end']}";
-	}
+	printServiceErrorMsg($str,$msg,"services/images/error.png");
+}
+function printBug($msg="Bugged Instance !") {
+	printServiceErrorMsg("Bug",$msg,"services/images/bug.png");
 }
 function printLoading($msg="Loading ...") {
+	//Always HTML
 	global $loadImg;
 	$envelop=getMsgEnvelop();
 	echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>$loadImg<p style='color:#0055AA'>" . $msg . 
-			"</p></td></tr></table>{$envelop['end']}";
-}
-function printBug($msg="Bugged Instance !") {
-	global $bugImg;
-	$envelop=getMsgEnvelop();
-	echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>$bugImg<p style='color:#0055AA'>" . $msg . 
 			"</p></td></tr></table>{$envelop['end']}";
 }
 function getErrorMsg($err) {
@@ -96,5 +86,4 @@ function getErrorMsg($err) {
 function passErrorMsg($msg) {
 	echo "<script language='javascript' type='text/javascript'>self.parent.showError('#$msg');</script><h3>$msg</h3>";
 }
-
 ?>

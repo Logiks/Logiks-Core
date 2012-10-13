@@ -1,5 +1,5 @@
 <?php
-if (!defined('ROOT')) exit('No direct script access allowed');
+if(!defined('ROOT')) exit('No direct script access allowed');
 if(!function_exists("createDataSelector")) {
 	//Primary Functions To Create Selector Lists
 	function createDataSelector($dbLink, $groupID,$allowNone=true) {

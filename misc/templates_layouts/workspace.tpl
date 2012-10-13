@@ -4,10 +4,11 @@
 	#header#
 	#banner#
 	<div id=contentwrapper class='contentwrapper'>
-	#sidebar_left#
-	#content#
-	#sidebar_right#
+		#sidebar_left#
+		#content#
+		#sidebar_right#
 	</div>
-	#footer#
+	#prefooter#
 </div>
+#footer#
 #copyright#

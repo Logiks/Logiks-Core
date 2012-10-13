@@ -1,17 +1,12 @@
 <?php
 if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 
-require_once (ROOT . 'api/configurator.php');
-
-LoadConfigFile(ROOT . "config/basic.cfg");
 LoadConfigFile(ROOT . "config/system.cfg");
 LoadConfigFile(ROOT . "config/xtras.cfg");
 LoadConfigFile(ROOT . "config/headers.cfg");
 LoadConfigFile(ROOT . "config/framework.cfg");	
 LoadConfigFile(ROOT . "config/db.cfg");
 LoadConfigFile(ROOT . "config/folders.cfg");
-LoadConfigFile(ROOT . "config/services.cfg");
-LoadConfigFile(ROOT . "config/security.cfg");
 
 fixPHPINIConfigs();
 fixLogiksVariables();
@@ -25,9 +20,10 @@ include_once ROOT. "api/security.php";
 include_once ROOT. "api/usersettings.php";
 //include_once ROOT. "api/rolemodel.php";
 include_once ROOT. "api/system.php";
+include_once ROOT. "api/user.php";
 include_once ROOT. "api/database.inc";
 
-include ROOT."config/errors.php";
+include_once ROOT."config/errors.php";
 
 include_once ROOT. "api/logdb.php";//For Apps Events
 include_once "serviceErrors.php";//Service Error Handling System
@@ -61,6 +57,30 @@ function __autoload($class) {
 	if(!$found && SERVICE_DEBUG=="true") trigger_error("$class Class Not Found within given paths");
 }
 
+function getServiceCtrlConfig() {
+	$jsonDb=array();
+	
+	if(defined("APPS_CONFIG_FOLDER"))
+		$f1=APPROOT.APPS_CONFIG_FOLDER."services.json";
+	else
+		$f1="";
+	$f2=ROOT.CFG_FOLDER."services.json";
+	$db1=array();$db2=array();
+	if(strlen($f1)>0 && file_exists($f1)) {
+		$d1=file_get_contents($f1);
+		$db1=json_decode($d1,true);
+	}
+	if(strlen($f2)>0 && file_exists($f2)) {
+		$d1=file_get_contents($f2);
+		$db2=json_decode($d1,true);
+	}
+	if($db1==null) $db1=array();
+	if($db2==null) $db2=array();
+	
+	$jsonDb=array_merge($db2,$db1);
+	return $jsonDb;
+}
+
 //Handling Encoded/Encrypted QUERY_STRINGS
 if(isset($_REQUEST['encoded'])) {
 	$query=$_REQUEST['encoded'];
@@ -88,19 +108,15 @@ if(ENABLE_AUTO_HOOKS=="true") {
 	loadHelpers("hooks");
 }
 
-$errorImg="<img src=" . SiteLocation . "services/images/error.png  width=48 height=48>";
-$loadImg="<img src=" . SiteLocation . "services/images/loading.gif width=200 height=20>";
-$bugImg="<img src=" . SiteLocation . "services/images/bug.png width=48 height=48>";
+$errorImg="<img src='" . SiteLocation . "services/images/error.png'  width=48 height=48>";
+$loadImg="<img src='" . SiteLocation . "services/images/loading.gif' width=200 height=20>";
+$bugImg="<img src='" . SiteLocation . "services/images/bug.png' width=48 height=48>";
 
 $cmdFormat=explode(",",SUPPORTED_COMMAND_FORMATS);
 
-//Loading Special Access Commands
-$arrSpecialCmds=array();
-$accessData=file_get_contents(ROOT."config/lists/services_access.lst");
-$accessData=explode("\n",$accessData);
-foreach($accessData as $s) {
-	if(strlen($s)>0 && substr($s,0,1)!="#") {
-		array_push($arrSpecialCmds,$s);
-	}
+if(!isset($_REQUEST['format'])) {
+	$_REQUEST['format']="html";
+} else {
+	$_REQUEST['format']=strtolower($_REQUEST['format']);
 }
 ?>

@@ -9,9 +9,15 @@
 	<meta name="generator" content="Logiks" />
 	<meta name="robots" content="index,nofollow" />
 <?php
+$jqTheme=getConfig("LOGIN_JQTHEME");
+if(strlen($jqTheme)>0) $jqTheme="jquery.ui.{$jqTheme}";
+else $jqTheme="jquery.ui";
 _js(array("jquery","jquery.ui","dialogs","ajax"));
-_skin(array("jquery.ui.".getConfig("LOGIN_JQTHEME")));
+_skin(array($jqTheme));
 _css(array("formfields","ajax"));
+
+$loginLink=SiteLocation."login.php";
+if(isset($_REQUEST['site'])) $loginLink.="?site={$_REQUEST['site']}";
 ?>
 <style>
 #restoreform input {
@@ -21,7 +27,7 @@ _css(array("formfields","ajax"));
 }
 </style>
 </head>
-<body oncontextmenu='return true' onselectstart='return false' ondragstart='return false'  >
+<body oncontextmenu='return false' onselectstart='return false' ondragstart='return false'  >
 	<div class="wrapper" style="width:800px;margin:auto;">
 	<div class="ui-widget-header" style='height:21px;padding:3px;'><b>Password Recovery</b></div><br/>
 	<p style="width:90%;margin:auto;text-align:justify;font-family:Georgia, Times, serif;">
@@ -48,8 +54,8 @@ _css(array("formfields","ajax"));
 				<th class=title width=30% valign=top>Humans Only</th>
 				<td class=value>
 					<input name=captcha type=text value='' style='width:100px;float:right;margin-top:10px;' />
-					<div id=captchaviewer style='background:url(services/?scmd=captcha&captchaId=pwdr1) no-repeat center left;width:200px;height:50px;' 
-						ondblclick='$(this).css("background","url(services/?scmd=captcha&captchaId=pwdr1) no-repeat center left");'></div>
+					<div id=captchaviewer style='background:url(services/?scmd=captcha&cid=pwdr1) no-repeat center left;width:200px;height:50px;' 
+						ondblclick='$(this).css("background","url(services/?scmd=captcha&cid=pwdr1) no-repeat center left");'></div>
 					<small><small>Please Double Click To refresh Captcha</small></small>
 				</td>
 				<td class=support width=5%></td>
@@ -59,6 +65,7 @@ _css(array("formfields","ajax"));
 			</tr>
 			<tr align=left>
 				<td colspan=10 align=center>
+					<button type=reset onclick="document.location='<?=$loginLink?>'">Login</button>
 					<button type=reset>Clear</button>
 					<button type=button onclick="submitForm();">Save</button>
 				</td>
@@ -104,7 +111,7 @@ function submitForm() {
 	q+="&captchaId=pwdr1";
 	$("#restoreform").html("<div class='ajaxloading6'>Processing ...</div>");
 	$("#restoreform input").val("");
-	$("#restoreform #captchaviewer").css("background","url(services/?scmd=captcha&captchaId=pwdr1) no-repeat center left");
+	$("#restoreform #captchaviewer").css("background","url(services/?scmd=captcha&cid=pwdr1) no-repeat center left");
 	processAJAXPostQuery(l,q,function(txt) {
 			$("#restoreform").html(txt);
 			$("button").button();

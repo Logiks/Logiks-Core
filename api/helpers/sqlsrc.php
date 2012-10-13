@@ -118,5 +118,47 @@ if(!function_exists('parseRelation')) {
 		return "";
 	}
 }
+if(!function_exists('getRelation')) {
+	function getRelation($func,$col,$value) {
+		$r=$value;
+		if(!is_numeric($value)) {
+			$r="'$value'";
+		}
+		if($func=="eq") {
+			return "$col= $r";
+		} elseif($func=="ne") {
+			return "$col<> $r";
+		} elseif($func=="bw") {
+			return "$col LIKE '$value%'";
+		} elseif($func=="bn") {
+			return "$col NOT LIKE '$value%'";
+		} elseif($func=="ew") {
+			return "$col LIKE '%$value'";
+		} elseif($func=="en") {
+			return "$col NOT LIKE '%$value'";
+		} elseif($func=="cn") {
+			return "$col LIKE '%$value%'";
+		} elseif($func=="nc") {
+			return "$col NOT LIKE '%$value%'";
+		} elseif($func=="in") {
+			return "$col LIKE '%$value%'";
+		} elseif($func=="ni") {
+			return "$col NOT LIKE '%$value%'";
+		} elseif($func=="lt") {
+			return "$col<$r";
+		} elseif($func=="le") {
+			return "$col<=$r";
+		} elseif($func=="gt") {
+			return "$col>$r";
+		} elseif($func=="ge") {
+			return "$col>=$r";
+		} elseif($func=="nn") {
+			return "$col IS NOT NULL";
+		} elseif($func=="nu") {
+			return "$col IS NULL";
+		}
+		return "$col=$value";
+	}
+}
 ?>
 

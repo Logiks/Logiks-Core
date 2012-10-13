@@ -1,0 +1,10 @@
+{
+	"SERVICE_ACCESS_CONTROLS":{
+		"ping":{
+			"default_print_format":"text",
+			"privilege_model":{},
+			"access_control":"public"
+		}
+	}
+}
+

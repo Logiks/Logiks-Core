@@ -128,6 +128,7 @@ if(!isset($initialized)) {
 	include_once ROOT. "api/usersettings.php";
 	include_once ROOT. "api/rolemodel.php";
 	include_once ROOT. "api/system.php";
+	include_once ROOT. "api/user.php";
 	include_once ROOT. "api/uifuncs.php";
 	
 	loadHelpers("phpsupport");

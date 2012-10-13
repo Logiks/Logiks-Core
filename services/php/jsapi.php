@@ -1,6 +1,6 @@
 <?php
 //include ROOT . "api/jsphp.inc";
-if(!defined('ROOT')) exit('No direct script access allowed');
+if (!defined('ROOT')) exit('No direct script access allowed');
 
 $JSAPI_LINK=getRequestPath() . "?&jslib=";// . $_SERVER['QUERY_STRING'] . "&jslib="
 

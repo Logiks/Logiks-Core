@@ -108,9 +108,8 @@ if(!function_exists("errorHandler")) {
 			);	
 			dispErrPage($params);
 		} else {
-			//none
+			if(function_exists("log_ErrorEvent"))  log_ErrorEvent($errLvl,$errMsg,"Error in $file:$line");
 		}
-		if(function_exists("log_ErrorEvent"))  log_ErrorEvent($errLvl,$errMsg,"Error in $file:$line");
 		return true;
 	}
 		
@@ -125,7 +124,7 @@ if(!function_exists("errorHandler")) {
 		}
 	}
 			
-	function trigger_ErrorCode($errorCode,$mbody=null) {
+	function trigger_ErrorCode($errorCode,$mbody=null,$errFile="") {
 		global $error_codes;
 		if(array_key_exists($errorCode,$error_codes)) {
 			$errorMsg=$error_codes[$errorCode][0];
@@ -150,11 +149,11 @@ if(!function_exists("errorHandler")) {
 				"theme"=>"red",
 				"launchDate"=>"",
 			);
-		dispErrPage($params);
+		dispErrPage($params,$errFile);
 		exit();
 	}
 	
-	function trigger_UnderConstruction($msg,$mbody=null) {
+	function trigger_UnderConstruction($msg,$mbody=null,$errFile="") {
 		if($mbody==null) {
 			$mbody="Dear Visitor,<br/><br/>
 							You seem to have checked at the wrong time.<br/>
@@ -170,9 +169,9 @@ if(!function_exists("errorHandler")) {
 				"theme"=>"yellow",
 				"launchDate"=>"",//August 13, 2011 12:00:00
 			);		
-		dispErrPage($params);
+		dispErrPage($params,$errFile);
 	}
-	function trigger_NotFound($msg,$mbody=null) {
+	function trigger_NotFound($msg,$mbody=null,$errFile="") {
 		if($mbody==null) {
 			$mbody="Dear Visitor,<br/><br/>
 							OOPS!, The Requested Page Was Not Found.<br/>
@@ -188,10 +187,10 @@ if(!function_exists("errorHandler")) {
 				"theme"=>"blue",
 				"launchDate"=>"",//August 13, 2011 12:00:00
 			);
-		dispErrPage($params);		
+		dispErrPage($params,$errFile);		
 	}
 	
-	function trigger_LoginError($msg,$mbody=null) {
+	function trigger_LoginError($msg,$mbody=null,$errFile="") {
 		if($mbody==null) {
 			$mbody="Dear Visitor,<br/><br/>
 							There was error in Login. Either UserID/Password is Wrong. <br/>
@@ -206,10 +205,10 @@ if(!function_exists("errorHandler")) {
 				"theme"=>"red",
 				"launchDate"=>"purple",//August 13, 2011 12:00:00
 			);
-		dispErrPage($params);
+		dispErrPage($params,$errFile);
 	}
 	
-	function trigger_ForbiddenError($msg,$mbody=null) {
+	function trigger_ForbiddenError($msg,$mbody=null,$errFile="") {
 		if($mbody==null) {
 			$mbody="Dear Visitor,<br/><br/>
 							Access Forbidden To The Requested Page. <br/>
@@ -224,10 +223,10 @@ if(!function_exists("errorHandler")) {
 				"theme"=>"",
 				"launchDate"=>"",//August 13, 2011 12:00:00				
 			);
-		dispErrPage($params);
+		dispErrPage($params,$errFile);
 	}	
 	
-	function dispErrPage($params) {
+	function dispErrPage($params,$errFile="") {
 		global $error_pages, $ERROR_ICON_LOCATION;
 		
 		$errorParams=array(
@@ -251,8 +250,10 @@ if(!function_exists("errorHandler")) {
 		if(isset($params["posted_by"])) $errorParams["posted_by"]=$params["posted_by"];
 		if(isset($params["posted_on"])) $errorParams["posted_on"]=$params["posted_on"];
 		
-		$ERR_FILE="";
-		if(array_key_exists($params["type"],$error_pages)) {
+		$ERR_FILE=$errFile;
+		if(file_exists($errFile)) {
+			$ERR_FILE=$errFile;
+		} else if(array_key_exists($params["type"],$error_pages)) {
 			$ERR_FILE=$error_pages[$params["type"]];
 		} elseif(array_key_exists('default',$error_pages)) {
 			$ERR_FILE=$error_pages['default'];
@@ -260,11 +261,12 @@ if(!function_exists("errorHandler")) {
 			$t=array_keys($error_pages);
 			$ERR_FILE=$error_pages[$t[0]];
 		}
+		
 		if($errorParams["errorType"]!=501) {
-			log_ErrorEvent($errorParams["errorType"],$errorParams["msg_header"],$errorParams["msg_body"]);
+			log_ErrorEvent($errorParams["errorType"],$errorParams["msg_header"]);
 		}
 		if(file_exists($ERR_FILE)) {
-			include ROOT.$ERR_FILE;
+			include $ERR_FILE;
 			exit();
 		} else {
 			echo "<div align=center style='width:600px;margin:auto;margin-top:50px;border:2px solid #aaa;'>";			
@@ -293,7 +295,7 @@ if(!function_exists("errorHandler")) {
 			}
 		}
 		
-		if(function_exists("log_ErrorEvent")) log_ErrorEvent($errCode,$msgTitle,$msg);
+		if(function_exists("log_ErrorEvent")) log_ErrorEvent($errCode,$msgTitle);
 		if($icon==null || strlen($icon)==0 || !file_exists(ROOT.$icon)) $icon=getErrorIcon($errCode);
 		elseif(!file_exists(ROOT.$icon)) {
 			if(file_exists(ROOT."media/images/notfound/$icon.png")) {

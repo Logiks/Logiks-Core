@@ -33,6 +33,16 @@ if(strlen($pageLinkPath)>0 && file_exists($pageLinkPath)) {
 		}
 		return s;
 	}
+	function _link(href) {
+		if(href.indexOf("http")>=0) {
+		} else if(href.indexOf("ftp")>=0) {
+		} else if(href.indexOf("/")==0) {
+			href="<?=SiteLocation.SITENAME."/"?>"+href.substr(1);
+		} else {
+			href="<?=SiteLocation?>"+href;
+		}
+		return href;
+	}
 	</script>
 <?php
 	runHooks("beforepage");

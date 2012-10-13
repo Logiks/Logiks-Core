@@ -27,6 +27,7 @@ if (!function_exists('printArray')) {
 		$s=htmlspecialchars_decode($data);
 		$s=str_replace("\\\"","\"",$s);
 		$s=str_replace("\\'","'",$s);
+		$s=stripslashes($s);
 		$data=trim($s);
 		return $data;
 	}
@@ -136,25 +137,40 @@ if (!function_exists('printArray')) {
 		if(strlen($glue)>0) {
 			$in=substr($in,1,strlen($in)-2);
 		}
-		if($dataArr==null) {
-			$dataArr=array();
-			$dataArr["date"]=date(getConfig("PHP_DATE_FORMAT"));
-			$dataArr["time"]=date(getConfig("TIME_FORMAT"));
-			$dataArr["datetime"]=date(getConfig("PHP_DATE_FORMAT")." ".getConfig("TIME_FORMAT"));
-			
-			$dataArr["site"]=SITENAME;
-			if(isset($_REQUEST["page"])) $dataArr["page"]=$_REQUEST["page"]; else $dataArr["page"]="home";
-			
-			if(isset($_SESSION["SESS_USER_ID"])) $dataArr["user"]=$_SESSION["SESS_USER_ID"]; else $dataArr["user"]="Guest";
-			if(isset($_SESSION["SESS_PRIVILEGE_ID"])) $dataArr["privilege"]=$_SESSION["SESS_PRIVILEGE_ID"];  else $dataArr["privilege"]="Guest";
-			if(isset($_SESSION["SESS_USER_NAME"])) $dataArr["username"]=$_SESSION["SESS_USER_NAME"];  else $dataArr["user_name"]="Guest";
-			if(isset($_SESSION["SESS_PRIVILEGE_NAME"])) $dataArr["privilegename"]=$_SESSION["SESS_PRIVILEGE_NAME"];  else $dataArr["privilege_name"]="Guest";
+		
+		if(strpos($in,"@")>0) {
+			$inArr=explode("@",$in);
+			$in=$inArr[0];
+			if(isset($inArr[1])) $con=strtolower($inArr[1]);
+			else $con="get";
+			if($con=="get" && isset($_GET[$in])) return $_GET[$in];
+			elseif($con=="post" && isset($_POST[$in])) return $_POST[$in];
+			elseif($con=="session" && isset($_SESSION[$in])) return $_SESSION[$in];
+			elseif($con=="server" && isset($_SERVER[$in])) return $_SERVER[$in];
+			elseif($con=="cookie" && isset($_COOKIE[$in])) return $_COOKIE[$in];
+			return "";
+		} else {
+			if($dataArr==null) {
+				$dataArr=array();
+				$dataArr["date"]=date(getConfig("PHP_DATE_FORMAT"));
+				$dataArr["time"]=date(getConfig("TIME_FORMAT"));
+				$dataArr["datetime"]=date(getConfig("PHP_DATE_FORMAT")." ".getConfig("TIME_FORMAT"));
+				
+				$dataArr["site"]=SITENAME;
+				if(isset($_REQUEST["page"])) $dataArr["page"]=$_REQUEST["page"]; else $dataArr["page"]="home";
+				
+				if(isset($_SESSION["SESS_USER_ID"])) $dataArr["user"]=$_SESSION["SESS_USER_ID"]; else $dataArr["user"]="Guest";
+				if(isset($_SESSION["SESS_PRIVILEGE_ID"])) $dataArr["privilege"]=$_SESSION["SESS_PRIVILEGE_ID"];  else $dataArr["privilege"]="Guest";
+				if(isset($_SESSION["SESS_USER_NAME"])) $dataArr["username"]=$_SESSION["SESS_USER_NAME"];  else $dataArr["user_name"]="Guest";
+				if(isset($_SESSION["SESS_PRIVILEGE_NAME"])) $dataArr["privilegename"]=$_SESSION["SESS_PRIVILEGE_NAME"];  else $dataArr["privilege_name"]="Guest";
+			}
+			if(isset($dataArr[$in])) return $dataArr[$in];
+			elseif(isset($_REQUEST[$in])) return $_REQUEST[$in];
+			elseif(isset($_SESSION[$in])) return $_SESSION[$in];
+			elseif(isset($_SERVER[$in])) return $_SERVER[$in];
+			elseif(isset($_COOKIE[$in])) return $_COOKIE[$in];
+			return getConfig($in);
 		}
-		if(isset($dataArr[$in])) return $dataArr[$in];
-		elseif(isset($_REQUEST[$in])) return $_REQUEST[$in];
-		elseif(isset($_SESSION[$in])) return $_SESSION[$in];
-		elseif(isset($_SERVER[$in])) return $_SERVER[$in];
-		return getConfig($in);
 	}
 	function getHash($txt,$method="md5") {
 		$unique_salt=HASH_SALT;

@@ -21,20 +21,20 @@ if(!function_exists("log_ErrorEvent")) {
 		}
 	}
 	
-	function log_ErrorEvent($errorCode,$errorMsg=null,$errorLog="") {
-		$xmsg="TriggeredError +$errorCode @".$_SERVER["QUERY_STRING"]." #$errorMsg [".date("Y/m/d G:i:s")."]";
+	function log_ErrorEvent($errorCode,$errorMsg=null,$errorLog=null,$source=null) {
+		$xmsg="TriggeredError +$errorCode @".$_SERVER["REQUEST_URI"]." #$errorMsg [".date("Y/m/d G:i:s")."]";
 		log_SysEvent($xmsg,3);
-		return LogDB::singleton()->log_ErrorEvent($errorCode,$errorMsg,$errorLog);
+		return LogDB::singleton()->log_ErrorEvent($errorCode,$errorMsg,$errorLog,$source);
 	}
 	//$priority= Integer :: Lower The Better
 	function log_SystemEvent($logData, $codeType="500", $priority=2, $module=null, $source=null) {
-		$xmsg="TriggeredError +$codeType @".$_SERVER["QUERY_STRING"]." #$logData [".date("Y/m/d G:i:s")."]";
+		$xmsg="TriggeredError +$codeType @".$_SERVER["REQUEST_URI"]." #$logData [".date("Y/m/d G:i:s")."]";
 		log_SysEvent($xmsg,1);
 		return LogDB::singleton()->log_SystemEvent($logData,$codeType, $priority, $module, $source);
 	}
 	//$priority= Integer :: Lower The Better
 	function log_ActivityEvent($logData, $codeType="500", $priority=2, $module=null, $source=null) {
-		$xmsg="TriggeredError +$codeType @".$_SERVER["QUERY_STRING"]." #$logData [".date("Y/m/d G:i:s")."]";
+		$xmsg="TriggeredError +$codeType @".$_SERVER["REQUEST_URI"]." #$logData [".date("Y/m/d G:i:s")."]";
 		log_SysEvent($xmsg,2);
 		return LogDB::singleton()->log_ActivityEvent($logData,$codeType, $priority, $module, $source);
 	}
@@ -192,12 +192,17 @@ class LogDB {
 		return true;
 	}
 	
-	public function log_ErrorEvent($errorCode,$errorMsg=null,$errorLog="",$source=null) {
+	public function log_ErrorEvent($errorCode,$errorMsg=null,$errorLog=null,$source=null) {
 		if(LOG_EVENTS_ERROR=="false") return true;
 		if(in_array($errorCode,LogDB::$noErr)) {
 			return false;
 		}
-		
+		if($source==null && isset($_GET['page'])) {
+			$source=$_GET['page'];
+		}
+		if($errorLog==null) {
+			$errorLog=$_SERVER['REQUEST_URI'];
+		}
 		if($errorMsg==null) {
 			include ROOT."config/errors.php";
 			if(array_key_exists($errorCode,$error_codes)) {
@@ -215,12 +220,13 @@ class LogDB {
 		
 		$trace=debug_backtrace();
 		$caller=array_shift($trace);
+		$infoData="";
 		
 		ob_start();
 		var_dump($caller);
 		$infoData=ob_get_contents();
 		$infoData=str_replace("\"","'",$infoData);
-		ob_clean();
+		ob_end_clean();
 		
 		$errorLog=str_replace("\"","'",$errorLog);
 		

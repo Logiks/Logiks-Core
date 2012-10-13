@@ -14,8 +14,9 @@ if(!function_exists('loadModule')) {
 		global $js,$css,$ling,$cache,$templates;
 		if(strlen($module)<=0) return;
 		global $modulespath;
+		
 		if(defined("APPS_PLUGINS_FOLDER")) {
-			$p=BASEPATH . APPS_PLUGINS_FOLDER."modules/";
+			$p=BASEPATH.APPS_PLUGINS_FOLDER."modules/";
 			if(file_exists(ROOT.$p)) {
 				if(!in_array($p,$modulespath)) array_push($modulespath, $p);
 			}
@@ -47,10 +48,10 @@ if(!function_exists('loadModule')) {
 			if(MASTER_DEBUG_MODE=='true') trigger_error("Module Not Found :: " . $module);
 		}
 	}
-	function loadModuleLib($module,$file) {		
+	function loadModuleLib($module,$file) {
 		$f=checkModule($module);
 		if(strlen($f)>0) {
-			$f=dirname($f)."/$file.php";
+			$f=dirname($f)."/{$file}.php";
 			if(file_exists($f)) {
 				include $f;
 				return true;
@@ -58,17 +59,7 @@ if(!function_exists('loadModule')) {
 		}
 		return false;
 	}
-	function loadModuleAPI($module) {
-		$f=checkModule($module);
-		if(strlen($f)>0) {
-			$f=dirname($f)."/api.php";
-			if(file_exists($f)) {
-				include $f;
-				return true;
-			}
-		}
-		return false;
-	}
+	
 	function checkModule($module) {
 		if(strlen($module)<=0) return false;
 		global $modulespath;

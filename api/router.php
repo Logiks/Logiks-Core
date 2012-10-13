@@ -17,7 +17,7 @@ if(file_exists(APPROOT)) {
 		trigger_ForbiddenError("Site <b>'$site'</b> Has Not Yet Been Activated.");
 		exit();
 	}
-	LoadConfigFile($apps_cfg);
+	LoadConfigFile($apps_cfg,true);
 	
 	if(defined("RELINK") && strlen(RELINK)>0) {
 		$relink=generatePageRequest("","",RELINK);

@@ -11,6 +11,34 @@ if(!function_exists('loadMedia')) {
 		global $css;
 		$css->loadTheme($theme);
 	}
+	function loadAllMedia($media,$relativeOnly=false) {
+		if(strlen($media)<=0) return "";
+		$linkedApps=getConfig("LINKED_APPS");
+		if(strlen($linkedApps)<=0) return "";
+		$linkedApps=explode(",",$linkedApps);
+		
+		global $mediaPaths;
+		if(count($mediaPaths)<=0)
+			$mediaPaths=array("userdata/","media/","");
+		
+		foreach($linkedApps as $app) {
+			$appDir=APPS_FOLDER.$app."/";
+			if(is_dir(ROOT.$appDir)) {
+				foreach($mediaPaths as $mp) {
+					$f=$appDir.$mp.$media;
+					if(file_exists(ROOT.$f)) {
+						if(getConfig("FULL_MEDIA_PATH")=="true" && !$relativeOnly)
+							return SiteLocation.$f;
+						else
+							return $f;
+					}
+				}
+				
+			}
+		}
+		
+		return loadMedia($media,$relativeOnly);
+	}
 	function loadMedia($name,$relativeOnly=false) {
 		if(strlen($name)<=0) return "";
 		$paths=array();

@@ -116,4 +116,27 @@
 	padding:0px;
 }
 
+/*List Forms*/
+ul.formTable {
+	list-style:none;
+	padding:10px;
+}
+ul.formTable>li {
+	list-style:none;
+}
+ul.formTable>li.nameLI{
+	font-weight:bold;
+}
+ul.formTable>li.inputLI{
+	padding-left:20px;
+	margin-bottom:5px;
+}
+ul.formTable>li.helpLI{
+	text-align:left;
+	font-weight:normal;
+	font-size:11px;
+	padding-left:10%;
+	margin-top:-5px;margin-bottom:5px;
+	color:#555;
+}
 .postselect,.onlyprint {display:none}

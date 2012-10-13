@@ -229,7 +229,8 @@ if(!function_exists("printHTMLPageHeader")) {
 		} elseif(strpos($title,")")>=2) {
 			$title=eval("return $title;");
 		}
-		$meta['title']=$title;
+		$title=str_replace("/"," ",$title);
+		$meta['title']=ucwords($title);
 		return $meta;
 	}
 }

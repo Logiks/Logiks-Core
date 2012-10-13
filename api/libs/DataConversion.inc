@@ -1,10 +1,21 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
+/*
+ * This class is used by various other classes that intend to 
+ * embed data/scripts/etc into outgoing php.
+ * 
+ * eg> jsphp, cssphp
+ * */
+/*
+ * This Class : DataCnversion Is Used To Convert Data From Given Source/Input/Form To Required O/P Form
+ * Mainly Used for Creating Components
+ * Supported Formats :: Array/XML/JSON/CSV/FormFormat //SQL/dbTbl-#DataID/
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 24/02/2012
+ * Version: 1.0
+ */
+include_once "xml2array.inc";
 
-include_once "libs/xml2array.inc";
-//DataCnversion Is Used To Convert Data From Given Source/Input/Form To Required O/P Form
-//Mainly Used for Creating Components
-//Supported Formats :: Array/XML/JSON/CSV/FormFormat //SQL/dbTbl-#DataID/
 class DataConversion {
 	private $data="";
 	private $format="";

@@ -4,10 +4,16 @@ $classpath=array(
 	"api/libs/",
 	"api/helpers/"
 	);
-$helperpath=array(	
+$helperpath=array(
+	"api/helpers/"
 	);
-$modulespath=array(	
+$modulespath=array(
 	);
 $widgetspath=array(	
+	);
+$mediaPaths=array(
+	"userdata/",
+	"media/",
+	""
 	);
 ?>

@@ -22,32 +22,6 @@ if(!function_exists("checkUserRoles")) {
 		}
 		return false;
 	}
-	
-	function checkServiceRoles($path,$autoExit=true) {
-		$pdir=$path."config/.permissions/";
-		if(file_exists($pdir."services.php") && is_dir($pdir)) {
-			include $pdir."services.php";
-			if(isset($roles[$_REQUEST['scmd']])) {
-				checkServiceSession($autoExit);
-				$a=$roles[$_REQUEST['scmd']];
-				if(is_array($a)) {
-					if(in_array("*",$a)) {
-						return true;
-					} elseif(in_array($_SESSION["SESS_PRIVILEGE_NAME"],$a)) {
-						return true;
-					}
-				} else {
-					if($a=="*") {
-						return true;
-					} elseif(strpos("#".$roles[$_REQUEST['scmd']],$_SESSION["SESS_PRIVILEGE_NAME"].",")>0) {
-						return true;
-					} 
-				}
-				return false;
-			}
-		}
-		return true;
-	}
 }
 class RoleModel {
 	public static function registerRole($module,$activity,$category) {
@@ -88,7 +62,7 @@ class RoleModel {
 		}
 	}
 	function fixRoleModel() {
-		
+		//ToDoS
 	}
 }
 ?>

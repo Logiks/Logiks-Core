@@ -18,6 +18,8 @@ class Database {
 	private $dml=array("INSERT","UPDATE","DELETE","CALL");
 	private $blockedStmnts=array();
 	
+	private static $qCount=0;
+	
 	public function __construct($driver=null) {
 		if($driver==null) $this->driver=$GLOBALS['DBCONFIG']["DB_DRIVER"];
 		else $this->driver=$driver;
@@ -125,7 +127,10 @@ class Database {
 		}
 		return $tblName;
 	}
-	
+	//Returns a count of no of queries that has been run in this request;
+	public static function getQCount() {
+		return Database::$qCount;
+	}
 	//All Query Functions
 	public function executeQuery($sql) {
 		if($this->logConnection) {
@@ -145,6 +150,7 @@ class Database {
 			if(class_exists("LogDB")) {
 				LogDB::singleton()->log_SQLEvent($sql,null,$this->getdbName());
 			}
+			Database::$qCount++;
 			if(MASTER_DEBUG_MODE=="true") {
 				$r=mysql_query($sql, $this->link);// or die(mysql_error($this->link));
 				return $r;
@@ -279,7 +285,9 @@ class Database {
 		
 		return $pKey;
 	}
-	
+	public function getFieldType($resultSet, $colIndex) {
+		return mysql_field_type($resultSet, $colIndex);
+	}
 	public function isTablesAvailable($tables) {
 		if(is_array($tables)) {
 			$sql=$this->_list_tablesQ($this->dbName);
@@ -319,10 +327,10 @@ class Database {
 		return mysql_fetch_field($resultSet,$offSet);
 	}
 	
-	public function fetchData($resultSet,$format="assoc") {
+	public function fetchData($resultSet,$format="assoc",$result_type=MYSQL_BOTH) {
 		$format=strtolower($format);
 		if($format=="array") {
-			return mysql_fetch_array($resultSet);
+			return mysql_fetch_array($resultSet,$result_type);
 		} else if($format=="assoc") {
 			return mysql_fetch_assoc($resultSet);
 		} else if($format=="field") {
@@ -345,6 +353,46 @@ class Database {
 			$out[sizeOf($out)]=$r;
 		}
 		return $out;
+	}
+	public function fetchColumn($table,$colName,$where="",$single=false) {
+		$sql="select $colName from $table";
+		if(is_array($where)) {
+			$s=" WHERE";
+			foreach($where as $a=>$b) {
+				$s.=" $a='$b'";
+				$s.=" AND";
+			}
+			$s=substr($s,0,strlen($s)-3);
+			$sql.=$s;
+		} elseif(strlen($where)>0) {
+			$sql.=" WHERE " . $where;
+		} else {
+			$sql.=" WHERE length($colName)>0";
+		}
+		$result=$this->executeQuery($sql);
+		$ans=array();
+		if($result){
+			if($this->recordCount($result)>0){
+				while($record=$this->fetchData($result)){
+					array_push($ans,$record[$colName]);
+				}
+			}
+		}
+		$this->freeResult($result);
+		
+		if($single) {
+			if(count($ans)<=0) {
+				return "";
+			} else {
+				return $ans[0];
+			}
+		} else {
+			if(count($ans)<=0) {
+				return array();
+			} else {
+				return $ans;
+			}
+		}
 	}
 	
 	public function cloneRow($table,$where) {

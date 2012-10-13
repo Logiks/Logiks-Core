@@ -6,10 +6,11 @@ function analyzeQuery() {
 	$uri=$_SERVER["REQUEST_URI"];
 	$relUri=substr($uri,strlen($relRoot));
 	
-	$qUri=strstr($relUri,"?");
-	if(strlen($qUri)>0) {
-		$relUri=strstr($relUri,"?",-1);
-	}
+	$qr=explode("?",$relUri);
+	if(!isset($qr[1])) $qr[1]="";
+	$relUri=$qr[0];
+	$qUri=$qr[1];
+	
 	$comps=explode("/",$relUri);
 	
 	if(isset($comps[0])) {
@@ -37,5 +38,15 @@ function debugQuery() {
 }
 analyzeQuery();
 //debugQuery();
-include "index.php";
+if($_REQUEST['site']=="services") {
+	$pg=str_replace("/",".",$_REQUEST['page']);
+	$_REQUEST['scmd']=$pg;
+	unset($_REQUEST['site']);
+	unset($_SESSION['LGKS_SESS_SITE']);
+	unset($_COOKIE['LGKS_SESS_SITE']);
+	chdir("services");
+	include "index.php";
+} else {
+	include "index.php";
+}
 ?>

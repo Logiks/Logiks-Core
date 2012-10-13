@@ -1,5 +1,5 @@
 <?php
-if(!defined('ROOT')) exit('No direct script access allowed');
+if (!defined('ROOT')) exit('No direct script access allowed');
 
 if(isset($_REQUEST["bg"])) $bg=$_REQUEST["bg"]; else $bg="blank.gif";
 ///var/www/projects/logiks3/misc/themes/default/images/bg

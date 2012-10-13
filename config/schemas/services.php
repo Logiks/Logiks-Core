@@ -27,10 +27,20 @@ $cfgSchema["SERVICE_SALT"]=array(
 		"attrs"=>"readonly",
 		"class"=>"readonly",
 	);
+$cfgSchema["DEFAULT_ACCESS_CONTROL"]=array(
+		"type"=>"list",
+		"values"=>array(
+			"public"=>"Allow Seamless Access",
+			"apikey"=>"Allow Services With API Keys Only",
+			),
+		"tips"=>"Default Service Access Mode For New Services."
+	);
+	
 $cfgSchema["CFG_GROUPS"]=array(
 		"Developer API Keys"=>array("API_KEY_ENGINE","API_KEY","DEFAULT_ERROR_MESSAGE"),
 		"Debug/Error Handling"=>array("SERVICE_ERROR_HANDLER","SERVICE_DEBUG","SERVICE_DEBUG_TRACE","SERVICE_DEBUG_MESSAGE",),
-		"Security And Locking"=>array("SUPPORTED_COMMAND_FORMATS","PRECLEAN_SERVICE_REQUEST","HTTP_REFERER_LOCK","HOST_LOCK","SITE_LOCK","SERVICE_SALT"),
+		"Security"=>array("SUPPORTED_COMMAND_FORMATS","PRECLEAN_SERVICE_REQUEST","ALLOW_APPS_LOCAL_SERVICES","DEFAULT_ACCESS_CONTROL"),
+		"Host Locking"=>array("HTTP_REFERER_LOCK","HOST_LOCK","SITE_LOCK","SERVICE_SALT"),
 		"Others"=>array()
 	);
 

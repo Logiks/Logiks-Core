@@ -23,7 +23,7 @@ if(!function_exists("getRelativePath")) {
 			return getRelativePath($file);
 		} else return "";
 	}
-	function getConfigPath($file, $local=true) {
+	function getConfigPath($local=true) {
 		if($local) {
 			return APPROOT.APPS_CONFIG_FOLDER;
 		} else {

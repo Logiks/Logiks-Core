@@ -8,5 +8,8 @@ $arr["SITE"]=SITENAME;
 $arr["SERVER"]=$_SERVER["HTTP_HOST"];
 $arr["SERVER SOFTWARE"]=$_SERVER["SERVER_SOFTWARE"];
 
-echo json_encode($arr);
+//$arr["HTTPS"]=$_SERVER["HTTPS"];
+//printArray($_SERVER);
+
+printServiceMsg($arr);
 ?>

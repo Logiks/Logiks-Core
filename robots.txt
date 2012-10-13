@@ -4,8 +4,7 @@ Disallow: /apps
 Disallow: /config
 Disallow: /media
 Disallow: /misc
-Disallow: /modules
+Disallow: /plugins
 Disallow: /services
 Disallow: /tmp
 Disallow: /xtras
-

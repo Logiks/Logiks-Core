@@ -1,16 +1,11 @@
 <?php
 require_once ('api/initialize.php');
 
-if(isset($_SESSION['SESS_USER_ID']) && isset($_SESSION['SESS_PRIVILEGE_ID']) && isset($_SESSION['SESS_ACCESS_ID']) && 
-			isset($_SESSION['SESS_LOGIN_SITE']) && isset($_SESSION['SESS_TOKEN'])) {
+if(session_check()  && isset($_SESSION['SESS_USER_ID']) && $_SESSION['SESS_LOGIN_SITE']!="guest") {
 	header("location: index.php?site=".$_SESSION['SESS_LOGIN_SITE']);
 }
 
 LoadConfigFile(ROOT . "config/login.cfg");
-
-if(session_check() && isset($_SESSION['SESS_USER_ID'])) {
-	header("location: index.php?site=".SITENAME);
-}
 
 if(isset($_REQUEST['errormsg'])) $errormsg=$_REQUEST['errormsg'];
 if(isset($_SESSION['SESS_ERROR_MSG'])) {

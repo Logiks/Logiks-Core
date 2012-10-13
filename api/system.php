@@ -18,7 +18,7 @@ if(!function_exists("createTimeStamp")) {
 	function getLocation($refs) {
 		$x=SiteLocation . "/" .str_replace(ROOT,"",$refs);
 		return $x;
-	}	
+	}
 	function createTimeStamp($encoded=true) {
 		if($encoded) {
 			$s=date(TIMESTAMP_FORMAT).microtime();
@@ -53,57 +53,6 @@ if(!function_exists("createTimeStamp")) {
 			}
 		}
 		return $appdbLink;
-	}
-	function getUserList($cols=null, $where="", $orderBy="", $limit="") {
-		if($cols==null || sizeOf($cols)==0) {
-			$cols=array("userid", "privilege", "access", "name", "email", "address", "region", "country", "zipcode", "mobile");
-		}
-		$arr=array();
-		$sql="SELECT userid,privilege,access,name,email,address,region,country,zipcode,mobile FROM lgks_users WHERE site='".SITENAME."' and blocked='false'";
-		if(strlen($where)>0) {
-			$sql.=" and ($where)";
-		}
-		if(strlen($orderBy)>0) {
-			$sql.=" order by $orderBy";
-		}
-		if(strlen($limit)>0) {
-			$sql.=" limit $limit";
-		}
-		$res=_db(true)->executeQuery($sql);
-		if($res) {
-			while($record=_db()->fetchData($res)) {
-				if(sizeOf($cols)==sizeOf($record)) {
-					$arr[sizeOf($arr)]=$record;
-				} else {
-					$arr[sizeOf($arr)]=array();
-					foreach($cols as $a=>$b) {
-						$arr[sizeOf($arr)][$b]=$record[$b];
-					}
-				}
-			}
-			_db(true)->freeResult($sql);
-		}
-		return $arr;
-	}
-	function checkUserID($userid,$site=SITENAME) {
-		if($userid=="root") return true;
-		$sql="SELECT sites FROM "._dbTable("access",true)." WHERE id=(SELECT access from "._dbTable("users",true)." WHERE userid='{$userid}' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())) AND blocked='false'";
-		//$sql="SELECT a.site,a.access,a.privilege,b.sites FROM "._dbTable("users",true)." as a,"._dbTable("access",true)." as b";
-		//$sql.=" WHERE a.userid='{$userid}' AND a.blocked='false' AND b.blocked='false' AND a.access=b.id AND (a.expires IS NULL OR a.expires='0000-00-00' OR a.expires > now())";
-		$res=_db(true)->executeQuery($sql);
-		if($res) {
-			$data=_dbData($res);
-			_db(true)->freeResult($res);
-			if(isset($data[0]['sites'])) {
-				$sites=$data[0]['sites'];
-				if($sites=="*") return true;
-				$sites=explode(",",$sites);
-				if(in_array($site,$sites)) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 	
 	//Initializes The User Names, etc...

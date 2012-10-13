@@ -17,12 +17,6 @@ class ServiceController {
 			printErr('WrongFormat');
 			exit();
 		}
-		$a=checkServiceRoles(APPROOT);
-		if($a) return true;
-		else {
-			printErr('AccessDenial');
-			exit();
-		}
 	}
 	function preProcessQuery() {
 		global $cmdFormat;
@@ -33,7 +27,6 @@ class ServiceController {
 				printErr('WrongFormat');
 				exit();
 			}
-			
 			$query['scmd']=$scmd;
 		} else {
 			printErr('WrongFormat');
@@ -70,7 +63,7 @@ class ServiceController {
 		} else $encoded='none';
 		
 		$scmd=$this->processEncoded($scmd, $encoded);
-				
+		
 		$scmd=str_replace('/',' ',$scmd);
 		$scmd=strip_tags($scmd);
 		$scmd=stripslashes($scmd);
@@ -82,30 +75,18 @@ class ServiceController {
 		
 		$sarr=explode(".",$scmd);
 		
-		/*if(count($sarr)>1) {
-			if($sarr[0]!=SITENAME) {
-			}
-		}*/
-		
 		$scmd=str_replace('.','/',$scmd);
 		
 		$query['scmd']=$scmd;
 		if(PRECLEAN_SERVICE_REQUEST=="true") {
-			//TODO
-			/*foreach($_REQUEST as $a=>$b) {
-				if(in_array($a,$this->serviceCmds)) continue;
-				//if($encoded!='none') $_REQUEST[$a]=$this->processEncoded($b, $encoded);
-				$scmd=strip_tags($scmd);
-				$scmd=stripslashes($scmd);
-				$scmd=str_replace('/',' ',$scmd);
-				$str = @trim($str);
-				if(get_magic_quotes_gpc()) {
-					$str = stripslashes($str);
-				}
-				//$str=mysql_real_escape_string($str);
-			}*/			
+			foreach($_GET as $a=>$b) {
+				$b=strip_tags($b);
+				$b=stripslashes($b);
+				$b=mysql_real_escape_string($b);
+				$_GET[$a]=$b;
+				$_REQUEST[$a]=$b;
+			}		
 		}
-		
 		return $query;
 	}
 	function executeRequest($request) {
@@ -147,6 +128,6 @@ class ServiceController {
 			$cmd=base64_decode($cmd);
 		}
 		return $cmd;
-	}	
+	}
 }
 ?>

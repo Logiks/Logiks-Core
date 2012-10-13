@@ -4,9 +4,12 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 //Handles Printing To Client in formats==select,table,list,json
 
 if(!function_exists("printFormattedArray")) {
-	function printFormattedArray($arr,$autoTitle=true) {
-		$format="select";
-		if(isset($_REQUEST["format"])) $format=$_REQUEST["format"];
+	function printFormattedArray($arr,$autoTitle=true,$format=null) {
+		if($format==null) {
+			if(isset($_REQUEST["format"])) $format=$_REQUEST["format"];
+			else $format="select";
+		}
+		
 		$format=strtolower($format);
 		//HTML Format
 		if($format=="select") {
@@ -61,12 +64,27 @@ if(!function_exists("printFormattedArray")) {
 			}
 		} 
 		//TEXT Format
+		elseif($format=="text") {
+			foreach($arr as $a=>$b) {
+				if(is_array($b)) {
+					printFormattedArray($b);
+				} else {
+					$sx=strip_tags("$a=$b");
+					echo "$sx\n";
+				}
+			}
+		}
 		//JSON Format
 		elseif($format=="json") {
 			echo json_encode($arr);
 		} 
 		//XML Format
-		
+		elseif($format=="xml") {
+			$arr=array_flip($arr);
+			$xml = new SimpleXMLElement('<service/>');
+			array_walk_recursive($arr, array ($xml, 'addChild'));
+			echo $xml->asXML();
+		} 
 		else {
 			printArray($arr);
 		}
@@ -98,6 +116,22 @@ if(!function_exists("printArray")) {
 		echo "<pre>";
 		print_r($arr);
 		echo "</pre><br/>";
+	}
+}
+if(!function_exists("arrayToXML")) {
+	function arrayToXML($arr, &$xml_node) {
+		foreach($arr as $key => $value) {
+			if(is_array($value)) {
+				if(!is_numeric($key)){
+					$subnode = $xml_node->addChild("$key");
+					arrayToXML($value, $subnode);
+				} else {
+					arrayToXML($value, $xml_node);
+				}
+			} else {
+				$xml_node->addChild("$key","$value");
+			}
+		}
 	}
 }
 ?>

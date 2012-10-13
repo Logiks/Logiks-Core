@@ -9,7 +9,7 @@ class APIValidation {
 	}
 	public function checkAPIKey($apiKey,$site) {
 		$a=false;
-		if(strlen($_SERVER["HTTP_REFERER"])!=0) {
+		if(isset($_SERVER["HTTP_REFERER"]) && strlen($_SERVER["HTTP_REFERER"])!=0) {
 			$httpRef=parseHTTPReferer();
 			if($httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) {
 				$a=true;
@@ -24,8 +24,6 @@ class APIValidation {
 			if(strlen(API_KEY)>0) {
 				if(isset($apiKey) && API_KEY==$apiKey) {
 					$a=true;
-				} else {
-					$a=false;
 				}			
 			} else {
 				$a=true;

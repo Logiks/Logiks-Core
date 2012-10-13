@@ -15,11 +15,12 @@ if(ALLOW_LOGIN_RELINKING=="true" || ALLOW_LOGIN_RELINKING) {
 	$onsuccess="";
 	$onerror="";
 }
-
+/*
+CLEAR_OLD_SESSION=true
 @session_start();
 session_destroy();
 session_start();
-
+*/
 $dbLink=getSysDBLink();
 $dbLogLink=LogDB::singleton()->getLogDBCon();
 

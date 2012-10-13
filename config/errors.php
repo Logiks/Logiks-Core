@@ -64,6 +64,7 @@ $services_error_codes=array (
 		"404"=>"Sorry, Requested URI Not Available",
 		"CrossSite"=>"CrossSite Request With Out Key Not Allowed",
 		"*"=>"Unknown Error",
+		"Bug"=>"OOOOPs!, Hit A Bug ?",
 	);
 function phpErrorLevelNames($errLevel) {
     switch($errLevel) {

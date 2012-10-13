@@ -1,14 +1,28 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
-
+//Functions ::  session_check,isAdminSite,user_admin_check,checkUserSiteAccess,isLinkAccessable
+// 				checkDevMode, checkBlacklist,checkSiteMode
 if(!function_exists("session_check")) {
 	function session_check($redirect=false,$showErrorMsg=false) {
-		if(!defined("SITENAME")) return false;
+		if(!defined("SITENAME")) {
+			if($redirect) {
+				$relink=SiteLocation . "login.php?site=".SITENAME;
+				redirectTo($relink,"SESSION Expired. Going To Login Page");
+				exit();
+			} else {
+				if($showErrorMsg) {
+					trigger_ForbiddenError("Accessing Forbidden Page");
+				}
+				return false;
+			}
+		}
 		if(isset($_SESSION['SESS_USER_ID']) && isset($_SESSION['SESS_PRIVILEGE_ID']) && isset($_SESSION['SESS_TOKEN'])
 			&& isset($_SESSION['SESS_LOGIN_SITE']) && isset($_SESSION['SESS_ACCESS_SITES'])
 			&& isset($_SESSION['SESS_ACCESS_ID'])) {
 			
-			if(in_array(SITENAME,$_SESSION['SESS_ACCESS_SITES'])) return true;
+			$siteAccessArr=$_SESSION['SESS_ACCESS_SITES'];
+			if(!is_array($siteAccessArr)) $siteAccessArr=explode(",",$siteAccessArr);
+			if(in_array(SITENAME,$siteAccessArr)) return true;
 		}
 		if($redirect) {
 			$relink=SiteLocation . "login.php?site=".SITENAME;
@@ -21,27 +35,6 @@ if(!function_exists("session_check")) {
 			return false;
 		}
 		sessionExpired();
-	}
-	function user_admin_check($redirect=false,$msg="This Is System Administrator Only Page.") {
-		$a=session_check(false);
-		if($a) {
-			if(!defined("ADMIN_APPSITES")) {
-				$f=ROOT.CFG_FOLDER."lists/adminsites.lst";
-				$f=file_get_contents($f);
-				$f=explode("\n",$f);
-				if(strlen($f[count($f)-1])==0) unset($f[count($f)-1]);
-				define("ADMIN_APPSITES",implode(",",$f));
-			}
-			$acp=explode(",",ADMIN_APPSITES);
-			if(!in_array(SITENAME,$acp)) {
-				if($redirect) trigger_ForbiddenError($msg);
-				return false;
-			}
-			return true;
-		} else {
-			if($redirect) trigger_ForbiddenError($msg);
-			return false;
-		}		
 	}
 	function isAdminSite($autoExit=true) {
 		if(!defined("ADMIN_APPSITES")) {
@@ -56,11 +49,30 @@ if(!function_exists("session_check")) {
 		if(in_array($site, $acp)) return true;
 		else {
 			if($autoExit) {
-				printErr("AccessDenial","Requested Site Is Forbidden To Current User.");
+				if(function_exists("printErr"))	{
+					printErr("AccessDenial","Requested Site Is Forbidden To Current User.");
+				} else {
+					dispErrMessage("Requested Site Is Forbidden To Current User.");
+				}
 				exit();
 			}
 			return false;
 		}
+	}
+	function user_admin_check($redirect=false,$msg="This Is System Administrator Only Page.") {
+		$a=session_check(false);
+		if($a) {
+			isAdminSite();
+			$acp=$_SESSION['SESS_ACCESS_SITES'];
+			if(!in_array(SITENAME,$acp)) {
+				if($redirect) trigger_ForbiddenError($msg);
+				return false;
+			}
+			return true;
+		} else {
+			if($redirect) trigger_ForbiddenError($msg);
+			return false;
+		}		
 	}
 	function checkUserSiteAccess($site=null,$autoExit=true) {
 		if($site==null) $site=SITENAME;
@@ -70,42 +82,16 @@ if(!function_exists("session_check")) {
 		if(in_array($site, $_SESSION["SESS_ACCESS_SITES"])) return true;
 		else {
 			if($autoExit) {
-				printErr("AccessDenial","Requested Site Is Forbidden To Current User.");
+				if(function_exists("printErr"))	{
+					printErr("AccessDenial","Requested Site Is Forbidden To Current User.");
+				} else {
+					dispErrMessage("Requested Site Is Forbidden To Current User.");
+				}
 				exit();
 			}
 			return false;
 		}
 		return false;
-	}
-	function getUserInfo() {
-		$arr=array();
-		
-		if(isset($_SESSION['SESS_USER_ID'])) $arr["SESS_USER_ID"]=$_SESSION['SESS_USER_ID']; else $arr["SESS_USER_ID"]="Guest";
-		if(isset($_SESSION['SESS_PRIVILEGE_ID'])) $arr["SESS_PRIVILEGE_ID"]=$_SESSION['SESS_PRIVILEGE_ID']; else $arr["SESS_PRIVILEGE_ID"]="-1";
-		if(isset($_SESSION['SESS_ACCESS_ID'])) $arr["SESS_ACCESS_ID"]=$_SESSION['SESS_ACCESS_ID']; else $arr["SESS_ACCESS_ID"]="-1";
-		if(isset($_SESSION['SESS_PRIVILEGE_NAME'])) $arr["SESS_PRIVILEGE_NAME"]=$_SESSION['SESS_PRIVILEGE_NAME']; else $arr["SESS_PRIVILEGE_NAME"]="guest";
-		if(isset($_SESSION['SESS_ACCESS_NAME'])) $arr["SESS_ACCESS_NAME"]=$_SESSION['SESS_ACCESS_NAME']; else $arr["SESS_ACCESS_NAME"]="guest";
-		if(isset($_SESSION['SESS_ACCESS_SITES'])) $arr["SESS_ACCESS_SITES"]=$_SESSION['SESS_ACCESS_SITES']; else $arr["SESS_ACCESS_SITES"]="*";
-		if(isset($_SESSION['SESS_USER_NAME'])) $arr["SESS_USER_NAME"]=$_SESSION['SESS_USER_NAME']; else $arr["SESS_USER_NAME"]="Guest";
-		if(isset($_SESSION['SESS_USER_EMAIL'])) $arr["SESS_USER_EMAIL"]=$_SESSION['SESS_USER_EMAIL']; else $arr["SESS_USER_EMAIL"]="";
-		if(isset($_SESSION['SESS_USER_CELL'])) $arr["SESS_USER_CELL"]=$_SESSION['SESS_USER_CELL']; else $arr["SESS_USER_CELL"]="";
-		if(isset($_SESSION['SESS_LOGIN_SITE'])) $arr["SESS_LOGIN_SITE"]=$_SESSION['SESS_LOGIN_SITE']; else $arr["SESS_LOGIN_SITE"]="guest";
-		if(isset($_SESSION['SESS_TOKEN'])) $arr["SESS_TOKEN"]=$_SESSION['SESS_TOKEN']; else $arr["SESS_TOKEN"]=session_id();
-
-		return $arr;
-	}
-	function getUserID() {
-		if(isset($_SESSION['SESS_USER_ID'])){
-			$user=$_SESSION['SESS_USER_ID'];
-		} else {
-			$user="Guest";
-		}
-		if(isset($_REQUEST['userid'])){
-			$userid=$_REQUEST['userid'];
-		} else {
-			$userid=$user;
-		}
-		return $userid;
 	}
 	function checkDevMode($site=null) {
 		if($site==null) $site=SITENAME;
@@ -117,28 +103,6 @@ if(!function_exists("session_check")) {
 				__initDevMode($ips);
 			}
 		}
-	}
-	function checkBlacklist($site=null) {
-		if($site==null) $site=SITENAME;
-		$client=$_SERVER["REMOTE_ADDR"];
-		$f=ROOT.CACHE_IPLIST_FOLDER."{$site}/blacklist.dat";
-		
-		if(!file_exists($f)) {
-			Security::generateIPListCache("blacklist");
-		} elseif((time()-filectime($f))>PERMISSION_CACHE_PERIOD) {
-			Security::generateIPListCache("blacklist");
-		}
-		if(!file_exists($f)) {
-			dispErrMessage("Security Inconsistancy Found. Please Contact Admin.");
-			exit();
-		}
-		$data=file_get_contents($f);
-		$ipArr=explode("\n",$data);
-		if(strlen($ipArr[count($ipArr)-1])==0) unset($ipArr[count($ipArr)-1]);
-		if(in_array($client,$ipArr)) {
-			return true;
-		}
-		return false;
 	}
 	function checkSiteMode($site=null) {
 		if(!defined("PUBLISH_MODE")) return false;
@@ -261,16 +225,30 @@ if(!function_exists("session_check")) {
 			return false;
 		}
 	}
-	
+	function checkBlacklist($site=null) {
+		if($site==null) $site=SITENAME;
+		$client=$_SERVER["REMOTE_ADDR"];
+		$f=ROOT.CACHE_IPLIST_FOLDER."{$site}/blacklist.dat";
+		
+		if(!file_exists($f)) {
+			Security::generateIPListCache("blacklist");
+		} elseif((time()-filectime($f))>PERMISSION_CACHE_PERIOD) {
+			Security::generateIPListCache("blacklist");
+		}
+		if(!file_exists($f)) {
+			dispErrMessage("Security Inconsistancy Found. Please Contact Admin.");
+			exit();
+		}
+		$data=file_get_contents($f);
+		$ipArr=explode("\n",$data);
+		if(strlen($ipArr[count($ipArr)-1])==0) unset($ipArr[count($ipArr)-1]);
+		if(in_array($client,$ipArr)) {
+			return true;
+		}
+		return false;
+	}
 }
 class Security {
-	public static function isLocalhost() {
-		$client=$_SERVER['REMOTE_ADDR'];
-		$server=$_SERVER['SERVER_ADDR'];
-		if($client==$server) return true;
-		else return false;
-	}
-	
 	public static function isBlacklisted($dbLink=null,$site) {
 		if($dbLink==null) $dbLink=getSysDBLink();
 		//$q="SELECT client, type FROM lgks_blacklist WHERE client='".$userid."' OR client='".."'";

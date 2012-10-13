@@ -34,7 +34,7 @@ Options -Multiviews
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteCond %{REQUEST_FILENAME} !-l
 
-	RewriteRule .* seo.php [L]	
+	RewriteRule .* vpath.php [L] 
 	#RewriteRule ^([a-zA-z]+)[/]*([a-zA-z/]*).*$ index.php?site=$1&page=$2&%{QUERY_STRING}
 </IfModule>
 

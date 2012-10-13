@@ -28,9 +28,11 @@ class SimpleJSONDB {
 			$this->dataDir=APPROOT.APPS_MISC_FOLDER."jsondb/";
 		}
 		if(!is_dir($this->dataDir)) {
-			if(!mkdir($this->dataDir,0666,true)) {
+			if(!mkdir($this->dataDir,0777,true)) {
 				$this->dataDir=null;
 				$this->error="Data Directory Could Not Be Found/Created.";
+			} else {
+				chmod($this->dataDir,0777);
 			}
 		}
 		$this->reloadNames();
@@ -134,6 +136,22 @@ class SimpleJSONDB {
 		}
 		return false;
 	}
+	public function fetchByKey($name,$key) {
+		if(isset($this->jsonList[$name])) {
+			if($this->jsonList[$name]["data"]==null) {
+				$this->load($name);
+			}
+			$outArr=$this->jsonList[$name]["data"];
+			if(array_key_exists($key,$outArr)) {
+				$outArr=$this->jsonList[$name]["data"][$key];
+				return array($key=>$outArr);
+			} else {
+				$this->add($name);
+				return array();
+			}
+		}
+		return array();
+	}
 	private function commit($name) {
 		if(isset($this->jsonList[$name])) {
 			$file=$this->dataDir.$this->jsonList[$name]["file"];
@@ -146,14 +164,22 @@ class SimpleJSONDB {
 	}
 	public function load($name) {
 		if(isset($this->jsonList[$name])) {
-			$data=file_get_contents($this->dataDir.$this->jsonList[$name]["file"]);
-			if(strlen($data)>2) {
-				$data=json_decode($data,true);
-				$this->jsonList[$name]["data"]=$data;
+			$jsf=$this->dataDir.$this->jsonList[$name]["file"];
+			if(file_exists($jsf)) {
+				$data=file_get_contents($jsf);
+				if(strlen($data)>2) {
+					$data=json_decode($data,true);
+					$this->jsonList[$name]["data"]=$data;
+				} else {
+					$this->jsonList[$name]["data"]=array();
+				}
 			} else {
-				$this->jsonList[$name]["data"]=array();
+				$data=json_encode(array());
+				file_put_contents($jsf,$data);
 			}
 			return true;
+		} else {
+			$this->add($name);
 		}
 		return false;
 	}

@@ -4,43 +4,52 @@ if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 include "APIValidation.inc";
 
 class ServiceSecurity {	
-	function checkSecurity($request) {
-		$scmd=$request['scmd'];
-		$temp=strstr($scmd,".",true);
+	function checkSecurity($request,$serviceCtrlDb) {
+		$cmdCntrls=null;
 		
-		if(strlen($temp)<=0) {
-			return $request;
+		$scmd=$request['scmd'];
+		$scmd=str_replace("/",".",$scmd);
+		
+		if(isset($serviceCtrlDb['SERVICE_ACCESS_CONTROLS']) && isset($serviceCtrlDb['SERVICE_ACCESS_CONTROLS'][$scmd])) {
+			$cmdCntrls=$serviceCtrlDb['SERVICE_ACCESS_CONTROLS'][$scmd];
+		} else {
+			$cmdCntrls=array();
 		}
-		if(!is_dir(ROOT.APPS_FOLDER.$temp)) {
-			return $request;
+		if(!isset($_GET['format']) && isset($cmdCntrls['default_print_format'])) {
+			$_REQUEST['format']=$cmdCntrls['default_print_format'];
 		}
-		//Is A App Command
-		if($temp==SITENAME) {
-			return $request;
-		} elseif(in_array($temp,$_SESSION['SESS_ACCESS_SITES'])) {
-			return $request;
-		} elseif(isAdminSite()) {
-			return $request;
+		if(isset($cmdCntrls['access_control'])) {
+			//access_control :: public,apikey,adminonly,onlogin,privileged
+			if($cmdCntrls['access_control']=="public") {
+				return $request;
+			} elseif($cmdCntrls['access_control']=="apikey") {
+				$this->isRemoteKeyValid(true);
+				$this->checkHTTPReferenceLocks(true);
+			} elseif($cmdCntrls['access_control']=="adminonly") {
+				checkServiceSession();
+				isAdminSite();
+			} elseif($cmdCntrls['access_control']=="onlogin") {
+				checkServiceSession();
+			} elseif($cmdCntrls['access_control']=="none") {
+				return array();
+			}
 		}
-		printErr('AccessDenial',"Requested Service Requires You To Login.<br/>Thank You.");
-		exit();
+		if(DEFAULT_ACCESS_CONTROL=="public")
+			return $request;
+		else
+			return array();
 	}
 	
 	function isBlacklisted($autoQuit=false) {
 		if(isLocalhost()) return false;
+		
+		//$a=Security::isBlacklisted(_db(true),SITENAME);
+		$a=checkBlacklist(SITENAME);
+		
 		$site=SITENAME;
 		$client=$_SERVER['REMOTE_ADDR'];
 		
-		$f=ROOT.CACHE_IPLIST_FOLDER."{$site}/blacklist.dat";
-		$a=false;
-		if(file_exists($f)) {
-			$data=file_get_contents($f);
-			$ipArr=explode("\n",$data);
-			if(strlen($ipArr[count($ipArr)-1])==0) unset($ipArr[count($ipArr)-1]);
-			if(in_array($client,$ipArr)) {
-				$a=true;
-			}
-		}
+		$a=checkBlacklist();
 		if($autoQuit && $a) {
 			printErr("Blacklisted");
 			exit();
@@ -58,8 +67,19 @@ class ServiceSecurity {
 				return $a;
 			}
 		}
-		$api=new APIValidation();		
-		$a=$api->checkAPIKey($_REQUEST['APIKEY'],SITENAME);
+		$a=false;
+		if(API_KEY_ENGINE=="single") {
+			if(strlen(API_KEY)>0) {
+				if(API_KEY==$_REQUEST['APIKEY']) {
+					$a=true;
+				}			
+			} else {
+				$a=true;
+			}
+		} else {
+			$api=new APIValidation();		
+			$a=$api->checkAPIKey($_REQUEST['APIKEY'],SITENAME);
+		}
 		if($autoQuit && !$a) {
 			printErr("CrossSite","Please Obtain A Valid API-Key for accessing this service.");
 			exit();
@@ -97,24 +117,20 @@ class ServiceSecurity {
 	}
 	
 	function cleanSecurityConfigs() {
-		unset($GLOBALS["LocalHostPass"]);
-		unset($GLOBALS["allowNoPath"]);
-		unset($GLOBALS["allowNoPathLocalhost"]);
-		unset($GLOBALS["privateMsg"]);
-		unset($GLOBALS["privateErr"]);
-		unset($GLOBALS["privateAccess"]);
-		unset($GLOBALS["privatePath"]);
-		unset($GLOBALS["noPath"]);
-		unset($GLOBALS["blacklist"]);
+		//To Be Used If Some Security Details Are Involved
 	}
 }
 if(!function_exists("checkServiceSession")) {
+	//This is a single function to check :
+	//User Is Logged In
+	//Site Being Accessed Is Correct
 	function checkServiceSession($autoExit=true) {
+		if(!isset($_REQUEST['site'])) return false;
 		if(isset($_SESSION['SESS_USER_ID']) && isset($_SESSION['SESS_PRIVILEGE_ID']) && isset($_SESSION['SESS_TOKEN']) &&
 			isset($_SESSION['SESS_LOGIN_SITE']) && isset($_SESSION['SESS_ACCESS_SITES'])) {
 				if($_SESSION['SESS_LOGIN_SITE']==$_REQUEST['site']) {
 					return true;
-				} elseif(in_array($_REQUEST['site'],$_SESSION['SESS_ACCESS_SITES'])) {					
+				} elseif(isset($_SESSION['SESS_ACCESS_SITES']) && in_array($_REQUEST['site'],$_SESSION['SESS_ACCESS_SITES'])) {					
 					return true;
 				} else {
 					if($autoExit) {

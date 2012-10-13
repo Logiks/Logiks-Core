@@ -1,8 +1,8 @@
 <?php
-if(!defined('ROOT')) exit('No direct script access allowed');
+if (!defined('ROOT')) exit('No direct script access allowed');
 LoadConfigFile(ROOT . "config/captcha.cfg");
 
-if(!isset($_REQUEST['captchaId'])) {
+if(!isset($_REQUEST['cid'])) {
 	exit("No Captcha ID Found");
 }
 
@@ -33,7 +33,7 @@ for($o=0;$o<getConfig("CAPTCHA_WORD");$o++) {
 	}
 	$phrase.=" ";
 }
-$_SESSION["CAPTCHA_".$_REQUEST['captchaId']]=md5(trim($phrase));
+$_SESSION['CAPTCHA'][$_REQUEST['cid']]=md5(trim($phrase));
 
 //create the image
 $img=imagecreatetruecolor(getConfig("CAPTCHA_WIDTH"),getConfig("CAPTCHA_HEIGHT"));

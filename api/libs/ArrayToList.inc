@@ -162,7 +162,7 @@ class ArrayToList {
 		} else {
 			$title=_ling($title,true);
 		}
-		$s="<{$tag} ".implode(" ",$colDefn).">{$icn}{$title}</{$tag}>";
+		$s="<{$tag} ".implode(" ",$colDefn).">{$icn}<span>{$title}</span></{$tag}>";
 		return $s;
 	}
 	

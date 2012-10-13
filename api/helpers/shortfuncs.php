@@ -70,8 +70,12 @@ if(!function_exists("_dbFetch")) {
 }
 if(!function_exists("_dbData")) {
 	function _dbData($result,$format="assoc") {
-		$r=_db()->fetchAllData($result,$format);
-		return $r;
+		if($result) {
+			$r=_db()->fetchAllData($result,$format);
+			return $r;
+		} else {
+			return array();
+		}
 	}
 }
 if(!function_exists("_dbFree")) {
@@ -209,9 +213,60 @@ if(!function_exists("_template")) {
 		return $body;
 	}
 }
+if(!function_exists("_templateData")) {
+	function _templateData($templateData,$dataArr=null,$sqlData="",$editable=true) {
+		$templates=new TemplateEngine();
+		if(strlen($sqlData)>0) $templates->loadSQL($sqlData);
+		
+		if($dataArr==null) {
+			$dataArr=array();
+			$dataArr["date"]=date(getConfig("PHP_DATE_FORMAT"));
+			$dataArr["time"]=date(getConfig("TIME_FORMAT"));
+			$dataArr["datetime"]=date(getConfig("PHP_DATE_FORMAT")." ".getConfig("TIME_FORMAT"));
+			
+			$dataArr["site"]=SITENAME;
+			if(isset($_REQUEST["page"])) $dataArr["page"]=$_REQUEST["page"]; else $dataArr["page"]="home";
+			
+			if(isset($_SESSION["SESS_USER_ID"])) $dataArr["user"]=$_SESSION["SESS_USER_ID"]; else $dataArr["user"]="Guest";
+			if(isset($_SESSION["SESS_PRIVILEGE_ID"])) $dataArr["privilege"]=$_SESSION["SESS_PRIVILEGE_ID"];  else $dataArr["privilege"]="Guest";
+			if(isset($_SESSION["SESS_USER_NAME"])) $dataArr["username"]=$_SESSION["SESS_USER_NAME"];  else $dataArr["user_name"]="Guest";
+			if(isset($_SESSION["SESS_PRIVILEGE_NAME"])) $dataArr["privilegename"]=$_SESSION["SESS_PRIVILEGE_NAME"];  else $dataArr["privilege_name"]="Guest";
+		} else {
+			if(!isset($dataArr["date"])) $dataArr["date"]=date(getConfig("PHP_DATE_FORMAT"));
+			if(!isset($dataArr["time"])) $dataArr["time"]=date(getConfig("TIME_FORMAT"));
+			if(!isset($dataArr["datetime"])) $dataArr["datetime"]=date(getConfig("PHP_DATE_FORMAT")." ".getConfig("TIME_FORMAT"));
+			
+			if(!isset($dataArr["site"])) $dataArr["site"]=SITENAME;
+			if(!isset($dataArr["page"])) {
+				if(isset($_REQUEST["page"])) $dataArr["page"]=$_REQUEST["page"]; else $dataArr["page"]="home";
+			}
+			if(!isset($dataArr["user"])) {
+				if(isset($_SESSION["SESS_USER_ID"])) $dataArr["user"]=$_SESSION["SESS_USER_ID"]; else $dataArr["user"]="Guest";
+			}
+			if(!isset($dataArr["privilege"])) {
+				if(isset($_SESSION["SESS_PRIVILEGE_ID"])) $dataArr["privilege"]=$_SESSION["SESS_PRIVILEGE_ID"];  else $dataArr["privilege"]="Guest";
+			}
+			if(!isset($dataArr["username"])) {
+				if(isset($_SESSION["SESS_USER_NAME"])) $dataArr["username"]=$_SESSION["SESS_USER_NAME"];  else $dataArr["user_name"]="Guest";
+			}
+			if(!isset($dataArr["privilegename"])) {
+				if(isset($_SESSION["SESS_PRIVILEGE_NAME"])) $dataArr["privilegename"]=$_SESSION["SESS_PRIVILEGE_NAME"];  else $dataArr["privilege_name"]="Guest";
+			}
+		}
+		
+		$body=TemplateEngine::processTemplate($templateData,$dataArr,$editable);
+		
+		return $body;
+	}
+}
 /*URL Oriented Functions*/
 if(!function_exists("_link")) {
 	function _link($page="", $query="", $site=SITENAME) {
+		$ssr1=stristr($page,"http://");
+		$ssr2=stristr($page,"https://");
+		$ssn=strlen($ssr1)+strlen($ssr2);
+		if($ssn>0) return $page;
+		
 		return generatePageRequest($page, $query, $site);
 	}
 }
@@ -225,7 +280,8 @@ if(!function_exists("_url")) {
 		$url="{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}";
 		$url=str_replace("//","/",$url);
 		$url=str_replace("//","/",$url);
-		if($_SERVER["SERVER_PROTOCOL"]=="HTTP/1.1")	$url="http://$url";
+		if(isset($_SERVER["HTTPS"]) && strlen($_SERVER["HTTPS"])>0) $url="https://$url";
+		elseif($_SERVER["SERVER_PROTOCOL"]=="HTTP/1.1")	$url="http://$url";
 		if(strpos($url,"?")>2) {
 			$url.=$params;
 		} else {
@@ -451,7 +507,9 @@ if(!function_exists("_msg")) {
 }
 if(!function_exists("_process")) {
 	function _replace($str,$glue="#") {
-		return preg_replace_callback("/{$glue}[a-zA-Z0-9-_]+{$glue}/","replaceFromEnviroment",$str);
+		$str=preg_replace_callback("/{$glue}[a-zA-Z0-9-_]+@[a-zA-Z]+{$glue}/","replaceFromEnviroment",$str);
+		$str=preg_replace_callback("/{$glue}[a-zA-Z0-9-_]+{$glue}/","replaceFromEnviroment",$str);
+		return $str;
 	}
 }
 ?>
