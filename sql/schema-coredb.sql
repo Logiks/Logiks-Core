@@ -160,26 +160,6 @@ CREATE TABLE `lgks_sys_iplist` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
-CREATE TABLE `lgks_updatestbl` (
-   `id` int(10) unsigned not null auto_increment,
-   `title` varchar(150),
-   `category` varchar(200),
-   `dev_id` varchar(50),
-   `build_id` varchar(50),
-   `type` varchar(25) not null,
-   `for_app` varchar(150) not null default 'core',
-   `for_site` varchar(150) not null default 'default',
-   `author` varchar(200),
-   `license` varchar(200),
-   `update_url` varchar(255),
-   `updatable` enum('true','false') default 'true',
-   `last_updated` date,
-   `installed_on` date,
-   `installed_by` varchar(150),
-   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-
 CREATE TABLE `lgks_users` (
    `id` int(11) not null auto_increment,
    `userid` varchar(150) not null,
