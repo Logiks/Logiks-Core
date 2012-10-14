@@ -29,6 +29,12 @@ function analyzeQuery() {
 	$_SERVER['REQUEST_PATH']=$relUri;
 	$_SERVER['REQUEST_URI']=$ruri;
 }
+function clearSiteParams() {
+	unset($_REQUEST['site']);
+	setCookie('LGKS_SESS_SITE',"",time()-600000000,"/");
+	unset($_COOKIE['LGKS_SESS_SITE']);
+	unset($_SESSION['LGKS_SESS_SITE']);
+}
 function debugQuery() {
 	print_r($_SERVER);
 	print_r($_REQUEST);
@@ -36,17 +42,24 @@ function debugQuery() {
 	echo "{$_REQUEST['site']} :: {$_REQUEST['page']}";
 	exit();
 }
+
 analyzeQuery();
 //debugQuery();
+
 if($_REQUEST['site']=="services") {
 	$pg=str_replace("/",".",$_REQUEST['page']);
 	$_REQUEST['scmd']=$pg;
-	unset($_REQUEST['site']);
-	unset($_SESSION['LGKS_SESS_SITE']);
-	unset($_COOKIE['LGKS_SESS_SITE']);
+	clearSiteParams();
 	chdir("services");
 	include "index.php";
 } else {
+	$appDir=dirname(__FILE__)."/apps/{$_REQUEST['site']}";
+	$oDir=dirname(__FILE__)."/{$_REQUEST['site']}";
+	if($_REQUEST['site']==basename(__FILE__)) {
+		clearSiteParams();
+	} elseif(is_dir($oDir)) clearSiteParams();
+	//elseif(!is_dir($appDir)) clearSiteParams();
+	//echo $_REQUEST['site'];
 	include "index.php";
 }
 ?>
