@@ -19,8 +19,8 @@ $cfgSchema["SMTP_PORT"]=array(
 $cfgSchema["MAIL_ENGINE"]=array(
 		"type"=>"list",
 		"values"=>array(
-			"Pear"=>"SMTP Server",
-			"Simple"=>"PHP Mail"
+			"SMTP Server"=>"pear",
+			"PHP Mail"=>"simple"
 			)
 	);
 $cfgSchema["SMTP_ENCRYPTION"]=array(

@@ -9,6 +9,7 @@ ini_set("display_errors", "strerr");
 ini_set("error_reporting", E_ALL); 
 
 session_start();
+ob_start();
 
 if(!defined('ROOT')) {
 	define('ROOT',dirname(dirname(__FILE__)) . '/');
@@ -19,12 +20,15 @@ if(!defined('ROOT_RELATIVE')) {
 if(!defined('SERVICE_FOLDER')) {
 	define('SERVICE_FOLDER',dirname(__FILE__) . "/");
 }
-
 require_once (ROOT . 'api/configurator.php');
 
 LoadConfigFile(ROOT . "config/basic.cfg");
 LoadConfigFile(ROOT . "config/services.cfg");
 LoadConfigFile(ROOT . "config/security.cfg");
+//LoadConfigFile(ROOT . "config/framework.cfg");
+
+header("X-Powered-By: Logiks [http://openlogiks.org]",false);
+//header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
 
 $defSite='default';
 $predefinedSite=true;
@@ -68,6 +72,13 @@ include_once "config.php";
 include_once "api.php";
 include_once "ServiceSecurity.inc";
 include_once "ServiceController.inc";
+
+if(!isset($_REQUEST['scmd'])) {
+	$_REQUEST['scmd']="";
+	if(!isset($_REQUEST['site'])) $_REQUEST['site']=$GLOBALS["CURRENT_SITE"];
+	printErr("MethodNotAllowed","Access to the Requested Command Failed Due To Security Reasons.");
+	exit();
+}
 
 $sysdbLink=new Database();
 $sysdbLink->connect();
@@ -115,25 +126,18 @@ $request=$ctrl->cleanRequest($request);
 
 $secure->cleanSecurityConfigs();
 
-$apps_cfg=APPROOT."apps.cfg";
-if(file_exists($apps_cfg)) {
-	LoadConfigFile($apps_cfg);
-	loadConfigDir(APPROOT."config/",true);
-}
+loadAppConfigs();
 
 $serviceCtrlDb=getServiceCtrlConfig();
 
 $request=$secure->checkSecurity($request,$serviceCtrlDb);
 
-if(!isset($request['scmd'])) {
-	printErr("MethodNotAllowed","Access to the Requested Command Failed Due To Security Reasons.");
-	exit();
-}
 //loadHelpers("urlkit");
 
 DataBus::singleton();
 function __cleanup() {
 	runHooks("serviceAfterRequest");
+	ob_flush();
 	DataBus::singleton()->dumpToSession();
 	if(_db(true)->isOpen()) _db(true)->close();
 	if(_db()->isOpen()) _db()->close();

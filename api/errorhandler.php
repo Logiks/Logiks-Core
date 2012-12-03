@@ -307,6 +307,7 @@ if(!function_exists("errorHandler")) {
 		if(is_file(ROOT.$icon)) {
 			$icon=SiteLocation.$icon;
 		}
+		
 		?>
 			<style>
 			#errormsg {border:0px solid #aaa;}

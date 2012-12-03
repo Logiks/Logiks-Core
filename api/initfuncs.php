@@ -124,7 +124,7 @@ if(!function_exists("printHTMLPageHeader")) {
 		
 		$headerHTML.="\n\t<meta name='generator' content='".Framework_Title . ' v' . Framework_Version . " [".Framework_Site."]"."' />\n\n";
 		
-		$headerHTML.="\t<meta name='viewport' content='width=device-width'>\n";
+		$headerHTML.="\t<meta name='viewport' content='".getConfig("PAGE_VIEWPORT")."'>\n";
 		$headerHTML.="\t<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>\n\n";
 		
 		$headerHTML.="\t<meta http-equiv='content-language' content='$defaultLocale' />\n";
@@ -190,10 +190,21 @@ if(!function_exists("printHTMLPageHeader")) {
 		$GET=$_GET;
 		unset($GET['site']);unset($GET['forsite']);
 		natcasesort($GET);
+		
 		$metaURL=array();
-		foreach($GET as $a=>$b) {array_push($metaURL,"$a=$b");}
-		$metaURL=(implode("&",$metaURL));
-		$metaFiles=array("{$bpath}{$metaURL}.json","{$bpath}{$page}.json");
+		foreach($GET as $a=>$b) {
+			array_push($metaURL,"$a=".str_replace("/","_",$b));
+		}
+		$metaURL=base64_encode((implode("&",$metaURL)));
+		$metaFiles=array("{$bpath}{$metaURL}.json");
+		if(strpos($page,"/")>1) {
+			$pg=explode("/",$page);
+			$pg=$pg[0];
+			array_push($metaFiles,"{$bpath}".str_replace("/","_",$page).".json");
+			array_push($metaFiles,"{$bpath}{$pg}.json");
+		} else {
+			array_push($metaFiles,"{$bpath}{$page}.json");
+		}
 		
 		$meta=array();
 		foreach($metaFiles as $path) {

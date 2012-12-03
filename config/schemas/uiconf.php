@@ -49,9 +49,9 @@ $cfgSchema["LANDING_PAGE"]=array(
 		"tips"=>"The Default Landing Page For Any User"
 	);
 $cfgSchema["DEFAULT_NAVIGATION"]=array(
-		"type"=>"list",
+		/*"type"=>"list",
 		"function"=>"getNavigationList",
-		"tips"=>"The Default Navigation Menu For The Site"
+		"tips"=>"The Default Navigation Menu For The Site"*/
 	);
 $cfgSchema["LOGO"]=array(
 		"type"=>"list",
@@ -130,25 +130,29 @@ if(!function_exists("getPageList")) {
 		
 		$f=ROOT.APPS_FOLDER.$site."/pages/";
 		$f1=ROOT.APPS_FOLDER.$site."/config/layouts/";
-		$fs=scandir($f);
-		unset($fs[0]);unset($fs[1]);
-		
-		$arr["None"]="";
-		foreach($fs as $a=>$b) {
-			$ext=strtolower(substr($b,strlen($b)-3));
-			if(is_file($f.$b) && $ext=="php") {
-				$t=substr($b,0,strlen($b)-4);
-				$arr[$t]=$t;
+		if(is_dir($f)) {
+			$fs=scandir($f);
+			unset($fs[0]);unset($fs[1]);
+			
+			$arr["None"]="";
+			foreach($fs as $a=>$b) {
+				$ext=strtolower(substr($b,strlen($b)-3));
+				if(is_file($f.$b) && $ext=="php") {
+					$t=substr($b,0,strlen($b)-4);
+					$arr[$t]=$t;
+				}
 			}
 		}
 		
-		$fs=scandir($f1);
-		unset($fs[0]);unset($fs[1]);
-		foreach($fs as $a=>$b) {
-			$ext=strtolower(substr($b,strlen($b)-4));
-			if(is_file($f1.$b) && $ext=="json") {
-				$t=substr($b,0,strlen($b)-5);
-				$arr[$t]=$t;
+		if(is_dir($f1)) {
+			$fs=scandir($f1);
+			unset($fs[0]);unset($fs[1]);
+			foreach($fs as $a=>$b) {
+				$ext=strtolower(substr($b,strlen($b)-4));
+				if(is_file($f1.$b) && $ext=="json") {
+					$t=substr($b,0,strlen($b)-5);
+					$arr[$t]=$t;
+				}
 			}
 		}
 		

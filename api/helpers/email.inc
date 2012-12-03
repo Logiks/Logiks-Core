@@ -8,21 +8,17 @@ include "Mail.php";
 //$headers["Content-Type"] = "text/plain; charset=ISO-2022-JP"; 
 //$headers["Return-path"] = "returnpath@address.com"; 
 
-if(!isset($GLOBALS['CONFIG']["smtp_username"])) {
-	LoadConfigFile(ROOT . "config/mail.cfg","CONFIG");
-}
-
-if (!function_exists('validEmail')) {
+if(!function_exists('validEmail')) {
 	function isValidEmail($address) {
 		return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
 	}
-	function sendMail($to,$subject,$body,$cc="",$bcc="") {
-		$from=$GLOBALS['CONFIG']["smtp_username"];
-		
-		if(isset($_SESSION["SESS_USER_EMAIL"]) && strlen($_SESSION["SESS_USER_EMAIL"])>0) {
-			$from=$GLOBALS['CONFIG']["smtp_username"];
-		} else {
-			$from=$GLOBALS['CONFIG']["smtp_username"];
+	function sendMail($to,$subject,$body,$from="",$cc="",$bcc="") {
+		if($from==null || $from=="") {
+			if(isset($_SESSION["SESS_USER_EMAIL"]) && strlen($_SESSION["SESS_USER_EMAIL"])>0) {
+				$from=$_SESSION["SESS_USER_EMAIL"];
+			} else {
+				$from=getConfig("smtp_username");
+			}
 		}
 		
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
@@ -49,18 +45,18 @@ class EMail {
 		$smtp=array();
 		
 		$host="";
-		if(strlen($GLOBALS['CONFIG']["smtp_encryption"])>0) {
-			$host=strtolower($GLOBALS['CONFIG']["smtp_encryption"])."://";
+		if(strlen(getConfig("smtp_encryption"))>0) {
+			$host=strtolower(getConfig("smtp_encryption"))."://";
 		}
-		$host.=$GLOBALS['CONFIG']["smtp_host"];
+		$host.=getConfig("smtp_host");
 		
 		$smtp["host"] = $host;
-		$smtp["port"] = $GLOBALS['CONFIG']["smtp_port"];
-		$smtp["auth"] = (boolean)$GLOBALS['CONFIG']["smtp_auth"];
-		$smtp["username"] = $GLOBALS['CONFIG']["smtp_username"];
-		$smtp["password"] = $GLOBALS['CONFIG']["smtp_password"];
-		$smtp["cc"] = $GLOBALS['CONFIG']["default_cc"];
-		$smtp["bcc"] = $GLOBALS['CONFIG']["default_bcc"];
+		$smtp["port"] = getConfig("smtp_port");
+		$smtp["auth"] = (boolean)getConfig("smtp_auth");
+		$smtp["username"] = getConfig("smtp_username");
+		$smtp["password"] = getConfig("smtp_password");
+		$smtp["cc"] = getConfig("default_cc");
+		$smtp["bcc"] = getConfig("default_bcc");
 
 		return $smtp;
 	}

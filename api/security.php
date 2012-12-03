@@ -3,11 +3,31 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 //Functions ::  session_check,isAdminSite,user_admin_check,checkUserSiteAccess,isLinkAccessable
 // 				checkDevMode, checkBlacklist,checkSiteMode
 if(!function_exists("session_check")) {
+	//User Is Logged In
+	//Site Being Accessed Is Correct
 	function session_check($redirect=false,$showErrorMsg=false) {
-		if(!defined("SITENAME")) {
+		$valid=false;
+		
+		if(defined("SITENAME")) {
+			if(isset($_SESSION['SESS_USER_ID']) && isset($_SESSION['SESS_PRIVILEGE_ID']) && isset($_SESSION['SESS_ACCESS_ID']) &&
+				isset($_SESSION['SESS_TOKEN']) &&
+				isset($_SESSION['SESS_LOGIN_SITE']) && isset($_SESSION['SESS_ACCESS_SITES'])) {
+				if($_SESSION['SESS_PRIVILEGE_ID']>0) {
+					if($_SESSION['SESS_LOGIN_SITE']==$_REQUEST['site']) 
+						$valid=true;
+					elseif(is_array($_SESSION['SESS_ACCESS_SITES']) && in_array(SITENAME,$_SESSION['SESS_ACCESS_SITES']))
+						$valid=true;
+				}
+			}
+		}
+		
+		if($valid) {
+			return true;
+		} else {
 			if($redirect) {
 				$relink=SiteLocation . "login.php?site=".SITENAME;
 				redirectTo($relink,"SESSION Expired. Going To Login Page");
+				sessionExpired();
 				exit();
 			} else {
 				if($showErrorMsg) {
@@ -16,25 +36,6 @@ if(!function_exists("session_check")) {
 				return false;
 			}
 		}
-		if(isset($_SESSION['SESS_USER_ID']) && isset($_SESSION['SESS_PRIVILEGE_ID']) && isset($_SESSION['SESS_TOKEN'])
-			&& isset($_SESSION['SESS_LOGIN_SITE']) && isset($_SESSION['SESS_ACCESS_SITES'])
-			&& isset($_SESSION['SESS_ACCESS_ID'])) {
-			
-			$siteAccessArr=$_SESSION['SESS_ACCESS_SITES'];
-			if(!is_array($siteAccessArr)) $siteAccessArr=explode(",",$siteAccessArr);
-			if(in_array(SITENAME,$siteAccessArr)) return true;
-		}
-		if($redirect) {
-			$relink=SiteLocation . "login.php?site=".SITENAME;
-			redirectTo($relink,"SESSION Expired. Going To Login Page");
-			exit();
-		} else {
-			if($showErrorMsg) {
-				trigger_ForbiddenError("Accessing Forbidden Page");
-			}
-			return false;
-		}
-		sessionExpired();
 	}
 	function isAdminSite($autoExit=true) {
 		if(!defined("ADMIN_APPSITES")) {
@@ -284,7 +285,7 @@ class Security {
 				$s.="{$a['ipaddress']}\n";
 			}
 		}
-		file_put_contents($f,$s);
+		if(is_writable($f)) file_put_contents($f,$s);
 	}
 	public static function generateUserLinksCache($privilege) {
 		if(isset($_SESSION['SESS_PRIVILEGE_NAME'])) $priId=$_SESSION['SESS_PRIVILEGE_NAME']; else $priId="Guest";

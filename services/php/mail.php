@@ -1,6 +1,14 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
-checkServiceSession();
+//checkServiceSession();
+
+if(strlen(getConfig("MAIL_ENGINE"))<=0) {
+	LoadConfigFile(ROOT . "config/mail.cfg","CONFIG");
+}
+$f2=APPROOT.getConfig("APPS_CONFIG_FOLDER")."mail.cfg";
+if(file_exists($f2)) {
+	LoadConfigFile($f2,"CONFIG");
+}
 
 loadHelpers("email");
 
@@ -68,15 +76,9 @@ ob_clean();
 //echo "Sending Mail";
 
 $a=false;
-if($GLOBALS['CONFIG']["MAIL_ENGINE"]=="simple" && $attach==null) {
+if(getConfig("MAIL_ENGINE")=="simple" && $attach==null) {
 	$a=sendMail($to,$subject,$data,$cc,$bcc);
 } else {//Pear::Mail
-	if(defined("APPROOT") && file_exists(APPROOT . "config/mail.cfg")) {
-		LoadConfigFile(APPROOT . "config/mail.cfg","CONFIG");
-	} else {
-		LoadConfigFile(ROOT . "config/mail.cfg","CONFIG");
-	}
-
 	$email=new EMail();
 	$a=$email->sendMimeMessageAdvanced($to,$subject,$cc,$bcc,$data,$attach);
 }

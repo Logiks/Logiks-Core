@@ -59,7 +59,7 @@ if(!function_exists('printSQLResult')) {
 								$b="";
 							}
 						} elseif($type=="blob") {
-							if(strlen($b)>255) $b="";
+							if(strlen($b)>255) $b=substr($b,0,200)."...";
 						}
 					}
 					array_push($responce->rows[$i]['cell'],$b);

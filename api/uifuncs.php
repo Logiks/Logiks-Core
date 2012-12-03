@@ -55,7 +55,7 @@ if(!function_exists('displayLayout')) {
 		}
 	}
 	function generatePageLayout($layout) {
-		$appLayoutDir=APPROOT."config/layouts/";
+		$appLayoutDir=APPROOT.APPS_PAGES_FOLDER."layouts/";
 		$f1=$appLayoutDir."{$layout}.json";
 		if(file_exists($f1) && is_readable($f1)) {
 			$json=file_get_contents($f1);
@@ -97,7 +97,7 @@ if(!function_exists('displayLayout')) {
 		}
 	}
 	function isLayoutConfig($layout) {
-		$appLayoutDir=APPROOT."config/layouts/";
+		$appLayoutDir=APPROOT.APPS_PAGES_FOLDER."layouts/";
 		$f1=$appLayoutDir."{$layout}.json";
 		if(file_exists($f1) && is_readable($f1)) {
 			return true;

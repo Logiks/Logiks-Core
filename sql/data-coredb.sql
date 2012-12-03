@@ -16,4 +16,4 @@ INSERT INTO `lgks_privileges` (`id`, `name`, `site`, `blocked`, `remarks`, `user
 ('7', 'user', '*', 'false', 'General User Level', '', '', '');
 
 INSERT INTO `lgks_users` (`id`, `userid`, `pwd`, `site`, `privilege`, `access`, `name`, `dob`, `email`, `address`, `region`, `country`, `zipcode`, `mobile`, `blocked`, `expires`, `remarks`, `notes`, `vcode`, `privacy`, `avatar`, `avatar_type`, `q1`, `a1`, `doc`, `doe`) VALUES 
-('1', 'root', '7815696ecbf1c96e6894b779456d330e', 'admincp', '1', '1', 'ROOT', '', '', '', '', 'India', '', '', 'false', '', '', '', '', 'protected', '', 'photoid', '', '', '', CURDATE());
+('1', 'root', '7815696ecbf1c96e6894b779456d330e', 'admincp', '1', '1', 'ROOT', '', '', '', '', 'India', '', '', 'false', '', '', '', '', 'protected', '', 'auto', '', '', CURDATE(), CURDATE());

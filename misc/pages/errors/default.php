@@ -28,7 +28,15 @@ $css->TypeOfDispatch("Tagged");
 </head>
 <body>
 <div id="headermessage">
-	<h3><?php if(defined("WEBMASTER_EMAIL")) echo WEBMASTER_EMAIL; ?></h3>
+	<?php
+		if(session_check()) {
+			echo "<h3><a href='".SiteLocation."api/logout.php' style='color:#222;font-size:14px;'>Logout</a></h3>";
+		} else {
+			if(defined("WEBMASTER_EMAIL")) {
+				echo "<h3><a href='mailto:".WEBMASTER_EMAIL."'>".WEBMASTER_EMAIL."</a></h3>";
+			}
+		}
+	?>
 </div>
 <div id="canvas">
 	<div id="medal"></div>
@@ -45,7 +53,7 @@ $css->TypeOfDispatch("Tagged");
 		<div class='spareimg'></div>
 		<div class='txtholder'>
 			<?=$msg_body?>
-			<div align=center title='Goto Home Page'><a href='<?=SiteLocation?>index.php' ><img src="<?=loadMedia("images/home.png")?>" /></a></div>
+			<div align=center title='Goto Home Page'><a href='<?=SiteLocation?>' ><img src="<?=loadMedia("images/home.png")?>" /></a></div>
 		</div>		
 	</div>
 	<div id="footer" align="center">

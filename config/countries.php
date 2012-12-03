@@ -966,7 +966,7 @@ if(!function_exists("getCountryList")) {
 		$s="<option value=''></option>";
 		foreach($arr as $a=>$b) {
 			if($useShortCode) {
-				if($b==$default) {
+				if($a==$default) {
 					$s.="<option value='$a' selected>$b</option>";
 				} else {
 					$s.="<option value='$a'>$b</option>";

@@ -64,7 +64,12 @@ class Database {
 			$this->blockedStmnts=explode(",",strtoupper($GLOBALS['DBCONFIG']["BLOCK_STATEMENTS"]));
 		
 		if($this->isOpen()) return true;
-		$this->link = mysql_connect($this->dbhost,$dbuser,$dbpwd,$this->dbName) or die("MySQL DB Connection Error");//.mysql_error()
+		
+		if(MASTER_DEBUG_MODE=="true")
+			$this->link = mysql_connect($this->dbhost,$dbuser,$dbpwd,$this->dbName) or die(mysql_error());
+		else
+			$this->link = mysql_connect($this->dbhost,$dbuser,$dbpwd,$this->dbName) or die("MySQL DB Connection Error");
+			
 		if (!$this->link) {
 			return false;
 		}
@@ -152,7 +157,7 @@ class Database {
 			}
 			Database::$qCount++;
 			if(MASTER_DEBUG_MODE=="true") {
-				$r=mysql_query($sql, $this->link);// or die(mysql_error($this->link));
+				$r=mysql_query($sql, $this->link) or die(mysql_error($this->link));
 				return $r;
 			} else {
 				$r=mysql_query($sql, $this->link);

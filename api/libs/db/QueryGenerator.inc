@@ -274,6 +274,7 @@ class QueryGenerator {
 		if(is_array($s)) {
 			$s=implode(",",$s);
 		}
+		if(strlen($s)<=0) return "''";
 		if($sqlType=="*") {
 			$s1=strtolower($s);
 			if($s1=="true" || $s1=="false") return strtoupper($s);

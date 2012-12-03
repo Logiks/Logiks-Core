@@ -121,25 +121,23 @@ class ServiceSecurity {
 	}
 }
 if(!function_exists("checkServiceSession")) {
-	//This is a single function to check :
 	//User Is Logged In
 	//Site Being Accessed Is Correct
 	function checkServiceSession($autoExit=true) {
-		if(!isset($_REQUEST['site'])) return false;
-		if(isset($_SESSION['SESS_USER_ID']) && isset($_SESSION['SESS_PRIVILEGE_ID']) && isset($_SESSION['SESS_TOKEN']) &&
+		$valid=false;
+		if(isset($_SESSION['SESS_USER_ID']) && isset($_SESSION['SESS_PRIVILEGE_ID']) && isset($_SESSION['SESS_ACCESS_ID']) &&
+			isset($_SESSION['SESS_TOKEN']) && isset($_REQUEST['site']) &&
 			isset($_SESSION['SESS_LOGIN_SITE']) && isset($_SESSION['SESS_ACCESS_SITES'])) {
-				if($_SESSION['SESS_LOGIN_SITE']==$_REQUEST['site']) {
-					return true;
-				} elseif(isset($_SESSION['SESS_ACCESS_SITES']) && in_array($_REQUEST['site'],$_SESSION['SESS_ACCESS_SITES'])) {					
-					return true;
-				} else {
-					if($autoExit) {
-						printErr("AccessDenial","Invalid Session. Please Login For Using This Service.");
-						exit();
-					} else {
-						return false;
-					}
-				}
+			if($_SESSION['SESS_PRIVILEGE_ID']>0) {
+				if($_SESSION['SESS_LOGIN_SITE']==$_REQUEST['site']) 
+					$valid=true;
+				elseif(is_array($_SESSION['SESS_ACCESS_SITES']) && in_array($_REQUEST['site'],$_SESSION['SESS_ACCESS_SITES']))
+					$valid=true;
+			}
+		}
+		
+		if($valid) {
+			return true;
 		} else {
 			if($autoExit) {
 				printErr("AccessDenial","Invalid Session. Please Login For Using This Service.");

@@ -104,6 +104,11 @@ function printServiceErrorMsg($errCode,$errMsg,$errorImg="") {
 	$arr['RequestedCommand']=$_REQUEST['scmd'];
 	$arr['RequestedSite']=$_REQUEST['site'];
 	
+	header("Content-Type:text/{$_REQUEST['format']}");
+	header("Status: ERROR::$errCode");
+	//http_response_code(404);
+	//header(":",true,404);
+	
 	if($_REQUEST['format']=="html") {
 		if($errorImg!=null && strlen($errorImg)>0) {
 			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>
@@ -113,6 +118,8 @@ function printServiceErrorMsg($errCode,$errMsg,$errorImg="") {
 			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'><h3 style='color:#AA0000;font:20px Arial;'>" .
 				getErrorMsg($errCode) . "</h3>$errMsg</td></tr></table>{$envelop['end']}";
 		}
+	} elseif($_REQUEST['format']=="select") {
+		echo "<option>$errCode :: $errMsg :: ".getErrorMsg($errCode)."</option>";
 	} elseif($_REQUEST['format']=="xml") {
 		$xml=new SimpleXMLElement("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><service></service>");
 		$arr=arrayToXML($arr,$xml);
@@ -152,11 +159,19 @@ function printServiceMsg($msgData,$msgCode=200,$msgImage="") {
 	$arr['RequestedCommand']=$_REQUEST['scmd'];
 	$arr['RequestedSite']=$_REQUEST['site'];
 	
+	header("Content-Type:text/{$_REQUEST['format']}");
+	
 	if($_REQUEST['format']=="html") {
 		if(is_array($msgData)) {
 			printFormattedArray($msgData,true,"table");
 		} else {
 			echo $msgData;
+		}
+	} elseif($_REQUEST['format']=="select") {
+		if(is_array($msgData)) {
+			printFormattedArray($msgData,false,"select");
+		} else {
+			echo "<option>$msgCode :: $msgData </option>";
 		}
 	} elseif($_REQUEST['format']=="xml") {
 		$arr['Data']=$msgData;

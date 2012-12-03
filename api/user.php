@@ -104,6 +104,7 @@ if(!function_exists("getUserInfo")) {
 		if(checkUserID($userID,$site)) {
 			return "UserID Exists";
 		}
+		loadHelpers("pwdhash");
 		$sql1="SELECT COUNT(*) AS cnt FROM "._dbTable("privileges",true)." WHERE ID=$privilegeID";
 		$sql2="SELECT COUNT(*) AS cnt,sites FROM "._dbTable("access",true)." WHERE ID=$accessID";
 		$res=_dbQuery($sql1,true);
@@ -123,7 +124,7 @@ if(!function_exists("getUserInfo")) {
 		
 		$params=array(
 				"userid"=>"$userID",
-				"pwd"=>"$pwd",
+				"pwd"=>getPWDHash($pwd),
 				"site"=>"$site",
 				"privilege"=>"$privilegeID",
 				"access"=>"$accessID",

@@ -56,7 +56,7 @@ if(file_exists(APPROOT)) {
 		} else {
 			$rt=explode("/",$_SERVER['PHP_SELF']);
 			$oldPage=SiteLocation."{$rt[count($rt)-1]}";
-			if($rt[count($rt)-1]=="seo.php") {
+			if($rt[count($rt)-1]=="vpath.php") {
 				if(isset($_REQUEST['site'])) {
 					$oldPage=SiteLocation.$_REQUEST['site'];
 					if(isset($_REQUEST['page'])) {

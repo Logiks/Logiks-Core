@@ -42,9 +42,11 @@ if(!isset($initialized)) {
 	LoadConfigFile(ROOT . "config/security.cfg");
 	LoadConfigFile(ROOT . "config/xtras.cfg");
 	LoadConfigFile(ROOT . "config/headers.cfg");
-	LoadConfigFile(ROOT . "config/framework.cfg");	
+	LoadConfigFile(ROOT . "config/framework.cfg");
 	LoadConfigFile(ROOT . "config/db.cfg");
 	LoadConfigFile(ROOT . "config/folders.cfg");
+	
+	header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
 	
 	fixPHPINIConfigs();	
 	fixLogiksVariables();	
@@ -153,6 +155,7 @@ if(!isset($initialized)) {
 		if(_databus("PAGE_BUFFER_ENCODING")!="plain") {
 			printOPBuffer();
 		}
+		//ob_flush();
 		DataBus::singleton()->dumpToSession();
 		if(_db(true)->isOpen()) _db(true)->close();
 		if(_db()->isOpen()) _db()->close();

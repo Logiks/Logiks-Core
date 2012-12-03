@@ -79,7 +79,11 @@ class DomainMap {
 						$_SESSION["LGKS_SESS_SITE"]=$this->domainList[$server]["appsite"];
 						if(DOMAIN_CONTROLS_REDIRECT=="true") {
 							$qp=$_SERVER["QUERY_STRING"];
-							$qp=str_replace("=".$_REQUEST['site'],"=".$this->domainList[$server]["appsite"],$qp);
+							if(strlen($qp)<=0) {
+								$qp="site=".$this->domainList[$server]["appsite"];
+							} else {
+								$qp=str_replace("=".$_REQUEST['site'],"=".$this->domainList[$server]["appsite"],$qp);
+							}
 							header("Location:index.php?$qp");
 						}
 					}
@@ -87,7 +91,12 @@ class DomainMap {
 					$_SESSION["LGKS_SESS_SITE"]=$dsite;//$_REQUEST['site'];
 					if(DOMAIN_CONTROLS_REDIRECT=="true") {
 						$qp=$_SERVER["QUERY_STRING"];
-						$l="index.php?$qp&site=$dsite";
+						if(strlen($qp)<=0) {
+							$qp="?site=$dsite";
+						} else {
+							$qp="?{$qp}&site=$dsite";
+						}
+						$l="index.php{$qp}";
 						$l=str_replace("?&","?",$l);
 						header("Location:$l");
 					}

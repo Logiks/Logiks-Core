@@ -1,14 +1,8 @@
 <?php
 if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 
-LoadConfigFile(ROOT . "config/system.cfg");
-LoadConfigFile(ROOT . "config/xtras.cfg");
-LoadConfigFile(ROOT . "config/headers.cfg");
-LoadConfigFile(ROOT . "config/framework.cfg");	
-LoadConfigFile(ROOT . "config/db.cfg");
-LoadConfigFile(ROOT . "config/folders.cfg");
+loadSysConfigs();
 
-fixPHPINIConfigs();
 fixLogiksVariables();
 
 include_once ROOT. "api/commons.php";
@@ -79,6 +73,24 @@ function getServiceCtrlConfig() {
 	
 	$jsonDb=array_merge($db2,$db1);
 	return $jsonDb;
+}
+
+function loadSysConfigs() {
+	LoadConfigFile(ROOT . "config/system.cfg");
+	LoadConfigFile(ROOT . "config/xtras.cfg");
+	LoadConfigFile(ROOT . "config/headers.cfg");
+	LoadConfigFile(ROOT . "config/framework.cfg");	
+	LoadConfigFile(ROOT . "config/db.cfg");
+	LoadConfigFile(ROOT . "config/folders.cfg");
+	
+	fixPHPINIConfigs();
+}
+function loadAppConfigs() {
+	$apps_cfg=APPROOT."apps.cfg";
+	if(file_exists($apps_cfg)) {
+		LoadConfigFile($apps_cfg);
+		loadConfigDir(APPROOT."config/",true);
+	}
 }
 
 //Handling Encoded/Encrypted QUERY_STRINGS

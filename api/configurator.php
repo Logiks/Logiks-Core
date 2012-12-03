@@ -132,7 +132,9 @@ if(!function_exists('LoadConfigFile')) {
 	}
 	function fixLogiksVariables() {
 		$hostProtocol="http://";
-		if(strlen(getConfig("SiteProtocol"))>0) {
+		if(isset($_SERVER['HTTPS'])) {
+			$hostProtocol="https://";
+		} elseif(strlen(getConfig("SiteProtocol"))>0) {
 			$hostProtocol=getConfig("SiteProtocol")."://";
 		}
 		define("SiteRoot",$_SERVER['DOCUMENT_ROOT']."/".InstallFolder);

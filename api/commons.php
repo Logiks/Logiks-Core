@@ -29,12 +29,14 @@ if (!function_exists('printArray')) {
 		$s=str_replace("\\'","'",$s);
 		$s=stripslashes($s);
 		$data=trim($s);
+		$data=mysql_real_escape_string($data);
 		return $data;
 	}
 	function cleanCode($data) {
 		$data=cleanText($data);
 		$data=str_replace("<!--?","<?",$data);
 		$data=str_replace("?-->","?>",$data);
+		$data=mysql_real_escape_string($data);
 		return $data;
 	}
 	function clean($str) {
@@ -57,21 +59,20 @@ if (!function_exists('printArray')) {
 		return $value;
 	}
 	function Strip($value) {
-		if(get_magic_quotes_gpc() != 0) {
-			if(is_array($value))  {
-				if (array_is_associative($value) ) {
-					foreach( $value as $k=>$v) {
-						$tmp_val[$k] = stripslashes($v);
-					}
-					$value = $tmp_val; 
-				} else  {
-					for($j = 0; $j < sizeof($value); $j++) {
-						$value[$j] = stripslashes($value[$j]);
-					}
+		//if(get_magic_quotes_gpc() != 0)
+		if(is_array($value))  {
+			if (array_is_associative($value) ) {
+				foreach( $value as $k=>$v) {
+					$tmp_val[$k] = stripslashes($v);
 				}
-			} else {
-				$value = stripslashes($value);
+				$value = $tmp_val; 
+			} else  {
+				for($j = 0; $j < sizeof($value); $j++) {
+					$value[$j] = stripslashes($value[$j]);
+				}
 			}
+		} else {
+			$value = stripslashes($value);
 		}
 		return $value;
 	}

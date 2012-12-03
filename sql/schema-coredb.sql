@@ -183,7 +183,7 @@ CREATE TABLE `lgks_users` (
    `refid` varchar(30),
    `privacy` enum('private','public','protected') default 'protected',
    `avatar` varchar(200),
-   `avatar_type` varchar(15) not null default 'photoid',
+   `avatar_type` varchar(15) not null default 'auto',
    `q1` varchar(255),
    `a1` varchar(255),
    `doc` date,

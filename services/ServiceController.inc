@@ -80,6 +80,7 @@ class ServiceController {
 		$query['scmd']=$scmd;
 		if(PRECLEAN_SERVICE_REQUEST=="true") {
 			foreach($_GET as $a=>$b) {
+				if(is_array($b)) continue;
 				$b=strip_tags($b);
 				$b=stripslashes($b);
 				$b=mysql_real_escape_string($b);

@@ -68,17 +68,29 @@ if(!function_exists("createTimeStamp")) {
 			}
 		} else {
 			$_SESSION['SESS_USER_ID'] = "Guest";
-			$_SESSION['SESS_PRIVILEGE_ID'] = "Guest";
-			$_SESSION['SESS_ACCESS_ID'] = "NA";
+			$_SESSION['SESS_PRIVILEGE_ID'] = -1;
+			$_SESSION['SESS_ACCESS_ID'] = -1;
 
 			$_SESSION['SESS_PRIVILEGE_NAME'] = "Guest";
 			$_SESSION['SESS_ACCESS_NAME'] = "Guest";
-			$_SESSION['SESS_ACCESS_SITES'] = getSessionSite();
+			$_SESSION['SESS_ACCESS_SITES'] = array($_SESSION['LGKS_SESS_SITE']);
 			
 			$_SESSION['SESS_USER_NAME'] = "Guest";
-			$_SESSION['SESS_USER_EMAIL'] = "NA";
-			$_SESSION['SESS_USER_CELL'] = "NA";
+			$_SESSION['SESS_USER_EMAIL'] = "";
+			$_SESSION['SESS_USER_CELL'] = "";
 		}
+	}
+	function flushPermissions($site=SITENAME) {
+		$f=ROOT.CACHE_PERMISSIONS_FOLDER."{$site}/";
+		if(is_dir($f)) {
+			$fs=scandir($f);
+			foreach($fs as $a) {
+				if($a=="." || $a=="..") continue;
+				unlink("{$f}{$a}");
+			}
+			return true;
+		}
+		return false;
 	}
 	function getFunctionCaller() {
 		$trace=debug_backtrace();

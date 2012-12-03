@@ -291,7 +291,7 @@ $(function() {
 		});
 	$("#user_editor .required").parents("tr").find("td:last-child").attr("class","required_field");
 	$("button").button();
-	$("#user_editor select#forsite").load("services/?scmd=userinfo&action=sitelist",function() {
+	$("#user_editor select#forsite").load("services/?scmd=userinfo&action=sitelist&format=select",function() {
 			$("#user_editor select#forsite").val("<?=$site?>");
 			if($("#user_editor select#forsite").val().length>0) {
 				updatePrivilegeList($("#user_editor select#forsite").val());
@@ -311,7 +311,7 @@ function resetForm() {
 }
 function updatePrivilegeList(site) {
 	$("#user_editor select[name=privilege]").html("<option>Loading ...</option>");
-	$("#user_editor select[name=privilege]").load("services/?scmd=qtools&action=privilegelist&forsite="+site,function() {
+	$("#user_editor select[name=privilege]").load("services/?scmd=qtools&action=privilegelist&format=select&forsite="+site,function() {
 			if($(this).attr('v')!=null && $(this).attr('v').length>0) {
 				$(this).val($(this).attr('v'));
 			}
@@ -319,7 +319,7 @@ function updatePrivilegeList(site) {
 }
 function updateAccessList(site) {
 	$("#user_editor select[name=access]").html("<option>Loading ...</option>");
-	$("#user_editor select[name=access]").load("services/?scmd=qtools&action=accesslist&forsite="+site,function() {
+	$("#user_editor select[name=access]").load("services/?scmd=qtools&action=accesslist&format=select&forsite="+site,function() {
 			if($(this).attr('v')!=null && $(this).attr('v').length>0) {
 				$(this).val($(this).attr('v'));
 			}
