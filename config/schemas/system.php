@@ -7,10 +7,6 @@ $cfgSchema["DEFAULT_THEME"]=array(
 		"type"=>"list",
 		"function"=>"getThemeList",
 	);
-$cfgSchema["DEFAULT_SITE"]=array(
-		"type"=>"list",
-		"function"=>"getAppList"
-	);
 
 $cfgSchema["DEFAULT_TIMEZONE"]=array(
 		"type"=>"list",
@@ -94,27 +90,10 @@ if(!function_exists("getThemeList")) {
 		return $arr;
 	}
 }
-if(!function_exists("getAppList")) {
-	function getAppList() {
-		$arr=array();
-		$f=ROOT.APPS_FOLDER;
-		$fs=scandir($f);
-		unset($fs[0]);
-		unset($fs[1]);
-		foreach($fs as $a=>$b) {
-			if(file_exists($f."$b/apps.cfg")) {
-				$t=str_replace("_"," ",$b);
-				$t=ucwords($t);
-				$arr[$t]=$b;
-			}
-		}
-		return $arr;
-	}
-}
 if(!function_exists("getEncodings")) {
 	function getEncodings() {
 			$o=array();
-			include ROOT."config/encodings.php";
+			include_once ROOT."config/encodings.php";
 			$arr=getEncodingList();
 			foreach($arr as $a=>$b) {
 				$o[$b]=$b;
@@ -124,7 +103,7 @@ if(!function_exists("getEncodings")) {
 }
 if(!function_exists("getCountries")) {
 	function getCountries() {
-		include ROOT."config/countries.php";
+		include_once ROOT."config/countries.php";
 		$arr=getCountryList();
 		foreach($arr as $a=>$b) {
 			unset($arr[$a]);
@@ -135,7 +114,7 @@ if(!function_exists("getCountries")) {
 }
 if(!function_exists("getLocales")) {
 	function getLocales() {
-		include ROOT."config/countries.php";
+		include_once ROOT."config/countries.php";
 		$arr=array();
 		$o=getLocaleList();
 		foreach($o as $a=>$b) {

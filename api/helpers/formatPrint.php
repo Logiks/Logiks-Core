@@ -9,7 +9,7 @@ if(!function_exists("printFormattedArray")) {
 			if(isset($_REQUEST["format"])) $format=$_REQUEST["format"];
 			else $format="select";
 		}
-		
+
 		$format=strtolower($format);
 		//HTML Format
 		if($format=="select") {
@@ -31,7 +31,7 @@ if(!function_exists("printFormattedArray")) {
 							$r['text']=ucwords($r['text']);
 							$s.="<td name='{$r['name']}' rel='{$r['rel']}' title='{$r['title']}' align='{$r['align']}' >{$r['text']}</td>";
 						} elseif(is_bool($y) || $y=="true" || $y=="false") {
-							if($y=="true" || $y==1) 
+							if($y=="true" || $y==1)
 								$s.="<td name='$x' rel='$y' align=center><input name=$x type=checkbox checked /></td>";
 							else
 								$s.="<td name='$x' rel='$y' align=center><input name=$x type=checkbox /></td>";
@@ -62,7 +62,7 @@ if(!function_exists("printFormattedArray")) {
 					echo "<li rel='$a' value='$b'>".ucwords($a)."</li>";
 				}
 			}
-		} 
+		}
 		//TEXT Format
 		elseif($format=="text") {
 			foreach($arr as $a=>$b) {
@@ -77,14 +77,14 @@ if(!function_exists("printFormattedArray")) {
 		//JSON Format
 		elseif($format=="json") {
 			echo json_encode($arr);
-		} 
+		}
 		//XML Format
 		elseif($format=="xml") {
 			$arr=array_flip($arr);
 			$xml = new SimpleXMLElement('<service/>');
 			array_walk_recursive($arr, array ($xml, 'addChild'));
 			echo $xml->asXML();
-		} 
+		}
 		else {
 			printArray($arr);
 		}
@@ -93,14 +93,14 @@ if(!function_exists("printFormattedArray")) {
 if(!function_exists("getMsgEnvelop")) {
 	function getMsgEnvelop() {
 		$envelop=array("start"=>"","end"=>"");
-		
+
 		$format="";
 		if(isset($_REQUEST["format"])) $format=$_REQUEST["format"];
 		if($format=="select") {$envelop["start"]="<option>"; $envelop["end"]="</option>";}
-		elseif($format=="table") {$envelop["start"]="<tr a><td colspan=100 align=center>"; $envelop["end"]="</td></tr>";}
+		elseif($format=="table" || $format=="html") {$envelop["start"]="<tr a><td colspan=100 align=center>"; $envelop["end"]="</td></tr>";}
 		elseif($format=="list") {$envelop["start"]="<li>"; $envelop["end"]="</li>";}
 		elseif($format=="json") {$envelop["start"]="{"; $envelop["end"]="}";}
-		
+
 		return $envelop;
 	}
 }

@@ -8,12 +8,12 @@ function openInNewPopupWindow(mypage, myname, w, h, scroll,resize,menubar,status
 	if(h==null) h=500;
 	if(scroll==null) scroll="yes";
 	if(resize==null) resize="yes";
-		
+
 	if(menubar==null) menubar="no";
 	if(status==null) status="no";
 	if(titlebar==null) titlebar="no";
 	if(toolbar==null) toolbar="no";
-	
+
 	var winl = (screen.width - w) / 2;
 	var wint = (screen.height - h) / 2;
 	winprops = 'location=no,directories=no,copyhistory=no,height='+h+',width='+w+',top='+wint+',left='+winl;
@@ -21,34 +21,57 @@ function openInNewPopupWindow(mypage, myname, w, h, scroll,resize,menubar,status
 	return window.open(mypage, myname, winprops);
 }
 function showPopupURL(url,title, params) {
-	if(params==null) {
-		var params = {};
-		params.width = '600';
-		params.height = '300';
+	if(typeof iBox != "undefined") {
+		if(params==null) {
+			var params = {};
+			params.width = '600';
+			params.height = '300';
+		}
+		return iBox.showURL(url,title,params);
+	} else {
+		jqPopupURL(url, title);
 	}
-	return iBox.showURL(url,title,params);	
+	return null;
 }
 function showPopupData(data, title, params) {
 	if(title==null) {
 		title="Message";
 	}
-	if(params==null) {
-		var params = {};
-		params.width = '600';
-		params.height = '300';
-	}	
-	return iBox.show(data,title,params);
+	if(typeof iBox != "undefined") {
+		if(params==null) {
+			var params = {};
+			params.width = '600';
+			params.height = '300';
+		}
+		return iBox.show(data,title,params);
+	} else if(typeof $.colorbox=="function") {
+		if(params==null) {
+			var params = {};
+			params.width = '600';
+			params.height = '300';
+			params.html = data;
+		}
+		$.colorbox(params);
+	} else {
+		jqPopupData(data, title);
+	}
+	return null;
 }
 function showPopupDiv(divID, title, params) {
 	if(title==null) {
 		title=$(divID).attr("title");
 	}
-	if(params==null) {
-		var params = {};
-		params.width = '600';
-		params.height = '300';
+	if(typeof iBox != "undefined") {
+		if(params==null) {
+			var params = {};
+			params.width = '600';
+			params.height = '300';
+		}
+		return iBox.show($(divID).html(),title,params);
+	} else {
+		jqPopupDiv(divID,"Message");
 	}
-	return iBox.show($(divID).html(),title,params);
+	return null;
 }
 function jqPopupURL(url, title, func, modalX, w, h, anim) {
 	var resizable=true;
@@ -59,12 +82,12 @@ function jqPopupURL(url, title, func, modalX, w, h, anim) {
 		modalX=true;
 	}
 	if(w==null) {
-		w=600;		
+		w=600;
 	} else {
 		resizable=false;
 	}
 	if(h==null) {
-		h=300;		
+		h=300;
 	} else {
 		resizable=false;
 	}
@@ -119,15 +142,15 @@ function jqPopupURL(url, title, func, modalX, w, h, anim) {
 					$(this).dialog("close");
 					dialog.remove();
 				}
-			},	
+			},
 			// add a close listener to prevent adding multiple divs to the document
 			close: function(event, ui) {
 				dialog.remove();
 			}
 		};
-	}	
+	}
 	return dialog.load(
-		url, 
+		url,
 		{}, // omit this param object to issue a GET request instead a POST request, otherwise you may provide post parameters within the object
 		function (responseText, textStatus, XMLHttpRequest) {
 			dialog.dialog(params);
@@ -143,12 +166,12 @@ function jqPopupData(data, title, func, modalX, w, h, anim) {
 		modalX=true;
 	}
 	if(w==null) {
-		w=600;		
+		w=600;
 	} else {
 		resizable=false;
 	}
 	if(h==null) {
-		h=300;		
+		h=300;
 	} else {
 		resizable=false;
 	}
@@ -171,7 +194,7 @@ function jqPopupData(data, title, func, modalX, w, h, anim) {
 			buttons: {
 				Close: function() {
 					$(this).dialog( "close" );
-				}				
+				}
 			},
 			close: function(event, ui) {
 				// remove div with all data and events
@@ -207,7 +230,7 @@ function jqPopupData(data, title, func, modalX, w, h, anim) {
 					}
 					$(this).dialog( "close" );
 				}
-			},	
+			},
 			// add a close listener to prevent adding multiple divs to the document
 			close: function(event, ui) {
 				// remove div with all data and events
@@ -215,7 +238,7 @@ function jqPopupData(data, title, func, modalX, w, h, anim) {
 			}
 		};
 	}
-	
+
 	return dialog.dialog(params);
 }
 function jqPopupDiv(divID,func, modalX, w, h, anim) {
@@ -224,18 +247,18 @@ function jqPopupDiv(divID,func, modalX, w, h, anim) {
 		modalX=true;
 	}
 	if(w==null) {
-		w=600;		
+		w=600;
 	} else {
 		resizable=false;
 	}
 	if(h==null) {
-		h=300;		
+		h=300;
 	} else {
 		resizable=false;
 	}
 	if(anim==null) {
 		anim='slide';
-	}	
+	}
 	if(func==null) {
 		params={
 			width:w,
@@ -251,10 +274,10 @@ function jqPopupDiv(divID,func, modalX, w, h, anim) {
 			buttons: {
 				Close: function() {
 					$(this).dialog("close");
-				}				
+				}
 			},
 			close: function(event, ui) {
-				//event.preventDefault();				
+				//event.preventDefault();
 			}
 		};
 	} else {
@@ -279,7 +302,7 @@ function jqPopupDiv(divID,func, modalX, w, h, anim) {
 				},
 			},
 			close: function(event, ui) {
-				//event.preventDefault();				
+				//event.preventDefault();
 			}
 		};
 	}
@@ -353,7 +376,7 @@ function osxPopupURL(url, title, func, w, anim) {
 	}
 	// load remote content
 	return dialog.load(
-		url, 
+		url,
 		{}, // omit this param object to issue a GET request instead a POST request, otherwise you may provide post parameters within the object
 		function (responseText, textStatus, XMLHttpRequest) {
 			dialog.dialog(params);
@@ -385,7 +408,7 @@ function osxPopupData(data, title, func, w, anim) {
 			closeOnEscape:true,
 			dialogClass:'osx',
 			close: function(event, ui) {
-				//event.preventDefault();				
+				//event.preventDefault();
 			}
 		};
 	} else {
@@ -420,7 +443,7 @@ function osxPopupData(data, title, func, w, anim) {
 				}
 			},
 			close: function(event, ui) {
-				//event.preventDefault();				
+				//event.preventDefault();
 			}
 		};
 	}
@@ -448,7 +471,7 @@ function osxPopupDiv(divID,func, w, anim) {
 			closeOnEscape:true,
 			dialogClass:'osx',
 			close: function(event, ui) {
-				//event.preventDefault();				
+				//event.preventDefault();
 			}
 		};
 	} else {
@@ -483,7 +506,7 @@ function osxPopupDiv(divID,func, w, anim) {
 				}
 			},
 			close: function(event, ui) {
-				//event.preventDefault();				
+				//event.preventDefault();
 			}
 		};
 	}
@@ -498,21 +521,21 @@ function lgksOverlay(msg, title, func) {
 				if(typeof(func)=='function') func(txt);
 				else window[func](txt);
 			}
-		}, true,$(document).width()-50,$(document).height()-50,"fade");
+		}, true,$(window).width()-50,$(window).height()-50,"fade");
 }
 function lgksOverlayURL(url, title, func) {
 	if(title==null) {
 		title="Message";
 	}
 	if(func==null) {
-		return jqPopupURL(url,title,null, true,$(document).width()-50,$(document).height()-50,"slide");
+		return jqPopupURL(url,title,null, true,$(window).width()-50,$(window).height()-50,"slide");
 	} else {
 		return jqPopupURL(url,title,function(txt) {
 			if(func!=null) {
 				if(typeof(func)=='function') func(txt);
 				else window[func](txt);
-			}			
-		}, true,$(document).width()-50,$(document).height()-50,"fade");
+			}
+		}, true,$(window).width()-50,$(window).height()-50,"fade");
 	}
 }
 function lgksOverlayDiv(divID, func) {
@@ -521,7 +544,7 @@ function lgksOverlayDiv(divID, func) {
 				if(typeof(func)=='function') func(txt);
 				else window[func](txt);
 			}
-		}, true,$(document).width()-50,$(document).height()-50,"fade");
+		}, true,$(window).width()-50,$(window).height()-50,"fade");
 }
 function lgksOverlayFrame(url, title, func) {
 	if(title==null) {
@@ -529,7 +552,7 @@ function lgksOverlayFrame(url, title, func) {
 	}
 	data="<iframe src='"+url+"' width=100% height=100% frameborder=0 style='margin:auto;'></iframe>";
 	var dialog = $('<div class=ui-corner-all style="display:none;overflow:hidden;padding:0px;" title="'+title+'">'+data+'</div>').appendTo('body');
-	
+
 	if(func==null) {
 		params={
 			width:$(window).width()-50,
@@ -574,7 +597,7 @@ function lgksOverlayFrame(url, title, func) {
 				dialog.remove();
 			}
 		};
-	}	
+	}
 	return dialog.dialog(params);
 }
 function lgksPrompt(msg, title, fields, func) {
@@ -595,7 +618,7 @@ function lgksPrompt(msg, title, fields, func) {
 					"type":"text",
 					"value":sr,
 				}
-			};		
+			};
 	}
 	if(title==null) {
 		title="Message";
@@ -617,10 +640,10 @@ function lgksPrompt(msg, title, fields, func) {
 			};
 		$("#spd123").css("width","200px");
 		s1="<input id=input name=input value='"+sr+"' type=text style='width:95%;border:1px solid #777;'>";
-		$("#spd123").append(s1);		
+		$("#spd123").append(s1);
 	} else {
 		$("#spd123").generateForm(fields);
-		$("#spd123").loadFormUI();	
+		$("#spd123").loadFormUI();
 	}
 	return jqPopupDiv("#spd123",function(txt) {
 			if(txt=="OK") {
@@ -641,9 +664,9 @@ function lgksPrompt(msg, title, fields, func) {
 					} else {
 						if(typeof(func)=='function') func(out);
 						else window[func](out);
-					}					
+					}
 				}
-			}			
+			}
 			$("#spd123").detach();
 		}, true,'auto','auto');
 }
@@ -674,7 +697,7 @@ function lgksAlert(msg, title) {
 function lgksPopup(divID,buttons, paramConfigs,type,title) {
 	if(type==null) {
 		type='div';
-	}	
+	}
 	if(title==null) title="Message";
 	if((typeof buttons)=="function") {
 		func=buttons;
@@ -692,7 +715,7 @@ function lgksPopup(divID,buttons, paramConfigs,type,title) {
 	} else {
 		buttonParams={};
 	}
-	
+
 	params={
 			width:'400',
 			height:'210',
@@ -733,4 +756,80 @@ function lgksPopup(divID,buttons, paramConfigs,type,title) {
 			);
 	}
 	return null;
+}
+function lgksToast(msg,opts) {
+	var defOpts = {
+            displayTime: 2000,
+			bodyclass: "",
+            inTime: 300,
+            outTime: 200,
+            inEffect:"fade",
+            outEffect:"fade",
+            maxWidth: 500,
+            position: "top-right",
+        };
+    opts = $.extend(defOpts, opts);
+	opts.position=opts.position.toLowerCase().split("-");
+	var y,x;
+	switch (opts.position[0]) {
+        case "top":
+            y = 32;
+            break;
+        case "bottom":
+            y = 1.0325;
+            break;
+        default:
+            y = 2;
+    }
+    switch (opts.position[1]) {
+        case "left":
+            x = 72;
+            break;
+        case "right":
+            x = 72;
+            break;
+        default:
+            x = 2;
+    }
+	toast = $("<div class='toast "+opts.bodyclass+"'>" + msg + "</div>");
+    $("body").append(toast);
+    var l = window.innerHeight;
+    var j = window.innerWidth;
+    toast.css({
+            "max-width": opts.maxWidth + "px",
+            top: ((l - toast.outerHeight()) / y) + $(window).scrollTop() + "px",
+			position:"absolute",
+			padding:"10px",
+			"z-index":99999,
+			display:"none",
+        });
+    switch (opts.position[1]) {
+		case "left":
+			toast.css({
+				left: ((j - toast.outerWidth()) / x) + $(window).scrollLeft() + "px",
+			});
+			break;
+		case "right":
+			toast.css({
+				right: ((j - toast.outerWidth()) / x) + $(window).scrollLeft() + "px",
+			});
+			break;
+		default:
+			toast.css({
+				right: ((j - toast.outerWidth()) / x) + $(window).scrollLeft() + "px",
+			});
+	}
+    if(opts.bodyclass=="" || opts.bodyclass==null) {
+		toast.css({
+            color:"#ffffff",
+			"background-color":"rgba(0,0,0, 0.8)",
+			"border-radius":"4px",
+			"-moz-border-radius":"4px",
+			"-webkit-border-radius":"4px",
+			border:"2px solid #CCCCCC"
+        });
+	}
+    toast.show(opts.inEffect,opts.inTime).delay(opts.displayTime).hide(opts.outEffect,opts.outTime, function() {
+					//toast.remove();
+				});
 }

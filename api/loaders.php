@@ -11,16 +11,16 @@ if(!function_exists('loadMedia')) {
 		global $css;
 		$css->loadTheme($theme);
 	}
-	function loadAllMedia($media,$relativeOnly=false) {
+	function loadAllMedia($media,$relativeOnly=false,$defaultMedia=null) {
 		if(strlen($media)<=0) return "";
 		$linkedApps=getConfig("LINKED_APPS");
-		if(strlen($linkedApps)<=0) return "";
+		if(strlen($linkedApps)<=0) return loadMedia($media,$relativeOnly);
 		$linkedApps=explode(",",$linkedApps);
-		
+
 		global $mediaPaths;
 		if(count($mediaPaths)<=0)
-			$mediaPaths=array("userdata/","media/","");
-		
+			$mediaPaths=$GLOBALS['mediaPaths'];
+
 		foreach($linkedApps as $app) {
 			$appDir=APPS_FOLDER.$app."/";
 			if(is_dir(ROOT.$appDir)) {
@@ -33,87 +33,58 @@ if(!function_exists('loadMedia')) {
 							return $f;
 					}
 				}
-				
+
 			}
 		}
-		
+
 		return loadMedia($media,$relativeOnly);
 	}
-	function loadMedia($name,$relativeOnly=false) {
+	function loadMedia($name,$relativeOnly=false,$defaultMedia=null) {
 		if(strlen($name)<=0) return "";
-		$paths=array();
-		
-		if(!in_array(BASEPATH . $name,$paths) && file_exists(ROOT.BASEPATH . $name)) 
-				array_push($paths,BASEPATH . $name);
-		if(defined("APPS_USERDATA")) {
-			if(!in_array(BASEPATH . APPS_USERDATA . $name,$paths) && file_exists(ROOT.BASEPATH . APPS_USERDATA . $name)) 
-				array_push($paths,BASEPATH . APPS_USERDATA . $name);
-		}
-		if(defined("APPS_MEDIA_FOLDER")) {
-			if(!in_array(BASEPATH . APPS_MEDIA_FOLDER . $name,$paths) && file_exists(ROOT.BASEPATH . APPS_MEDIA_FOLDER . $name)) 
-				array_push($paths,BASEPATH . APPS_MEDIA_FOLDER . $name);
-		}
-		if(defined("APPS_THEME")) {
-			if(!in_array(THEME_FOLDER.APPS_THEME."/".$name,$paths) && file_exists(ROOT.THEME_FOLDER.APPS_THEME."/".$name)) 
-				array_push($paths,THEME_FOLDER.APPS_THEME."/".$name);
-		}
-		if(!in_array(MEDIA_FOLDER . $name,$paths) && file_exists(ROOT.MEDIA_FOLDER . $name)) 
-			array_push($paths,MEDIA_FOLDER . $name);		
-		if(defined("SITENAME")) {
-			if(!in_array(MEDIA_FOLDER . SITENAME . "/" . $name,$paths) && file_exists(ROOT.MEDIA_FOLDER . SITENAME . "/" . $name)) 
-				array_push($paths,MEDIA_FOLDER . SITENAME . "/" . $name);
-		}
+		$paths=getAllMediaFolders();
 		if(count($paths)>0) {
-			if(getConfig("FULL_MEDIA_PATH")=="true" && !$relativeOnly)
-				return SiteLocation.$paths[0];
-			else
-				return $paths[0];
+			foreach($paths as $a) {
+				if(file_exists(ROOT.$a.$name)) {
+					if(getConfig("FULL_MEDIA_PATH")=="true" && !$relativeOnly)
+						return SiteLocation.$a.$name;
+					else
+						return $a.$name;
+				}
+			}
 		}
-		return $name;
+		if($defaultMedia==null)
+			return $name;
+		else $defaultMedia;
 	}
 	function loadMediaList($mediaPath) {
 		if(strlen($mediaPath)<=0) return "";
-		$paths=array();
-		
-		if(defined("APPS_USERDATA")) {
-			if(!in_array(BASEPATH . APPS_USERDATA . $mediaPath,$paths) && file_exists(ROOT.BASEPATH . APPS_USERDATA . $mediaPath)) 
-				array_push($paths,BASEPATH . APPS_USERDATA . $mediaPath);
-		}
-		if(defined("APPS_MEDIA_FOLDER")) {
-			if(!in_array(BASEPATH . APPS_MEDIA_FOLDER . $mediaPath,$paths) && file_exists(ROOT.BASEPATH . APPS_MEDIA_FOLDER . $mediaPath)) 
-				array_push($paths,BASEPATH . APPS_MEDIA_FOLDER . $mediaPath);
-		}
-		if(defined("APPS_THEME")) {
-			if(!in_array(THEME_FOLDER.APPS_THEME."/".$mediaPath,$paths) && file_exists(ROOT.THEME_FOLDER.APPS_THEME."/".$mediaPath)) 
-				array_push($paths,THEME_FOLDER.APPS_THEME."/".$mediaPath);
-		}
-		if(!in_array(MEDIA_FOLDER . $mediaPath,$paths) && file_exists(ROOT.MEDIA_FOLDER . $mediaPath)) 
-			array_push($paths,MEDIA_FOLDER . $mediaPath);		
-		if(defined("SITENAME")) {
-			if(!in_array(MEDIA_FOLDER . SITENAME . "/" . $mediaPath,$paths) && file_exists(ROOT.MEDIA_FOLDER . SITENAME . "/" . $mediaPath)) 
-				array_push($paths,MEDIA_FOLDER . SITENAME . "/" . $mediaPath);
-		}
-		
+		$paths=getAllMediaFolders();
+
 		foreach($paths as $a) {
-			$fa=$a;
-			if(getConfig("FULL_MEDIA_PATH")=="true")
-				$fa=SiteLocation.$a;
-			if(file_exists(ROOT . $a)) {
+			$fa=$a.$mediaPath;
+			if(is_dir(ROOT.$fa)) {
 				$out=array();
-				$arr=scandir($a);
+				$arr=scandir(ROOT.$fa);
 				unset($arr[0]);unset($arr[1]);
-				
-				foreach($arr as $m=>$n) {
-					$fs=$fa."/".$n;
-					$fs=str_replace("//","/",$fs);
-					array_push($out,$fs);
-				}				
+				if(getConfig("FULL_MEDIA_PATH")=="true") {
+					foreach($arr as $m=>$n) {
+						$fs=$fa."/".$n;
+						$fs=str_replace("//","/",$fs);
+						array_push($out,SiteLocation.$fs);
+					}
+				} else {
+					foreach($arr as $m=>$n) {
+						$fs=$fa."/".$n;
+						$fs=str_replace("//","/",$fs);
+						array_push($out,$fs);
+					}
+				}
 				return $out;
 			}
 		}
 		return array();
 	}
-	function loadContent($p) {
+	function loadContent($p,$defaultContent=null) {
 		global $js,$css,$ling,$cache,$templates;
 		if(strlen($p)<=0) return;
 		$paths=array();
@@ -129,7 +100,7 @@ if(!function_exists('loadMedia')) {
 			}
 		}
 		global ${$p};
-		
+
 		//echo $p;
 		/*if(function_exists($p)) {
 			call_user_func($p);
@@ -142,8 +113,33 @@ if(!function_exists('loadMedia')) {
 		} elseif(defined($p)) {
 			echo constant($p);
 		} else {
-			echo $p;
+			if($defaultContent==null)
+				echo $p;
+			else
+				echo $defaultContent;
 		}
+	}
+	function getAllMediaFolders() {
+		$paths=array();
+		if(!isset($_ENV['MEDIA_DIRS'])) {
+			$mediaPaths=$GLOBALS['mediaPaths'];
+			if(defined("BASEPATH")) {
+				foreach($mediaPaths as $a) {
+					array_push($paths,BASEPATH.$a);
+				}
+			}
+			if(defined("APPS_THEME")) {
+				array_push($paths,THEME_FOLDER.APPS_THEME."/");
+			}
+			if(defined("MEDIA_FOLDER")) {
+				array_push($paths,MEDIA_FOLDER);
+				array_push($paths,MEDIA_FOLDER.SITENAME."/");
+			}
+			$_ENV['MEDIA_DIRS']=$paths;
+		} else {
+			$paths=$_ENV['MEDIA_DIRS'];
+		}
+		return $paths;
 	}
 }
 ?>

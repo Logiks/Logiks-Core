@@ -1,19 +1,18 @@
 <?php
-if(!defined('ROOT')) exit('No direct script access allowed');
 /*
  * This file is used for session based minor Encryption And Decryption.
  * This mostly does not support cross session encryption and decryption.
- * 
+ *
  * */
 class LogiksEncryption {
     private $skey = "asd4564asd5as4";//session_id();
-	
+
 	public function __construct($skey=null) {
 		if($skey==null) {
 			$this->skey=session_id();
 		}
 	}
-	
+
     public function safe_b64encode($string) {
         $data = base64_encode($string);
         $data = str_replace(array('+','/','='),array('-','_',''),$data);
@@ -29,7 +28,7 @@ class LogiksEncryption {
         return base64_decode($data);
     }
 
-    public function encode($value){ 
+    public function encode($value){
         if(!$value){return false;}
         $text = $value;
         if(function_exists("mcrypt_get_iv_size")) {
@@ -37,7 +36,7 @@ class LogiksEncryption {
 	        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 	        $text = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $this->skey, $text, MCRYPT_MODE_ECB, $iv);
         }
-        return trim($this->safe_b64encode($text)); 
+        return trim($this->safe_b64encode($text));
     }
 
     public function decode($value){

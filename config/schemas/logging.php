@@ -32,8 +32,8 @@ $cfgSchema["ERROR_VIEWER"]=array(
 $cfgSchema["ERROR_HANDLER"]=array(
 		"type"=>"list",
 		"values"=>array(
-			"logiks"=>"Logiks Framework",
-			"php"=>"PHP Core",
+			"Logiks Framework"=>"logiks",
+			"PHP Core"=>"php",
 			)
 	);
 $this->cfgSetup["LOG_DATE"]=array(

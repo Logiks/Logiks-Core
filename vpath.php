@@ -2,23 +2,23 @@
 function analyzeQuery() {
 	$relRoot=dirname($_SERVER["SCRIPT_NAME"])."/";
 	$relRoot=str_replace("//","/",$relRoot);
-	
+
 	$uri=$_SERVER["REQUEST_URI"];
 	$relUri=substr($uri,strlen($relRoot));
-	
+
 	$qr=explode("?",$relUri);
 	if(!isset($qr[1])) $qr[1]="";
 	$relUri=$qr[0];
 	$qUri=$qr[1];
-	
+
 	$comps=explode("/",$relUri);
-	
+
 	if(isset($comps[0])) {
 		$_REQUEST['site']=$comps[0];
 		unset($comps[0]);
 	}
 	$_REQUEST['page']=implode("/",$comps);
-	
+
 	$ruri="{$relRoot}index.php?site={$_REQUEST['site']}";
 	if(strlen($_REQUEST['page'])>0) {
 		$ruri.="&page={$_REQUEST['page']}";
@@ -51,6 +51,7 @@ if($_REQUEST['site']=="services") {
 	$_REQUEST['scmd']=$pg;
 	clearSiteParams();
 	chdir("services");
+	foreach($_GET as $a=>$b) $_REQUEST[$a]=$b;
 	include "index.php";
 } else {
 	$appDir=dirname(__FILE__)."/apps/{$_REQUEST['site']}";

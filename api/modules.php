@@ -13,20 +13,9 @@ if(!function_exists('loadModule')) {
 	function loadModule($module) {
 		global $js,$css,$ling,$cache,$templates;
 		if(strlen($module)<=0) return;
-		global $modulespath;
-		
-		if(defined("APPS_PLUGINS_FOLDER")) {
-			$p=BASEPATH.APPS_PLUGINS_FOLDER."modules/";
-			if(file_exists(ROOT.$p)) {
-				if(!in_array($p,$modulespath)) array_push($modulespath, $p);
-			}
-		}
-		if(defined("PLUGINS_FOLDER")) {
-			if(file_exists(ROOT.PLUGINS_FOLDER."modules/")) {
-				if(!in_array(PLUGINS_FOLDER."modules/",$modulespath)) array_push($modulespath, PLUGINS_FOLDER."modules/");
-			}
-		}
-		//printArray($modulespath);
+
+		$modulespath=getAllModulesFolders();
+
 		$fpath="";
 		foreach($modulespath as $a) {
 			$f1=ROOT . $a . $module . "/index.php";
@@ -39,14 +28,24 @@ if(!function_exists('loadModule')) {
 		}
 		if(strlen($fpath)>0) {
 			$x=dirname(str_replace(ROOT,"",$fpath))."/";
-			
+
 			$p=func_get_args();
 			unset($p[0]);
+
+			$curModule="";
+			if(isset($_ENV['CURRENT_MODULE'])) $curModule=$_ENV['CURRENT_MODULE'];
+			$_ENV['CURRENT_MODULE']=$module;
 			$MODULE_PARAMS=$p;
+			runPluginHooks($module,"preload");
 			include $fpath;
+			runPluginHooks($module,"postload");
+			$_ENV['CURRENT_MODULE']=$curModule;
+
+			return true;
 		} else {
 			if(MASTER_DEBUG_MODE=='true') trigger_error("Module Not Found :: " . $module);
 		}
+		return false;
 	}
 	function loadModuleLib($module,$file) {
 		$f=checkModule($module);
@@ -59,26 +58,14 @@ if(!function_exists('loadModule')) {
 		}
 		return false;
 	}
-	
+
 	function checkModule($module) {
 		if(strlen($module)<=0) return false;
-		global $modulespath;
-		if(defined("APPS_PLUGINS_FOLDER")) {
-			$p=BASEPATH . APPS_PLUGINS_FOLDER."modules/";
-			if(file_exists(ROOT.$p)) {
-				array_push($modulespath, $p);
-			}
-		}
-		if(defined("PLUGINS_FOLDER")) {
-			if(file_exists(ROOT.PLUGINS_FOLDER."modules/")) {
-				if(!in_array(PLUGINS_FOLDER."modules/",$modulespath)) array_push($modulespath, PLUGINS_FOLDER."modules/");
-			}
-		}
-		//printArray($modulespath);
+		$modulespath=getAllModulesFolders();
 		$fpath="";
 		foreach($modulespath as $a) {
 			$f1=ROOT . $a . $module . "/index.php";
-			$f2=ROOT . $a . $module . ".php";			
+			$f2=ROOT . $a . $module . ".php";
 			if(file_exists($f1)) {
 				//include_once $f1;
 				$fpath=$f1;
@@ -96,6 +83,49 @@ if(!function_exists('loadModule')) {
 		} else {
 			return false;
 		}
+	}
+
+	function checkService($scmd,$ext="php",$path=false) {
+		$cmdArr=array();
+		if(!defined("SERVICE_ROOT")) {
+			define("SERVICE_ROOT",ROOT.SERVICES_FOLDER);
+		}
+		$cmdArr=array(
+					SERVICE_ROOT.$ext."/".$scmd.".".$ext,
+					ROOT.APPS_FOLDER.SITENAME."/services/".$ext."/".$scmd.".".$ext,
+					ROOT.APPS_FOLDER.SITENAME."/".APPS_PLUGINS_FOLDER."modules/".$scmd."/service.php",
+					ROOT.PLUGINS_FOLDER."modules/".$scmd."/service.php",
+					SERVICE_ROOT.$ext."/".SITENAME."/".$scmd.".".$ext,
+				);
+		foreach($cmdArr as $fl) {
+			if(file_exists($fl)) {
+				if($path) return $f1;
+				else return true;
+			}
+		}
+		if($path) return "";
+		else return false;
+	}
+	function getAllModulesFolders() {
+		$paths=array();
+		if(!isset($_ENV['MODULES_DIRS'])) {
+			if(defined("APPS_PLUGINS_FOLDER")) {
+				$p=BASEPATH.APPS_PLUGINS_FOLDER."modules/";
+				if(file_exists(ROOT.$p)) {
+					if(!in_array($p,$paths)) array_push($paths, $p);
+				}
+			}
+			if(defined("PLUGINS_FOLDER")) {
+				$p=PLUGINS_FOLDER."modules/";
+				if(file_exists(ROOT.$p)) {
+					if(!in_array($p,$paths)) array_push($paths, $p);
+				}
+			}
+			$_ENV['MODULES_DIRS']=$paths;
+		} else {
+			$paths=$_ENV['MODULES_DIRS'];
+		}
+		return $paths;
 	}
 }
 ?>

@@ -4,22 +4,22 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 include_once "libs/db/QueryGenerator.inc";
 
-class Database {	
+class Database {
 	private $link;
 	private $driver=null;
 	private $dbName=null;
 	private $dbHost=null;
-	
+
 	private $logConnection=false;
 	private $delete_hack=true;
 	private $readOnly=false;
-	
+
 	private $ddl=array("CREATE","ALTER","DROP","TRUNCATE","COMMENT","GRANT","REVOKE");
 	private $dml=array("INSERT","UPDATE","DELETE","CALL");
 	private $blockedStmnts=array();
-	
+
 	private static $qCount=0;
-	
+
 	public function __construct($driver=null) {
 		if($driver==null) $this->driver=$GLOBALS['DBCONFIG']["DB_DRIVER"];
 		else $this->driver=$driver;
@@ -29,27 +29,27 @@ class Database {
 	}
 	public function logConnect($dbuser=null,$dbpwd=null,$dbhost=null,$dbName=null) {
 		$this->logConnection=true;
-		
+
 		if($dbuser==null) $dbuser=$GLOBALS['DBCONFIG']["DB_USER"];
 		if($dbpwd==null) $dbpwd=$GLOBALS['DBCONFIG']["DB_PASSWORD"];
 		if($dbhost==null) $this->dbhost=$GLOBALS['DBCONFIG']["DB_HOST"]; else $this->dbhost=$dbhost;
 		if($dbName==null) $this->dbName=$GLOBALS['DBCONFIG']["DB_DATABASE"]; else $this->dbName=$dbName;
-		
+
 		if($GLOBALS['DBCONFIG']["DB_READ_ONLY"]=="true") $this->readOnly=true;
-		
+
 		$this->blockedStmnts=array();
-		
+
 		if($this->isOpen()) return true;
 		$this->link = mysql_connect($this->dbhost,$dbuser,$dbpwd,$this->dbName);
 		if (!$this->link) {
 			return false;
 		}
-		
+
 		$db = mysql_select_db($this->dbName);
 		if (!$db) {
 			return false;
 		}
-		
+
 		return true;
 	}
 	public function connect($dbuser=null,$dbpwd=null,$dbhost=null,$dbName=null) {
@@ -57,49 +57,55 @@ class Database {
 		if($dbpwd==null) $dbpwd=$GLOBALS['DBCONFIG']["DB_PASSWORD"];
 		if($dbhost==null) $this->dbhost=$GLOBALS['DBCONFIG']["DB_HOST"]; else $this->dbhost=$dbhost;
 		if($dbName==null) $this->dbName=$GLOBALS['DBCONFIG']["DB_DATABASE"]; else $this->dbName=$dbName;
-		
 		if($GLOBALS['DBCONFIG']["DB_READ_ONLY"]=="true") $this->readOnly=true;
-		
+
 		if(isset($GLOBALS['DBCONFIG']["BLOCK_STATEMENTS"]))
 			$this->blockedStmnts=explode(",",strtoupper($GLOBALS['DBCONFIG']["BLOCK_STATEMENTS"]));
-		
+
+		if(strlen($this->dbhost)<=0 || strlen($dbuser)<=0 || strlen($this->dbName)<=0) {
+			return false;
+		}
+
 		if($this->isOpen()) return true;
-		
+
 		if(MASTER_DEBUG_MODE=="true")
 			$this->link = mysql_connect($this->dbhost,$dbuser,$dbpwd,$this->dbName) or die(mysql_error());
 		else
 			$this->link = mysql_connect($this->dbhost,$dbuser,$dbpwd,$this->dbName) or die("MySQL DB Connection Error");
-			
+
 		if (!$this->link) {
 			return false;
 		}
-		$db = mysql_select_db($this->dbName) or die("MySQL DB Select Error");
+		if(MASTER_DEBUG_MODE=="true")
+			$db = mysql_select_db($this->dbName) or die(mysql_error());
+		else
+			$db = mysql_select_db($this->dbName) or die("MySQL DB Select Error");
 		if (!$db) {
 			return false;
 		}
-		
+
 		return true;
 	}
 	public function close() {
 		if($this->link) {
 			mysql_close($this->link);
-		}		
+		}
 		$this->link=null;
 	}
 	public function isOpen() {
 		if($this->link!=null) return true;
 		else return false;
 	}
-	
+
 	public function getLink() {return $this->link;}
 	public function getdriver() {return $this->driver;}
 	public function getdbName() {return $this->dbName;}
 	public function getdbHost() {return $this->dbHost;}
-	
+
 	public function getPDO($dbuser=null,$dbpwd=null) {
 		if($dbuser==null) $dbuser=$GLOBALS['DBCONFIG']["DB_USER"];
 		if($dbpwd==null) $dbpwd=$GLOBALS['DBCONFIG']["DB_PASSWORD"];
-		
+
 		//$dsn = 'mysql:dbname=testdb;host=127.0.0.1;port=3333';
 		$dsn=$this->driver.":dbname=".$this->dbName.";host=".$this->dbhost;
 		try {
@@ -110,7 +116,7 @@ class Database {
 		}
 		echo null;
 	}
-	
+
 	public static function getTable($tblName) {
 		if(isset($GLOBALS['DBCONFIG']["DB_PREFIX"]) && strlen($GLOBALS['DBCONFIG']["DB_PREFIX"])>0) {
 			$tblName=$GLOBALS['DBCONFIG']["DB_PREFIX"]."_".$tblName;
@@ -151,7 +157,7 @@ class Database {
 				return false;
 			}
 			$sql = QueryGenerator::prep_query($sql);
-			
+
 			if(class_exists("LogDB")) {
 				LogDB::singleton()->log_SQLEvent($sql,null,$this->getdbName());
 			}
@@ -160,7 +166,7 @@ class Database {
 				$r=mysql_query($sql, $this->link) or die(mysql_error($this->link));
 				return $r;
 			} else {
-				$r=mysql_query($sql, $this->link);
+				$r=mysql_query($sql, $this->link);// or die(mysql_error($this->link));
 				return $r;
 			}
 		}
@@ -175,9 +181,9 @@ class Database {
 			return false;
 		}
 		$sql = QueryGenerator::prep_query($sql);
-		
+
 		$r=mysql_query($sql, $this->link) or die(mysql_error($this->link));
-		
+
 		if($r) return true;
 		else return false;
 	}
@@ -186,7 +192,7 @@ class Database {
 			@mysql_free_result($result);
 		}
 	}
-	
+
 	//All Info Functions
 	public function recordCount($result) {
 		if($result) {
@@ -233,7 +239,7 @@ class Database {
 		}
 		return $arr;
 	}
-	
+
 	public function getColumnList($tbl) {
 		$sql="SHOW COLUMNS FROM $tbl";
 		$result=mysql_query($sql,$this->link);
@@ -245,7 +251,7 @@ class Database {
 		}
 		return $arr;
 	}
-	
+
 	public function getTableInfo($table) {
 		$query="SELECT * from $table limit 0,1";
 		$result=mysql_query($query,$this->link);
@@ -263,13 +269,13 @@ class Database {
 			$i++;
 		}
 		mysql_free_result($result);
-		
+
 		$data=Array();
 		$data[0]=$colname;
 		$data[1]=$coltype;
 		return $data;
 	}
-	
+
 	public function getPrimaryKey($table) {
 		$query="SHOW KEYS FROM $table WHERE Key_name='PRIMARY'";
 		$result=mysql_query($query,$this->link);
@@ -279,15 +285,15 @@ class Database {
 		}
 		$record=mysql_fetch_assoc($result);
 		$pKey=$record['Column_name'];
-		
+
 		if(strlen($pKey)<=0) {
 			$query="SELECT * FROM $table limit 0,1";
 			$result=mysql_query($query,$this->link);
-			
+
 			$meta = mysql_fetch_field($result, 0);
 			$pKey=$meta->name;
 		}
-		
+
 		return $pKey;
 	}
 	public function getFieldType($resultSet, $colIndex) {
@@ -327,11 +333,11 @@ class Database {
 		}
 		return false;
 	}
-	
+
 	public function fetchField($resultSet,$offSet=0) {
 		return mysql_fetch_field($resultSet,$offSet);
 	}
-	
+
 	public function fetchData($resultSet,$format="assoc",$result_type=MYSQL_BOTH) {
 		$format=strtolower($format);
 		if($format=="array") {
@@ -384,7 +390,7 @@ class Database {
 			}
 		}
 		$this->freeResult($result);
-		
+
 		if($single) {
 			if(count($ans)<=0) {
 				return "";
@@ -399,7 +405,7 @@ class Database {
 			}
 		}
 	}
-	
+
 	public function cloneRow($table,$where) {
 		$cols=$this->getColumnList($table);
 		$colArr=array_keys($cols);
@@ -409,26 +415,26 @@ class Database {
 		//exit($sql);
 		return $this->executeQuery($sql);
 	}
-	
+
 	public function cloneRowById($table,$idCol,$idColValue) {
 		$cols=$this->getColumnList($table);
 		unset($cols[$idCol]);
-		
-		$colArr=array_keys($cols);		
+
+		$colArr=array_keys($cols);
 		$colStr=implode(", ",$colArr);
 		$sql="INSERT INTO $table ($colStr) (SELECT $colStr FROM $table WHERE $idCol=$idColValue)";
 		$a=$this->executeQuery($sql);
 		//exit($this->getError());
 		return $a;
 	}
-	
+
 	public function getErrorNo() {
 		return mysql_errno($this->link);
 	}
 	public function getError() {
 		return mysql_error($this->link);
 	}
-	
+
 	public function getSchema($dropIfExists=true, $tables=null) {
 		$tblList=$this->getTableList();
 		$s="";
@@ -462,17 +468,17 @@ class Database {
 		}
 		return $s;
 	}
-	
+
 	public function getTableInserts($table) {
 		$result =  $this->executeQuery('SELECT * FROM '.$table);
 		$num_fields = $this->columnCount($result);
-		
+
 		$s="";
 		for ($i = 0; $i < $num_fields; $i++) {
 			while($row = $this->fetchData($result,"array")) {
-				$s.= 'INSERT INTO '.$table.' VALUES (';        
-				for($j=0; $j<$num_fields; $j++) {                
-					$row[$j] = addslashes($row[$j]);          
+				$s.= 'INSERT INTO '.$table.' VALUES (';
+				for($j=0; $j<$num_fields; $j++) {
+					$row[$j] = addslashes($row[$j]);
 					$row[$j] = str_replace("\n","\\"."n",$row[$j]);
 					if(isset($row[$j])) { $s.= '"'.$row[$j].'"' ; } else { $s.= '""'; }
 					if($j<($num_fields-1)) { $s.= ','; }
@@ -482,7 +488,7 @@ class Database {
 		}
 		return $s;
 	}
-	
+
 	public function __call($name, $arguments) {
 		if(strpos($name,"_")==0) {
 			$n=sizeOf($arguments);

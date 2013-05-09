@@ -4,27 +4,35 @@
 .formTable td.columnEqual {
 	font-weight:bold;
 }
-.formTable tr.errorMsgRow td.columnMsg {
+.formTable .errorMsgRow .columnMsg {
 	color:#333;
 	padding-right:80px;
 	background:#FFEBE0;
+	width: 100%
 }
-.formTable tr.warnMsgRow td.columnMsg {
+.formTable .warnMsgRow .columnMsg {
 	color:#333;
 	padding-right:80px;
 	background:#C9EBFF;
+	width: 100%
 }
 .formTable input, .formTable textarea, .formTable select {
 	border:1px solid #BBB;
 	font-size: 12px;
 	color:#000;
-	padding: 1px 4px 1px 4px;	
+	padding: 1px 4px 1px 4px;
 	width:90%;
 }
-
+.formTable select {
+	width:93%;
+}
+ul.formTable select {
+	width:92%;
+}
 .formTable input[type=radio], .formTable input[type=checkbox] {
 	width:20px;
 }
+
 .select, select {
 	width:92%;
 	height:22px;
@@ -49,7 +57,7 @@ select[multiple] {
 	resize:none;
 }
 
-.password, input[type=password] {	
+.password, input[type=password] {
 	text-align:left;
 	background: #fff url(images/forms/key.png) no-repeat;
 	background-position: right;
@@ -99,6 +107,9 @@ select[multiple] {
 	background: #fff url(images/forms/mobile.png) no-repeat;
 	background-position:right;
 }
+.colorfield, input[type=color] {
+	width:30px;
+}
 
 .tagfield {
 	width:95%;
@@ -112,11 +123,6 @@ select[multiple] {
 .currencyfield {
 	text-align:left;
 	background: #fff url(images/forms/money.png) no-repeat;
-	background-position:right;
-}
-.calculatorfield {
-	text-align:left;
-	background: #fff url(images/forms/calculator.png) no-repeat;
 	background-position:right;
 }
 .barcodefield {
@@ -254,15 +260,15 @@ select[multiple] {
 
 .field_progress {background:transparent url(images/forms/progress/pbar.gif) no-repeat center center;}
 
-.field_required {background:transparent url(images/forms/notify/required.png) no-repeat center right; width:16px; height:16px;}
+.field_required {width:16px; height:16px;color:red;}
 .field_autocomplete {background:transparent url(images/forms/notify/autocomplete.png) no-repeat center right; width:16px; height:16px;cursor:pointer;}
 .field_unique {background:transparent url(images/forms/notify/unique.png) no-repeat center right; width:16px; height:16px;cursor:pointer;}
 
 .field_icon {width:16px;height:16px;}
-.field_check {background:transparent url(images/forms/notify/check.png) no-repeat top right;}
-.field_error {background:transparent url(images/forms/notify/error.png) no-repeat top right;}
-.field_warns {background:transparent url(images/forms/notify/alert.png) no-repeat top right;}
-.field_info {background:transparent url(images/forms/notify/info.png) no-repeat top right;}
+.field_check {background:transparent url(images/forms/notify/check.png) no-repeat center right;}
+.field_error {background:transparent url(images/forms/notify/error.png) no-repeat center right;}
+.field_warns {background:transparent url(images/forms/notify/alert.png) no-repeat center right;}
+.field_info {background:transparent url(images/forms/notify/info.png) no-repeat center right;}
 
 .stars_on,.stars_off {background:transparent url(images/forms/stars/star.png) no-repeat center center; width:16px; height:16px;}
 .stars_off {background:transparent url(images/forms/stars/staroff.png) no-repeat center center;}
@@ -271,7 +277,7 @@ select[multiple] {
 .imageuploader {background:transparent url(images/forms/img/image_up.png) no-repeat center center;border:1px solid #aaa;height:98%;width:100%;margin:auto;}
 
 /*Jquery UI Modifications*/
-.ui-progressbar-value { 
+.ui-progressbar-value {
 	background-image: url(images/forms/progress/pbar.gif);
 }
 .progressbar.ui-progressbar.ui-widget.ui-widget-content, .slider.ui-slider.ui-slider-horizontal.ui-widget.ui-widget-content {

@@ -1,5 +1,4 @@
 <?php
-if(!defined('ROOT')) exit('No direct script access allowed');
 /*
  * This class is used for creating widget views,etc.
  */
@@ -7,10 +6,10 @@ class Widgets {
 	public static function isEnabled($widget) {
 		$wGroups=array();
 		if(strlen(getConfig("BLOCK_WIDGET_GROUPS"))>0) {
+			$wGroups=explode(",",getConfig("BLOCK_WIDGET_GROUPS"));
 			$wg=explode("-",strtolower($widget));
 			if(count($wg)>1) {
 				$wg=$wg[0];
-				$wGroups=explode(",",getConfig("BLOCK_WIDGET_GROUPS"));
 				if(in_array($wg,$wGroups)) {
 					return false;
 				}
@@ -18,7 +17,7 @@ class Widgets {
 		}
 		return true;
 	}
-	
+
 	public static function getWidgetGroupCode($funcCode) {
 		global $current_page;
 		if(file_exists($funcCode)) {
@@ -29,10 +28,10 @@ class Widgets {
 	}
 	public static function printWidget($name, $widgetPath, $params=array(), $asPortlets=true) {
 		global $js,$css,$ling,$cache,$templates;
-		
+
 		if(strlen($widgetPath)<=0) return;
 		if($asPortlets) echo "<div name='$name' class='portlet'>";
-		$WIDGET_PARAMS=$params;		
+		$WIDGET_PARAMS=$params;
 		$WIDGET_PARAMS["WIDGET_GROUP_ID"]=Widgets::getWidgetGroupCode($name);
 		include $widgetPath;
 		if($asPortlets) echo "</div>";

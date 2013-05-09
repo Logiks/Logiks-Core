@@ -58,7 +58,7 @@ if(!function_exists("unzipFile")) {
 			return false;
 		}
 		if(is_file($src)) {		
-			$zip->addFile($src,substr($src,$path));		
+			$zip->addFile($src,substr($src,$path));
 		}
 		else {
 			if(!is_dir($src)){

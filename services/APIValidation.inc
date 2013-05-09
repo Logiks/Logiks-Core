@@ -4,8 +4,9 @@ if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 //All API Key Related Functions
 //Working On UserBased APIKey Generation And Validation
 class APIValidation {
-	public function __construct() {
-		//API_KEY_ENGINE
+	private static $API_ENGINE="simple_engine";
+	public function __construct($engine="simple_engine") {
+		$this->API_ENGINE=$engine;
 	}
 	public function checkAPIKey($apiKey,$site) {
 		$a=false;
@@ -24,7 +25,7 @@ class APIValidation {
 			if(strlen(API_KEY)>0) {
 				if(isset($apiKey) && API_KEY==$apiKey) {
 					$a=true;
-				}			
+				}
 			} else {
 				$a=true;
 			}

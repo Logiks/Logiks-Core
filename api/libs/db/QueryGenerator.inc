@@ -1,6 +1,8 @@
 <?php
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 class QueryGenerator {
-		
+
 	//Special Queries Generator
 	public static function _list_tablesQ($database) {
 		return "SHOW TABLES FROM $database";
@@ -13,30 +15,30 @@ class QueryGenerator {
 	public static function _versionQ() {
 		return "SELECT version() AS ver";
 	}
-	
+
 	public static function _recordCountQ($table) {
 		return "SELECT count(*) AS count FROM $table";
 	}
-	
+
 	public static function _truncateQ($table) {
 		return "TRUNCATE ".$table;
 	}
-	
+
 	/**
 	 * Select statement
 	 *
 	 * Generates a platform-specific Select string from the supplied data
-	 * 
+	 *
 	 * @author Mita Prava
-	 * 
+	 *
 	 * @access	public
 	 * @param	string	the table name
 	 * @param	array	the Columns
 	 * @return	string
 	 */
-	public static function _selectQ($table, $cols="", $where=array(), $orderby = array(), $limit = FALSE) {
+	public static function _selectQ($table, $cols="", $where=null, $groupby = null, $orderby = null, $limit = FALSE) {
 		$sql="SELECT ";
-		
+
 		if(is_array($cols)) {
 			$sql.=implode(", ", QueryGenerator::_cleanArr($cols))." ";
 		} elseif(strlen($cols)==0) {
@@ -44,8 +46,8 @@ class QueryGenerator {
 		} else {
 			$sql.="$cols ";
 		}
-		$sql.="  FROM " .$table;
-		
+		$sql.=" FROM ".$table;
+
 		if(is_array($where)) {
 			$where=QueryGenerator::_cleanArr($where);
 			$w="";
@@ -57,18 +59,25 @@ class QueryGenerator {
 		} elseif(strlen($where)>0) {
 			$sql.=" WHERE $where";
 		}
+		$sql=trim($sql);
+		if(is_array($groupby)) {
+			$groupby=QueryGenerator::_cleanArr($groupby);
+			$sql.=(sizeOf($groupby) >= 1)?' GROUP BY '.implode(", ", $groupby):'';
+		} elseif(strlen($groupby)>0) {
+			$sql.=" GROUP BY $groupby";
+		}
 		if(is_array($orderby)) {
 			$orderby=QueryGenerator::_cleanArr($orderby);
 			$sql.=(sizeOf($orderby) >= 1)?' ORDER BY '.implode(", ", $orderby):'';
 		} elseif(strlen($orderby)>0) {
 			$sql.=" ORDER BY $orderby";
 		}
-		$sql.=(!$limit) ? '' : ' LIMIT '.$limit;
-		
-		return $sql;		
+		$sql.=(!$limit) ? '' : ' LIMIT '.QueryGenerator::_clean($limit);;
+
+		return $sql;
 	}
-	
-	
+
+
 	/**
 	 * Insert statement
 	 *
@@ -81,9 +90,10 @@ class QueryGenerator {
 	 * @return	string
 	 */
 	public static function _insertQ($table, $keys, $values) {
+		$values=QueryGenerator::_cleanArr($values);
 		return "INSERT INTO ".$table." (".implode(', ', $keys).") VALUES ('".implode("', '", $values)."')";
 	}
-	
+
 	/**
 	 * Insert statement
 	 *
@@ -97,6 +107,7 @@ class QueryGenerator {
 	public static function _insertQ1($table, $arr) {
 		$keys=array_keys($arr);
 		$values=array_values($arr);
+		$values=QueryGenerator::_cleanArr($values);
 		return QueryGenerator::_insertQ($table, $keys, $values);
 	}
 
@@ -112,9 +123,10 @@ class QueryGenerator {
 	 * @return	string
 	 */
 	public static function _replaceQ($table, $keys, $values) {
+		$values=QueryGenerator::_cleanArr($values);
 		return "REPLACE INTO ".$table." (".implode(', ', $keys).") VALUES ('".implode("', '", $values)."')";
 	}
-	
+
 	/**
 	 * Replace statement
 	 *
@@ -128,9 +140,10 @@ class QueryGenerator {
 	public static function _replaceQ1($table, $arr) {
 		$keys=array_keys($arr);
 		$values=array_values($arr);
+		$values=QueryGenerator::_cleanArr($values);
 		return "REPLACE INTO ".$table." (".implode(', ', $keys).") VALUES ('".implode("', '", $values)."')";
 	}
-	
+
 	/**
 	 * Insert_batch statement
 	 *
@@ -149,9 +162,10 @@ class QueryGenerator {
 		foreach($arr as $a=>$b) {
 			$k=array_keys($b);
 			$v=array_values($b);
+			$v=QueryGenerator::_cleanArr($v);
 			$cols=implode(",",$k);
 			array_push($vals,"(".implode(",",QueryGenerator::_sqlDataArr($v)).")");
-		}		
+		}
 		$sql.="($cols) VALUES ".implode(",",$vals);
 		//return "".$table." (".implode(', ', $keys).") VALUES ".implode(', ', $values);
 		return $sql;
@@ -180,7 +194,7 @@ class QueryGenerator {
 		$orderby = (count($orderby) >= 1)?' ORDER BY '.implode(", ", $orderby):'';
 
 		$sql = "UPDATE ".$table." SET ".implode(', ', $valstr);
-		
+
 		if(is_array($where)) {
 			$where=QueryGenerator::_cleanArr($where);
 			$w="";
@@ -198,12 +212,12 @@ class QueryGenerator {
 		} elseif(strlen($orderby)>0) {
 			$sql.=" ORDER BY $orderby";
 		}
-		
+
 		$limit = ( ! $limit) ? '' : ' LIMIT '.$limit;
 		$sql.="$limit";
-		
+
 		return $sql;
-	}	
+	}
 
 	/**
 	 * Delete statement
@@ -218,7 +232,7 @@ class QueryGenerator {
 	 */
 	public static function _deleteQ($table, $where = array(), $like = array(), $limit = FALSE) {
 		$sql="DELETE FROM $table";
-		
+
 		if(is_array($where)) {
 			$where=QueryGenerator::_cleanArr($where);
 			$w="";
@@ -232,10 +246,10 @@ class QueryGenerator {
 		}
 		$limit = ( ! $limit) ? '' : ' LIMIT '.$limit;
 		$sql.="$limit";
-		
+
 		return $sql;
 	}
-	
+
 	//All Supportive Functions
 	public static function prep_query($sql,$delete_hack=true) {
 		// "DELETE FROM TABLE" returns 0 affected rows This hack modifies
@@ -261,7 +275,7 @@ class QueryGenerator {
 		}
 		return $arr;
 	}
-	
+
 	public static function _limit($sql, $limit, $offset) {
 		if ($offset == 0) {
 			$offset = '';
@@ -282,7 +296,7 @@ class QueryGenerator {
 			elseif(is_float($s)) return $s;
 			elseif(is_null($s)) return $s;
 			elseif(is_bool($s)) return $s;
-			else return "'$s'";			
+			else return "'$s'";
 		} elseif($sqlType=="int" || $sqlType=="float" || $sqlType=="bool") {
 			if(strlen($s)<=0) return "0";
 			else return "$s";

@@ -28,7 +28,7 @@ if(!file_exists($destination_path)) {
 	//echo "Cache Path Not Found. Can't Send Attachments<br/>";
 }
 
-if(isset($_POST['mailto'])) $to=$_POST['mailto']; else $to="";
+if(isset($_POST['mailto'])) $to=$_POST['mailto']; else $to=getConfig("default_to");
 if(isset($_POST['subject'])) $subject=$_POST['subject']; else $subject="Logiks Mail Service";
 if(isset($_POST['from'])) $from=$_POST['from']; else $from="";
 if(isset($_POST['cc'])) $cc=$_POST['cc']; else $cc="";
@@ -77,7 +77,7 @@ ob_clean();
 
 $a=false;
 if(getConfig("MAIL_ENGINE")=="simple" && $attach==null) {
-	$a=sendMail($to,$subject,$data,$cc,$bcc);
+	$a=sendMail($to,$subject,$data,$from,$cc,$bcc);
 } else {//Pear::Mail
 	$email=new EMail();
 	$a=$email->sendMimeMessageAdvanced($to,$subject,$cc,$bcc,$data,$attach);

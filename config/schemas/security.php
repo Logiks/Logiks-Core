@@ -17,9 +17,9 @@ $cfgSchema["PWD_HASH_TYPE"]=array(
 		"type"=>"list",
 		"tips"=>"Changing This May Result In Catastropic Problems, Do so if you know what you are doing.",
 		"values"=>array(
-				"md5"=>"MD5 Hash",
-				"sha1"=>"SHA1 Hash",
-				"lgks"=>"Logiks Hash",
+				"MD5 Hash"=>"md5",
+				"SHA1 Hash"=>"sha1",
+				"Logiks Hash"=>"lgks",
 			),
 	);
 $cfgSchema["ADMIN_USERIDS"]=array(

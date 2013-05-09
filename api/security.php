@@ -7,20 +7,20 @@ if(!function_exists("session_check")) {
 	//Site Being Accessed Is Correct
 	function session_check($redirect=false,$showErrorMsg=false) {
 		$valid=false;
-		
+
 		if(defined("SITENAME")) {
 			if(isset($_SESSION['SESS_USER_ID']) && isset($_SESSION['SESS_PRIVILEGE_ID']) && isset($_SESSION['SESS_ACCESS_ID']) &&
 				isset($_SESSION['SESS_TOKEN']) &&
 				isset($_SESSION['SESS_LOGIN_SITE']) && isset($_SESSION['SESS_ACCESS_SITES'])) {
 				if($_SESSION['SESS_PRIVILEGE_ID']>0) {
-					if($_SESSION['SESS_LOGIN_SITE']==$_REQUEST['site']) 
+					if($_SESSION['SESS_LOGIN_SITE']==$_REQUEST['site'])
 						$valid=true;
 					elseif(is_array($_SESSION['SESS_ACCESS_SITES']) && in_array(SITENAME,$_SESSION['SESS_ACCESS_SITES']))
 						$valid=true;
 				}
 			}
 		}
-		
+
 		if($valid) {
 			return true;
 		} else {
@@ -73,11 +73,15 @@ if(!function_exists("session_check")) {
 		} else {
 			if($redirect) trigger_ForbiddenError($msg);
 			return false;
-		}		
+		}
 	}
 	function checkUserSiteAccess($site=null,$autoExit=true) {
 		if($site==null) $site=SITENAME;
-		if($site=="*" && $_SESSION["SESS_ACCESS_ID"]=="1") {
+		//$site=="*" &&
+		if($_SESSION["SESS_ACCESS_ID"]=="1") {
+			return true;
+		}
+		if($_SESSION["SESS_PRIVILEGE_ID"]=="1") {
 			return true;
 		}
 		if(in_array($site, $_SESSION["SESS_ACCESS_SITES"])) return true;
@@ -96,11 +100,11 @@ if(!function_exists("session_check")) {
 	}
 	function checkDevMode($site=null) {
 		if($site==null) $site=SITENAME;
-		
+
 		if(defined("DEV_MODE_IP") && strlen(DEV_MODE_IP)>0) {
 			$ips=explode(",",DEV_MODE_IP);
 			if(sizeOf($ips)>0) {
-				loadHelpers("devmode"); 
+				loadHelpers("devmode");
 				__initDevMode($ips);
 			}
 		}
@@ -108,23 +112,23 @@ if(!function_exists("session_check")) {
 	function checkSiteMode($site=null) {
 		if(!defined("PUBLISH_MODE")) return false;
 		if($site==null) $site=SITENAME;
-		
+
 		if(checkBlacklist($site)) {
 			trigger_ForbiddenError("Your IP Is Banned By Admin",
 						"<div style='margin-top:20px;font:14px Georgia;'>Sorry, your IP has been banned/restricted/blocked by Server Administrator.<br/><br/>
-						Please contact <b>".getConfig("APPS_COMPANY")."</b> or email @ <a href='mailto:".WEBMASTER_EMAIL."'>".WEBMASTER_EMAIL."</a> 
+						Please contact <b>".getConfig("APPS_COMPANY")."</b> or email @ <a href='mailto:".WEBMASTER_EMAIL."'>".WEBMASTER_EMAIL."</a>
 						for further details<br/><br/>"
 						. "<h4>". getConfig("APPS_COMPANY") . " Team</h4>"
 						. "<h4>".  date("d/m/y H:m:s")."</h4></div>"
 						);
 			exit();
 		}
-		
+
 		if(strtolower(PUBLISH_MODE)=="blocked") {
 			trigger_ForbiddenError("Site <b>'{$_SERVER['HTTP_HOST']}'</b> Is Currently Blocked.",
 						"<div style='margin-top:20px;font:14px Georgia;'><h2>Sorry ..................</h2>
 						<h3>This site is currently blocked by <i>Server Administrator</i></h3>
-						If you are the webmaster for this site or you own this site, please contact <b>Server Administrator</b> or email @ 
+						If you are the webmaster for this site or you own this site, please contact <b>Server Administrator</b> or email @
 						<a href='mailto:".WebMasterMail."'>".WebMasterMail."</a> for activating this site.<br/><br/>"
 						. "<h4><b>Root Administrator</b></h4>"
 						. "<h4>".  date("d/m/y H:m:s")."</h4></div>"
@@ -132,7 +136,7 @@ if(!function_exists("session_check")) {
 			exit();
 		} elseif(strtolower(PUBLISH_MODE)=="restricted" || strtolower(PUBLISH_MODE)=="whitelist") {
 			$client=$_SERVER["REMOTE_ADDR"];
-			
+
 			$f=ROOT.CACHE_IPLIST_FOLDER."{$site}/whitelist.dat";
 			if(!file_exists($f)) {
 				Security::generateIPListCache("whitelist");
@@ -150,7 +154,7 @@ if(!function_exists("session_check")) {
 				trigger_ForbiddenError("Site <b>'{$_SERVER['HTTP_HOST']}'</b> Is Currently In Restrictive/Whitelist Only Mode.",
 							"<div style='margin-top:20px;font:14px Georgia;'>Sorry, currently this Site is running in Whitelist/Restrictive mode as per Server Administrator.
 							In this mode you will be allowed to access the domain/site only if your ip belongs to the WhiteList IP Address for the site.<br/><br/>
-							Please contact <b>".getConfig("APPS_COMPANY")."</b> or email @ <a href='mailto:".WEBMASTER_EMAIL."'>".WEBMASTER_EMAIL."</a> 
+							Please contact <b>".getConfig("APPS_COMPANY")."</b> or email @ <a href='mailto:".WEBMASTER_EMAIL."'>".WEBMASTER_EMAIL."</a>
 							for further details<br/><br/>"
 							. "<h4>". getConfig("APPS_COMPANY") . " Team</h4>"
 							. "<h4>".  date("d/m/y H:m:s")."</h4></div>"
@@ -190,7 +194,7 @@ if(!function_exists("session_check")) {
 			if(!isset($_REQUEST['page'])) array_push($link,"site=home");
 			$link=implode("&",$link);
 		}
-		
+
 		$pridid="10";
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"])) $pridid=$_SESSION["SESS_PRIVILEGE_ID"]; else $pridid="Guest";
 		if($pridid<=3) return true;
@@ -202,6 +206,7 @@ if(!function_exists("session_check")) {
 		} elseif((time()-filectime($f))>PERMISSION_CACHE_PERIOD) {
 			Security::generateUserLinksCache($privilege);
 		}
+
 		if(!file_exists($f)) {
 			dispErrMessage("Security Inconsistancy Found. Please Contact Admin.");
 			exit();
@@ -230,7 +235,7 @@ if(!function_exists("session_check")) {
 		if($site==null) $site=SITENAME;
 		$client=$_SERVER["REMOTE_ADDR"];
 		$f=ROOT.CACHE_IPLIST_FOLDER."{$site}/blacklist.dat";
-		
+
 		if(!file_exists($f)) {
 			Security::generateIPListCache("blacklist");
 		} elseif((time()-filectime($f))>PERMISSION_CACHE_PERIOD) {
@@ -285,7 +290,7 @@ class Security {
 				$s.="{$a['ipaddress']}\n";
 			}
 		}
-		if(is_writable($f)) file_put_contents($f,$s);
+		file_put_contents($f,$s);
 	}
 	public static function generateUserLinksCache($privilege) {
 		if(isset($_SESSION['SESS_PRIVILEGE_NAME'])) $priId=$_SESSION['SESS_PRIVILEGE_NAME']; else $priId="Guest";
@@ -296,7 +301,7 @@ class Security {
 			$tbl=_dbtable("admin_links",true);
 			$sys=true;
 		}
-		
+
 		$f=ROOT.CACHE_PERMISSIONS_FOLDER."{$site}/{$privilege}.dat";
 		if(!is_dir(dirname($f))) {
 			mkdir(dirname($f),0777,true);
@@ -305,7 +310,7 @@ class Security {
 		if(!is_dir(dirname($f))) {
 			return false;
 		}
-		
+
 		$sql="SELECT id,link from $tbl where (site='{$site}' OR site='*') AND blocked='false' AND (privilege LIKE '%$priId,%' or privilege='*')";
 		//echo $sql;
 		$r=_dbQuery($sql,$sys);
@@ -316,7 +321,7 @@ class Security {
 				if($a['link']=="#") continue;
 				$lnks=explode("&",$a['link']);
 				$link=array();
-				if(isset($_REQUEST['site'])) array_push($link,"site=".$_REQUEST['site']); 
+				if(isset($_REQUEST['site'])) array_push($link,"site=".$_REQUEST['site']);
 				else array_push($link,"site=$site");
 				foreach($lnks as $a=>$b) {
 					array_push($link,$b);
@@ -325,7 +330,7 @@ class Security {
 				array_push($pArr,$ls);
 			}
 		}
-		
+
 		$fM=APPROOT."config/menugenerator.json";
 		if(file_exists($fM)) {
 			$data=file_get_contents($fM);

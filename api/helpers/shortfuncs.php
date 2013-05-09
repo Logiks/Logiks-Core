@@ -27,7 +27,7 @@ if(!function_exists("_js")) {
 			}
 		} else {
 			$js->loadJS($jsLnk);
-		}		
+		}
 		$js->display();
 	}
 }
@@ -58,19 +58,27 @@ if(!function_exists("_db")) {
 }
 if(!function_exists("_dbQuery")) {
 	function _dbQuery($q,$sys=false) {
-		$r=_db($sys)->executeQuery($q);
-		return $r;
+		if(_db($sys)!=NULL) {
+			$r=_db($sys)->executeQuery($q);
+			return $r;
+		} else {
+			return null;
+		}
 	}
 }
 if(!function_exists("_dbFetch")) {
 	function _dbFetch($result,$format="assoc") {
-		$r=_db()->fetchData($result,$format);
-		return $r;
+		if($result && _db()!=NULL) {
+			$r=_db()->fetchData($result,$format);
+			return $r;
+		} else {
+			return array();
+		}
 	}
 }
 if(!function_exists("_dbData")) {
 	function _dbData($result,$format="assoc") {
-		if($result) {
+		if($result && _db()!=NULL) {
 			$r=_db()->fetchAllData($result,$format);
 			return $r;
 		} else {
@@ -80,7 +88,8 @@ if(!function_exists("_dbData")) {
 }
 if(!function_exists("_dbFree")) {
 	function _dbFree($result,$sys=false) {
-		if($result) _db($sys)->freeResult($result);
+		if($result && _db($sys)!=NULL)
+			_db($sys)->freeResult($result);
 	}
 }
 if(!function_exists("_dbtable")) {
@@ -89,7 +98,7 @@ if(!function_exists("_dbtable")) {
 			return Database::getSysTable($tblName);
 		} else {
 			return Database::getAppsTable($tblName);
-		}		
+		}
 	}
 }
 if(!function_exists("__dbtable")) {
@@ -127,7 +136,9 @@ if(!function_exists("_cache")) {
 	}
 }
 if(!function_exists("_template")) {
+	//$file=group.file_name;
 	function _template($file,$dataArr=null,$sqlData=null,$editable=true) {
+		$file=str_replace(".","/",$file);
 		if(strtolower(strstr($file,"."))!=".tpl") {
 			$file.=".tpl";
 		}
@@ -143,30 +154,30 @@ if(!function_exists("_template")) {
 		$fileInfo=pathinfo($file);
 		$fname=$fileInfo['filename'];
 		$bdir=$fileInfo['dirname']."/";
-		
+
 		$sqlFile=$bdir.$fname.".sql";
 		$jsFile=$bdir.$fname.".js";
 		$cssFile=$bdir.$fname.".css";
-				
+
 		$templates=new TemplateEngine();
 		$templates->loadTemplate($file);
-		
+
 		if($sqlData==null) {
 			if(file_exists($sqlFile)) {
 				$sqlData=file_get_contents($sqlFile);
 			}
 		}
 		if(strlen($sqlData)>0) $templates->loadSQL($sqlData);
-		
+
 		if($dataArr==null) {
 			$dataArr=array();
 			$dataArr["date"]=date(getConfig("PHP_DATE_FORMAT"));
 			$dataArr["time"]=date(getConfig("TIME_FORMAT"));
 			$dataArr["datetime"]=date(getConfig("PHP_DATE_FORMAT")." ".getConfig("TIME_FORMAT"));
-			
+
 			$dataArr["site"]=SITENAME;
 			if(isset($_REQUEST["page"])) $dataArr["page"]=$_REQUEST["page"]; else $dataArr["page"]="home";
-			
+
 			if(isset($_SESSION["SESS_USER_ID"])) $dataArr["user"]=$_SESSION["SESS_USER_ID"]; else $dataArr["user"]="Guest";
 			if(isset($_SESSION["SESS_PRIVILEGE_ID"])) $dataArr["privilege"]=$_SESSION["SESS_PRIVILEGE_ID"];  else $dataArr["privilege"]="Guest";
 			if(isset($_SESSION["SESS_USER_NAME"])) $dataArr["username"]=$_SESSION["SESS_USER_NAME"];  else $dataArr["user_name"]="Guest";
@@ -175,7 +186,7 @@ if(!function_exists("_template")) {
 			if(!isset($dataArr["date"])) $dataArr["date"]=date(getConfig("PHP_DATE_FORMAT"));
 			if(!isset($dataArr["time"])) $dataArr["time"]=date(getConfig("TIME_FORMAT"));
 			if(!isset($dataArr["datetime"])) $dataArr["datetime"]=date(getConfig("PHP_DATE_FORMAT")." ".getConfig("TIME_FORMAT"));
-			
+
 			if(!isset($dataArr["site"])) $dataArr["site"]=SITENAME;
 			if(!isset($dataArr["page"])) {
 				if(isset($_REQUEST["page"])) $dataArr["page"]=$_REQUEST["page"]; else $dataArr["page"]="home";
@@ -193,12 +204,12 @@ if(!function_exists("_template")) {
 				if(isset($_SESSION["SESS_PRIVILEGE_NAME"])) $dataArr["privilegename"]=$_SESSION["SESS_PRIVILEGE_NAME"];  else $dataArr["privilege_name"]="Guest";
 			}
 		}
-		
+
 		ob_start();
 		$templates->display($dataArr);
 		$body=ob_get_contents();
 		ob_clean();
-		
+
 		$body=TemplateEngine::processTemplate($body,$dataArr,$editable);
 		if(file_exists($jsFile)) {
 			$body.="<script language=javascript>";
@@ -217,16 +228,16 @@ if(!function_exists("_templateData")) {
 	function _templateData($templateData,$dataArr=null,$sqlData="",$editable=true) {
 		$templates=new TemplateEngine();
 		if(strlen($sqlData)>0) $templates->loadSQL($sqlData);
-		
+
 		if($dataArr==null) {
 			$dataArr=array();
 			$dataArr["date"]=date(getConfig("PHP_DATE_FORMAT"));
 			$dataArr["time"]=date(getConfig("TIME_FORMAT"));
 			$dataArr["datetime"]=date(getConfig("PHP_DATE_FORMAT")." ".getConfig("TIME_FORMAT"));
-			
+
 			$dataArr["site"]=SITENAME;
 			if(isset($_REQUEST["page"])) $dataArr["page"]=$_REQUEST["page"]; else $dataArr["page"]="home";
-			
+
 			if(isset($_SESSION["SESS_USER_ID"])) $dataArr["user"]=$_SESSION["SESS_USER_ID"]; else $dataArr["user"]="Guest";
 			if(isset($_SESSION["SESS_PRIVILEGE_ID"])) $dataArr["privilege"]=$_SESSION["SESS_PRIVILEGE_ID"];  else $dataArr["privilege"]="Guest";
 			if(isset($_SESSION["SESS_USER_NAME"])) $dataArr["username"]=$_SESSION["SESS_USER_NAME"];  else $dataArr["user_name"]="Guest";
@@ -235,7 +246,7 @@ if(!function_exists("_templateData")) {
 			if(!isset($dataArr["date"])) $dataArr["date"]=date(getConfig("PHP_DATE_FORMAT"));
 			if(!isset($dataArr["time"])) $dataArr["time"]=date(getConfig("TIME_FORMAT"));
 			if(!isset($dataArr["datetime"])) $dataArr["datetime"]=date(getConfig("PHP_DATE_FORMAT")." ".getConfig("TIME_FORMAT"));
-			
+
 			if(!isset($dataArr["site"])) $dataArr["site"]=SITENAME;
 			if(!isset($dataArr["page"])) {
 				if(isset($_REQUEST["page"])) $dataArr["page"]=$_REQUEST["page"]; else $dataArr["page"]="home";
@@ -253,9 +264,9 @@ if(!function_exists("_templateData")) {
 				if(isset($_SESSION["SESS_PRIVILEGE_NAME"])) $dataArr["privilegename"]=$_SESSION["SESS_PRIVILEGE_NAME"];  else $dataArr["privilege_name"]="Guest";
 			}
 		}
-		
+
 		$body=TemplateEngine::processTemplate($templateData,$dataArr,$editable);
-		
+
 		return $body;
 	}
 }
@@ -266,8 +277,17 @@ if(!function_exists("_link")) {
 		$ssr2=stristr($page,"https://");
 		$ssn=strlen($ssr1)+strlen($ssr2);
 		if($ssn>0) return $page;
-		
+
 		return generatePageRequest($page, $query, $site);
+	}
+}
+if(!function_exists("_service")) {
+	function _service($scmd, $action="", $format="json", $params=array(), $site=SITENAME) {
+		$s=SiteLocation."services/?site={$site}&scmd={$scmd}";
+		if(strlen($action)>0) $s.="&action={$action}";
+		if(strlen($format)>0) $s.="&format={$format}";
+		if(is_array($params)) foreach($params as $a=>$b) $s.="&{$a}={$b}";
+		return $s;
 	}
 }
 if(!function_exists("_site")) {
@@ -299,19 +319,19 @@ if(!function_exists("_time")) {
 			$time=date($inFormat);
 		}
 		$dArr=array("h"=>"","H"=>"","i"=>"","u"=>"","s"=>"","g"=>"","G"=>"");
-		
+
 		$inFormat=str_replace("-","/",$inFormat);
 		$inFormat=str_replace(TIME_SEPARATOR,":",$inFormat);
-		
+
 		if($inFormat==$outFormat) return $time;
-		
+
 		if($inFormat=="H:i:s") {
 			preg_match ("/([0-9]*):([0-9]*):([0-9]*)/", $time, $regs);
 			$dArr["H"]=$regs[1];
 			$dArr["i"]=$regs[2];
 			$dArr["s"]=$regs[3];
 			$dArr["u"]="0";
-			
+
 			$dArr["g"]=intval($dArr["H"]%12);
 			$dArr["G"]=intval($dArr["H"]);
 			$dArr["h"]=strlen($dArr["g"])>1?$dArr["g"]:"0{$dArr['g']}";
@@ -322,38 +342,38 @@ if(!function_exists("_time")) {
 			$dArr["i"]=$regs[2];
 			$dArr["s"]=$regs[3];
 			$dArr["u"]="0";
-			
+
 			$dArr["g"]=intval($dArr["h"]);
 			$dArr["G"]=intval($dArr["g"]>12?($dArr["g"]+12):$dArr["g"]);
 			$dArr["h"]=strlen($dArr["g"])>1?$dArr["g"]:"0{$dArr['g']}";
-			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";			
+			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";
 		} elseif($inFormat=="G:i:s") {
 			preg_match ("/([0-9]*):([0-9]*)+:([0-9]*)/", $time, $regs);
 			$dArr["G"]=intval($regs[1]);
 			$dArr["i"]=$regs[2];
 			$dArr["s"]=$regs[3];
 			$dArr["u"]="0";
-			
+
 			$dArr["g"]=$dArr["G"]%12;
 			$dArr["h"]=strlen($dArr["g"])>1?$dArr["g"]:"0{$dArr['g']}";
-			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";	
+			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";
 		} elseif($inFormat=="g:i:s") {
 			preg_match ("/([0-9]*):([0-9]*):([0-9]*)/", $time, $regs);
 			$dArr["g"]=intval($regs[1]%12);
 			$dArr["i"]=$regs[2];
 			$dArr["s"]=$regs[3];
 			$dArr["u"]="0";
-			
+
 			$dArr["G"]=intval($dArr["g"]>12?($dArr["g"]+12):$dArr["g"]);
 			$dArr["h"]=strlen($dArr["g"])>1?$dArr["g"]:"0{$dArr['g']}";
-			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";	
+			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";
 		} elseif($inFormat=="H:i:s:u") {
 			preg_match ("/([0-9]*):([0-9]*):([0-9]*):([0-9]*)/", $time, $regs);
 			$dArr["H"]=$regs[1];
 			$dArr["i"]=$regs[2];
 			$dArr["s"]=$regs[3];
 			$dArr["u"]=$regs[4];
-			
+
 			$dArr["g"]=intval($dArr["H"]%12);
 			$dArr["G"]=intval($dArr["H"]);
 			$dArr["h"]=strlen($dArr["g"])>1?$dArr["g"]:"0{$dArr['g']}";
@@ -364,31 +384,31 @@ if(!function_exists("_time")) {
 			$dArr["i"]=$regs[2];
 			$dArr["s"]=$regs[3];
 			$dArr["u"]=$regs[4];
-			
+
 			$dArr["g"]=intval($dArr["h"]);
 			$dArr["G"]=intval($dArr["g"]>12?($dArr["g"]+12):$dArr["g"]);
 			$dArr["h"]=strlen($dArr["g"])>1?$dArr["g"]:"0{$dArr['g']}";
-			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";			
+			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";
 		} elseif($inFormat=="G:i:s:u") {
 			preg_match ("/([0-9]*):([0-9]*):([0-9]*):([0-9]*)/", $time, $regs);
 			$dArr["G"]=intval($regs[1]);
 			$dArr["i"]=$regs[2];
 			$dArr["s"]=$regs[3];
 			$dArr["u"]=$regs[4];
-			
+
 			$dArr["g"]=$dArr["G"]%12;
 			$dArr["h"]=strlen($dArr["g"])>1?$dArr["g"]:"0{$dArr['g']}";
-			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";	
+			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";
 		} elseif($inFormat=="g:i:s:u") {
 			preg_match ("/([0-9]*):([0-9]*):([0-9]*):([0-9]*)/", $time, $regs);
 			$dArr["g"]=intval($regs[1]%12);
 			$dArr["i"]=$regs[2];
 			$dArr["s"]=$regs[3];
 			$dArr["u"]=$regs[4];
-			
+
 			$dArr["G"]=intval($dArr["g"]>12?($dArr["g"]+12):$dArr["g"]);
 			$dArr["h"]=strlen($dArr["g"])>1?$dArr["g"]:"0{$dArr['g']}";
-			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";	
+			$dArr["H"]=strlen($dArr["G"])>1?$dArr["G"]:"0{$dArr['G']}";
 		}
 		$a=explode(TIME_SEPARATOR,$outFormat);
 		$d1="";
@@ -407,15 +427,15 @@ if(!function_exists("_date")) {
 		if($date=="0000-00-00") return "0000-00-00";
 		if($date==null || strlen($date)<=0) return "";
 		if($inFormat=="*" || $inFormat=="")  $inFormat=getConfig("DATE_FORMAT");
-		
+
 		$dArr=array("d"=>"","m"=>"","Y"=>"");
-		
+
 		$outFormat=str_replace("yy","Y",$outFormat);
-		
+
 		$inFormat=str_replace("yy","Y",$inFormat);
 		$inFormat=str_replace("-","/",$inFormat);
 		$inFormat=str_replace(DATE_SEPARATOR,"/",$inFormat);
-		
+
 		if($inFormat==$outFormat) return $date;
 		if($inFormat=="d/m/Y") {
 			preg_match ("/([0-9]{1,2}).([0-9]{1,2}).([0-9]{4})/", $date, $regs);
@@ -437,7 +457,7 @@ if(!function_exists("_date")) {
 			$dArr["d"]=$regs[2];
 			$dArr["m"]=$regs[3];
 			$dArr["Y"]=$regs[1];
-		}		
+		}
 		$a=explode("/",$outFormat);
 		$d1="";
 		foreach($a as $q=>$w) {
@@ -466,8 +486,9 @@ if(!function_exists("_timestamp")) {
 }
 /*Xtra Functions*/
 if(!function_exists("_randomid")) {
-	function _randomid($d="",$hash=true) {		
-		$s=SITENAME."_".date("Y-m-d-G:i:s")."_".rand(1000,9999999);
+	function _randomid($d="",$hash=true) {
+		$s=SITENAME."_".date("Y-m-d-G:i:s")."_".$_SERVER['REMOTE_ADDR']."_".rand(1000,9999999);
+		if(isset($_SESSION['SESS_USER_ID'])) $s.="_".$_SESSION['SESS_USER_ID'];
 		if($hash) return $d.md5($s);
 		else return $d.$s;
 	}
@@ -490,7 +511,7 @@ if(!function_exists("_ling")) {
 					return $ling->toLing($data);
 				}
 			}
-		}		
+		}
 	}
 }
 if(!function_exists("_msg")) {
@@ -508,6 +529,7 @@ if(!function_exists("_msg")) {
 if(!function_exists("_process")) {
 	function _replace($str,$glue="#") {
 		$str=preg_replace_callback("/{$glue}[a-zA-Z0-9-_]+@[a-zA-Z]+{$glue}/","replaceFromEnviroment",$str);
+		$str=preg_replace_callback("/{$glue}[a-zA-Z0-9-_]+![0-9]+{$glue}/","replaceFromEnviroment",$str);
 		$str=preg_replace_callback("/{$glue}[a-zA-Z0-9-_]+{$glue}/","replaceFromEnviroment",$str);
 		return $str;
 	}

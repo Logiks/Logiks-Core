@@ -13,10 +13,10 @@ if(!file_exists("$bpath/config/basic.cfg") || !file_exists("$bpath/config/db.cfg
 
 if(!isset($initialized)) {
 	ob_start();
-	
+
 	clearstatcache ();
 	session_start();
-	
+
 	// platform neurtral url handling
 	if(isset($_SERVER['REQUEST_URI'] ) ) {
 		$request_uri = $_SERVER['REQUEST_URI'];
@@ -31,11 +31,11 @@ if(!isset($initialized)) {
 	if(empty( $_SERVER['PHP_SELF'])) {
 		$_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'];
 	}
-	
+
 	define ('ROOT', dirname(dirname(__FILE__)) . '/');
-	
+
 	require_once ROOT. "api/configurator.php";
-	
+
 	LoadConfigFile(ROOT . "config/basic.cfg");
 	LoadConfigFile(ROOT . "config/headers.cfg");
 	LoadConfigFile(ROOT . "config/system.cfg");
@@ -45,41 +45,41 @@ if(!isset($initialized)) {
 	LoadConfigFile(ROOT . "config/framework.cfg");
 	LoadConfigFile(ROOT . "config/db.cfg");
 	LoadConfigFile(ROOT . "config/folders.cfg");
-	
+
 	header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
-	
-	fixPHPINIConfigs();	
-	fixLogiksVariables();	
-	
+
+	fixPHPINIConfigs();
+	fixLogiksVariables();
+
 	if(!is_dir(ROOT.TMP_FOLDER."sessions/")) {
 		$a=mkdir(ROOT.TMP_FOLDER."sessions/", 0777, true);
 		if(!$a) {
 			die('Failed To Create Session Cache Folders ...');
 		}
 		chmod(ROOT.TMP_FOLDER."sessions/", 0777);
-	}	
+	}
 	session_save_path(ROOT.TMP_FOLDER."sessions/");
-	
+
 	include_once ROOT. "api/database.inc";
-	
+
 	$sysdbLink=new Database();
 	$sysdbLink->connect();
 	$appdbLink=null;
-	
+
 	include_once ROOT. "api/commons.php";
 	include_once ROOT. "config/classpath.php";
 	include_once ROOT. "api/libs/URLTools.php";
-	
+
 	include ROOT."config/errors.php";
 	include_once ROOT. "api/logdb.php";//For Apps Events
 	include_once ROOT. "api/errorhandler.php";//Error Handling System
 	if(ERROR_HANDLER=="logiks") {
 		loadAutoErrorHandlers();
 	}
-	
+
 	$initialized=true;
 	include_once ROOT. "api/initfuncs.php";//Special Functions For Logiks Framework's System Operations
-	
+
 	//Handling Encoded/Encrypted QUERY_STRINGS
 	if(isset($_REQUEST['encoded'])) {
 		$query=$_REQUEST['encoded'];
@@ -98,33 +98,44 @@ if(!isset($initialized)) {
 		}
 		$_SERVER['QUERY_STRING'].="&{$queryo}";
 	}
-	
+
 	//AppSite Analysis
 	$site="";
 	if(isset($_SESSION["LGKS_SESS_SITE"])) $site=$_SESSION["LGKS_SESS_SITE"];
 	if(isset($_REQUEST['site'])) $site=$_REQUEST['site'];
-	
-	//To Improve Upon
-	$siteParams=getQueryParams();
-	if($_REQUEST['site']!=$site || $_REQUEST['site']=="" || !is_dir(ROOT.APPS_FOLDER.$site)) {
-		if(DOMAIN_CONTROLS_ENABLE=="true") {
-			$dm=new DomainMap($sysdbLink);
-			$_REQUEST["site"]=$dm->checkHost();
-		} else {
+
+	if(DOMAIN_CONTROLS_ENABLE=="true") {
+		$dm=new DomainMap();
+		$_REQUEST["site"]=$dm->checkHost();
+	} else {
+		if($_REQUEST['site']!=$site || $_REQUEST['site']=="" || !is_dir(ROOT.APPS_FOLDER.$site)) {
 			$_REQUEST["site"]=DEFAULT_SITE;
+			if(DOMAIN_CONTROLS_REDIRECT=="true") {
+				$qp=$_SERVER["QUERY_STRING"];
+				if(strlen($qp)<=0) {
+					$qp="?site=$dsite";
+				} else {
+					$qp=str_replace("=".$_REQUEST['site'],"=".$dsite,$qp);
+				}
+				$l="index.php{$qp}";
+				$l=str_replace("?&","?",$l);
+				header("Location:$l");
+			}
 		}
 	}
+	$siteParams=getQueryParams();
 	$site=$_REQUEST["site"];
 	if($site==null || strlen($site)<=0) {
 		$site=DEFAULT_SITE;
 		$_REQUEST["site"]=$site;
 		header("Location:index.php?site=".DEFAULT_SITE);
 	}
-	
+
 	$_SESSION['LGKS_SESS_SITE']=$site;
+	$_REQUEST['site']=$site;
 	setcookie('LGKS_SESS_SITE',$site,time()+3600,"/");
 	if(!defined("SITENAME")) define("SITENAME",$site);
-	
+
 	include_once ROOT. "api/loaders.php";
 	include_once ROOT. "api/security.php";
 	include_once ROOT. "api/usersettings.php";
@@ -132,40 +143,38 @@ if(!isset($initialized)) {
 	include_once ROOT. "api/system.php";
 	include_once ROOT. "api/user.php";
 	include_once ROOT. "api/uifuncs.php";
-	
+
 	loadHelpers("phpsupport");
 	loadHelpers("cookies");
 	loadHelpers("mobility");
 	loadHelpers("outputbuffer");
 	loadHelpers("hooks");
-	loadHelpers("metatags");
-	
+
 	activateAutoHookSystem();
-	
+
 	$js=JsPHP::singleton();
 	$css=CssPHP::singleton();
 	$ling=Lingulizer::singleton();
-	$ling->loadLocaleFile($GLOBALS["CONFIG"]["DEFAULT_LOCALE"]);
 	$cache=CacheManager::singleton();
 	$templates=new TemplateEngine();
-	
+
 	loadHelpers("shortfuncs");
-	
+
 	function __cleanup() {
 		if(_databus("PAGE_BUFFER_ENCODING")!="plain") {
 			printOPBuffer();
 		}
 		//ob_flush();
 		DataBus::singleton()->dumpToSession();
-		if(_db(true)->isOpen()) _db(true)->close();
-		if(_db()->isOpen()) _db()->close();
+		if(_db(true)!=null && _db(true)->isOpen()) _db(true)->close();
+		if(_db()!=null && _db()->isOpen()) _db()->close();
 		echo "</html>";
 	}
 	register_shutdown_function("__cleanup");
-	
+
 	if(!isset($_SESSION['SESS_USER_ID'])) $_SESSION['SESS_USER_ID']="Guest";
 	if(!isset($_SESSION['SESS_USER_NAME'])) $_SESSION['SESS_USER_NAME']="Guest";
-	
+
 	runHooks("postinit");
 }
 ?>

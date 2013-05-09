@@ -8,8 +8,8 @@ $cfgSchema["PAGE_ENCODING"]=array(
 $cfgSchema["PAGE_BUFFER_ENCODING"]=array(
 		"type"=>"list",
 		"values"=>array(
-			"plain"=>"Plain Encoding",
-			"gzip"=>"GZip Encoding"
+			"Plain Encoding"=>"plain",
+			"GZip Encoding"=>"gzip"
 			)
 	);
 $cfgSchema["PAGE_EXPIRES"]=array(

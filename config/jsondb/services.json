@@ -1,0 +1,23 @@
+{
+	"SERVICE_ACCESS_CONTROLS":{
+		"auth":{
+			"default_print_format":"text",
+			"privilege_model":{},
+			"access_control":"public",
+			"autocache":"false"
+		},
+		"ping":{
+			"default_print_format":"text",
+			"privilege_model":{},
+			"access_control":"public",
+			"autocache":"false"
+		},
+		"datagrid":{
+			"default_print_format":"json",
+			"privilege_model":{},
+			"access_control":"public",
+			"autocache":"false"
+		}
+	}
+}
+

@@ -4,16 +4,27 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 //through out the Framework
 
 if (!function_exists('printArray')) {
-	function printArray($arr) {
+	function printArray($arr,$noPrint=false) {
 		if($arr==null) return;
-		echo "<pre>";
-		print_r($arr);
-		echo "</pre>";
+		if($noPrint) {
+			ob_start();
+			echo "<pre>";
+			print_r($arr);
+			echo "</pre>";
+			$data=ob_get_contents();
+			ob_clean();
+			return $data;
+		} else {
+			echo "<pre>";
+			print_r($arr);
+			echo "</pre>";
+		}
 	}
 	function println($line) {
 		echo "$line<br/>";
 	}
 	function toTitle($s,$process=false) {
+		if($s==null || strlen($s)<=0) return "";
 		if($process) {
 			$s=_replace($s);
 		}
@@ -29,13 +40,16 @@ if (!function_exists('printArray')) {
 		$s=str_replace("\\'","'",$s);
 		$s=stripslashes($s);
 		$data=trim($s);
-		$data=mysql_real_escape_string($data);
 		return $data;
 	}
 	function cleanCode($data) {
 		$data=cleanText($data);
 		$data=str_replace("<!--?","<?",$data);
 		$data=str_replace("?-->","?>",$data);
+		return $data;
+	}
+	function cleanForDB($data) {
+		$data=cleanCode($data);
 		$data=mysql_real_escape_string($data);
 		return $data;
 	}
@@ -43,7 +57,7 @@ if (!function_exists('printArray')) {
 		$str = @trim($str);
 		if(get_magic_quotes_gpc()) {
 			$str = stripslashes($str);
-		}		
+		}
 		$str=mysql_real_escape_string($str);
 		return $str;
 	}
@@ -65,7 +79,7 @@ if (!function_exists('printArray')) {
 				foreach( $value as $k=>$v) {
 					$tmp_val[$k] = stripslashes($v);
 				}
-				$value = $tmp_val; 
+				$value = $tmp_val;
 			} else  {
 				for($j = 0; $j < sizeof($value); $j++) {
 					$value[$j] = stripslashes($value[$j]);
@@ -138,7 +152,7 @@ if (!function_exists('printArray')) {
 		if(strlen($glue)>0) {
 			$in=substr($in,1,strlen($in)-2);
 		}
-		
+
 		if(strpos($in,"@")>0) {
 			$inArr=explode("@",$in);
 			$in=$inArr[0];
@@ -150,16 +164,37 @@ if (!function_exists('printArray')) {
 			elseif($con=="server" && isset($_SERVER[$in])) return $_SERVER[$in];
 			elseif($con=="cookie" && isset($_COOKIE[$in])) return $_COOKIE[$in];
 			return "";
+		} elseif(strpos($in,"!")>0) {
+			$inArr=explode("!",$in);
+			$in=$inArr[0];
+			if(isset($inArr[1])) $n=strtolower($inArr[1]);
+			else $n=0;
+			$sr="";
+
+			if(isset($dataArr[$in])) $sr=$dataArr[$in];
+			elseif(isset($_REQUEST[$in])) $sr=$_REQUEST[$in];
+			elseif(isset($_SESSION[$in])) $sr=$_SESSION[$in];
+			elseif(isset($_SERVER[$in])) $sr=$_SERVER[$in];
+			elseif(isset($_COOKIE[$in])) $sr=$_COOKIE[$in];
+			else $sr=getConfig($in);
+
+			if(!is_array($sr)) {
+				$sr=str_replace(",","/",$sr);
+				$sr=explode("/",$sr);
+			}
+			if(isset($sr[$n])) return $sr[$n];
+			elseif(isset($sr[0])) return $sr[0];
+			else return "";
 		} else {
 			if($dataArr==null) {
 				$dataArr=array();
 				$dataArr["date"]=date(getConfig("PHP_DATE_FORMAT"));
 				$dataArr["time"]=date(getConfig("TIME_FORMAT"));
 				$dataArr["datetime"]=date(getConfig("PHP_DATE_FORMAT")." ".getConfig("TIME_FORMAT"));
-				
+
 				$dataArr["site"]=SITENAME;
 				if(isset($_REQUEST["page"])) $dataArr["page"]=$_REQUEST["page"]; else $dataArr["page"]="home";
-				
+
 				if(isset($_SESSION["SESS_USER_ID"])) $dataArr["user"]=$_SESSION["SESS_USER_ID"]; else $dataArr["user"]="Guest";
 				if(isset($_SESSION["SESS_PRIVILEGE_ID"])) $dataArr["privilege"]=$_SESSION["SESS_PRIVILEGE_ID"];  else $dataArr["privilege"]="Guest";
 				if(isset($_SESSION["SESS_USER_NAME"])) $dataArr["username"]=$_SESSION["SESS_USER_NAME"];  else $dataArr["user_name"]="Guest";

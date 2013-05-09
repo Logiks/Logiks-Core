@@ -34,6 +34,7 @@ if(!function_exists("createTimeStamp")) {
 		}
 	}
 	function getSysDBLink($toClose=false) {
+		if(getConfig("ALLOW_ROOTDB_ACCESS")=="false") return;
 		global $sysdbLink;
 		if(!$toClose) {
 			if($sysdbLink==null) {
@@ -41,11 +42,11 @@ if(!function_exists("createTimeStamp")) {
 				$sysdbLink->connect();
 			}
 		}
-		
 		return $sysdbLink;
 	}
 	function getAppsDBLink($toClose=false) {
 		global $appdbLink;
+		if(!isset($GLOBALS['DBCONFIG']["DB_USER"]) || strlen($GLOBALS['DBCONFIG']["DB_USER"])<=0) return null;
 		if(!$toClose) {
 			if($appdbLink==null) {
 				$appdbLink=new Database();
@@ -54,7 +55,7 @@ if(!function_exists("createTimeStamp")) {
 		}
 		return $appdbLink;
 	}
-	
+
 	//Initializes The User Names, etc...
 	function initUserCredentials() {
 		if(isset($_SESSION["SESS_USER_ID"])) {
@@ -74,7 +75,7 @@ if(!function_exists("createTimeStamp")) {
 			$_SESSION['SESS_PRIVILEGE_NAME'] = "Guest";
 			$_SESSION['SESS_ACCESS_NAME'] = "Guest";
 			$_SESSION['SESS_ACCESS_SITES'] = array($_SESSION['LGKS_SESS_SITE']);
-			
+
 			$_SESSION['SESS_USER_NAME'] = "Guest";
 			$_SESSION['SESS_USER_EMAIL'] = "";
 			$_SESSION['SESS_USER_CELL'] = "";
@@ -92,6 +93,15 @@ if(!function_exists("createTimeStamp")) {
 		}
 		return false;
 	}
+	function getPageCacheFile() {
+		$pageCacheDir=ROOT.TMP_FOLDER."fullcache/pages/".SITENAME."/";
+		if(!is_dir($pageCacheDir)) {
+			if(mkdir($pageCacheDir,0777,true)) chmod($pageCacheDir,0777);
+		}
+		$hash=md5($_SERVER['REQUEST_URI']);
+		$hashFile=$pageCacheDir.$hash.".php";
+		return $hashFile;
+	}
 	function getFunctionCaller() {
 		$trace=debug_backtrace();
 		array_shift($trace);//Remove Self
@@ -104,10 +114,14 @@ if(!function_exists("createTimeStamp")) {
 		$arr=array("{$page}.php","{$page}.htm","{$page}.html");
 		return $arr;
 	}
-	function logoutSession() {
+	function logoutSession($msg=null) {
 		session_destroy();
 		$relink=SiteLocation . "login.php";
 		if(defined("SITENAME")) $relink.="?site=".SITENAME;
+		if($msg!=null && strlen($msg)>0) {
+			$_SESSION['SESS_ERROR_MSG']=$msg;
+			$relink.="&errormsg=$msg";
+		}
 		redirectTo($relink,"SESSION Expired. Going To Login Page");
 	}
 	function getSessionSite() {
@@ -117,7 +131,7 @@ if(!function_exists("createTimeStamp")) {
 			return $_REQUEST['site'];
 		}
 		else return DEFAULT_SITE;*/
-		
+
 		$site="";
 		if(isset($_SESSION["LGKS_SESS_SITE"])) {
 			//active session
@@ -128,7 +142,7 @@ if(!function_exists("createTimeStamp")) {
 						$site=$dm->checkHost();
 					} else {
 						$site=$_REQUEST['site'];
-					}				
+					}
 				} else {
 					$site=$_REQUEST['site'];
 				}
@@ -150,6 +164,31 @@ if(!function_exists("createTimeStamp")) {
 		}
 		if($site==null || strlen($site)<=0) $site=DEFAULT_SITE;
 		return $site;
+	}
+	//Gets and lists the Sources/Handlers that can be used for the activity.
+	//It helps when a single handler is to be used where multiple handlers are available.
+	//Can be accessed using handler# at various places.
+	//eg. editors :: multiple are available, single to be used.
+	function get_handlers($activity,$forceReload=false) {
+		$dhF=ROOT.CFG_FOLDER."jsondb/default_handlers.json";
+		if(!file_exists($dhF)) {
+			$dmArr=array();
+			//$dmArr["all_editors"]=array("opts"=>array("ckeditor","nicedit","codemirror","editarea"),"enabled"=>true,"module"=>"editor");
+			$dmArr=json_encode($dmArr);
+			file_put_contents($dhF,$dmArr);
+			chmod($dhF,0777);
+		}
+		if($activity==null || strlen($activity)<=0) return array();
+		if(!isset($GLOBALS['DEFAULT_HANDLERS']) || $forceReload) {
+			$dmArr=json_decode(file_get_contents($dhF),true);
+			if($dmArr==null) {
+				$dmArr=array();
+			}
+			$GLOBALS['DEFAULT_HANDLERS']=$dmArr;
+		}
+		if(isset($GLOBALS['DEFAULT_HANDLERS'][$activity]) && $GLOBALS['DEFAULT_HANDLERS'][$activity]["enabled"]) {
+			return $GLOBALS['DEFAULT_HANDLERS'][$activity]["opts"];
+		} else return array();
 	}
 }
 ?>

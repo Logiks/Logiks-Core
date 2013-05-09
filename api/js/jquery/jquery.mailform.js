@@ -8,7 +8,7 @@ jQuery.mailform = function(to, subject, body, submitURL) {
 	height=$(window).height()-300;
 	//width=$(document).width()-50;
 	if(submitURL==null || submitURL.length<=0) {
-		submitURL="services/?scmd=mail";
+		submitURL=getServiceCMD("mail");
 	}
 	id='mailform_'+to;
 	if((typeof lgksConfirm) == "function") {
@@ -22,22 +22,41 @@ jQuery.mailform = function(to, subject, body, submitURL) {
 		s+="</table><hr/>";
 		s+="<div class='ui-state-highlight ui-corner-all' style='padding:4px;'><span class='ui-icon ui-icon-info' style='float: left; margin-right: .3em;'></span>After Successfully Sending Mail, A Reponse Box Will Appear.</div>";
 		s+="</div>";
-		
-		return lgksConfirm(s,"Mail Form",function(){
-				q="&mailto="+$("#"+id+" input[name=mailto]").val();
-				q+="&subject="+$("#"+id+" input[name=subject]").val();
-				q+="&body="+$("#"+id+" div[name=body]").html();
-				jQuery.ajax({
-						type:"POST",
-						url:submitURL,
-						data:q,
-						error:function(html) {
-							lgksAlert(html);
-						},
-						success: function(html) {
-							lgksAlert(html);
-						}
-					});
+
+		return lgksConfirm(s,"Mail Form").dialog({
+				buttons:{
+					"Send":function() {
+						q="&mailto="+encodeURIComponent($("input[name=mailto]",this).val());
+						q+="&subject="+encodeURIComponent($("input[name=subject]",this).val());
+						q+="&body="+encodeURIComponent($("div[name=body]",this).html());
+						$("table tbody",this).html("<tr><td colspan=10 align=center><div class='ajaxloading'></div>Sending Mail.<br/>Do Not Close This Window</td></tr>");
+						$(this).dialog({
+							"buttons":{
+								"Close":function() {
+									$(this).dialog( "close" );
+								}
+							}
+						});
+						dlg=this;
+						jQuery.ajax({
+							type:"POST",
+							url:submitURL,
+							data:q,
+							error:function(html) {
+								lgksAlert(html);
+								$(dlg).dialog( "close" );
+							},
+							success: function(html) {
+								lgksAlert(html);
+								$(dlg).dialog( "close" );
+							}
+						});
+						//$(this).dialog( "close" );
+					},
+					"Cancel":function() {
+						$(this).dialog( "close" );
+					}
+				}
 			});
 	} else {
 		alert("jqPopup Not Found");

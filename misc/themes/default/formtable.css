@@ -1,20 +1,18 @@
 /*For FormTable Features*/
 .formTable {
 	padding:0px;
-	border-bottom:1px solid #ddd;
-	border-top: 1px solid #ddd;
-	border-left:1px solid #ddd;
-	border-right: 1px solid #ddd;
 	
 	font-family:Georgia,Verdana,Seriff;
 	font-size:15px;
-	
+
 	margin-bottom:0px;
 	padding-bottom:0px;
+
+	list-style:none;
 }
 .formTable .formheader {
 	text-align: center;
-	height:20px;	
+	height:20px;
 }
 
 .formTable .formsubheader {
@@ -24,7 +22,7 @@
 
 .formTable .formfooter {
 	text-align: right;
-	padding-right:10px;	
+	padding-right:10px;
 	height:20px;
 }
 
@@ -45,7 +43,7 @@
 
 .formTable .columnName {
 	text-align:right;
-	width:200px;	
+	width:200px;
 }
 
 .formTable .columnEqual {
@@ -59,7 +57,7 @@
 }
 
 .formTable .columnInput {
-	text-align:left;	
+	text-align:left;
 }
 .formTable .columnHelp {
 	text-align:left;
@@ -78,8 +76,11 @@
 .formTable .disabled {
 	background-color:#E3E1DE;border:1px solid #82817F;
 }
-.formTable .progressbar,.formTable .slider {
-	width:95%;
+.formTable .slider {
+	width:89%;
+}
+.formTable tr:not(.divider):not(.noFieldRow) td:not(.formsubheader) {
+	padding:7px;
 }
 
 /*Image Attributes*/
@@ -99,12 +100,12 @@
 	font: bold 12px arial, sans-serif;
 }
 .formTable button {
-	width: 115px;
+	width: 100px;
 	height: 35px;
 	text-align:center;
 	margin-top:10px;
 	margin-left:10px;
-	font: bold 12px arial, sans-serif;
+	font: bold 15px arial, sans-serif;
 }
 .formTable button.mini {
 	width:35px;
@@ -120,6 +121,8 @@
 ul.formTable {
 	list-style:none;
 	padding:10px;
+	padding-top: 0px;
+	margin-top: 0px;
 }
 ul.formTable>li {
 	list-style:none;

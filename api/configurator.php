@@ -18,14 +18,14 @@ if(!function_exists('LoadConfigFile')) {
 				if(strlen($s)<=1) continue;
 				if(substr($s,0,2)=="//") continue;
 				if(substr($s,0,1)=="#") continue;
-				
+				$s=trim($s);//substr($s,0,strlen($s)-1);
 				if(strlen($s)>0) {
 					$n1=strpos($s, "=");
 					if($n1>0) {
 						$name=substr($s,0,$n1);
 						$value=substr($s,$n1+1);
 						//echo $mode . " " .  $name . " " . $value . "<br>";
-						
+
 						switch($mode) {
 							case "SESSION":
 								$_SESSION[$name] = processServerStrings($value);
@@ -102,14 +102,14 @@ if(!function_exists('LoadConfigFile')) {
 	}
 	function loadConfigDir($dir,$cfgOnly=false) {
 		if(!file_exists($dir)) return;
-		$arr=scandir($dir);	
+		$arr=scandir($dir);
 		foreach($arr as $a) {
 			if($a!="." && $a!=".." && is_file($dir.$a)) {
 				$b=$dir.$a;
 				if(strrchr(strtolower($a),".")==".cfg") {
 					LoadConfigFile($b);
 				} elseif(strpos(strtolower($a),"php")>0 && !$cfgOnly) {
-					include_once $b;					
+					include_once $b;
 				}
 			}
 		}
@@ -140,10 +140,10 @@ if(!function_exists('LoadConfigFile')) {
 		define("SiteRoot",$_SERVER['DOCUMENT_ROOT']."/".InstallFolder);
 		define("SiteLocation",$hostProtocol.$_SERVER['HTTP_HOST']."/".InstallFolder);
 		define("WEBROOT", SiteLocation);
-		
+
 		$df=str_replace("yy","Y",getConfig("DATE_FORMAT"));
 		$GLOBALS['CONFIG']["PHP_DATE_FORMAT"] = $df;
-		
+
 		//$df=str_replace("yy","Y",getConfig("TIME_FORMAT"));
 		//$GLOBALS['CONFIG']["PHP_TIME_FORMAT"] = $df;
 	}
@@ -211,21 +211,61 @@ if(!function_exists('LoadConfigFile')) {
 		}
 		return true;
 	}
-	function loadFeature($fname,$debug=false) {
+	function loadFeature($fname,$forceReload=false,$debug=false) {
 		$f=APPROOT;
 		if(defined("APPS_CONFIG_FOLDER"))  $f.=APPS_CONFIG_FOLDER;
 		else $f.="config/";
-		$f.="features/{$fname}.cfg";
-		if(!file_exists($f)) return array();
-		$ftrs=parseConfigFile($f);
-		if($debug) {
-			return $ftrs;
+		$f.="features/{$fname}";
+		$ftrs=array();
+		if(file_exists("{$f}.cfg")) {
+			if(isset($GLOBALS['FEATURES']["{$fname}.cfg"]) && !$forceReload) {
+				return $GLOBALS['FEATURES']["{$fname}.cfg"];
+			} else {
+				$ftrs=parseConfigFile("{$f}.cfg");
+				$arr=array();
+				foreach($ftrs as $a=>$b) {
+					$arr[$a]=$b['value'];
+				}
+				$GLOBALS['FEATURES']["{$fname}.cfg"]=$arr;
+				if($debug) {
+					return $ftrs;
+				} else {
+					return $arr;
+				}
+			}
+		} elseif(file_exists("{$f}.json")) {
+			if(isset($GLOBALS['FEATURES']["{$fname}.json"]) && !$forceReload) {
+				return $GLOBALS['FEATURES']["{$fname}.json"];
+			} else {
+				$data=file_get_contents("{$f}.json");
+				$arr=json_decode($data,true);
+				$GLOBALS['FEATURES']["{$fname}.json"]=$arr;
+				return $arr;
+			}
+		} elseif(file_exists("{$f}.lst")) {
+			if(isset($GLOBALS['FEATURES']["{$fname}.lst"]) && !$forceReload) {
+				return $GLOBALS['FEATURES']["{$fname}.lst"];
+			} else {
+				$f=file_get_contents("{$f}.lst");
+				$arr=explode("\n",$f);
+				if(strlen($arr[count($arr)-1])==0) unset($arr[count($arr)-1]);
+				$GLOBALS['FEATURES']["{$fname}.lst"]=$arr;
+				return $arr;
+			}
+		} else {
+			return array();
 		}
-		$arr=array();
-		foreach($ftrs as $a=>$b) {
-			$arr[$a]=$b['value'];
+	}
+	function unloadFeature($fname) {
+		if(isset($GLOBALS['FEATURES']["{$fname}.cfg"])) {
+			unset($GLOBALS['FEATURES']["{$fname}.cfg"]);
+			return true;
+		} elseif(isset($GLOBALS['FEATURES']["{$fname}.json"])) {
+			unset($GLOBALS['FEATURES']["{$fname}.json"]);
+			return true;
+		} else {
+			return false;
 		}
-		return $arr;
 	}
 	function parseConfigFile($path) {
 		$mode="DATABUS";
@@ -236,12 +276,14 @@ if(!function_exists('LoadConfigFile')) {
 					$s=fgets($file);
 					if(substr($s,0,2)=="//") continue;
 					if(substr($s,0,1)=="#") continue;
-					$s=substr($s,0,strlen($s)-1);
+					$s=trim($s);//substr($s,0,strlen($s)-1);
 					if(strlen($s)>0) {
 						$n1=strpos($s, "=");
 						if($n1>0) {
-							$name=substr($s,0,$n1);
-							$value=substr($s,$n1+1);
+							$asx=explode("=",$s);
+							if(!isset($asx[1])) $asx[1]="";
+							$name=$asx[0];
+							$value=$asx[1];
 							$r=array("name"=>$name,"value"=>$value,"mode"=>$mode);
 							$outArr[$name]=$r;
 						} else {
@@ -260,7 +302,15 @@ if(!function_exists('LoadConfigFile')) {
 		}
 		return $outArr;
 	}
+	function parseListFile($path) {
+		if(!file_exists($path)) $path=ROOT.CFG_FOLDER."lists/$path.lst";
+		$f=file_get_contents($path);
+		$arr=explode("\n",$f);
+		if(strlen($arr[count($arr)-1])==0) unset($arr[count($arr)-1]);
+		return $arr;
+	}
 	function processServerStrings($str) {
+		if(strlen($str)<=0) return;
 		$pattern = '/\$_SERVER\[\'[a-zA-Z0-9_-]+\'\]/';
 		$cnt=preg_match_all($pattern, $str, $matches,0);
 		for($i=0;$i<$cnt;$i++) {
@@ -317,7 +367,7 @@ if(!function_exists('LoadConfigFile')) {
 				$str=str_replace($s1,constant($s2),$str);
 			} else {
 				$str=str_replace($s1,">>",$str);
-			}			
+			}
 		}
 		return $str;
 	}

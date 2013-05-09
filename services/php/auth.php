@@ -125,7 +125,7 @@ $_SESSION['SESS_PRIVILEGE_ID'] = $data['privilege'];
 $_SESSION['SESS_ACCESS_ID'] = $data['access'];
 
 $_SESSION['SESS_PRIVILEGE_NAME'] = $d2['name'];
-$_SESSION['SESS_ACCESS_NAME'] = $d1['name'];
+$_SESSION['SESS_ACCESS_NAME'] = $d1['master'];
 $_SESSION['SESS_ACCESS_SITES'] = $allSites;
 
 $_SESSION['SESS_USER_NAME'] = $data['name'];

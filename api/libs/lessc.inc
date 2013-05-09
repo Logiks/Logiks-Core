@@ -1,5 +1,4 @@
 <?php
-
 /**
  * lessphp v0.2.0
  * http://leafo.net/lessphp
@@ -113,7 +112,7 @@ class lessc {
 			}
 
 			$this->push();
-			$this->set('__tags', $tags);	
+			$this->set('__tags', $tags);
 
 			return true;
 		} else {
@@ -154,8 +153,8 @@ class lessc {
 			}
 
 			return isset($out) ? $out : true;
-		} 
-		
+		}
+
 		// import statement
 		if ($this->import($url, $media)) {
 			if ($this->importDisabled) return "/* import is disabled */\n";
@@ -221,8 +220,8 @@ class lessc {
 				if ($this->get($name, array(end($this->env)))) {
 					while ($tval = array_shift($value))
 						$this->append($name, $tval);
-				} else 
-					$this->set($name, $value); 
+				} else
+					$this->set($name, $value);
 			}
 
 			// render sub blocks
@@ -267,12 +266,12 @@ class lessc {
 
 	// a list of expressions
 	function expressionList(&$exps) {
-		$values = array();	
+		$values = array();
 
 		while ($this->expression($exp)) {
 			$values[] = $exp;
 		}
-		
+
 		if (count($values) == 0) return false;
 
 		$exps = $this->compressList($values, ' ');
@@ -331,8 +330,8 @@ class lessc {
 
 	// consume a list of values for a property
 	function propertyValue(&$value) {
-		$values = array();	
-		
+		$values = array();
+
 		$s = null;
 		while ($this->expressionList($v)) {
 			$values[] = $v;
@@ -351,7 +350,7 @@ class lessc {
 	// a single value
 	function value(&$value) {
 		// try a unit
-		if ($this->unit($value)) return true;	
+		if ($this->unit($value)) return true;
 
 		// see if there is a negation
 		$s = $this->seek();
@@ -362,7 +361,7 @@ class lessc {
 			$this->seek($s);
 		}
 
-		// accessor 
+		// accessor
 		// must be done before color
 		// this needs negation too
 		if ($this->accessor($a)) {
@@ -371,7 +370,7 @@ class lessc {
 				$value = end($tmp[$a[1]]);
 			return true;
 		}
-		
+
 		// color
 		if ($this->color($value)) return true;
 
@@ -407,7 +406,7 @@ class lessc {
 
 		// @import "something.css" media;
 		// @import url("something.css") media;
-		// @import url(something.css) media; 
+		// @import url(something.css) media;
 
 		if ($this->literal('url(')) $parens = true; else $parens = false;
 
@@ -459,7 +458,7 @@ class lessc {
 		return true;
 	}
 
-	// a string 
+	// a string
 	function string(&$string, &$d = null) {
 		$s = $this->seek();
 		if ($this->literal('"', false)) {
@@ -474,7 +473,7 @@ class lessc {
 			$this->seek($s);
 			return false;
 		}
-		
+
 		$d = $delim;
 		return true;
 	}
@@ -526,10 +525,10 @@ class lessc {
 
 				$color[$i] = $t * (256/$width) + $t * floor(16/$width);
 			}
-			
+
 			$out = $color;
 			return true;
-		} 
+		}
 
 		return false;
 	}
@@ -549,7 +548,7 @@ class lessc {
 			$this->seek($s);
 			return false;
 		}
-		
+
 		$args = $values;
 		return true;
 	}
@@ -660,7 +659,7 @@ class lessc {
 	function variable(&$name) {
 		$s = $this->seek();
 		if ($this->literal($this->vPrefix, false) && $this->keyword($name)) {
-			return true;	
+			return true;
 		}
 		return false;
 	}
@@ -691,7 +690,7 @@ class lessc {
 	}
 
 	function compressList($items, $delim) {
-		if (count($items) == 1) return $items[0];	
+		if (count($items) == 1) return $items[0];
 		else return array('list', $delim, $items);
 	}
 
@@ -745,9 +744,9 @@ class lessc {
 			// [2] - array of values
 			return implode($value[1], array_map(array($this, 'compileValue'), $value[2]));
 		case 'keyword':
-			// [1] - the keyword 
+			// [1] - the keyword
 		case 'number':
-			// [1] - the number 
+			// [1] - the number
 			return $value[1];
 		case 'expression':
 			// [1] - operator
@@ -756,7 +755,7 @@ class lessc {
 			return $this->compileValue($this->evaluate($value[1], $value[2], $value[3]));
 		case 'string':
 			// [1] - contents of string (includes quotes)
-			
+
 			// search for inline variables to replace
 			$replace = array();
 			if (preg_match_all('/{(@[\w-_][0-9\w-_]*)}/', $value[1], $m)) {
@@ -810,7 +809,7 @@ class lessc {
 
 			return $value[1].'('.$this->compileValue($value[2]).')';
 
-		default: // assumed to be unit	
+		default: // assumed to be unit
 			return $value[1].$value[0];
 		}
 	}
@@ -845,7 +844,7 @@ class lessc {
 			$c = $this->reduce($c);
 			if ($i < 4) {
 				if ($c[0] == '%') $components[] = 255 * ($c[1] / 100);
-				else $components[] = floatval($c[1]); 
+				else $components[] = floatval($c[1]);
 			} elseif ($i == 4) {
 				if ($c[0] == '%') $components[] = 1.0 * ($c[1] / 100);
 				else $components[] = floatval($c[1]);
@@ -878,7 +877,7 @@ class lessc {
 				$value = $this->reduce($var[1]);
 				if (is_numeric($value[1])) {
 					$value[1] = -1*$value[1];
-				} 
+				}
 				$var = $value;
 			}
 		}
@@ -924,7 +923,7 @@ class lessc {
 			if ($op == '-') $right[1] = '-'.$right[1];
 			return array('keyword', $this->compileValue($left) .' '. $this->compileValue($right));
 		}
-	
+
 		// default to number operation
 		return $this->op_number_number($op, $left, $right);
 	}
@@ -995,22 +994,22 @@ class lessc {
 		switch($op) {
 		case '+':
 			$value = $left[1] + $right[1];
-			break;	
+			break;
 		case '*':
 			$value = $left[1] * $right[1];
-			break;	
+			break;
 		case '-':
 			$value = $left[1] - $right[1];
-			break;	
+			break;
 		case '%':
 			$value = $left[1] % $right[1];
-			break;	
+			break;
 		case '/':
 			if ($right[1] == 0) throw new exception('parse error: divide by zero');
 			$value = $left[1] / $right[1];
 			break;
 		default:
-			throw new exception('parse error: unknown number operator: '.$op);	
+			throw new exception('parse error: unknown number operator: '.$op);
 		}
 
 		return array($type, $value);
@@ -1019,7 +1018,7 @@ class lessc {
 
 	/* environment functions */
 
-	// push name on expand stack, and return its 
+	// push name on expand stack, and return its
 	// count before being pushed
 	function pushName($name) {
 		$count = array_count_values($this->expandStack);
@@ -1139,7 +1138,7 @@ class lessc {
 	}
 
 	function literal($what, $eatWhitespace = true) {
-		// this is here mainly prevent notice from { } string accessor 
+		// this is here mainly prevent notice from { } string accessor
 		if ($this->count >= strlen($this->buffer)) return false;
 
 		// shortcut on single letter
@@ -1167,7 +1166,7 @@ class lessc {
 		$out = $m[1];
 		return true;
 	}
-	
+
 	// try to match something on head of buffer
 	function match($regex, &$out, $eatWhitespace = true) {
 		$r = '/'.$regex.($eatWhitespace ? '\s*' : '').'/Ais';
@@ -1183,7 +1182,7 @@ class lessc {
 	function peek($regex, &$out = null) {
 		$r = '/'.$regex.'/Ais';
 		$result =  preg_match($r, $this->buffer, $out, null, $this->count);
-		
+
 		return $result;
 	}
 
@@ -1196,7 +1195,7 @@ class lessc {
 
 	// parse and compile buffer
 	function parse($str = null) {
-		if ($str) $this->buffer = $str;		
+		if ($str) $this->buffer = $str;
 
 		$this->env = array();
 		$this->expandStack = array();
@@ -1235,7 +1234,7 @@ class lessc {
 
 	function __construct($fname = null) {
 		if (!self::$operatorString) {
-			self::$operatorString = 
+			self::$operatorString =
 				'('.implode('|', array_map(array($this, 'preg_quote'), array_keys(self::$precedence))).')';
 		}
 

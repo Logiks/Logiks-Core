@@ -11,7 +11,7 @@ $mode=strtolower($_SESSION["USER_DETAILS_MODE"]);
 $site=$_SESSION["USER_DETAILS_SITE"];
 $userid=$_SESSION["USER_DETAILS_USERID"];
 $rid=$_SESSION["USER_DETAILS_ID"];
- 
+
 unset($_SESSION["USER_DETAILS_MODE"]);
 unset($_SESSION["USER_DETAILS_SITE"]);
 unset($_SESSION["USER_DETAILS_USERID"]);
@@ -53,12 +53,12 @@ if($mode!="create" || $mode!="totedit" || $mode!="edit") {
 	$sql="SELECT {$sql} FROM {$tbl1},{$tbl2},{$tbl3} WHERE {$tbl1}.access={$tbl2}.id AND {$tbl1}.privilege={$tbl3}.id AND ";
 	$sql.="{$tbl1}.id=$rid AND {$tbl1}.userid='$userid' AND {$tbl1}.site='$site' LIMIT 0,1";
 }
-
+//echo $sql;
 $r=_dbQuery($sql,true);
 if($r) {
 	$data=_dbData($r);
 	if(isset($data[0])) {
-		$data=$data[0];	
+		$data=$data[0];
 	}
 	foreach($userDetails as $a=>$b) {
 		if(isset($data[$a])) {
@@ -72,6 +72,7 @@ if($r) {
 		$userDetails[$a]="<span style='color:maroon'>XXX</span>";
 	}
 }
+//printArray($userDetails);exit();
 _db(true)->freeResult($r);
 $allowButtonBar=true;
 
@@ -84,12 +85,12 @@ if(defined("ADMIN_USERIDS"))
 }*/
 
 if($mode=="create") {
-	$arrUser[sizeOf($arrUser)]=array("UserID","<input type=text name='userid' id='useridfield' class='required' value='' 
-					onfocus=\"$(this).parents('tr').find('td.checkcol div').attr('class','info_icon');\" 
+	$arrUser[sizeOf($arrUser)]=array("UserID","<input type=text name='userid' id='useridfield' class='required' value=''
+					onfocus=\"$(this).parents('tr').find('td.checkcol div').attr('class','info_icon');\"
 					onblur='checkUniqueUserID(this);' /><div id=suggestionBox></div>",
 					"<div class='checkcol info_icon' onclick='checkUniqueUserID()'></div>","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("---");
-	$arrUser[sizeOf($arrUser)]=array("For Site","<select name=s id=forsite  class='required allsites ui-state-active ui-corner-all' 
+	$arrUser[sizeOf($arrUser)]=array("For Site","<select name=s id=forsite  class='required allsites ui-state-active ui-corner-all'
 					onchange='updatePrivilegeList($(this).val());updateAccessList($(this).val());' ></select>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Privilege","<select name=privilege class='required ui-state-active ui-corner-all'></select>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Access Point","<select name=access class='required ui-state-active ui-corner-all'></select>","&nbsp;","&nbsp;");
@@ -104,13 +105,13 @@ if($mode=="create") {
 	$arrUser[sizeOf($arrUser)]=array("---");
 	$arrUser[sizeOf($arrUser)]=array("Expires On","<input type=text name='expires' class='datefield' readonly />","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Remarks","<textarea name=remarks></textarea>","&nbsp;","&nbsp;");
-	
+
 	$arrUser[11][1]=sprintf("<select name='country' class='allsites ui-state-active ui-corner-all'>%s</select>",getCountrySelector(getConfig("DEFAULT_COUNTRY")));
 } elseif($mode=="totedit") {
 	$arrUser[sizeOf($arrUser)]=array("UserID","<input type=text name='userid' id='useridfield' class='required' value='{$userid}' />",
 					"<div class='checkcol ok_icon'></div>","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("---");
-	$arrUser[sizeOf($arrUser)]=array("For Site","<select name=s id=forsite  class='required allsites ui-state-active ui-corner-all' 
+	$arrUser[sizeOf($arrUser)]=array("For Site","<select name=s id=forsite  class='required allsites ui-state-active ui-corner-all'
 					onchange='updatePrivilegeList($(this).val());updateAccessList($(this).val());' ></select>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Privilege","<select name=privilege class='required ui-state-active ui-corner-all' v='{$userDetails['privilege']}' ></select>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Access Point","<select name=access class='required ui-state-active ui-corner-all' v='{$userDetails['access']}' ></select>","&nbsp;","&nbsp;");
@@ -125,12 +126,12 @@ if($mode=="create") {
 	$arrUser[sizeOf($arrUser)]=array("---");
 	$arrUser[sizeOf($arrUser)]=array("Expires On","<input type=text name='expires' class='datefield'  value='{$userDetails['expires']}' readonly />","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Remarks","<textarea name=remarks>{$userDetails['remarks']}</textarea>","&nbsp;","&nbsp;");
-	
+
 	$arrUser[11][1]=sprintf("<select name='country' class='allsites ui-state-active ui-corner-all'>%s</select>",getCountrySelector($userDetails['country']));
 } elseif($mode=="edit") {
 	$arrUser[sizeOf($arrUser)]=array("UserID","<input type=text name='userid' value='{$userid}' readonly />","<div class='ok_icon'></div>","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("---");
-	$arrUser[sizeOf($arrUser)]=array("For Site","<select name=s id=forsite  class='required allsites ui-state-active ui-corner-all' 
+	$arrUser[sizeOf($arrUser)]=array("For Site","<select name=s id=forsite  class='required allsites ui-state-active ui-corner-all'
 					onchange='updatePrivilegeList($(this).val());updateAccessList($(this).val());' ></select>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Privilege","<select name=privilege class='required ui-state-active ui-corner-all' v='{$userDetails['privilege']}' ></select>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Access Point","<select name=access class='required ui-state-active ui-corner-all' v='{$userDetails['access']}' ></select>","&nbsp;","&nbsp;");
@@ -145,16 +146,16 @@ if($mode=="create") {
 	$arrUser[sizeOf($arrUser)]=array("---");
 	$arrUser[sizeOf($arrUser)]=array("Expires On","<input type=text name='expires' class='datefield'  value='{$userDetails['expires']}' readonly />","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Remarks","<textarea name=remarks>{$userDetails['remarks']}</textarea>","&nbsp;","&nbsp;");
-	
+
 	$arrUser[11][1]=sprintf("<select name='country' class='allsites ui-state-active ui-corner-all'>%s</select>",getCountrySelector($userDetails['country']));
 } elseif($mode=="infoedit") {
 	$arrUser[sizeOf($arrUser)]=array("UserID","<input type=text name='userid' value='{$userid}' readonly />","<div class='ok_icon'></div>","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("---");
-	
+
 	$arrUser[sizeOf($arrUser)]=array("For Site","<div class='txtfield'>{$site}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Privilege","<div class='txtfield'>{$userDetails['privilege_name']}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Access Point","<div class='txtfield'>{$userDetails['access_name']}</div>","&nbsp;","&nbsp;");
-	
+
 	$arrUser[sizeOf($arrUser)]=array("---");
 	$arrUser[sizeOf($arrUser)]=array("User Name","<input type=text name='name' class='required' value='{$userDetails['name']}' />","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Email","<input type=text name='email' class='emailfield' value='{$userDetails['email']}' />","&nbsp;","&nbsp;");
@@ -166,18 +167,18 @@ if($mode=="create") {
 	$arrUser[sizeOf($arrUser)]=array("---");
 	$arrUser[sizeOf($arrUser)]=array("Expires On","<input type=text name='expires' class='datefield'  value='{$userDetails['expires']}' readonly />","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Remarks","<textarea name=remarks>{$userDetails['remarks']}</textarea>","&nbsp;","&nbsp;");
-	
+
 	$arrUser[11][1]=sprintf("<select name='country' class='allsites ui-state-active ui-corner-all'>%s</select>",getCountrySelector($userDetails['country']));
 } elseif($mode=="view") {
 	$usrRecordFormat="<tr class='nohover' align=left valign=top><th width=150px>%s</th><td width=25px align=center><b>::</b></td><td>%s</td><td width=100px align=right>%s</td></tr>";
-	
-	$arrUser[sizeOf($arrUser)]=array("User Name","<div class='txtfield'>{$userDetails['name']}</div>","<div class='info_icon'></div>","&nbsp;");	
+
+	$arrUser[sizeOf($arrUser)]=array("User Name","<div class='txtfield'>{$userDetails['name']}</div>","<div class='info_icon'></div>","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("UserID","<div class='txtfield'>{$userid}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("---");
 	$arrUser[sizeOf($arrUser)]=array("For Site","<div class='txtfield'>{$site}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Privilege","<div class='txtfield'>{$userDetails['privilege_name']}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Access Point","<div class='txtfield'>{$userDetails['access_name']}</div>","&nbsp;","&nbsp;");
-	$arrUser[sizeOf($arrUser)]=array("---");	
+	$arrUser[sizeOf($arrUser)]=array("---");
 	$arrUser[sizeOf($arrUser)]=array("Email","<div class='txtfield'>{$userDetails['email']}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Mobile","<div class='txtfield'>{$userDetails['mobile']}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Address","<div class='txtarea ui-corner-all'>{$userDetails['address']}</div>","&nbsp;","&nbsp;");
@@ -186,19 +187,19 @@ if($mode=="create") {
 	$arrUser[sizeOf($arrUser)]=array("ZipCode","<div class='txtfield'>{$userDetails['zipcode']}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Expires On","<div class='txtfield'>{$userDetails['expires']}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Remarks","<div class='txtarea ui-corner-all'>{$userDetails['remarks']}</div>","&nbsp;","&nbsp;");
-	
+
 	$allowButtonBar=false;
 } else {
 	$usrRecordFormat="<tr class='nohover' align=left valign=top><th width=150px>%s</th><td width=25px align=center><b>::</b></td><td>%s</td><td width=65px>%s</td><td width=100px align=right>%s</td></tr>";
 
-	$arrUser[sizeOf($arrUser)]=array("UserID","<div class='txtfield'>{$userid}</div>","&nbsp;","&nbsp;");	
+	$arrUser[sizeOf($arrUser)]=array("UserID","<div class='txtfield'>{$userid}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("User Name","<div class='txtfield'>{$userDetails['name']}</div>","&nbsp;","<div class='info_icon'></div>");
 	$arrUser[sizeOf($arrUser)]=array("For Site","<div class='txtfield'>{$site}</div>","&nbsp;","&nbsp;");
-	$arrUser[sizeOf($arrUser)]=array("---");	
+	$arrUser[sizeOf($arrUser)]=array("---");
 	$arrUser[sizeOf($arrUser)]=array("Email","<div class='txtfield'>{$userDetails['email']}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Mobile","<div class='txtfield'>{$userDetails['mobile']}</div>","&nbsp;","&nbsp;");
 	$arrUser[sizeOf($arrUser)]=array("Country","<div class='txtfield'>{$userDetails['country']}</div>","&nbsp;","&nbsp;");
-	
+
 	$allowButtonBar=false;
 }
 ?>
@@ -224,7 +225,7 @@ if($mode=="create") {
 }
 
 #user_editor .checkcol button {
-	height:23px;	
+	height:23px;
 }
 #user_editor .checkcol .ui-button-text {
 	padding:4px;margin:2px;
@@ -241,7 +242,7 @@ if($mode=="create") {
 }
 #user_editor .info_icon {
 	background:url(media/images/info.png) no-repeat center center;
-	width:48px;height:48px;	
+	width:48px;height:48px;
 }
 #user_editor .emailfield {
 	background:#fff url(misc/themes/default/images/forms/email.png) no-repeat right center;
@@ -276,7 +277,7 @@ if($mode=="create") {
 			<hr/>
 			<button type=button onclick='resetForm()'>Reset</button>
 			<button type=button onclick="saveUserForm('#user_editor');">Save</button>
-		</td></tr>		
+		</td></tr>
 	<?php } else { ?>
 		<tr><td colspan=10 align=center>&nbsp;</td></tr>
 	<?php } ?>
@@ -309,9 +310,9 @@ function resetForm() {
 			$(this).val(valO);
 		});
 }
-function updatePrivilegeList(site) {
+function updatePrivilegeList(site) {console.log(this);
 	$("#user_editor select[name=privilege]").html("<option>Loading ...</option>");
-	$("#user_editor select[name=privilege]").load("services/?scmd=qtools&action=privilegelist&format=select&forsite="+site,function() {
+	$("#user_editor select[name=privilege]").load(getServiceCMD("qtools")+"&action=privilegelist&format=select&forsite="+site,function() {
 			if($(this).attr('v')!=null && $(this).attr('v').length>0) {
 				$(this).val($(this).attr('v'));
 			}
@@ -319,7 +320,7 @@ function updatePrivilegeList(site) {
 }
 function updateAccessList(site) {
 	$("#user_editor select[name=access]").html("<option>Loading ...</option>");
-	$("#user_editor select[name=access]").load("services/?scmd=qtools&action=accesslist&format=select&forsite="+site,function() {
+	$("#user_editor select[name=access]").load(getServiceCMD("qtools")+"&action=accesslist&format=select&forsite="+site,function() {
 			if($(this).attr('v')!=null && $(this).attr('v').length>0) {
 				$(this).val($(this).attr('v'));
 			}

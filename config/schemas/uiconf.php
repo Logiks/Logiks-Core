@@ -76,7 +76,10 @@ if(!function_exists("getSubSkinList")) {
 				$b=str_replace(".css","",$b);
 				$b=str_replace("jquery.ui.","",$b);
 				$t=ucwords($b);
-				if($b=="jquery.ui") $t="Default";
+				if($b=="jquery.ui") {
+					$t="Default";
+					$b="";
+				}
 				$arr[$t]=$b;
 			}
 		}
@@ -127,13 +130,13 @@ if(!function_exists("getPageList")) {
 		} else {
 			$site=SITENAME;
 		}
-		
+
 		$f=ROOT.APPS_FOLDER.$site."/pages/";
 		$f1=ROOT.APPS_FOLDER.$site."/config/layouts/";
 		if(is_dir($f)) {
 			$fs=scandir($f);
 			unset($fs[0]);unset($fs[1]);
-			
+
 			$arr["None"]="";
 			foreach($fs as $a=>$b) {
 				$ext=strtolower(substr($b,strlen($b)-3));
@@ -143,7 +146,7 @@ if(!function_exists("getPageList")) {
 				}
 			}
 		}
-		
+
 		if(is_dir($f1)) {
 			$fs=scandir($f1);
 			unset($fs[0]);unset($fs[1]);
@@ -155,7 +158,7 @@ if(!function_exists("getPageList")) {
 				}
 			}
 		}
-		
+
 		return $arr;
 	}
 }
@@ -168,9 +171,9 @@ if(!function_exists("getImageList")) {
 		} else {
 			$site=SITENAME;
 		}
-		
+
 		$dirs=array("","logos/");
-		
+
 		$arr["None"]="";
 		foreach($dirs as $d) {
 			$f=ROOT.APPS_FOLDER.$site."/media/".$d;
@@ -186,14 +189,14 @@ if(!function_exists("getImageList")) {
 				}
 			}
 		}
-		
+
 		return $arr;
 	}
 }
 if(!function_exists("getNavigationList")) {
 	function getNavigationList() {
 		$arr=array();
-		
+
 		$sql="SELECT menuid,count(*) as cnt FROM lgks_admin_links WHERE (SITE='".SITENAME."' OR SITE='*') GROUP BY menuid";
 		$result=_dbQuery($sql,true);
 		if($result) {

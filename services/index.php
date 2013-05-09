@@ -6,7 +6,7 @@ if(defined('ROOT')) exit('Only Direct Access Is Allowed');
 //Formats : html(table,list,select), json, xml, raw
 
 ini_set("display_errors", "strerr");
-ini_set("error_reporting", E_ALL); 
+ini_set("error_reporting", E_ALL);
 
 session_start();
 ob_start();
@@ -17,46 +17,59 @@ if(!defined('ROOT')) {
 if(!defined('ROOT_RELATIVE')) {
 	define('ROOT_RELATIVE',"../");
 }
-if(!defined('SERVICE_FOLDER')) {
-	define('SERVICE_FOLDER',dirname(__FILE__) . "/");
+if(!defined('SERVICE_ROOT')) {
+	define('SERVICE_ROOT',dirname(__FILE__) . "/");
 }
 require_once (ROOT . 'api/configurator.php');
 
 LoadConfigFile(ROOT . "config/basic.cfg");
 LoadConfigFile(ROOT . "config/services.cfg");
 LoadConfigFile(ROOT . "config/security.cfg");
+LoadConfigFile(ROOT . "config/folders.cfg");
 //LoadConfigFile(ROOT . "config/framework.cfg");
 
 header("X-Powered-By: Logiks [http://openlogiks.org]",false);
 //header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
+//print_r($_SERVER);exit();
 
-$defSite='default';
+$defSite=DEFAULT_SITE;
 $predefinedSite=true;
 
-if(isset($_REQUEST['site'])) {
-	$GLOBALS["CURRENT_SITE"]=$_REQUEST['site'];
-} elseif(isset($_SESSION['LGKS_SESS_SITE'])) {
-	$GLOBALS["CURRENT_SITE"]=$_SESSION['LGKS_SESS_SITE'];
-} elseif(isset($_SERVER["HTTP_REFERER"])) {
-	$pos1=strpos($_SERVER["HTTP_REFERER"],"site=");
-	if($pos1>0) {
-		$d1=substr($_SERVER["HTTP_REFERER"],$pos1);
-		$pos2=strpos($d1,"&");
-		if($pos2>0) {
-			$d1=substr($d1,0,$pos2);
+if(DOMAIN_CONTROLS_ENABLE=="true") {
+	include_once ROOT."api/domainmap.inc";
+	$dm=new DomainMap();
+	$GLOBALS["CURRENT_SITE"]=$dm->checkServiceHost();
+} else {
+	if(isset($_REQUEST['site'])) {
+		$GLOBALS["CURRENT_SITE"]=$_REQUEST['site'];
+	} elseif(isset($_SESSION['LGKS_SESS_SITE'])) {
+		$GLOBALS["CURRENT_SITE"]=$_SESSION['LGKS_SESS_SITE'];
+	} elseif(isset($_SERVER["HTTP_REFERER"])) {
+		$pos1=strpos($_SERVER["HTTP_REFERER"],"site=");
+		if($pos1>0) {
+			$d1=substr($_SERVER["HTTP_REFERER"],$pos1);
+			$pos2=strpos($d1,"&");
+			if($pos2>0) {
+				$d1=substr($d1,0,$pos2);
+			}
+			$pos3=strpos($d1,"=")+1;
+			$d1=substr($d1,$pos3);
+			$GLOBALS["CURRENT_SITE"]=$d1;
+		} else {
+			$predefinedSite=false;
+			$GLOBALS["CURRENT_SITE"]=$defSite;
 		}
-		$pos3=strpos($d1,"=")+1;
-		$d1=substr($d1,$pos3);
-		$GLOBALS["CURRENT_SITE"]=$d1;
 	} else {
 		$predefinedSite=false;
 		$GLOBALS["CURRENT_SITE"]=$defSite;
 	}
-} else {
-	$predefinedSite=false;
-	$GLOBALS["CURRENT_SITE"]=$defSite;
 }
 //Until Now $GLOBALS["CURRENT_SITE"] is available for all
+
+if(!isset($_SERVER["HTTP_REFERER"])) $_SERVER["HTTP_REFERER"]="";
+
+$_REQUEST['site']=$GLOBALS["CURRENT_SITE"];
+$_SESSION['SESS_LOGIN_SITE']=$GLOBALS["CURRENT_SITE"];
 
 if(!defined('SERVICE_HOST')) {
 	$sa=dirname(__FILE__);
@@ -84,25 +97,6 @@ $sysdbLink=new Database();
 $sysdbLink->connect();
 $appdbLink=null;
 
-if($predefinedSite && $GLOBALS["CURRENT_SITE"]!="services") {
-	$fx=ROOT.APPS_FOLDER.$GLOBALS["CURRENT_SITE"]."/";
-	if(!(is_dir($fx) && file_exists($fx."apps.cfg"))) {
-		unset($_SESSION['LGKS_SESS_SITE']);
-		$_REQUEST['site']=$GLOBALS["CURRENT_SITE"];
-		printErr("404","Requested AppSite <b>''{$GLOBALS["CURRENT_SITE"]}''</b> Not Found");
-		exit();
-	}
-} else {
-	if(!checkServiceSession(false)) {
-		$dm=new DomainMap(_db(true));		
-		$GLOBALS["CURRENT_SITE"]=$dm->checkServiceHost();
-	}
-}
-
-if(!isset($_SERVER["HTTP_REFERER"])) $_SERVER["HTTP_REFERER"]="";
-
-$_REQUEST['site']=$GLOBALS["CURRENT_SITE"];
-$_SESSION['SESS_LOGIN_SITE']=$GLOBALS["CURRENT_SITE"];
 
 define("SITENAME",$GLOBALS["CURRENT_SITE"]);
 define("APPROOT",ROOT . APPS_FOLDER . SITENAME . "/");
@@ -131,7 +125,10 @@ loadAppConfigs();
 $serviceCtrlDb=getServiceCtrlConfig();
 
 $request=$secure->checkSecurity($request,$serviceCtrlDb);
-
+if(count($request)==0) {
+	printErr('MethodNotAllowed',"Requested Command Method Is No Enabled/Found In Service Engine.");
+	exit();
+}
 //loadHelpers("urlkit");
 
 DataBus::singleton();
@@ -139,13 +136,63 @@ function __cleanup() {
 	runHooks("serviceAfterRequest");
 	ob_flush();
 	DataBus::singleton()->dumpToSession();
-	if(_db(true)->isOpen()) _db(true)->close();
-	if(_db()->isOpen()) _db()->close();
+	if(_db(true)!=null && _db(true)->isOpen()) _db(true)->close();
+	if(_db()!=null && _db()->isOpen()) _db()->close();
 	//echo PHP_EOL;
 }
 register_shutdown_function("__cleanup");
 
 runHooks("serviceOnRequest");
-$ctrl->executeRequest($request);
+
+$cacheFile=RequestCache::getCachePath("services");
+if(isset($_POST) && count($_POST)>0) {
+	$ctrl->executeRequest($request);
+} else {
+	if(isset($_REQUEST['forcecache']) && $_REQUEST['forcecache']=="true") {
+		if(!isset($_REQUEST['autocache'])) $_REQUEST['autocache']="true";
+
+		$a=RequestCache::checkCache("services",SERVICE_CACHE_PERIOD);
+		if($a) {
+			printContentHeader($cacheFile);
+			include_once $cacheFile;
+		} else {
+			ob_start();
+			$ctrl->executeRequest($request);
+			$data=ob_get_contents();
+			ob_flush();
+			if(!(isset($_REQUEST['nocache']) && $_REQUEST['nocache']=="true"))
+				file_put_contents($cacheFile,$data);
+		}
+	} else {
+		switch(getConfig("SERVICE_CACHE_ENABLED")) {
+			case "true":
+				$noCache=explode(",",SERVICE_CACHE_NOCACHE);
+				$noCacheAppSite=explode(",",SERVICE_CACHE_NOCACHE_FOR_APPSITE);
+				if(in_array(SITENAME,$noCacheAppSite)) {
+					$ctrl->executeRequest($request);
+				} elseif(in_array($_REQUEST['scmd'],$noCache)) {
+					$ctrl->executeRequest($request);
+				} else {
+					$a=RequestCache::checkCache("services",SERVICE_CACHE_PERIOD);
+					if($a) {
+						printContentHeader($cacheFile);
+						include_once $cacheFile;
+					} else {
+						ob_start();
+						$ctrl->executeRequest($request);
+						$data=ob_get_contents();
+						ob_flush();
+						if(!(isset($_REQUEST['nocache']) && $_REQUEST['nocache']=="true"))
+							file_put_contents($cacheFile,$data);
+					}
+				}
+				break;
+			default:
+				$ctrl->executeRequest($request);
+				break;
+		}
+	}
+}
+
 exit();
 ?>

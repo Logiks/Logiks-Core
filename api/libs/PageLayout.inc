@@ -2,16 +2,16 @@
 /*
  * This Class For Developers To Create MultiLayout Systems Where Users Will Be Able To Change The Page Contents.
  * All this works only for Generated Pages. Designed Pages Do Not Neccessarily Use This System..
- * 
+ *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 24/02/2012
  * Version: 1.0
  */
 class PageLayout {
 	private $layoutTemplateDir=array();
-	
+
 	private $layout="";
 	private $layoutDir="";
-	
+
 	public function __construct() {
 		if(defined("APPS_TEMPLATE_LAYOUT_FOLDER")) {
 			if(!in_array(BASEPATH . APPS_TEMPLATE_LAYOUT_FOLDER,$this->layoutTemplateDir) && file_exists(ROOT.BASEPATH . APPS_TEMPLATE_LAYOUT_FOLDER)) {
@@ -45,18 +45,18 @@ class PageLayout {
 			dispErrMessage("Layout Configuration Array MissConfigured.","Layout Config Error",409,'apps');
 			exit();
 		}
-		
+
 		//Load The Layout Template
 		$fl=ROOT . $this->layoutDir . $this->layout . ".tpl";
 		$bdir="";
 		if(defined("APPROOT")) $bdir=APPROOT; else $bdir=ROOT;
 		if(defined("APPS_PAGES_FOLDER")) $bdir.=APPS_PAGES_FOLDER; else $bdir.=PAGES_FOLDER;
-		
+
 		foreach($default_Layout_Params as $pkey=>$plnk) {
 			if(array_key_exists($pkey,$params)) {
 				$ft=$bdir.trim($params[$pkey]);
 				$fInfo=pathinfo($ft);
-				
+
 				if($fInfo["extension"]=="php") {
 					if(file_exists($ft)) {
 						$s="";
@@ -83,12 +83,12 @@ class PageLayout {
 		}
 		$templates=new TemplateEngine();
 		$templates->loadTemplate($fl);
-		
+
 		ob_start();
 		$templates->display($params);
 		$body=ob_get_contents();
 		ob_clean();
-		
+
 		$body=TemplateEngine::processTemplate($body,$params,false);
 		return $body;
 	}
@@ -96,7 +96,7 @@ class PageLayout {
 		$f1=ROOT . $this->layoutDir . $this->layout . ".css";
 		$f2=ROOT . $this->layoutDir . $this->layout . "-ie6.css";
 		$f3=ROOT . $this->layoutDir . $this->layout . ".js";
-		
+
 		$n=_css(array("layout",$this->layout));
 		if($n<=0) {
 			if(file_exists($f1)) {
@@ -112,7 +112,7 @@ class PageLayout {
 		}
 		if(file_exists($f3)) {
 			$x=SiteLocation . str_replace(ROOT,"",$f3);
-			echo "<script src='$x' type='text/javascript' language='javascript'></script> ";					
+			echo "<script src='$x' type='text/javascript' language='javascript'></script> ";
 		}
 	}
 	public static function readLayoutConfig($cfgFile) {
@@ -129,5 +129,5 @@ class PageLayout {
 		}
 		return $out;
 	}
-} 
+}
  ?>

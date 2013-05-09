@@ -1,5 +1,6 @@
 <?php
-if (!defined('ROOT')) exit('No direct script access allowed');
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 if(!function_exists("createSelectorFromXML")) {
 	function createSelectorFromXMLSimple($file) {
 		if(!file_exists($file)) {
@@ -49,7 +50,7 @@ if(!function_exists("createSelectorFromXML")) {
 
 	function _processXMLNode($nodes) {
 		$array = array();
-		foreach ($nodes as $child) {			
+		foreach ($nodes as $child) {
 			$array[sizeof($array)]=_parseNode($child);
 		}
 		return $array;

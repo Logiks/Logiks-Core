@@ -3,9 +3,9 @@
 <head>
 	<title>Password Recovery Page</title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" /> 
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="initial-scale=1, maximum-scale=1">	
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1">
 	<meta name="generator" content="Logiks" />
 	<meta name="robots" content="index,nofollow" />
 <?php
@@ -54,8 +54,8 @@ if(isset($_REQUEST['site'])) $loginLink.="?site={$_REQUEST['site']}";
 				<th class=title width=30% valign=top>Humans Only</th>
 				<td class=value>
 					<input name=captcha type=text value='' style='width:100px;float:right;margin-top:10px;' />
-					<div id=captchaviewer style='background:url(services/?scmd=captcha&cid=pwdr1) no-repeat center left;width:200px;height:50px;' 
-						ondblclick='$(this).css("background","url(services/?scmd=captcha&cid=pwdr1) no-repeat center left");'></div>
+					<div id=captchaviewer style='background:url(<?=SiteLocation?>services/?scmd=captcha&cid=pwdr1) no-repeat center left;width:200px;height:50px;'
+						ondblclick='$(this).css("background","url(<?=SiteLocation?>services/?scmd=captcha&cid=pwdr1) no-repeat center left");'></div>
 					<small><small>Please Double Click To refresh Captcha</small></small>
 				</td>
 				<td class=support width=5%></td>

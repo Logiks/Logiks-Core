@@ -5,9 +5,12 @@ if(isset($_REQUEST["mod"])) {
 	$fp=checkModule($_REQUEST["mod"]);
 	if($fp && strlen($fp)>0) {
 		if(isset($_REQUEST["sub"])) {
-			loadModuleLib($_REQUEST["mod"],$_REQUEST["sub"]);
+			if(strlen($_REQUEST["sub"])>0 || $_REQUEST["sub"]!="auto")
+				loadModuleLib($_REQUEST["mod"],$_REQUEST["sub"]);
+			else
+				loadModule($_REQUEST["mod"]);
 		} else {
-			loadModule($_REQUEST["mod"]);
+			loadModuleLib($_REQUEST["mod"],"service");
 		}
 	} else {
 		echo "<h3>Error Finding Module</h3>";

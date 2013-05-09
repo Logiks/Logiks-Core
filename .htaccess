@@ -2,6 +2,16 @@
 # Apache/PHP/Logiks settings:
 #
 
+# gzip compression.
+<IfModule mod_deflate.c>
+  # html, xml, css, and js:
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/x-javascript text/javascript application/javascript application/json
+  # webfonts and svg:
+  <FilesMatch "\.(ttf|otf|eot|svg)$" >
+    SetOutputFilter DEFLATE
+  </FilesMatch>
+</IfModule>
+
 # Protect files and directories from prying eyes.
 <FilesMatch "\.(lst|lic|xml|dat|cfg|frm|rpt|json|page|dgn|engine|inc|info|install|make|module|profile|test|po|sh|.*sql|theme|tpl(\.php)?|xtmpl)$|^(\..*|Entries.*|Repository|Root|Tag|Template)$">
   Order allow,deny
@@ -16,37 +26,43 @@ Options -Indexes
 Order deny,allow
 
 # Follow symbolic links in this directory.
-Options +FollowSymLinks
+#Options +FollowSymLinks
 
 # Multiviews creates problems with aliased URLs and is not needed for Logiks.
 Options -Multiviews
 
-<IfModule mod_rewrite.c>
-	RewriteEngine On
-	
-	RewriteBase /
-	
-	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
-	RewriteCond %{REQUEST_URI} !^/(media|misc/themes|misc/skins|api/js)/
-	
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteCond %{REQUEST_FILENAME} !-l
-
-	RewriteRule .* vpath.php [L] 
-	#RewriteRule ^([a-zA-z]+)[/]*([a-zA-z/]*).*$ index.php?site=$1&page=$2&%{QUERY_STRING}
-</IfModule>
 
 # Set the default handler.
 DirectoryIndex index.php index.html index.htm
 
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+
+	RewriteBase /devlogiks/
+
+	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+	RewriteCond %{REQUEST_URI} !^/(media|misc/themes|misc/skins|api/js)/
+
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-l
+
+	RewriteRule .* vpath.php [L]
+	#RewriteRule ^([a-zA-z]+)[/]*([a-zA-z/]*).*$ index.php?site=$1&page=$2&%{QUERY_STRING}
+</IfModule>
+
+<IfModule mod_headers.c>
+	BrowserMatch MSIE ie
+	Header set X-UA-Compatible "IE=Edge,chrome=1" env=ie
+</IfModule>
+
 #Error Files
-ErrorDocument 400 %{HTTP_HOST}/error.php?code=400
-ErrorDocument 401 %{HTTP_HOST}/error.php?code=401
-ErrorDocument 403 %{HTTP_HOST}/error.php?code=403
-ErrorDocument 404 %{HTTP_HOST}/error.php?code=404
-ErrorDocument 500 %{HTTP_HOST}/error.php?code=500
+ErrorDocument 400 /devlogiks/error.php?code=400
+ErrorDocument 401 /devlogiks/error.php?code=401
+ErrorDocument 403 /devlogiks/error.php?code=403
+ErrorDocument 404 /devlogiks/error.php?code=404
+ErrorDocument 500 /devlogiks/error.php?code=500
 
 # Force simple error message for requests for non-existent favicon.ico.
 <Files favicon.ico>

@@ -1,10 +1,11 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
+
 //Selector/List-Tree/Table/Form
-if(!function_exists("createSelector")) {	
+if(!function_exists("createSelector")) {
 	function createSelector($data,$printTopLevels=false,
 		$params=array("style"=>"")) {
-		$s="";	
+		$s="";
 		if($printTopLevels) $s .="<select ".parseTagParams($params).">";
 		if(is_array($data)){
 			$n=count($data);
@@ -22,21 +23,21 @@ if(!function_exists("createSelector")) {
 		if($printTopLevels) $s .="</select>";
 		return $s;
 	}
-	
+
 	function createTable($data,$header=null,$named=true,$printTopLevels=true,$printHeader=true,
 		$params=array("border"=>"1","cellspacing"=>"0","cellpadding"=>"0","width"=>"100%","height"=>"100%","style"=>"")) {
-			
+
 		$s="";
 		$cols=array();
 		if($printTopLevels) $s .="<table ".parseTagParams($params).">";
-		
+
 		if($header!=null && is_array($header) && count($header)>0) {
 			if($printHeader) {
 				if($header[0]==0) {
 					$s .="<thead><tr>";
 					$c=count($header);
 					for($i=0;$i<$c;$i++){
-						$h=explodeTagData($header[$i]);				
+						$h=explodeTagData($header[$i]);
 						$s .="<th";
 						if(strlen($h['id'])) $s.=" id='".$h['id']."'";
 						if(strlen($h['class'])) $s.=" class='".$h['class']."'";
@@ -67,7 +68,7 @@ if(!function_exists("createSelector")) {
 			} else {
 				$c=count($header);
 				for($i=0;$i<$c;$i++){
-					$h=explodeTagData($header[$i]);				
+					$h=explodeTagData($header[$i]);
 					array_push($cols,$h['value']);
 				}
 			}
@@ -93,7 +94,7 @@ if(!function_exists("createSelector")) {
 						if($named && isset($cols[$j])) $s.=" name='".$cols[$j]."'";
 						$s .=">";
 						$s .=$d['value'];
-						$s .="</td>";		
+						$s .="</td>";
 					}
 				}
 				$s .="</tr>";
@@ -103,11 +104,11 @@ if(!function_exists("createSelector")) {
 		if($printTopLevels) $s .="</table>";
 		return $s;
 	}
-	
+
 	function createList($data,$links=array(),$classes=array(),$printTopLevels=true,$embedULinLI=true,
 		$params=array("style"=>"")) {
 		$s="";
-		
+
 		if($printTopLevels) $s .="<ul ".parseTagParams($params).">";
 		if(is_array($data)) {
 			$n=count($data);
@@ -131,7 +132,7 @@ if(!function_exists("createSelector")) {
 					}
 					if(count($data[$i])>0) {
 						$s.=createList($data[$i],$a,$b);
-					}					
+					}
 					$s.=$xss;
 				} else {
 					$d=explodeTagData($data[$i]);
@@ -152,24 +153,24 @@ if(!function_exists("createSelector")) {
 						$s.="<a href='$x'>" .toTitle($d['value']). "</a>";
 					} else {
 						$s.="<span>".toTitle($d['value'])."</span>";
-					}				
+					}
 					$s.="</li>";
-				}			
+				}
 			}
-		}				
+		}
 		if($printTopLevels) $s .="</ul>";
 		return $s;
 	}
 	function createForm($data,$layoutType="table",$printTopLevels=true,
 		$middleSeparator="::",$withHelp=false,
 		$params=array("border"=>"0","cellspacing"=>"0","cellpadding"=>"0","width"=>"100%","height"=>"100%","style"=>"","class"=>"formTable")) {
-			
+
 		$s="";
 		if($layoutType!="table" && $layoutType!="list") $layoutType="table";
-		
+
 		if($layoutType=="table") {
 			if($printTopLevels) $s .="<table ".parseTagParams($params).">";
-			
+
 			if(is_array($data)) {
 				$i=0;
 				foreach($data as $nm=>$d) {
@@ -186,7 +187,7 @@ if(!function_exists("createSelector")) {
 						$title="";
 						$help="";
 						$fld=parseFieldParams($d);
-						
+
 						if(isset($d['title'])) $title=$d['title'];
 						else $title=toTitle($nm);
 						if(isset($d['help'])) $help=parseFieldHelp($d['help']);
@@ -210,7 +211,7 @@ if(!function_exists("createSelector")) {
 			if($printTopLevels) $s .="</table>";
 		} elseif($layoutType=="list") {
 			if($printTopLevels) $s .="<ul ".parseTagParams($params).">";
-			
+
 			if(is_array($data)) {
 				foreach($data as $nm=>$d) {
 					if(is_array($d)) {
@@ -218,11 +219,11 @@ if(!function_exists("createSelector")) {
 						if(!$withHelp) {
 							$fs="<li for='{$nm}' class='nameLI'>%s</li><li for='{$nm}' class='inputLI'>%s</li>";
 						}
-						
+
 						$title="";
 						$help="";
 						$fld=parseFieldParams($d);
-						
+
 						if(isset($d['title'])) $title=$d['title'];
 						else $title=toTitle($nm);
 						if(isset($d['help'])) $help=parseFieldHelp($d['help']);
@@ -242,12 +243,12 @@ if(!function_exists("createSelector")) {
 					}
 				}
 			}
-			
+
 			if($printTopLevels) $s .="</ul>";
 		} else {
 			$s="Form Layout Not Supported";
 		}
-		
+
 		return $s;
 	}
 }

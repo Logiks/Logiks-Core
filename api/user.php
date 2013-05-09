@@ -45,9 +45,11 @@ if(!function_exists("getUserInfo")) {
 		}
 		$arr=array();
 		$sql="SELECT userid,privilege,access,name,email,address,region,country,zipcode,mobile FROM lgks_users WHERE blocked='false'";
-		if($_SESSION['SESS_PRIVILEGE_ID']<=2) {
+		if($_SESSION['SESS_PRIVILEGE_ID']<=1) {
+			$sql.="";
+		} else if($_SESSION['SESS_PRIVILEGE_ID']<=3) {
 			$sql.=" AND (site='".SITENAME."' OR site='*')";
-		} else {
+		} else{
 			$sql.=" AND site='".SITENAME."'";
 		}
 		if(strlen($where)>0) {

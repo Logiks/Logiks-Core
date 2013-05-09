@@ -82,7 +82,7 @@ if(!function_exists("getCountryList")) {
 			'FO' => 'Faroe Islands',
 			'FR' => 'France',
 			'GA' => 'Gabon',
-			'GB' => 'United Kingdom',			
+			'GB' => 'United Kingdom',
 			'GD' => 'Grenada',
 			'GE' => 'Georgia',
 			'GF' => 'French Guiana',
@@ -255,6 +255,7 @@ if(!function_exists("getCountryList")) {
 			'ZW' => 'Zimbabwe',
 		);
 	}
+
 	function getLocaleList() {
 		return array(
 			'aa' => array('Afar'),
@@ -945,27 +946,68 @@ if(!function_exists("getCountryList")) {
 			'ZW' =>'',
 		);
 	}
-	
+
 	function getFlagFor($country,$flagPath='media/flags/') {
-		$arr=getCountryList();
-		$country=strtolower($country);
-		$fs="$flagPath/zzz.gif";
-		foreach($arr as $a=>$b) {
-			if(strtolower($b)==$country) {
-				$flgs=getFlagList($flagPath);
-				$fs=$flgs[$a];
-				break;
+		if(strlen($country)<=2) {
+			$country=strtoupper($country);
+			$flgs=getFlagList($flagPath);
+			if(isset($flgs[$country])) return $flgs[$country];
+			else return $flagPath."zzz.gif";
+		} else {
+			$arr=getCountryList();
+			$country=strtolower($country);
+			$fs="$flagPath/zzz.gif";
+			foreach($arr as $a=>$b) {
+				if(strtolower($b)==$country) {
+					$flgs=getFlagList($flagPath);
+					$fs=$flgs[$a];
+					break;
+				}
 			}
+			$fs=str_replace("//","/",$fs);
+			return $fs;
 		}
-		$fs=str_replace("//","/",$fs);
-		return $fs;
 	}
-	
-	function getCountrySelector($default="",$useShortCode=false) {
+	function getCountry($country,$flagPath='media/flags/') {
+		if(strlen($country)<=2) {
+			$country=strtoupper($country);
+			$arr=getCountryList();
+			$flgs=getFlagList($flagPath);
+
+			$out=array("name"=>"","short"=>"","flag"=>"");
+			if(isset($arr[$country])) $out['name']=$arr[$country];
+			else $out['name']="";
+			if(isset($flgs[$country])) $out['flag']=$flgs[$country];
+			else $out['flag']=$flagPath."zzz.gif";
+			$out['short']=$country;
+
+			$out['flag']=str_replace("//","/",$out['flag']);
+
+			return $out;
+		} else {
+			$arr=getCountryList();
+			$arr=array_flip($arr);
+			$flgs=getFlagList($flagPath);
+
+			$out=array("name"=>"","short"=>"","flag"=>"");
+			$out['name']=$country;
+			if(isset($arr[$country])) $out['short']=$arr[$country];
+			else $out['short']="";
+			if(strlen($out['short'])>0 && isset($flgs[$out['short']])) $out['flag']=$flgs[$out['short']];
+			else $out['flag']=$flagPath."zzz.gif";
+
+			$out['flag']=str_replace("//","/",$out['flag']);
+
+			return $out;
+		}
+	}
+	function getCountrySelector($default="",$useShortCode=false,$printNoValue=false) {
 		$arr=getCountryList();
-		$s="<option value=''></option>";
+		if($printNoValue)
+			$s="<option value=''>$printNoValue</option>";
 		foreach($arr as $a=>$b) {
 			if($useShortCode) {
+				$default=strtoupper($default);
 				if($a==$default) {
 					$s.="<option value='$a' selected>$b</option>";
 				} else {
@@ -973,22 +1015,23 @@ if(!function_exists("getCountryList")) {
 				}
 			} else {
 				if($b==$default) {
-					$s.="<option value='$b' selected>$b</option>";
+					$s.="<option value='$b' rel='$a' selected>$b</option>";
 				} else {
-					$s.="<option value='$b'>$b</option>";
+					$s.="<option value='$b' rel='$a'>$b</option>";
 				}
 			}
 		}
 		return $s;
 	}
-	function getLocaleSelector($default="") {
+	function getLocaleSelector($default="",$viewSample=false) {
 		$arr=getLocaleList();
 		$s="<option value=''>None</option>";
 		foreach($arr as $a=>$b) {
-			foreach($b as $x=>$y) {
-				if($default==$y) $s.="<option value='$a' selected>$y</option>";
-				else if($default==$y) $s.="<option value='$a'>$y</option>";
-			}
+			if($viewSample)
+				$y=end($b);
+			else $y=$b[0];
+			if($default==$a) $s.="<option value='$a' selected>$y</option>";
+			else $s.="<option value='$a'>$y</option>";
 		}
 		return $s;
 	}

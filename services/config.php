@@ -23,7 +23,7 @@ include_once ROOT. "api/logdb.php";//For Apps Events
 include_once "serviceErrors.php";//Service Error Handling System
 
 function __autoload($class) {
-	global $classpath;
+	$classpath=$GLOBALS['classpath'];
 	if(strpos(strtolower(" " . $class),"smarty_")>0) {
 		if(function_exists("smartyAutoload")) {
 			smartyAutoload($class);
@@ -32,8 +32,8 @@ function __autoload($class) {
 	}
 	$name1=$class;
 	$name2=strtolower($class);
-	
-	$found=false;	
+
+	$found=false;
 	foreach($classpath as $p) {
 		$s1=ROOT.$p.$name1.".inc";
 		$s2=ROOT.$p.$name2.".inc";
@@ -53,12 +53,12 @@ function __autoload($class) {
 
 function getServiceCtrlConfig() {
 	$jsonDb=array();
-	
+
 	if(defined("APPS_CONFIG_FOLDER"))
-		$f1=APPROOT.APPS_CONFIG_FOLDER."services.json";
+		$f1=APPROOT.APPS_CONFIG_FOLDER."jsondb/services.json";
 	else
 		$f1="";
-	$f2=ROOT.CFG_FOLDER."services.json";
+	$f2=ROOT.CFG_FOLDER."jsondb/services.json";
 	$db1=array();$db2=array();
 	if(strlen($f1)>0 && file_exists($f1)) {
 		$d1=file_get_contents($f1);
@@ -70,7 +70,7 @@ function getServiceCtrlConfig() {
 	}
 	if($db1==null) $db1=array();
 	if($db2==null) $db2=array();
-	
+
 	$jsonDb=array_merge($db2,$db1);
 	return $jsonDb;
 }
@@ -79,10 +79,10 @@ function loadSysConfigs() {
 	LoadConfigFile(ROOT . "config/system.cfg");
 	LoadConfigFile(ROOT . "config/xtras.cfg");
 	LoadConfigFile(ROOT . "config/headers.cfg");
-	LoadConfigFile(ROOT . "config/framework.cfg");	
+	LoadConfigFile(ROOT . "config/framework.cfg");
 	LoadConfigFile(ROOT . "config/db.cfg");
 	LoadConfigFile(ROOT . "config/folders.cfg");
-	
+
 	fixPHPINIConfigs();
 }
 function loadAppConfigs() {

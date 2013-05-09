@@ -4,18 +4,18 @@ if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 $cfgSchema["ACCESS"]=array(
 		"type"=>"list",
 		"values"=>array(
-			"private"=>"Private",
-			"public"=>"Public",
+			"Private"=>"private",
+			"Public"=>"public",
 			)
 	);
 $cfgSchema["PUBLISH_MODE"]=array(
 		"type"=>"list",
 		"values"=>array(
-			"publish"=>"Published Mode",
-			"blocked"=>"Blocked Mode",
-			"restricted"=>"Restricted Mode",
-			"maintainance"=>"Maintainance Mode",
-			"underconstruction"=>"Under Construction Mode",
+			"Published Mode"=>"publish",
+			"Blocked Mode"=>"blocked",
+			"Restricted Mode"=>"restricted",
+			"Maintainance Mode"=>"maintainance",
+			"Under Construction Mode"=>"underconstruction",
 			)
 	);
 $cfgSchema["LINGUALIZER_DICTIONARIES"]=array(
@@ -29,12 +29,12 @@ $cfgSchema["APPS_TYPE"]=array(
 		"tips"=>"This changes the way default pages and sub pages are loaded in the app site.",
 		/*"type"=>"list",
 		"values"=>array(
-			"controller"=>"Central Controller Page",
-			"cms"=>"CMS Controller Page",
-			"website"=>"Website pages within folders",
-			"general"=>"General Purpose/Programmer Friendly",
+			"Central Controller Page"=>"controller",
+			"CMS Controller Page"=>"cms",
+			"Website pages within folders"=>"website",
+			"General Purpose/Programmer Friendly"=>"general",
 			)*/
-	);	
+	);
 $cfgSchema["ALT_SITE"]=array(
 		"type"=>"list",
 		"function"=>"getAppList"
@@ -97,11 +97,11 @@ if(!function_exists("getRootPageList")) {
 		} else {
 			$site=SITENAME;
 		}
-		
+
 		$f=ROOT.APPS_FOLDER.$site."/";
 		$fs=scandir($f);
 		unset($fs[0]);unset($fs[1]);
-		
+
 		$arr["None"]="";
 		foreach($fs as $a=>$b) {
 			$ext=substr($b,strlen($b)-3);
@@ -109,7 +109,7 @@ if(!function_exists("getRootPageList")) {
 				$arr[$b]=$b;
 			}
 		}
-		
+
 		return $arr;
 	}
 }
@@ -122,11 +122,11 @@ if(!function_exists("getRootPageList")) {
 		} else {
 			$site=SITENAME;
 		}
-		
+
 		$f=ROOT.APPS_FOLDER.$site."/pages/";
 		$fs=scandir($f);
 		unset($fs[0]);unset($fs[1]);
-		
+
 		$arr["None"]="";
 		foreach($fs as $a=>$b) {
 			$ext=substr($b,strlen($b)-3);
@@ -134,7 +134,7 @@ if(!function_exists("getRootPageList")) {
 				$arr[$b]=$b;
 			}
 		}
-		
+
 		return $arr;
 	}
 }

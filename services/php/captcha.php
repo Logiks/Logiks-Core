@@ -1,9 +1,14 @@
 <?php
-if (!defined('ROOT')) exit('No direct script access allowed');
-LoadConfigFile(ROOT . "config/captcha.cfg");
+if(!defined('ROOT')) exit('No direct script access allowed');
+
+if(defined("APPROOT") && defined("APPS_CONFIG_FOLDER") && file_exists(APPROOT.APPS_CONFIG_FOLDER."features/captcha.cfg")) {
+	LoadConfigFile(APPROOT.APPS_CONFIG_FOLDER."features/captcha.cfg");
+} else {
+	LoadConfigFile(ROOT."config/features/captcha.cfg");
+}
 
 if(!isset($_REQUEST['cid'])) {
-	exit("No Captcha ID Found");
+	printDefaultImage();
 }
 
 $fontDir=FONTS_FOLDER;
@@ -16,6 +21,9 @@ $arrChars[0]=array("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","
 $arrChars[1]=array("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z");
 $arrChars[2]=array("0","1","2","3","4","5","6","7","9","9");
 $arrChars[3]=array("!","@","#","$","%","^","&","*","_","-","+","=",".");
+
+if(isset($_REQUEST['width']) && $_REQUEST['width']>0) setConfig("CAPTCHA_WIDTH",$_REQUEST['width']);
+if(isset($_REQUEST['height']) && $_REQUEST['height']>0) setConfig("CAPTCHA_HEIGHT",$_REQUEST['height']);
 
 $complex=getConfig("CAPTCHA_COMPLEXITY");
 if($complex>sizeOf($arrChars)-1) {
@@ -83,7 +91,7 @@ function drawLines($img, $graphics_color) {
 		$y1=rand()%$h;
 		$x2=($w/2)+rand()%($w/2);
 		$y2=rand()%$h;
-		imageline($img,$x1,$y1,$x2,$y2,$graphics_color);		
+		imageline($img,$x1,$y1,$x2,$y2,$graphics_color);
 	}
 }
 function drawCircles($img, $graphics_color, $cnt=0) {
@@ -95,13 +103,30 @@ function drawCircles($img, $graphics_color, $cnt=0) {
 		$x1=rand()%($w)+10;
 		$y1=rand()%$h;
 		$r=$h/rand(2,6);
-		imagecircle($img,$r,$x1,$y1,$graphics_color);		
+		imagecircle($img,$r,$x1,$y1,$graphics_color);
 	}
 }
 //Other Functions
-function imagecircle($source,$r,$x,$y,$color){ 
-  for($i = 0;$i<=2*pi();$i+=(pi()/180)){ 
-    imageline($source,cos($i)*$r+$x,sin($i)*$r+$y,cos($i+(pi()/180))*$r+$x,sin($i+(pi()/180))*$r+$y,$color); 
-  } 
+function imagecircle($source,$r,$x,$y,$color){
+  for($i = 0;$i<=2*pi();$i+=(pi()/180)){
+    imageline($source,cos($i)*$r+$x,sin($i)*$r+$y,cos($i+(pi()/180))*$r+$x,sin($i+(pi()/180))*$r+$y,$color);
+  }
+}
+
+function printDefaultImage() {
+	$media=ROOT.loadMedia("images/nocaptcha.png",true);
+	if(file_exists($media)) {
+		header("Expires: Wed, 1 Jan 1997 00:00:00 GMT");
+		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+		header("Cache-Control: no-store, no-cache, must-revalidate");
+		header("Cache-Control: post-check=0, pre-check=0", false);
+		header("Content-Transfer-Encoding: binary");
+		header("Pragma: no-cache");
+		header("Content-type:image/png");
+		readfile($media);
+	} else {
+		echo "No Captcha ID Found";
+	}
+	exit();
 }
 ?>

@@ -1,10 +1,11 @@
 <?php
-if (!defined('ROOT')) exit('No direct script access allowed');
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 if(!function_exists("createSelectorFromListFile")) {
 	function createSelectorFromListFile($file) {
 		$list="";
 		$data="";
-		
+
 		if(file_exists($file)) $data=file_get_contents($file);
 		elseif(defined("APPROOT") && defined("APPS_MISC_FOLDER") && file_exists(APPROOT.APPS_MISC_FOLDER.$file)) {
 			$file=APPROOT.APPS_MISC_FOLDER.$file;
@@ -22,7 +23,7 @@ if(!function_exists("createSelectorFromListFile")) {
 					if(strpos($b,"=")>0) {
 						$e=explode("=",$b);
 						$e1=$e[0];
-						$e2=$e[1];					
+						$e2=$e[1];
 						echo "<option value='$e2'>"._ling($e1)."</option>";
 					} else {
 						echo "<option value='$b'>"._ling($b)."</option>";

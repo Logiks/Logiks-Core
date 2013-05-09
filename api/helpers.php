@@ -5,16 +5,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!function_exists('loadHelpers')) {
 	function helper_exists($helper) {
 		global $js,$css,$ling,$cache,$templates;
-		global $helperpath;
-		if(defined("APPS_HELPERS_FOLDER") && defined("BASEPATH")) {
-			if(!in_array(BASEPATH . APPS_HELPERS_FOLDER,$helperpath)) array_push($helperpath, BASEPATH . APPS_HELPERS_FOLDER);
-		}
-		
-		if(defined("HELPERS_FOLDER")) {
-			if(!in_array(HELPERS_FOLDER,$helperpath)) {
-				if(!in_array(HELPERS_FOLDER,$helperpath)) array_push($helperpath, HELPERS_FOLDER);
-			}
-		}
+		$helperArr=getAllHelpersFolders();
 		if(is_array($helper)) {
 			$helperArr=array_flip($helper);
 			foreach($helperArr as $ha=>$n) {
@@ -48,40 +39,27 @@ if(!function_exists('loadHelpers')) {
 	}
 	function loadHelpers($helperNames, $path="*", $type="include_once") {
 		global $js,$css,$ling,$cache,$templates;
-		global $helperpath;
-		if(defined("APPS_HELPERS_FOLDER") && defined("BASEPATH")) {
-			if(!in_array(BASEPATH . APPS_HELPERS_FOLDER,$helperpath)) array_push($helperpath, BASEPATH . APPS_HELPERS_FOLDER);
-		}
-		
-		if(defined("HELPERS_FOLDER")) {
-			if(!in_array(HELPERS_FOLDER,$helperpath)) {
-				if(!in_array(HELPERS_FOLDER,$helperpath)) array_push($helperpath, HELPERS_FOLDER);
-			}
-		}
+		$helperpath=getAllHelpersFolders();
+		$b=false;
 		if($helperNames=="*") {
-			$b=false;
 			foreach($helperpath as $p) {
 				$p=ROOT. $p;
 				$fs=scandir($p);
 				foreach($fs as $a) {
 					if($a!=".." && $a!=".") {
 						$b=loadHelpers($a, $p);
-					}			
+					}
 				}
 			}
-			return $b;
 		} elseif(is_array($helperNames)) {
-			$b=false;
 			foreach($helperNames as $x=>$a) {
-				$b=loadHelpers($a);				
+				$b=loadHelpers($a);
 			}
-			return $b;
 		} else {
-			$b=false;
 			$ext=substr($helperNames,strlen($helperNames)-4);
 			if($path=="*") {
 				foreach($helperpath as $path) {
-					$p=ROOT.$path.$helperNames;	
+					$p=ROOT.$path.$helperNames;
 					//echo $p . "<br/>";
 					if(file_exists($p . ".php")) {
 						if($type=="require_once") require_once $p . ".php";
@@ -114,8 +92,24 @@ if(!function_exists('loadHelpers')) {
 					$b=true;
 				}
 			}
-			return $b;
 		}
+		if(!$b && MASTER_DEBUG_MODE=='true') trigger_error("Helper Not Found :: " . $helperNames);
+		return $b;
+	}
+	function getAllHelpersFolders() {
+		$paths=array();
+		if(!isset($_ENV['HELPERS_DIRS'])) {
+			if(defined("APPS_HELPERS_FOLDER") && defined("BASEPATH")) {
+				if(!in_array(BASEPATH . APPS_HELPERS_FOLDER,$paths)) array_push($paths, BASEPATH . APPS_HELPERS_FOLDER);
+			}
+			if(defined("HELPERS_FOLDER")) {
+				if(!in_array(HELPERS_FOLDER,$paths)) array_push($paths, HELPERS_FOLDER);
+			}
+			$_ENV['HELPERS_DIRS']=$paths;
+		} else {
+			$paths=$_ENV['HELPERS_DIRS'];
+		}
+		return $paths;
 	}
 }
 ?>

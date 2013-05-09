@@ -42,7 +42,7 @@ if(!function_exists("getDirTree")) {
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Create a Directory Map
 	 *
@@ -80,7 +80,7 @@ if(!function_exists("getDirTree")) {
 
 		return FALSE;
 	}
-	
+
 	function getFileInfo($file, $returned_values = array('name', 'server_path', 'size', 'date')) {
 		if (!file_exists($file)) {
 			return FALSE;
@@ -121,7 +121,7 @@ if(!function_exists("getDirTree")) {
 
 		return $fileinfo;
 	}
-	
+
 	function getFilePermissions($perms) {
 		if (($perms & 0xC000) == 0xC000) {
 			$symbolic = 's'; // Socket
@@ -155,10 +155,10 @@ if(!function_exists("getDirTree")) {
 		$symbolic .= (($perms & 0x0004) ? 'r' : '-');
 		$symbolic .= (($perms & 0x0002) ? 'w' : '-');
 		$symbolic .= (($perms & 0x0001) ? (($perms & 0x0200) ? 't' : 'x' ) : (($perms & 0x0200) ? 'T' : '-'));
-		
+
 		return $symbolic;
 	}
-	
+
 	function getDirSize($f) {
 		if(is_dir($f)) {
 			$fs=scandir($f);
@@ -172,7 +172,7 @@ if(!function_exists("getDirTree")) {
 			return filesize($f);
 		}
 	}
-	
+
 	function getFileSizeInString($size,$n=0) {
 		$size1=$size;
 		for($i=0;$i<$n;$i++) {
@@ -183,7 +183,7 @@ if(!function_exists("getDirTree")) {
 		} else {
 			$nx=strpos($size1,".");
 			if($nx>0) $size1=substr($size1,0,$nx+3);
-			
+
 			if($n<=0) return $size1." bytes";
 			elseif($n==1) return $size1." kb";
 			elseif($n==2) return $size1." mb";
@@ -191,21 +191,21 @@ if(!function_exists("getDirTree")) {
 			else return $size1." Tb";
 		}
 	}
-	
+
 	function fileExtension($filename) {
 		return end(explode(".", $filename));
 	}
-	
+
 	function fileName($filename) {
 		$arr=explode(".", $filename);
 		unset($arr[count($arr)-1]);
 		return implode(".",$arr);
 	}
-	
+
 	function deleteDir($path) {
 		return is_file($path)? @unlink($path): array_map('deleteDir',glob($path.'/*'))==@rmdir($path);
 	}
-	
+
 	function mkdirs($dir,$recreate=false) {
 		if(file_exists($dir)  && is_dir($dir)) {
 			if(!$recreate) {
@@ -217,7 +217,7 @@ if(!function_exists("getDirTree")) {
 		@chmod($dir,0777);
 		return is_dir($dir);
 	}
-	
+
 	function xcopy($source, $dest, $permissions = 0755) {
 		if(is_link($source)) {
 			return symlink(readlink($source), $dest);
@@ -238,6 +238,60 @@ if(!function_exists("getDirTree")) {
 		}
 		$dir->close();
 		return true;
+	}
+	function download_large_file($f,$filename="",$mime="",$retbytes=true) {
+		if($filename==null || strlen($filename)<=0)
+			$filename=basename($f);
+		if($mime=="" || $mime==null) {
+			//$ext=fileExtension($f);
+			//$mime="application/$ext";
+			$mime=@mime_content_type($f);
+		}
+
+		//Print Headers
+		if(ini_get('zlib.output_compression'))
+             @ini_set('zlib.output_compression', 'Off');
+		@ini_set('error_reporting', E_ERROR);
+
+		if(strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+				header('Content-Type: '.$mime);
+				header('Content-Disposition: attachment; filename="'.$filename.'"');
+				header('Expires: 0');
+				header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+				header('Content-Transfer-Encoding: binary');
+				header('Pragma: public');
+				header("Content-Length: ".filesize($f));
+		}else{
+				header('Content-Type: '.$mime);
+				header('Content-Disposition: attachment; filename="'.$filename.'"');
+				header('Content-Transfer-Encoding: binary');
+				header('Expires: 0');
+				header('Pragma: no-cache');
+				header("Content-Length: ".filesize($f));
+		}
+
+		//Read File
+		$chunksize = 1*(1024*1024); // how many bytes per chunk
+		$buffer = '';
+		$cnt =0;
+		$handle = fopen($f, 'rb');
+		if ($handle === false) {
+			return false;
+		}
+		while (!feof($handle)) {
+			$buffer = fread($handle, $chunksize);
+			echo $buffer;
+			ob_flush();
+			flush();
+			if ($retbytes) {
+			   $cnt += strlen($buffer);
+			}
+		}
+		$status = fclose($handle);
+		if ($retbytes && $status) {
+			return $cnt;
+		}
+		return $status;
 	}
 }
 ?>

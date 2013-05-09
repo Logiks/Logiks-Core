@@ -12,6 +12,11 @@ if(!function_exists("runHooks")) {
 			PHooksQueue::runSysHooks($hookState);
 		}
 	}
+	function runPluginHooks($plugin,$state) {
+		if(ENABLE_HOOKS=="true") {
+			PHooksQueue::runPluginHooks($plugin,$state);
+		}
+	}
 	function activateAutoHookSystem() {
 		if(defined("ENABLE_AUTO_HOOKS") && ENABLE_AUTO_HOOKS=="true") {
 			register_shutdown_function("runHooks","shutdown");

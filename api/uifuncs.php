@@ -19,7 +19,7 @@ if(!function_exists('getUserPageStyle')) {
 		if(defined("SUBSKIN_SPECS") && defined("APPS_SUBSKIN")) {
 			$skinSpec=SUBSKIN_SPECS;
 			if($skinSpec=="jquery") $skinSpec="jquery.ui";
-			
+
 			$skin=getConfig("APPS_SUBSKIN");
 			if(strlen($skin)==0 || $skin=="*") {
 				$skin="";
@@ -34,11 +34,13 @@ if(!function_exists('getUserPageStyle')) {
 		if(getConfig("LOCK_CONTEXTMENU")=="true") $bodyContext.="oncontextmenu='return false' ";
 		if(getConfig("LOCK_SELECTION")=="true") $bodyContext.="onselectstart='return false' ";
 		if(getConfig("LOCK_MOUSEDRAG")=="true") $bodyContext.="ondragstart='return false' ";
+		$bClass=getConfig("BODY_CLASS");
+		if(strlen($bClass)>0) $bodyContext.="class='$bClass' ";
 		return $bodyContext;
 	}
 }
 if(!function_exists('displayLayout')) {
-	function displayLayout($layoutTemplate, $params) {
+	function displayLayout($layoutTemplate, $params,$css="",$js="") {
 		$pageLayout=new PageLayout();
 		if($pageLayout->loadLayoutTemplate($layoutTemplate)) {
 			if(!is_array($params)) {
@@ -48,13 +50,17 @@ if(!function_exists('displayLayout')) {
 					$params=PageLayout::readLayoutConfig($f1);
 				}
 			}
+			if(!is_array($css) && strlen($css)>0) $css=explode(",",$css);
+			if(!is_array($js) && strlen($js)>0) $js=explode(",",$js);
+			_css($css);
+			_js($js);
 			echo $pageLayout->printLayout($params);
 		} else {
 			dispErrMessage("Required Layout Template Not Found.","PageLayout Template Error",409,'apps');
 			exit();
 		}
 	}
-	function generatePageLayout($layout) {
+	function generatePageLayout($layout,$css="",$js="") {
 		$appLayoutDir=APPROOT.APPS_PAGES_FOLDER."layouts/";
 		$f1=$appLayoutDir."{$layout}.json";
 		if(file_exists($f1) && is_readable($f1)) {
@@ -64,33 +70,33 @@ if(!function_exists('displayLayout')) {
 				dispErrMessage("Layout Configuration Has Wrong Format.","Layout Config Error",409,'apps');
 				exit();
 			}
-			
+
 			if(!isset($json['css'])) $json['css']="";
 			if(!isset($json['js'])) $json['js']="";
 			if(!isset($json['modules'])) $json['modules']="";
 			if(!isset($json['enabled'])) $json['enabled']=true;
-			
+
 			if(!$json['enabled']) {
 				dispErrMessage("Requested Page Is Not Available Or Blocked.","PageLayout Error",409,'apps');
 				exit();
 			}
-			
+
 			$layoutTemplate=$json['template'];
 			$layoutParams=$json['layout'];
 			$csss=explode(",",$json['css']);
 			$jss=explode(",",$json['js']);
 			$modules=explode(",",$json['modules']);
-			
+
 			$params=array();
 			foreach($layoutParams as $a=>$b) {
 				if($b["enable"]) {
 					$params[$a]=$b['component'];
 				}
 			}
-			displayLayout($layoutTemplate, $params);
+			loadModules($modules);
+			displayLayout($layoutTemplate, $params, $css, $js);
 			_css($csss);
 			_js($jss);
-			loadModules($modules);
 		} else {
 			dispErrMessage("Layout Configuration File Missing OR UnReadable.","Layout Config Error",409,'apps');
 			exit();

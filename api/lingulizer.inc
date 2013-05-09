@@ -9,7 +9,7 @@ class Lingulizer {
 	var $lingSeprator="=>";
 	var $lingComment="#";
 	var $autoFixCase=false;
-	
+
 	protected function __construct() {
 		if(defined("LING_SEPARATOR_CHAR") && strlen(LING_SEPARATOR_CHAR)>0) {
 			$this->lingSeprator=LING_SEPARATOR_CHAR;
@@ -21,16 +21,21 @@ class Lingulizer {
 			$this->autoFixCase=true;
 		}
 	}
-	
+
 	public static function singleton() {
 		if(!isset(self::$instance)) {
 			$c=__CLASS__;
 			self::$instance=new $c;
+			self::reloadInstance();
 		}
 		return self::$instance;
 	}
-	
+	public static function reloadInstance() {
+		Lingulizer::singleton()->loadLocaleFile(getConfig("DEFAULT_LOCALE"));
+		if(defined("LINGUALIZER_DICTIONARIES")) Lingulizer::singleton()->loadLocaleFile(LINGUALIZER_DICTIONARIES);
+	}
 	public function loadLocaleFile($locale) {
+		if(strlen($locale)<=0) return false;
 		if(!is_array($locale)) {
 			$locale=explode(",",$locale);
 		}
@@ -39,10 +44,11 @@ class Lingulizer {
 		}
 		return true;
 	}
-	
+
 	public function loadLingFile($file) {
+		if(strlen($file)<=0) return false;
 		if(!file_exists($file)) {
-			if(defined("APPS_LING_FOLDER") && file_exists(ROOT.APPS_LING_FOLDER.$file)) {
+			if(defined("APPS_LING_FOLDER") && file_exists(APPROOT.APPS_LING_FOLDER.$file)) {
 				$file=APPROOT.APPS_LING_FOLDER.$file;
 				$this->loadDataFile($file);
 			} elseif(file_exists(ROOT.LING_FOLDER.$file)) {
@@ -52,11 +58,11 @@ class Lingulizer {
 				return false;
 			}
 		} else {
-			$this->loadDataFile($file);			
+			$this->loadDataFile($file);
 		}
 		return true;
 	}
-	
+
 	public function clearLingBase() {
 		$this->lang=array();
 	}
@@ -98,8 +104,9 @@ class Lingulizer {
 		}
 		return false;
 	}
-	
+
 	public function toLing($str) {
+		//printArray($this->lang);
 		$s=strtolower($str);
 		if(in_array($s, array_keys($this->lang))) {
 			if($this->autoFixCase) {
@@ -113,7 +120,7 @@ class Lingulizer {
 			return $str;
 		}
 	}
-	
+
 	public function toLingContent($str) {
 		while(strstr($str, '  ')) {
 			$str = str_replace('  ', ' ', $str);
@@ -125,17 +132,17 @@ class Lingulizer {
 			$str[$i]=$trans;
 		}
 		return implode(' ',$str);
-	}	
-	
+	}
+
 	public function isLingFileLoaded($file) {
 		return in_array($file,$this->loadedLingFiles);
 	}
-	
+
 	public function getSize() {
 		if($this->lang==null) return 0;
 		else return sizeOf($this->lang);
 	}
-	
+
 	public function lingSeparator($txt=null) {
 		if($txt!=null && strlen($txt)>0) {
 			$this->lingSeprator=$txt;
@@ -155,7 +162,7 @@ class Lingulizer {
 		}
 		return $this->autoFixCase;
 	}
-	
+
 	private function fixCase($word,$ref) {
 		$n=ord($ref[0]);
 		if($n>=65 && $n<=90) {

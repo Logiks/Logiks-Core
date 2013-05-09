@@ -5,13 +5,13 @@ if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 //All System Functions
 function getRelativePathToROOT($file) {
 	$basepath="";
-	
+
 	$s=str_replace(ROOT,"",dirname($file) . "/");
 	$s=str_replace("//","/",$s);
 	for($j=0;$j<substr_count($s,"/");$j++) {
 		$basepath.="../";
 	}
-	
+
 	return $basepath;
 }
 function getRequestPath() {
@@ -24,11 +24,11 @@ function parseHTTPReferer() {
 	$arr["REQUEST_URI"]="";
 	$arr["SCRIPT_NAME"]="";
 	$arr["QUERY_STRING"]="";
-	
+
 	$arr["SITE"]="";
 	$arr["PAGE"]="";
 	$arr["MODULE"]="";
-	
+
 	//printArray($_SERVER);
 	if(isset($_SERVER["HTTP_REFERER"]) && strlen($_SERVER["HTTP_REFERER"])>0) {
 		$s=$_SERVER["HTTP_REFERER"];
@@ -40,7 +40,7 @@ function parseHTTPReferer() {
 		$a4=substr($s,0,strpos($s,"?"));
 		$s=substr($s,strpos($s,"?")+1);
 		$a5=$s;
-		
+
 		$n1=strpos($s,"site=");
 		if($n1!==false) {
 			$w="";
@@ -53,7 +53,7 @@ function parseHTTPReferer() {
 		} else {
 			$w=$_REQUEST['site'];
 		}
-		
+
 		$n1=strpos($s,"page=");
 		$p="";
 		if($n1!==false) {
@@ -62,7 +62,7 @@ function parseHTTPReferer() {
 				$p=substr($s,$n1+5,$n2-$n1-5);
 			}
 		}
-		
+
 		$n1=strpos($s,"mod=");
 		$m="";
 		if($n1!==false) {
@@ -71,7 +71,7 @@ function parseHTTPReferer() {
 				$m=substr($s,$n1+4,$n2-$n1-4);
 			}
 		}
-				
+
 		$arr["SERVER_PROTOCOL"]=strtoupper($a1);
 		$arr["HTTP_HOST"]=$a2;
 		$arr["REQUEST_URI"]=$a3;
@@ -79,7 +79,7 @@ function parseHTTPReferer() {
 		$arr["QUERY_STRING"]=$a5;
 		$arr["SITE"]=$w;
 		$arr["PAGE"]=$p;
-		$arr["MODULE"]=$m;		
+		$arr["MODULE"]=$m;
 	}
 	if(strlen($arr["SITE"])==0 && isset($_REQUEST['site'])) {
 		$arr["SITE"]=$_REQUEST['site'];
@@ -93,7 +93,7 @@ function getServiceCMD() {
 
 function printServiceErrorMsg($errCode,$errMsg,$errorImg="") {
 	$envelop=getMsgEnvelop();
-	
+
 	if($errorImg!=null && strlen($errorImg)>0) {
 		$errorImg=SiteLocation.$errorImg;
 	}
@@ -103,16 +103,16 @@ function printServiceErrorMsg($errCode,$errMsg,$errorImg="") {
 	$arr['ErrorIcon']=$errorImg;
 	$arr['RequestedCommand']=$_REQUEST['scmd'];
 	$arr['RequestedSite']=$_REQUEST['site'];
-	
+
 	header("Content-Type:text/{$_REQUEST['format']}");
 	header("Status: ERROR::$errCode");
 	//http_response_code(404);
 	//header(":",true,404);
-	
+
 	if($_REQUEST['format']=="html") {
 		if($errorImg!=null && strlen($errorImg)>0) {
 			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>
-				<img src='{$errorImg}'  width=48 height=48><p style='color:#AA0000;font:20px Arial;'>" . 
+				<img src='{$errorImg}'  width=48 height=48><p style='color:#AA0000;font:20px Arial;'>" .
 				getErrorMsg($errCode) . "</p>$errMsg</td></tr></table>{$envelop['end']}";
 		} else {
 			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'><h3 style='color:#AA0000;font:20px Arial;'>" .
@@ -136,7 +136,7 @@ function printServiceErrorMsg($errCode,$errMsg,$errorImg="") {
 		//html
 		if($errorImg!=null && strlen($errorImg)>0) {
 			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>
-				<img src='{$errorImg}'  width=48 height=48><p style='color:#AA0000;font:20px Arial;'>" . 
+				<img src='{$errorImg}'  width=48 height=48><p style='color:#AA0000;font:20px Arial;'>" .
 				getErrorMsg($errCode) . "</p>$errMsg</td></tr></table>{$envelop['end']}";
 		} else {
 			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'><h3 style='color:#AA0000;font:20px Arial;'>" .
@@ -147,25 +147,28 @@ function printServiceErrorMsg($errCode,$errMsg,$errorImg="") {
 
 function printServiceMsg($msgData,$msgCode=200,$msgImage="") {
 	$envelop=getMsgEnvelop();
-	
+
 	if($msgImage!=null && strlen($msgImage)>0) {
 		$msgImage=SiteLocation.$msgImage;
 	}
-	
+
 	$arr=array();
 	$arr['MessageCode']=$msgCode;
 	$arr['Data']="";
 	$arr['MessageIcon']=$msgImage;
 	$arr['RequestedCommand']=$_REQUEST['scmd'];
 	$arr['RequestedSite']=$_REQUEST['site'];
-	
+
 	header("Content-Type:text/{$_REQUEST['format']}");
-	
-	if($_REQUEST['format']=="html") {
+
+	if($_REQUEST['format']=="html" || $_REQUEST['format']=="table") {
 		if(is_array($msgData)) {
 			printFormattedArray($msgData,true,"table");
 		} else {
+			$out=getMsgEnvelop();
+			echo $out['start'];
 			echo $msgData;
+			echo $out['end'];
 		}
 	} elseif($_REQUEST['format']=="select") {
 		if(is_array($msgData)) {
@@ -175,7 +178,7 @@ function printServiceMsg($msgData,$msgCode=200,$msgImage="") {
 		}
 	} elseif($_REQUEST['format']=="xml") {
 		$arr['Data']=$msgData;
-		
+
 		foreach($arr as $a=>$b) {
 			if($b==null) $arr[$a]="";
 		}
@@ -183,6 +186,7 @@ function printServiceMsg($msgData,$msgCode=200,$msgImage="") {
 		$arr=arrayToXML($arr,$xml);
 		echo $xml->asXML();
 	} elseif($_REQUEST['format']=="json") {
+		//array_walk_recursive($msgData, create_function('&$item, &$key','$item=urlencode($item);'));
 		$arr['Data']=$msgData;
 		echo json_encode($arr);
 	} elseif($_REQUEST['format']=="text") {
@@ -196,8 +200,15 @@ function printServiceMsg($msgData,$msgCode=200,$msgImage="") {
 		if(is_array($msgData)) {
 			printFormattedArray($msgData);
 		} else {
+			$out=getMsgEnvelop();
+			echo $out['start'];
 			echo $msgData;
+			echo $out['end'];
 		}
 	}
+}
+function printContentHeader($format='*') {
+	include_once ROOT."config/mimes.php";
+	printMimeHeader($format);
 }
 ?>

@@ -7,11 +7,22 @@ var lwr = 'abcdefghijklmnopqrstuvwxyz';
 var upr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 function checkmail(e){
+	e.value=e.value.trim();
 	var returnval=emailfilter.test(e.value);
 	return returnval;
 }
+function checkurl(e) {
+	e.value=e.value.trim();
+	return (e.value.indexOf("://")>2);
+}
 function checkphone(e){
-	if(e.value.length<10) return false;
+	e.value=e.value.trim();
+	v=e.value.replace(" ","");
+	if(v.charAt(0)=="+") {
+		v=v.replace("+","");
+	}
+	if(v.length<10) return false;
+	else if(!isValid(v, numb)) return false;
 	else return true;
 }
 
@@ -225,17 +236,64 @@ function analyseAndCloneForm(formid) {
 
 	return myTs;
 }
-
+function processField(ele) {
+	//Basic Processing
+	if($(ele).hasClass("concatSpace")) {
+		src=$(ele).attr("src");
+		$(ele).val($(ele).val()+" "+$(src).val());
+	} else if($(ele).hasClass("concat")) {
+		src=$(ele).attr("src");
+		$(ele).val($(ele).val()+$(src).val());
+	} else if($(ele).hasClass("explodeSpace")) {
+		src=$(ele).attr("src");
+		v=$(ele).val().split(" ");
+		$(ele).val(v[0]);
+		$(src).val(v[1])
+	}
+	if($(ele).hasClass("nospace")) {
+		$(ele).val($(ele).val().replace(/\s+/g, '').trim());
+	} else if($(ele).hasClass("spacetounderscore")) {
+		$(ele).val($(ele).val().replace(/\s+/g, '_').trim());
+	} else if($(ele).hasClass("spacetoplus")) {
+		$(ele).val($(ele).val().replace(/\s+/g, '+').trim());
+	} 
+  
+	if($(ele).hasClass("uppercase")) {
+		$(ele).val($(ele).val().toUpperCase().trim());
+	} else if($(ele).hasClass("lowercase")) {
+		$(ele).val($(ele).val().toLowerCase().trim());
+	} else if($(ele).hasClass("capitalize")) {
+		vx=$(ele).val().trim();
+		$(ele).val(vx.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}));
+	}
+	//if($(ele).hasClass("multiple") && $(ele).prop("tagName")=="SELECT") {
+	//	$(ele).attr("value",$(ele).val());
+	//}
+}
 //**********************
 //Form Validator       *
 //**********************
 function validateForm(formid,msg) {
 	if((msg==null)) msg="Please fill the mandatory fields.";
 	cnt=0;
+	$(".pwdfield",formid).each(function() {
+			a=$(this).attr("for");
+			if(a!=null && a.length>0 && $("input[name="+a+"]",formid).length>0) {
+				if($("input[name="+a+"]",formid).val()!=$(this).val()) {
+					cnt++;
+					$(this).val("");
+					showErrorMsg("Passwords Must Match.",this);
+				}
+			}
+		});
+	if(cnt>0) return false;
 	$(formid).find("input,textarea,select").each(function(i) {
 		$(this).removeClass("field_warns");
 		$(this).removeClass("field_error");
 		$(this).removeClass("field_check");
+
+		processField(this);
+
 		if($(this).hasClass("required")) {
 			if($(this).attr('minlength')!=null && $(this).val().length<$(this).attr('minlength')) {
 				cnt++;
@@ -249,12 +307,19 @@ function validateForm(formid,msg) {
 				cnt++;
 				showErrorMsg("This field is must",this);
 				return false;
-			}			
-		}		
+			}
+		}
 		if(($(this).hasClass("emailfield") || $(this).attr("type")=="email") && $(this).val().length>0) {
 			if(!checkmail(this)) {
-				cnt++;				
-				showErrorMsg("Please give a proper email.",this);
+				cnt++;
+				showErrorMsg("Please give a proper Email.",this);
+				return false;
+			}
+		}
+		if(($(this).hasClass("urlfield") || $(this).attr("type")=="url") && $(this).val().length>0) {
+			if(!checkurl(this)) {
+				cnt++;
+				showErrorMsg("Please give a proper URL (http:// or https:// or ftp://).",this);
 				return false;
 			}
 		}
@@ -265,39 +330,78 @@ function validateForm(formid,msg) {
 				return false;
 			}
 		}
-		$(this).css("background-color",'white');
+		if($(this).hasClass("mobilefield") && $(this).val().length>0) {
+			if(!checkphone(this)) {
+				cnt++;
+				showErrorMsg("Please give a proper Mobile No.",this);
+				return false;
+			}
+		}
+		if($(this).attr("max")!=null) {
+			if(parseFloat($(this).val())>$(this).attr("max")) {
+				cnt++;
+				showErrorMsg("Data Must Be Less Than "+$(this).attr("max"),this);
+				return false;
+			}
+		}
+		if($(this).attr("min")!=null) {
+			if(parseFloat($(this).val())<$(this).attr("min")) {
+				cnt++;
+				showErrorMsg("Data Must Be Greater Than "+$(this).attr("min"),this);
+				return false;
+			}
+		}
 	});
 	if(cnt>0) return false;
-	else return true;	
+	else return true;
 }
 
 function showErrorMsg(msg, ele) {
 	ele.focus();
-	$(ele).css("background-color","#FFD1D8");
+	//$(ele).css("background-color","#FFD1D8");
 	$(ele).addClass("field_error");
-	
-	html="<tr class='errorMsgRow'><td class='columnMsg' colspan=20 align=right>"+msg+"</td></tr>";
-	a=$(html).insertAfter($(ele).parents("tr"));
-	setTimeout(function() {
-			$(ele).parents("tr").next("tr.errorMsgRow").slideUp("slow").detach();
-		},2000);
+	if($(ele).parent("td").length>0) {
+		html="<tr class='errorMsgRow'><td class='columnMsg' colspan=20 align=right>"+msg+"</td></tr>";
+		a=$(html).insertAfter($(ele).parents("tr"));
+		setTimeout(function() {
+				$(ele).parents("tr").next("tr.errorMsgRow").slideUp("slow").detach();
+			},2000);
+	} else if($(ele).parent("li").length>0) {
+		html="<li class='errorMsgRow' align=right><div class='columnMsg'>"+msg+"</div></li>";
+		a=$(html).insertAfter($(ele).parent("li"));
+		setTimeout(function() {
+				$(ele).parent("li").next("li.errorMsgRow").slideUp("slow").detach();
+			},2000);
+	} else if($(ele).parent().find(".errorMsg").length>0) {
+		$(ele).parent().find(".errorMsg").html(msg);
+		$(ele).parent().find(".errorMsg").show();
+		setTimeout(function() {
+				$(ele).parent().find(".errorMsg").slideUp("slow");
+			},2000);
+	}
 }
 function showWarnMsg(msg, ele) {
 	ele.focus();
-	$(ele).css("background-color","#C9E3FF");
+	//$(ele).css("background-color","#C9E3FF");
 	$(ele).addClass("field_warns");
-	
-	html="<tr class='warnMsgRow'><td class='columnMsg' colspan=20 align=right>"+msg+"</td></tr>";
-	a=$(html).insertAfter($(ele).parents("tr"));
-	setTimeout(function() {
-			$(ele).parents("tr").next("tr.errorMsgRow").slideUp("slow").detach();
-		},2000);
-}
-function formReset(formID1) {
-	var formID=document.getElementById(formID1);
-	var eles=formID.getElementsByTagName("input");
-	for(var i=0;i<eles.length;i++) {
-		if(eles[i].type=='button') continue;
-		eles[i].value='';
+	if($(ele).parents("tr").length>0) {
+		html="<tr class='warnMsgRow'><td class='columnMsg' colspan=20 align=right>"+msg+"</td></tr>";
+		a=$(html).insertAfter($(ele).parents("tr"));
+		setTimeout(function() {
+				$(ele).parents("tr").next("tr.warnMsgRow").slideUp("slow").detach();
+			},2000);
+	} else if($(ele).parent("li").length>0) {
+		html="<li class='warnMsgRow' align=right><div class='columnMsg'>"+msg+"</div></li>";
+		a=$(html).insertAfter($(ele).parent("li"));
+		setTimeout(function() {
+				$(ele).parent("li").next("li.warnMsgRow").slideUp("slow").detach();
+			},2000);
+	} else if($(ele).parent().find(".warnMsg").length>0) {
+		$(ele).parent().find(".warnMsg").html(msg);
+		$(ele).parent().find(".warnMsg").show();
+		setTimeout(function() {
+				$(ele).parent().find(".warnMsg").slideUp("slow");
+			},2000);
 	}
 }
+

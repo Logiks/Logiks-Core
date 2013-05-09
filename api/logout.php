@@ -18,7 +18,7 @@ session_destroy();
 
 if(strlen($relink)>0) {
 	if($relink=="#") {
-		
+		header("Location:../login.php?site=$domain");
 	} else {
 		header("Location:$relink");
 	}

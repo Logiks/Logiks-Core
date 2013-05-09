@@ -1,16 +1,9 @@
 <?php
-if(!defined('ROOT')) exit('No direct script access allowed');
-/*
- * This class is used by various other classes that intend to 
- * embed data/scripts/etc into outgoing php.
- * 
- * eg> jsphp, cssphp
- * */
 /*
  * This Class : DataCnversion Is Used To Convert Data From Given Source/Input/Form To Required O/P Form
  * Mainly Used for Creating Components
  * Supported Formats :: Array/XML/JSON/CSV/FormFormat //SQL/dbTbl-#DataID/
- * 
+ *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 24/02/2012
  * Version: 1.0
  */
@@ -20,10 +13,10 @@ class DataConversion {
 	private $data="";
 	private $format="";
 	private $arrData=null;
-	
-	public function __construct() {		
+
+	public function __construct() {
 	}
-	
+
 	public function loadData($data) {
 		$x=$this->findFormat($data);
 		$this->setData($data,$x);
@@ -35,7 +28,7 @@ class DataConversion {
 		$this->format=strToLower($format);
 		if($this->format=="xml") {
 			$obj = new xml2array($data);
-			$this->arrData=$obj->getResult();			
+			$this->arrData=$obj->getResult();
 			return true;
 		} elseif($this->format=="json") {
 			$this->arrData=json_decode($data,true);
@@ -45,20 +38,20 @@ class DataConversion {
 			return true;
 		} elseif($this->format=="csv") {
 			//CSV -> Array
-			$header = null; 
+			$header = null;
 			$Data=array();
 			$prepareData=array();
 			$this->arrData=explode("\n",$this->data);
 			foreach($this->arrData as $a){
-				if(is_null($header)) $header = explode(",",$a);				
+				if(is_null($header)) $header = explode(",",$a);
 				else{
 					$items=explode(",",$a);
-					for($n = 0, $m = count($header); $n < $m; $n++){ 
-						$prepareData[$header[$n]] = $items[$n]; 
-					} 
-					$Data[] = $prepareData; 
+					for($n = 0, $m = count($header); $n < $m; $n++){
+						$prepareData[$header[$n]] = $items[$n];
+					}
+					$Data[] = $prepareData;
 				  }
-			} 
+			}
 			$this->arrData=$Data;
 			//print_r($this->arrData);
 			return true;
@@ -75,7 +68,7 @@ class DataConversion {
 			return false;
 		}
 	}
-	
+
 	public function getData($format="") {
 		$array=$this->arrData;
 		if($format=="") {// || $format==$this->format
@@ -85,7 +78,7 @@ class DataConversion {
 				$xml=new SimpleXMLElement('<root/>');
 				foreach($array as $a=>$b) {
 					$node=$xml->addChild("record");
-					array_walk_recursive($b, "DataConversion::addNode",$node);			
+					array_walk_recursive($b, "DataConversion::addNode",$node);
 				}
 				$s=$xml->asXML();
 				return $s;
@@ -99,14 +92,14 @@ class DataConversion {
 				$header=null;
 				foreach($array as $key1 => $val1){
 					foreach($val1 as $key => $val) {
-						if(is_null($header)) $header = implode(",",array_keys($val1));	
-												 					
-						$csv .= $val.","; 												
+						if(is_null($header)) $header = implode(",",array_keys($val1));
+
+						$csv .= $val.",";
 					}
 					//$header = substr($header, 0, -1);
 					$csv = substr($csv, 0, -1); //chop last ,
 					$csv .= "\n";
-					
+
 				}
 				//echo $header;
 				$header .= "\n";
@@ -122,13 +115,13 @@ class DataConversion {
 				return $s;
 			} else {
 				return null;
-			}			
+			}
 		}
 	}
 	public function getFormat() {
 		return $this->format;
 	}
-	
+
 	protected function findFormat($data) {
 		//$csv= str_getcsv($data,",");
 		//print_r($csv);
@@ -148,9 +141,9 @@ class DataConversion {
 			}
 		}else {
 			return null;
-		}		
+		}
 	}
-	
+
 	private function addNode($item, $key, $xml) {
 		$xml->addChild($key, $item);
 	}

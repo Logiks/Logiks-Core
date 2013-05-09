@@ -13,12 +13,12 @@ define("BASEPATH",APPS_FOLDER . $params["SITE"] . "/");
 $site=$params["SITE"];
 if(file_exists(APPROOT)) {
 	$apps_cfg=APPROOT."apps.cfg";
-	if(!file_exists($apps_cfg)) {		
+	if(!file_exists($apps_cfg)) {
 		trigger_ForbiddenError("Site <b>'$site'</b> Has Not Yet Been Activated.");
 		exit();
 	}
 	LoadConfigFile($apps_cfg,true);
-	
+
 	if(defined("RELINK") && strlen(RELINK)>0) {
 		$relink=generatePageRequest("","",RELINK);
 		redirectTo($relink);
@@ -27,20 +27,19 @@ if(file_exists(APPROOT)) {
 		$relink=WEBAPPROOT;
 		redirectTo($relink);
 	}
-	
+
 	loadConfigDir(APPROOT."config/");
-	
+
 	if(defined("LINGUALIZER_DICTIONARIES")) $ling->loadLocaleFile(LINGUALIZER_DICTIONARIES);
-	
+
 	checkSiteMode($site);
-	
+
 	//Constuct Current Page
 	if(isset($params["PAGE"]) && strlen($params["PAGE"])>0) {
 		$current_page=$params["PAGE"];
 	} else {
 		$current_page="home";
 	}
-	
 	if(isset($_REQUEST["sos"])) {
 		$a=true;
 		if(defined("ALLOW_DEFAULT_SYSTEM_PAGES")) $a=(ALLOW_DEFAULT_SYSTEM_PAGES=="true")?true:false;
@@ -73,7 +72,7 @@ if(file_exists(APPROOT)) {
 					$oldPage.="?".$_SERVER['QUERY_STRING'];
 				}
 			}
-			
+
 			if(!defined("ALT_SITE") || strlen(ALT_SITE)<=0) {
 				$relink=SiteLocation . "login.php?site={$params['SITE']}";
 				$_SESSION['LOGIN_RELINK']=$oldPage;
@@ -81,7 +80,7 @@ if(file_exists(APPROOT)) {
 			} else {
 				if(strtolower(ALT_SITE)=='login') {
 					$_SESSION['LOGIN_RELINK']=$oldPage;
-					$relink=SiteLocation . "login.php?site={$params['SITE']}";					
+					$relink=SiteLocation . "login.php?site={$params['SITE']}";
 					redirectTo($relink,"SESSION Expired. Going To Login Page");
 				} else {
 					$relink=generatePageRequest("","",ALT_SITE);
@@ -89,7 +88,7 @@ if(file_exists(APPROOT)) {
 				}
 			}
 		}
-	} else {		
+	} else {
 		$toload_page=navigateToPage($params);
 	}
 } else {
@@ -97,16 +96,16 @@ if(file_exists(APPROOT)) {
 }
 
 function getPageToLoad() {
-	global $toload_page,$current_page;
+	global $toload_page;
 	return $toload_page;
 }
 function getCurrentPage() {
-	global $toload_page,$current_page;
+	global $current_page;
 	return $current_page;
 }
 function navigateToPage($params) {
 	//simple	 :: means the site to accessed as general site would have to
-	//controller :: means to load controller oriented page		
+	//controller :: means to load controller oriented page
 	//cms	 :: means CMS controlled site
 	/*
 	 * simple/direct means :: Direct Access To Page
@@ -115,19 +114,19 @@ function navigateToPage($params) {
 	 */
 	global $current_page;
 	$appsType=strtolower(APPS_TYPE);
-	
+
 	//Construct Home Page Across Devices
 	if(defined("HOME_PAGE")) {
 		$home_page=HOME_PAGE;
 	} else $home_page="home.php";
 	if(defined("MOBILE_PAGE") && strlen(MOBILE_PAGE)>0) {
 		$mobile_page=MOBILE_PAGE;
-	} else $mobile_page=$home_page;	
+	} else $mobile_page=$home_page;
 	if(defined("TABLET_PAGE") && strlen(TABLET_PAGE)>0) {
 		$tablet_page=TABLET_PAGE;
 	} else $tablet_page=$home_page;
-	
-	//Construct Page To Be Loaded	
+
+	//Construct Page To Be Loaded
 	if($appsType=="controller") {
 		$device=getUserDeviceType();
 		if($device=="mobile") {
@@ -140,9 +139,7 @@ function navigateToPage($params) {
 		$toload_page=APPROOT.$a;
 	} elseif($appsType=="cms") {
 		$home_page="cms.php";
-		//$mobile_page="mobile.php";
-		//$tablet_page="tablet.php";
-		
+
 		$device=getUserDeviceType();
 		if($device=="mobile") {
 			$a=$mobile_page;

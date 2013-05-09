@@ -2,10 +2,10 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists('printSQLResult')) {
-	function printSQLResult($result,$dataType="json",$params=array(),$msg="") {
+	function printSQLResult($result,$dataType="json",$params=array(),$msg="",$autoLing=true,$maxTextLength=0) {
 		if($result==null || is_bool($result)) {
 			$responce->MSG=$msg;
-			
+
 			header("Content-type: application/json");
 			echo json_encode($responce);
 			return;
@@ -15,7 +15,7 @@ if(!function_exists('printSQLResult')) {
 			if(isset($params["total"])) $responce->total =intval($params["total"]);
 			if(isset($params["records"])) $responce->records =intval($params["records"]);
 			//if(isset($params["limit"])) $responce->limit =intval($params["limit"]);
-			
+
 			$i=0;
 			//while($row = mysql_fetch_array($result,MYSQL_NUM)) {//MYSQL_ASSOC, MYSQL_NUM, and MYSQL_BOTH mysql_fetch_array
 			while($row = _db()->fetchData($result,"array",MYSQL_NUM)) {//MYSQL_ASSOC, MYSQL_NUM, and MYSQL_BOTH
@@ -49,17 +49,19 @@ if(!function_exists('printSQLResult')) {
 								$s1=_time($ss[1]);
 							else
 								$s1="";
-							
+
 							$b="$s0 $s1";
-							
+
 							$bT=_date("0000-00-00","Y/m/d",$df);
 							$bT.=" "._time("00:00:00","H:i:s",$dt);
-							
+
 							if($b==$bT) {
 								$b="";
 							}
 						} elseif($type=="blob") {
-							if(strlen($b)>255) $b=substr($b,0,200)."...";
+							if($maxTextLength>0 && strlen($b)>$maxTextLength) $b=substr($b,0,200)."...";
+						} else {
+							if($autoLing) $b=_ling($b);
 						}
 					}
 					array_push($responce->rows[$i]['cell'],$b);
@@ -67,14 +69,14 @@ if(!function_exists('printSQLResult')) {
 				}
 				$i++;
 			}
-			
+
 			$responce->MSG=$msg;
-		
+
 			header("Content-type: application/json");
 			echo json_encode($responce);
 		} elseif($dataType=="xml") {
 			if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ) {
-				header("Content-type: application/xhtml+xml;charset=utf-8"); 
+				header("Content-type: application/xhtml+xml;charset=utf-8");
 			} else {
 				header("Content-type: text/xml;charset=utf-8");
 			}
@@ -102,14 +104,16 @@ if(!function_exists('printSQLResult')) {
 						}
 						if(strlen($b)>0) $s .= "<cell><![CDATA[". $b."]]></cell>";
 					} elseif($type=="string" && $length>5) {
+						if($autoLing) $b=_ling($b);
 						if(strlen($b)>0) $s .= "<cell><![CDATA[". $b."]]></cell>";
 						else $s .= "<cell></cell>";
 					} else {
+						if($autoLing) $b=_ling($b);
 						$s .= "<cell>". $b ."</cell>";
-					}				
+					}
 					$i++;
 				}
-				
+
 				$s .= "</row>";
 			}
 			$s .= "</rows>";
@@ -117,17 +121,17 @@ if(!function_exists('printSQLResult')) {
 		} elseif($dataType=="html") {
 			if(isset($params["withheader"])) $withheader=$params["withheader"]; else $withheader="false";
 			if(isset($params["multiselect"])) $multiselect=$params["multiselect"]; else $multiselect="false";
-			
+
 			if($withheader=="true" || $withheader==1) {
 				$withheader=true;
 			} else $withheader=false;
 			if($multiselect=="true" || $multiselect==1) {
 				$multiselect=true;
 			} else $multiselect=false;
-			
+
 			$header="";
 			$body="";
-			
+
 			if($withheader) {
 				$header.="<thead>";
 				$header.="<tr class='tblheader'>";
@@ -136,7 +140,7 @@ if(!function_exists('printSQLResult')) {
 					$meta = mysql_fetch_field($result, $i);
 					if($meta) {
 						$t=str_replace("_"," ",$meta->name);
-						$t=ucwords($t);			
+						$t=ucwords($t);
 						$header.="<td align=center>$t</td>";
 					} else {
 						$header.="<td>&nbsp;</td>";
@@ -166,7 +170,7 @@ if(!function_exists('printSQLResult')) {
 								$b="";
 							}
 						}
-					}
+					} elseif($autoLing) $b=_ling($b);
 					if($meta->primary_key) $body.="<td col='$name' class='serial_col'>$b</td>";
 					else {
 						if($type=="date") {
@@ -174,19 +178,19 @@ if(!function_exists('printSQLResult')) {
 								$body.="<td col='$name' class='calerroricon' >&nbsp;</td>";
 							} else {
 								$body.="<td col='$name' align=center>$b</td>";
-							}					
+							}
 						} elseif($type=="int" || $type=="float" || $type=="double") {
-							$body.="<td col='$name' align=right>$b</td>";					
+							$body.="<td col='$name' align=right>$b</td>";
 						} elseif($type=="bool" || $type=="boolean") {
 							$body.="<td col='$name' align=center>$b</td>";
 						} elseif($type=="blob") {
 							$body.="<td col='$name' class='blobicon' onclick=\"viewBlobData('$name','$tbl')\">&nbsp;</td>";
 						} else {
 							$body.="<td col='$name'>$b</td>";
-						}				
+						}
 					}
 					$c++;
-				}	
+				}
 				$body.="</tr>";
 			}
 			$body.="</tbody>";
@@ -195,7 +199,7 @@ if(!function_exists('printSQLResult')) {
 			printArray($data);
 		}
 	}
-	
+
 	function printSQLResultTree($result,$colDefn=null) {
 		if($colDefn==null) {
 			$colDefn=array(
@@ -213,17 +217,17 @@ if(!function_exists('printSQLResult')) {
 			while($row=_db()->fetchData($result)) {
 				if(strlen($row[$groupCol])<=0) $row[$groupCol]="";
 				else $row[$groupCol]="".$row[$groupCol];
-				
+
 				$record=array("data"=>$row);
-				if(strpos($row[$groupCol],"/")>=1) {					
+				if(strpos($row[$groupCol],"/")>=1) {
 					$gs=$row[$groupCol];
 					if(isset($row[$categoryCol]) && strlen($row[$categoryCol])>0) {
 						$gs.="/".$row[$categoryCol];
-					}					
+					}
 					$gs=str_replace("//","/",$gs);
 					$r=explode("/",$gs);
 					array_push($r,$row[$titleCol]);
-					
+
 					$arr=$record;
 					$r1=array_reverse($r);
 					foreach($r1 as $a) {
@@ -262,7 +266,7 @@ if(!function_exists('printSQLResult')) {
 		}
 		return "";
 	}
-	
+
 	function printTreeList($treeArray) {
 		if(sizeOf($treeArray)<=0) return "";
 		$s="";

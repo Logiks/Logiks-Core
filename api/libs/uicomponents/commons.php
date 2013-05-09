@@ -1,5 +1,6 @@
 <?php
-if (!defined('ROOT')) exit('No direct script access allowed');
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 if(!function_exists("explodeTagData")) {
 	//Value Format
 	function explodeTagData($value) {
@@ -7,30 +8,30 @@ if(!function_exists("explodeTagData")) {
 		$arr = array("value"=>"","id"=>"","class"=>"");
 		$id="";
 		$cls="";
-			 
+
 		$value=explode('@',$value);
 		if(isset($value[1])) {
 			$cls =$value[1];
 			if(strpos($cls,'#')>0){
 				$cls=explode('#',$cls);
-				
-				if(isset($cls[1])) 
-					$id =$cls[1]; 
+
+				if(isset($cls[1]))
+					$id =$cls[1];
 				else $id="";
 				$cls=$cls[0];
 			}
 		}
-				
+
 		if(strpos($value[0],'#')>0 || strpos($s,'#')==0){
 			$value=explode('#',$value[0]);
 			if(isset($value[1])) $id .=$value[1];
 		}
-		
+
 		$arr['value']=$value[0];
 		$arr['id']=$id;
 		$arr['class']=$cls;
-				
-		return $arr;	
+
+		return $arr;
 	}
 
 	function parseTagParams($params) {
@@ -41,10 +42,10 @@ if(!function_exists("explodeTagData")) {
 		}
 		return trim($s);
 	}
-	
+
 	function parseFieldParams($params=array()) {
 		$s="";
-		
+
 		$cls="";
 		$val="";
 		$id="";
@@ -53,9 +54,9 @@ if(!function_exists("explodeTagData")) {
 		$rel="";
 		$type="";
 		$attrs="";
-				
+
 		if(!isset($params['type'])) $params['type']="text";
-		
+
 		if(isset($params['class'])) $cls=$params['class'];
 		if(isset($params['val'])) $cls=$params['value'];
 		if(isset($params['tips'])) $cls=$params['tips'];
@@ -63,13 +64,13 @@ if(!function_exists("explodeTagData")) {
 		if(isset($params['name'])) $cls=$params['name'];
 		if(isset($params['id'])) $cls=$params['id'];
 		if(isset($params['attrs'])) $attrs=$params['attrs'];
-		
+
 		if(strlen($name)<=0) $name=$id;
-		
+
 		if($params['type']=="text") {
 			$type="text";
 			$cls.=" textfield";
-		} 
+		}
 		elseif($params['type']=="email") {
 			$type="text";
 			$cls.=" emailfield";
@@ -94,11 +95,11 @@ if(!function_exists("explodeTagData")) {
 		} elseif($params['type']=="tag") {
 			$type="text";
 			$cls.=" tagfield";
-		} 
+		}
 		elseif($params['type']=="file") {
 			$type="file";
 			$cls.=" filefield";
-		} 
+		}
 		elseif($params['type']=="date") {
 			$type="date";
 			$cls.=" datefield";
@@ -108,7 +109,7 @@ if(!function_exists("explodeTagData")) {
 		} elseif($params['type']=="datetime") {
 			$type="date";
 			$cls.=" datetimefield";
-		} 
+		}
 		elseif($params['type']=="textarea") {
 			$s="<textarea";
 			if(strlen($id)>0) $s.="name='$id' id='$id' ";
@@ -118,11 +119,11 @@ if(!function_exists("explodeTagData")) {
 			if(strlen($tips)>0) $s.="title='$tips' ";
 			$s.="$attrs >";
 			$s.="</textarea>";
-		} 
+		}
 		elseif($params['type']=="pwd" || $params['type']=="password") {
 			$type="password";
 			$cls.=" passwordfield";
-		} 
+		}
 		elseif($params['type']=="select") {
 			$s="<select";
 			if(strlen($id)>0) $s.="name='$id' id='$id' ";
@@ -131,7 +132,7 @@ if(!function_exists("explodeTagData")) {
 			if(strlen($rel)>0) $s.="rel='$rel' ";
 			if(strlen($tips)>0) $s.="title='$tips' ";
 			$s.="$attrs >";
-			
+
 			if(isset($params['options'])) {
 				if($params['options']=="func" || $params['options']=="function") {
 					if(isset($params['func']) && function_exists($params['func'])) {
@@ -148,7 +149,7 @@ if(!function_exists("explodeTagData")) {
 					$s.=$params['options'];
 				}
 			}
-			
+
 			$s.="</select>";
 		} else {
 			$type="text";
@@ -167,7 +168,7 @@ if(!function_exists("explodeTagData")) {
 	}
 	function parseFieldHelp($params=array()) {
 		$s="";
-		
+
 		return $s;
 	}
 }

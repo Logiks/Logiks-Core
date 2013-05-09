@@ -844,10 +844,28 @@ if(!function_exists("getFileMimes")) {
 	function getMimeTypeFor($ext,$default='application/octet-stream') {
 		$ext=strtolower($ext);
 		$a=getFileMimes();
-		if(array_key_exists($ext,$a['extensions'])) {			
+		if(array_key_exists($ext,$a['extensions'])) {
 			return $a['mimetypes'][$a['extensions'][$ext]];
 		}
 		return $default;
+	}
+
+	function printMimeHeader($format) {
+		$mime="";
+		if($format=='*' || $format==null) {
+			if(isset($_REQUEST['format']) && strlen($_REQUEST['format'])>0) {
+				$format=$_REQUEST['format'];
+			} else return false;
+			$mime=getMimeTypeFor($format);
+		} elseif(file_exists($format)) {
+			$mime=mime_content_type($format);
+		} else {
+			$mime=getMimeTypeFor($format);
+		}
+		if(strlen($mime)>0) {
+			header("content-type:$mime");
+			return true;
+		} else return false;
 	}
 }
 ?>

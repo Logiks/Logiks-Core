@@ -1,28 +1,28 @@
 <?php
 /*
  * This Class basically converts all kinds of multidimensional arrays to Tree Lists.
- * 
+ *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 24/02/2012
  * Author: Kshyana Prava kshyana23@gmail.com on 24/02/2012
  * Version: 1.0
  */
 class ArrayToList {
-	
+
 	private $maxTags=4;
 	private $format="ul,li,h2,a";
 	private $colDefn=null;
 	private $printTitle=true;
-	
+
 	public function __construct() {
 		$this->colDefn=ArrayToList::getColumnTagsHolder();
 		$this->listTags($this->format);
 	}
-	
+
 	public function printTitle($print=null) {
 		if($print!==null) $this->printTitle=$print;
 		return $this->printTitle;
 	}
-	
+
 	public function colDefns($colDefn) {
 		if($colDefn!=null) {
 			$this->colDefn=$colDefn;
@@ -35,23 +35,23 @@ class ArrayToList {
 		if($format!=null) {
 			if(!is_array($format)) $this->format=explode(",",$format);
 			else $this->format=$format;
-			if(sizeOf($this->format)<$this->maxTags) { 
+			if(sizeOf($this->format)<$this->maxTags) {
 				for($i=sizeOf($this->format);$i<$this->maxTags;$i++) {
 					array_push($this->format,"span");
-				} 
+				}
 			}
 		}
 		return $this->format;
 	}
-	
+
 	public function getTree($treeArray,$dataStr="data",$depth=0,$showID=false) {
 		if(sizeOf($treeArray)<=0) return "";
 		$colData=array();
 		$s="";
-		
+
 		$format=$this->format;
 		$colDefn=$this->colDefn;
-		
+
 		foreach($treeArray as $a=>$b) {
 			$claz="";
 			$tips="";
@@ -62,10 +62,10 @@ class ArrayToList {
 				if($hasData) {
 					$data=$b[$dataStr];
 					unset($b[$dataStr]);
-					
+
 					if(isset($colDefn["classCol"]) && isset($data[$colDefn["classCol"]])) $claz="class='{$data[$colDefn['classCol']]}'";
 					if(isset($colDefn["tipsCol"]) && isset($data[$colDefn["tipsCol"]])) $tips="title=\"{$data[$colDefn['tipsCol']]}\"";
-										
+
 					foreach($colDefn as $m=>$n) {
 						if(isset($data[$n])) {
 							if($m=="linkCol" && $data[$n]=="#") $colData[$m]="";
@@ -80,7 +80,7 @@ class ArrayToList {
 					if($depth==0) $s.="<{$format[1]}><{$format[2]}>{$as}</{$format[2]}>";
 					else $s.="<{$format[1]}>{$as}";
 					$s.=$this->getTree($b,$dataStr,$depth+1,$showID);
-					$s.="</{$format[1]}>";					
+					$s.="</{$format[1]}>";
 				} else {
 					if(is_array($data[$colDefn["linkCol"]])) {
 						$err=array();
@@ -100,22 +100,22 @@ class ArrayToList {
 									);
 							$as=$this->createTag($format[3],$s1,$y,$showID);
 							$s.="<{$format[1]}>$as</{$format[1]}>";
-						}						
+						}
 					} elseif(strlen($data[$colDefn["linkCol"]])>1) {
 						$as=$this->createTag($format[3],$a,$colData,$showID);
-						$s.="<{$format[1]} $tips >$as</{$format[1]}>";						
+						$s.="<{$format[1]} $tips >$as</{$format[1]}>";
 					} else {
 						//$as=createTag($format[2],$a,$colData,$showID);
 						//$s.="<{$format[1]} rel='{$b['id']}'>$a</{$format[1]}>";
 					}
 				}
-			} else {				
+			} else {
 			}
-		}		
+		}
 		if(strlen($s)<0) return "";
 		else return "<{$format[0]}>$s</{$format[0]}>";
 	}
-	
+
 	//This function creates the final tags to be put into the holder spaces.
 	//It Needs the tag mostly li,h2,a,span
 	public function createTag($tag, $title, $menuData=array(),$showID=false) {
@@ -165,23 +165,23 @@ class ArrayToList {
 		$s="<{$tag} ".implode(" ",$colDefn).">{$icn}<span>{$title}</span></{$tag}>";
 		return $s;
 	}
-	
+
 	public static function getColumnTagsHolder() {
 		return array(
 					"idCol"=>"id",
 					"titleCol"=>"title",
 					"groupCol"=>"menugroup",
 					"categoryCol"=>"category",
-					
+
 					"linkCol"=>"link",
-					
+
 					"iconCol"=>"iconpath",
 					"classCol"=>"class",
 					"styleCol"=>"style",
-					
+
 					"tipsCol"=>"tips",
 					"targetCol"=>"target",
-					
+
 					"srcCol"=>"src",
 				);
 	}
