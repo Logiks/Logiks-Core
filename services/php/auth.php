@@ -80,30 +80,6 @@ $allSites=explode(",",$d1['sites']);
 if($d1['sites']=="*") {
 	$allSites=getAccessibleSitesArray();
 }
-/*
-$acp=explode(",",ADMIN_APPSITES);
-if(count($allSites)==1 && in_array($allSites[0], $acp)) {
-	$q5="SELECT * FROM "._dbtable('cms_sites',true)." WHERE userid='$userid' AND blocked='false'";
-	$result=$dbLink->executeQuery($q5);
-	$d3=$dbLink->fetchData($result);
-	$dbLink->freeResult($result);
-	if($d1!=null && isset($d3['sites'])) {
-		$ssArr=array();
-		if($d3['sites']=='*') {
-			$ssArr=getAccessibleSitesArray();
-		} else {
-			$ssArr=explode(",",$d3['sites']);
-		}
-		foreach($ssArr as $x) {
-			if(!in_array($x,$allSites)) {
-				if(!in_array($x, $acp)) {
-					array_push($allSites,$x);
-				}
-			}
-		}
-	}
-}*/
-//printArray($allSites);exit();
 
 if(!in_array($domain,$allSites)) {
 	relink("Sorry, You [UserID] do not have access to requested site.", $domain);
@@ -133,7 +109,8 @@ $_SESSION['SESS_USER_EMAIL'] = $data['email'];
 $_SESSION['SESS_USER_CELL'] = $data['mobile'];
 
 $_SESSION['SESS_LOGIN_SITE'] = $domain;
-$_SESSION['SESS_TOKEN'] = session_id();
+$_SESSION['SESS_TOKEN'] = md5(SiteID.session_id());
+$_SESSION['SESS_SITEID'] = SiteID;
 
 if($data['privilege']<=3) $_SESSION["SESS_FS_FOLDER"]=ROOT;
 else $_SESSION["SESS_FS_FOLDER"]=ROOT.APPS_FOLDER.$domain."/";

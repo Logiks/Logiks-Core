@@ -10,13 +10,15 @@ if(!function_exists("session_check")) {
 
 		if(defined("SITENAME")) {
 			if(isset($_SESSION['SESS_USER_ID']) && isset($_SESSION['SESS_PRIVILEGE_ID']) && isset($_SESSION['SESS_ACCESS_ID']) &&
-				isset($_SESSION['SESS_TOKEN']) &&
+				isset($_SESSION['SESS_TOKEN']) && isset($_SESSION['SESS_SITEID']) &&
 				isset($_SESSION['SESS_LOGIN_SITE']) && isset($_SESSION['SESS_ACCESS_SITES'])) {
-				if($_SESSION['SESS_PRIVILEGE_ID']>0) {
-					if($_SESSION['SESS_LOGIN_SITE']==$_REQUEST['site'])
-						$valid=true;
-					elseif(is_array($_SESSION['SESS_ACCESS_SITES']) && in_array(SITENAME,$_SESSION['SESS_ACCESS_SITES']))
-						$valid=true;
+				if($_SESSION['SESS_TOKEN'] == md5(SiteID.session_id())) {
+					if($_SESSION['SESS_PRIVILEGE_ID']>0) {
+						if($_SESSION['SESS_LOGIN_SITE']==$_REQUEST['site'])
+							$valid=true;
+						elseif(is_array($_SESSION['SESS_ACCESS_SITES']) && in_array(SITENAME,$_SESSION['SESS_ACCESS_SITES']))
+							$valid=true;
+					}
 				}
 			}
 		}
