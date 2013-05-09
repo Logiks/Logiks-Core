@@ -7,5 +7,6 @@ $classpath=array(
 $mediaPaths=array(
 	"userdata/",
 	"media/",
+	"css/"
 	);
 ?>

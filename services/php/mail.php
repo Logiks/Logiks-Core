@@ -38,6 +38,8 @@ if(isset($_POST['footer'])) $footer=$_POST['footer']; else $footer="";
 if(isset($_POST['onsuccess'])) $onsuccess=$_POST['onsuccess']; else $onsuccess="Mail Successfully Sent.";
 if(isset($_POST['onerror'])) $onerror=$_POST['onerror']; else $onerror="Error Occured While Sending Mail!";
 
+unset($_POST['onsuccess']);unset($_POST['onerror']);
+
 if(isset($_POST['body'])) $body=$_POST['body']; else $body=EMail::createMailBodyForArray($_POST,$title,$footer);
 
 if(strlen($to)<=0)  {
@@ -84,9 +86,17 @@ if(getConfig("MAIL_ENGINE")=="simple" && $attach==null) {
 }
 
 if($a==true) {
-	echo("<div width=100% align=center><p>$onsuccess</p></div>");
+	if(substr(strtolower($onsuccess),0,7)=="http://" || substr(strtolower($onsuccess),0,8)=="https://") {
+		header("Location:$onsuccess");
+	} else {
+		echo("<div width=100% align=center><p>$onsuccess</p></div>");
+	}
 } else {
-	echo("<div width=100% align=center style='color:red'><p>$onerror</p></div>");
+	if(substr(strtolower($onerror),0,7)=="http://" || substr(strtolower($onerror),0,8)=="https://") {
+		header("Location:$onerror");
+	} else {
+		echo("<div width=100% align=center style='color:red'><p>$onerror</p></div>");
+	}
 }
 if(file_exists($target_path)) unlink($target_path);
 ?>

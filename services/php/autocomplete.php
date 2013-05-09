@@ -25,7 +25,10 @@ if($src=="sqltbl") {
 				if($wA12=="null") {
 					$wA[$a1]="($wA11='$wA12' OR $wA11='') ";
 				} else {
-					$wA[$a1]="$wA11='$wA12' ";
+					if($wA12[0]=="@")
+						$wA[$a1]="$wA11='"._replace("#".substr($wA12,1)."#")."' ";
+					else
+						$wA[$a1]="$wA11='{$wA12}' ";
 				}
 			} else {
 				$wA[$a1]="$a2 ";

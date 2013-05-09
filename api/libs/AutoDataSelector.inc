@@ -1,4 +1,5 @@
 <?php
+if(!defined('ROOT')) exit('No direct script access allowed');
 /*
  * This class is used to create DataSelectors from arrays.
  *
@@ -8,6 +9,7 @@
  * ChangeLog:
  * 7/04/2013 : Added Capacity to print nested elements and a new type array
  */
+
 class AutoDataSelector {
 	public function __construct() {
 	}

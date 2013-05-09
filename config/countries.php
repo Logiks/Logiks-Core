@@ -5,8 +5,8 @@
  */
 if(!function_exists("getCountryList")) {
 	define("LANGUAGE_RTL","left-to-right");
-	function getCountryList() {
-		return array(
+	function getCountryList($sortedByName=false) {
+		$arr=array(
 			'AD' => 'Andorra',
 			'AE' => 'United Arab Emirates',
 			'AF' => 'Afghanistan',
@@ -254,6 +254,20 @@ if(!function_exists("getCountryList")) {
 			'ZM' => 'Zambia',
 			'ZW' => 'Zimbabwe',
 		);
+		if($sortedByName) {
+			$arr1=$arr;
+			sort($arr1);
+			$arrReverse=array_flip($arr);
+			$default=strtoupper($default);
+			$arrFinal=array();
+			foreach($arr1 as $a=>$b) {
+				$a=$arrReverse[$b];
+				$arrFinal[$a]=$b;
+			}
+			return $arrFinal;
+		} else {
+			return $arr;
+		}
 	}
 
 	function getLocaleList() {
@@ -1003,18 +1017,21 @@ if(!function_exists("getCountryList")) {
 	}
 	function getCountrySelector($default="",$useShortCode=false,$printNoValue=false) {
 		$arr=getCountryList();
-		if($printNoValue)
-			$s="<option value=''>$printNoValue</option>";
-		foreach($arr as $a=>$b) {
+		if($printNoValue) $s="<option value='' rel=''>$printNoValue</option>";
+		$arr1=$arr;
+		sort($arr1);
+		$arrReverse=array_flip($arr);
+		$default=strtoupper($default);
+		foreach($arr1 as $a=>$b) {
+			$a=$arrReverse[$b];
 			if($useShortCode) {
-				$default=strtoupper($default);
-				if($a==$default) {
+				if($a==$default || strtoupper($b)==$default) {
 					$s.="<option value='$a' selected>$b</option>";
 				} else {
 					$s.="<option value='$a'>$b</option>";
 				}
 			} else {
-				if($b==$default) {
+				if($a==$default || strtoupper($b)==$default) {
 					$s.="<option value='$b' rel='$a' selected>$b</option>";
 				} else {
 					$s.="<option value='$b' rel='$a'>$b</option>";

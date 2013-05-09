@@ -226,10 +226,10 @@ function invokeFunction(func,txt) {
 	if(typeof(func)=='function') func(txt);
 	else window[func](txt);
 }
-function ajaxChainCombo(element, comboTarget,scriptName) {
-	var s=getServiceCMD(scriptName) + "&format=select&value=" +encodeURIComponent(element.value)+"&name="+element.name;
+function ajaxChainCombo(element, comboTarget,scriptName,func) {
+	var s=getServiceCMD(scriptName) + "&value=" + encodeURIComponent(element.value) +"&name="+element.name;
 	document.getElementById(comboTarget).innerHTML='<option>Loading...</option>';
-	runAJAXGet(comboTarget,s);
+	runAJAXGet(comboTarget,s,func);
 }
 function AJAXSubmit(id,href,func, hidden) {
 	if(hidden==null) hidden=true;

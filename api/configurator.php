@@ -211,50 +211,71 @@ if(!function_exists('LoadConfigFile')) {
 		}
 		return true;
 	}
+	function getFeature($key,$fname) {
+		$arrFeature=loadFeature($fname);
+		if(isset($arrFeature[$key])) {
+			return $arrFeature[$key];
+		}
+		return "";
+	}
+	function setFeature($key,$value,$fname) {
+		if(isset($GLOBALS['FEATURES']["{$fname}.cfg"]) && !$forceReload) {
+			$GLOBALS['FEATURES']["{$fname}.cfg"][$key]=$value;
+		} elseif(isset($GLOBALS['FEATURES']["{$fname}.json"]) && !$forceReload) {
+			$GLOBALS['FEATURES']["{$fname}.json"][$key]=$value;
+		} elseif(isset($GLOBALS['FEATURES']["{$fname}.lst"]) && !$forceReload) {
+			$GLOBALS['FEATURES']["{$fname}.lst"][$key]=$value;
+		} else return false;
+		return true;
+	}
 	function loadFeature($fname,$forceReload=false,$debug=false) {
-		$f=APPROOT;
-		if(defined("APPS_CONFIG_FOLDER"))  $f.=APPS_CONFIG_FOLDER;
-		else $f.="config/";
-		$f.="features/{$fname}";
 		$ftrs=array();
-		if(file_exists("{$f}.cfg")) {
-			if(isset($GLOBALS['FEATURES']["{$fname}.cfg"]) && !$forceReload) {
-				return $GLOBALS['FEATURES']["{$fname}.cfg"];
-			} else {
-				$ftrs=parseConfigFile("{$f}.cfg");
-				$arr=array();
-				foreach($ftrs as $a=>$b) {
-					$arr[$a]=$b['value'];
-				}
-				$GLOBALS['FEATURES']["{$fname}.cfg"]=$arr;
-				if($debug) {
-					return $ftrs;
+		
+		$arrFiles=array();
+		if(defined("APPS_CONFIG_FOLDER")) {
+			$arrFiles[]=APPROOT.APPS_CONFIG_FOLDER."features/test";
+		}
+		$arrFiles[]=ROOT.CFG_FOLDER."features/test";
+		
+		foreach($arrFiles as $f) {
+			if(file_exists("{$f}.cfg")) {
+				if(isset($GLOBALS['FEATURES']["{$fname}.cfg"]) && !$forceReload) {
+					return $GLOBALS['FEATURES']["{$fname}.cfg"];
 				} else {
+					$ftrs=parseConfigFile("{$f}.cfg");
+					$arr=array();
+					foreach($ftrs as $a=>$b) {
+						$arr[$a]=$b['value'];
+					}
+					$GLOBALS['FEATURES']["{$fname}.cfg"]=$arr;
+					if($debug) {
+						return $ftrs;
+					} else {
+						return $arr;
+					}
+				}
+			} elseif(file_exists("{$f}.json")) {
+				if(isset($GLOBALS['FEATURES']["{$fname}.json"]) && !$forceReload) {
+					return $GLOBALS['FEATURES']["{$fname}.json"];
+				} else {
+					$data=file_get_contents("{$f}.json");
+					$arr=json_decode($data,true);
+					$GLOBALS['FEATURES']["{$fname}.json"]=$arr;
+					return $arr;
+				}
+			} elseif(file_exists("{$f}.lst")) {
+				if(isset($GLOBALS['FEATURES']["{$fname}.lst"]) && !$forceReload) {
+					return $GLOBALS['FEATURES']["{$fname}.lst"];
+				} else {
+					$f=file_get_contents("{$f}.lst");
+					$arr=explode("\n",$f);
+					if(strlen($arr[count($arr)-1])==0) unset($arr[count($arr)-1]);
+					$GLOBALS['FEATURES']["{$fname}.lst"]=$arr;
 					return $arr;
 				}
 			}
-		} elseif(file_exists("{$f}.json")) {
-			if(isset($GLOBALS['FEATURES']["{$fname}.json"]) && !$forceReload) {
-				return $GLOBALS['FEATURES']["{$fname}.json"];
-			} else {
-				$data=file_get_contents("{$f}.json");
-				$arr=json_decode($data,true);
-				$GLOBALS['FEATURES']["{$fname}.json"]=$arr;
-				return $arr;
-			}
-		} elseif(file_exists("{$f}.lst")) {
-			if(isset($GLOBALS['FEATURES']["{$fname}.lst"]) && !$forceReload) {
-				return $GLOBALS['FEATURES']["{$fname}.lst"];
-			} else {
-				$f=file_get_contents("{$f}.lst");
-				$arr=explode("\n",$f);
-				if(strlen($arr[count($arr)-1])==0) unset($arr[count($arr)-1]);
-				$GLOBALS['FEATURES']["{$fname}.lst"]=$arr;
-				return $arr;
-			}
-		} else {
-			return array();
 		}
+		return array();
 	}
 	function unloadFeature($fname) {
 		if(isset($GLOBALS['FEATURES']["{$fname}.cfg"])) {
@@ -262,6 +283,9 @@ if(!function_exists('LoadConfigFile')) {
 			return true;
 		} elseif(isset($GLOBALS['FEATURES']["{$fname}.json"])) {
 			unset($GLOBALS['FEATURES']["{$fname}.json"]);
+			return true;
+		} elseif(isset($GLOBALS['FEATURES']["{$fname}.lst"])) {
+			unset($GLOBALS['FEATURES']["{$fname}.lst"]);
 			return true;
 		} else {
 			return false;

@@ -404,4 +404,11 @@ function showWarnMsg(msg, ele) {
 			},2000);
 	}
 }
-
+function formReset(formID1) {
+	var formID=document.getElementById(formID1);
+	var eles=formID.getElementsByTagName("input");
+	for(var i=0;i<eles.length;i++) {
+		if(eles[i].type=='button') continue;
+		eles[i].value='';
+	}
+}
