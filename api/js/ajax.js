@@ -131,7 +131,7 @@ function LAJAX() {
 					invokeFunction(func,txt);
 				} else {
 					txt="<div id=\"ajaxerror" + Math.floor(Math.random()*1000) + "\"><table width=100% height=" + (ele.offsetHeight - 50) + "px><tr><td class=ajaxerror>" +
-					"<br/> Error : " + this.getAJAXError(xmlhttp.status) + "</td></tr></table></div>";
+					"<br/> Error : " + fx.getAJAXError(xmlhttp.status) + "</td></tr></table></div>";
 					ele.innerHTML=txt;
 					invokeFunction(func,txt);
 				}
@@ -159,7 +159,7 @@ function LAJAX() {
 				} else {
 					txt="<div id=\"ajaxerror" + Math.floor(Math.random()*1000) +
 					"\"><table width=100% height=100%><tr><td class=ajaxerror>" +
-					"<br/> Error : " + this.getAJAXError(xmlhttp.status) + "</td></tr></table></div>";
+					"<br/> Error : " + fx.getAJAXError(xmlhttp.status) + "</td></tr></table></div>";
 					invokeFunction(func,txt);
 				}
 			}
@@ -227,7 +227,7 @@ function invokeFunction(func,txt) {
 	else window[func](txt);
 }
 function ajaxChainCombo(element, comboTarget,scriptName,func) {
-	var s=getServiceCMD(scriptName) + "&value=" + encodeURIComponent(element.value) +"&name="+element.name;
+	var s=getServiceCMD(scriptName) + "&format=select&value=" +encodeURIComponent(element.value)+"&name="+element.name;
 	document.getElementById(comboTarget).innerHTML='<option>Loading...</option>';
 	runAJAXGet(comboTarget,s,func);
 }

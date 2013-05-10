@@ -77,11 +77,11 @@ class ImageProps {
       $this->image = $new_image;
    }
    function crop($x,$y,$width,$height) {
-	   $new_image = imagecreatetruecolor($width, $height);
-       imagealphablending( $new_image, false );
-       imagesavealpha( $new_image, true );
-	   imagecopyresampled($new_image, $this->image,0,0,$x,$y,$width,$height,$width,$height);
-	   $this->image = $new_image;
+	  $new_image = imagecreatetruecolor($width, $height);
+      imagealphablending( $new_image, false );
+      imagesavealpha( $new_image, true );
+      imagecopyresampled($new_image, $this->image,0,0,$x,$y,$width,$height,$width,$height);
+	  $this->image = $new_image;
    }
    
    function createThumb($targetFile,$tsize=null) {

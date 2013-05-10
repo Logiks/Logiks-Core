@@ -40,7 +40,9 @@ if(isset($_POST['onerror'])) $onerror=$_POST['onerror']; else $onerror="Error Oc
 
 unset($_POST['onsuccess']);unset($_POST['onerror']);
 
-if(isset($_POST['body'])) $body=$_POST['body']; else $body=EMail::createMailBodyForArray($_POST,$title,$footer);
+if(isset($_POST['template'])) $body=_template($_POST['template']);
+elseif(isset($_POST['body'])) $body=$_POST['body']; 
+else $body=EMail::createMailBodyForArray($_POST,$title,$footer);
 
 if(strlen($to)<=0)  {
 	echo("<div width=100% align=center style='color:red'><p>No Recieptants</p></div>");

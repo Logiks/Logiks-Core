@@ -34,27 +34,12 @@ CREATE TABLE `lgks_admin_links` (
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-
-CREATE TABLE `lgks_aliaspath` (
-   `id` int(11) not null auto_increment,
-   `host` varchar(255) not null,
-   `alias` varchar(255),
-   `appsite` varchar(150),
-   `nodal` varchar(150),
-   `active` enum('true','false') default 'true',
-   `doc` date,
-   `doe` date,
-   PRIMARY KEY (`id`),
-   UNIQUE KEY (`host`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-
 CREATE TABLE `lgks_config_sites` (
    `id` int(10) unsigned not null auto_increment,
    `site` varchar(150) default '*',
    `scope` varchar(50),
    `name` varchar(255) not null,
-   `value` varchar(255),
+   `value` text,
    `type` varchar(50) default 'string',
    `class` varchar(55),
    `edit_params` varchar(255),
@@ -71,7 +56,7 @@ CREATE TABLE `lgks_config_users` (
    `scope` varchar(50),
    `userid` varchar(150) default 'all',
    `name` varchar(255) not null,
-   `value` varchar(255),
+   `value` text,
    `type` varchar(50) default 'string',
    `class` varchar(55),
    `edit_params` varchar(255),

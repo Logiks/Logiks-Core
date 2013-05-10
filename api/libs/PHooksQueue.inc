@@ -137,8 +137,8 @@ class PHooksQueue {
 		}
 		if(defined("HOOKS_FOLDER")) {
 			if(!is_dir(ROOT.HOOKS_FOLDER.$hookState) && is_writable(ROOT.HOOKS_FOLDER)) {
-				@mkdir(ROOT.HOOKS_FOLDER.$hookState,0777,true);
-				@chmod(ROOT.HOOKS_FOLDER.$hookState,0777);
+				//@mkdir(ROOT.HOOKS_FOLDER.$hookState,0777,true);
+				//@chmod(ROOT.HOOKS_FOLDER.$hookState,0777);
 			}
 		}
 	}

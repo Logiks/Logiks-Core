@@ -233,9 +233,9 @@ if(!function_exists('LoadConfigFile')) {
 		
 		$arrFiles=array();
 		if(defined("APPS_CONFIG_FOLDER")) {
-			$arrFiles[]=APPROOT.APPS_CONFIG_FOLDER."features/test";
+			$arrFiles[]=APPROOT.APPS_CONFIG_FOLDER."features/$fname";
 		}
-		$arrFiles[]=ROOT.CFG_FOLDER."features/test";
+		$arrFiles[]=ROOT.CFG_FOLDER."features/$fname";
 		
 		foreach($arrFiles as $f) {
 			if(file_exists("{$f}.cfg")) {

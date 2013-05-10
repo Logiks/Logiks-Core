@@ -1,4 +1,6 @@
 <?php
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 /*
  * This Class : DataCnversion Is Used To Convert Data From Given Source/Input/Form To Required O/P Form
  * Mainly Used for Creating Components
