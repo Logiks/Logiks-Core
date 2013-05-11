@@ -40,6 +40,7 @@ if(!isset($initialized)) {
 	LoadConfigFile(ROOT . "config/headers.cfg");
 	LoadConfigFile(ROOT . "config/system.cfg");
 	LoadConfigFile(ROOT . "config/security.cfg");
+	LoadConfigFile(ROOT . "config/permissions.cfg");
 	LoadConfigFile(ROOT . "config/xtras.cfg");
 	LoadConfigFile(ROOT . "config/headers.cfg");
 	LoadConfigFile(ROOT . "config/framework.cfg");

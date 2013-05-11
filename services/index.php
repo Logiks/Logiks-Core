@@ -25,6 +25,7 @@ require_once (ROOT . 'api/configurator.php');
 LoadConfigFile(ROOT . "config/basic.cfg");
 LoadConfigFile(ROOT . "config/services.cfg");
 LoadConfigFile(ROOT . "config/security.cfg");
+LoadConfigFile(ROOT . "config/permissions.cfg");
 LoadConfigFile(ROOT . "config/folders.cfg");
 //LoadConfigFile(ROOT . "config/framework.cfg");
 
