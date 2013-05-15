@@ -20,14 +20,7 @@
                 "rm": false
             }
         },
-        "ssm": {
-            "/^config/": {
-                "read": false,
-                "write": false,
-                "rm": false
-            }
-        },
-        "scm3": {
+        "erp1": {
             "/^config/": {
                 "read": false,
                 "write": false,
@@ -42,13 +35,13 @@
         }
     },
     "app_params": {
-        "scm3": {
-            "dotFiles": true
+        "erp": {
+            "dotFiles": false
         }
     },
     "cms_params": {
-        "scm3": {
-            "dotFiles": true
+        "erp": {
+            "dotFiles": false
         }
     }
 }

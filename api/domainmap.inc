@@ -7,7 +7,7 @@ class DomainMap {
 	private $notMappedSiteList=array();
 
 	function __construct() {
-		$dmF=ROOT.CFG_FOLDER."jsondb/domainmap.json";
+		$dmF=ROOT.CFG_FOLDER."domainmap.json";
 		if(!file_exists($dmF)) {
 			$this->createDefaultDomainMap();
 		}
@@ -181,7 +181,7 @@ class DomainMap {
 		$dmArr["localhost"]=array("appsite"=>"cms","nodal"=>"","active"=>true,"doc"=>date("Y-m-d"),"doe"=>date("Y-m-d"));
 		$dmArr=json_encode($dmArr);
 		file_put_contents($dmF,$dmArr);
-		chmod($dmF,0777);
+		if(file_exists($dmF)) chmod($dmF,0777);
 	}
 }
 ?>

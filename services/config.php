@@ -53,12 +53,12 @@ function __autoload($class) {
 
 function getServiceCtrlConfig() {
 	$jsonDb=array();
-
+	
 	if(defined("APPS_CONFIG_FOLDER"))
-		$f1=APPROOT.APPS_CONFIG_FOLDER."jsondb/services.json";
+		$f1=APPROOT.APPS_CONFIG_FOLDER."security/services.json";
 	else
 		$f1="";
-	$f2=ROOT.CFG_FOLDER."jsondb/services.json";
+	$f2=ROOT.CFG_FOLDER."security/services.json";
 	$db1=array();$db2=array();
 	if(strlen($f1)>0 && file_exists($f1)) {
 		$d1=file_get_contents($f1);
@@ -72,6 +72,7 @@ function getServiceCtrlConfig() {
 	if($db2==null) $db2=array();
 
 	$jsonDb=array_merge($db2,$db1);
+	//printArray($jsonDb);
 	return $jsonDb;
 }
 

@@ -230,13 +230,18 @@ if(!function_exists('LoadConfigFile')) {
 	}
 	function loadFeature($fname,$forceReload=false,$debug=false) {
 		$ftrs=array();
-		
+
 		$arrFiles=array();
 		if(defined("APPS_CONFIG_FOLDER")) {
 			$arrFiles[]=APPROOT.APPS_CONFIG_FOLDER."features/$fname";
 		}
 		$arrFiles[]=ROOT.CFG_FOLDER."features/$fname";
-		
+		if(getConfig("ALLOW_LOCAL_FEATURE_LOAD")=="true") {
+			$mPath=checkModule($fname);
+			if(strlen($mPath)>0) {
+				$arrFiles[]=dirname($mPath)."/config";
+			}
+		}
 		foreach($arrFiles as $f) {
 			if(file_exists("{$f}.cfg")) {
 				if(isset($GLOBALS['FEATURES']["{$fname}.cfg"]) && !$forceReload) {

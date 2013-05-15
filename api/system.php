@@ -170,18 +170,10 @@ if(!function_exists("createTimeStamp")) {
 	//Can be accessed using handler# at various places.
 	//eg. editors :: multiple are available, single to be used.
 	function get_handlers($activity,$forceReload=false) {
-		$dhF=ROOT.CFG_FOLDER."jsondb/default_handlers.json";
-		if(!file_exists($dhF)) {
-			$dmArr=array();
-			//$dmArr["all_editors"]=array("opts"=>array("ckeditor","nicedit","codemirror","editarea"),"enabled"=>true,"module"=>"editor");
-			$dmArr=json_encode($dmArr);
-			file_put_contents($dhF,$dmArr);
-			chmod($dhF,0777);
-		}
 		if($activity==null || strlen($activity)<=0) return array();
 		if(!isset($GLOBALS['DEFAULT_HANDLERS']) || $forceReload) {
-			$dmArr=json_decode(file_get_contents($dhF),true);
-			if($dmArr==null) {
+			$dmArr=loadFeature("default_handlers");
+			if(!$dmArr) {
 				$dmArr=array();
 			}
 			$GLOBALS['DEFAULT_HANDLERS']=$dmArr;
