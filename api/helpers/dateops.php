@@ -81,12 +81,13 @@ if(!function_exists("subtractDates")) {
 		//$period[] = abs(floor($difference / 31536000));//months
 		$period[] = abs(floor(($difference-($period[0] * 31536000))/86400));//days
 		$period[] = abs(floor(($difference-($period[0] * 31536000)-($period[1] * 86400))/3600));//hours
-		$period[] = abs(floor(($difference-($period[0] * 31536000)-($period[1] * 86400)-($period[2] * 3600))/60));#floor($difference / 60);//mins
+		$period[] = abs(floor(($difference-($period[0] * 31536000)-($period[1] * 86400)-($period[2] * 3600))/60));//mins
+		$period[] = abs(floor(($difference-($period[0] * 31536000)-($period[1] * 86400)-($period[2] * 3600)-($period[3]*60))));//secs
 
 		$names=array("Years","Days","Hours","Mins","Secs");
 
 		$str="";
-		if($level>=count($period)) $level=count($period)-1;
+		if($level>count($period)) $level=count($period);
 		for($i=0;$i<$level;$i++) $str.=$period[$i]." ".$names[$i].", ";
 		return $str;
 	}
