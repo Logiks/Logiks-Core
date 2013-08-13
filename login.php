@@ -7,6 +7,8 @@ if(session_check()  && isset($_SESSION['SESS_USER_ID']) && $_SESSION['SESS_LOGIN
 
 LoadConfigFile(ROOT . "config/login.cfg");
 
+$_REQUEST['page']="login";
+
 if(isset($_REQUEST['errormsg'])) $errormsg=$_REQUEST['errormsg'];
 if(isset($_SESSION['SESS_ERROR_MSG'])) {
 	$errormsg=$_SESSION['SESS_ERROR_MSG'];

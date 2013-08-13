@@ -82,8 +82,9 @@ if(!function_exists("getUserInfo")) {
 		if($_SESSION['SESS_PRIVILEGE_ID']>2) {
 			$site=SITENAME;
 		}
-		$sql="SELECT sites FROM "._dbTable("access",true)." WHERE id=(SELECT access from "._dbTable("users",true)." WHERE userid='{$userid}' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())) AND blocked='false'";
-		
+		//$sql="SELECT sites FROM "._dbTable("access",true)." WHERE id=(SELECT access from "._dbTable("users",true)." WHERE userid='{$userid}' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())) AND blocked='false'";
+		$sql="SELECT sites FROM "._dbTable("access",true)." WHERE id=(SELECT access from "._dbTable("users",true)." WHERE userid='{$userid}')";
+		//echo $sql;
 		$res=_dbQuery($sql,true);
 		if($res) {
 			$data=_dbData($res);
@@ -218,8 +219,5 @@ if(!function_exists("getUserInfo")) {
 		}
 		return "User Not Found";
 	}
-	/*function createPWDRecovery($userID,$site=SITENAME) {
-		
-	}*/
 }
 ?>

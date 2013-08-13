@@ -66,19 +66,41 @@ class JsPHP extends DataEmbedder {
 			array_push($paths, $a[0]. "/" . $jslib);
 			array_push($paths, $a[0]. "/" . str_replace($a[0].".","",$jslib));
 		}
-
 		foreach($paths as $p) {
-			if(defined("APPROOT") && file_exists(APPROOT."js/". $p  . ".js")) {
-				$jsp="js/". $p;
-				$JSLINK=WEBAPPROOT . $jsp . ".js";
-				$JSFILE=APPROOT . $jsp . ".js";
+			if(defined("APPROOT")) {
+				if(file_exists(APPROOT."js/{$p}.js")) {
+					$jsp="js/". $p;
+					$JSLINK=WEBAPPROOT . $jsp . ".js";
+					$JSFILE=APPROOT . $jsp . ".js";
+					$JSCACHE=ROOT . CACHE_FOLDER . md5($JSFILE) . ".js";
+					$JSCACHELINK=SiteLocation . CACHE_FOLDER . md5($JSFILE) . ".js";
+
+					$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
+
+					return $data;
+				} elseif(file_exists(APPROOT."plugins/modules/{$p}/script.js")) {
+					$jsp="plugins/modules/{$p}/script";
+					$JSLINK=WEBAPPROOT . $jsp . ".js";
+					$JSFILE=APPROOT . $jsp . ".js";
+					$JSCACHE=ROOT . CACHE_FOLDER . md5($JSFILE) . ".js";
+					$JSCACHELINK=SiteLocation . CACHE_FOLDER . md5($JSFILE) . ".js";
+
+					$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
+
+					return $data;
+				}
+			}
+			if(file_exists(ROOT."plugins/modules/{$p}/script.js")) {
+				$jsp="plugins/modules/{$p}/script";
+				$JSLINK=WEBROOT . $jsp . ".js";
+				$JSFILE=ROOT . $jsp . ".js";
 				$JSCACHE=ROOT . CACHE_FOLDER . md5($JSFILE) . ".js";
 				$JSCACHELINK=SiteLocation . CACHE_FOLDER . md5($JSFILE) . ".js";
 
 				$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
 
 				return $data;
-			}elseif(file_exists($JS_PATH . $p  . ".js")) {
+			} elseif(file_exists($JS_PATH . "{$p}.js")) {
 				$jsp=$p;
 				if(strlen($jsp)<=0) {
 					$jsp=$jslib . $vers;
@@ -130,7 +152,7 @@ class JsPHP extends DataEmbedder {
 		foreach($jsScripts as $a=>$b) {
 			$GLOBALS["JS_PRINTED"][sizeOf($GLOBALS["JS_PRINTED"])]=$a;
 		}
-		//printArray(array_keys($jsScripts));
+		
 		//exit($this->typeOfDispatch);
 		if(strtolower($this->typeOfDispatch)=="tagged") {
 			foreach($jsScripts as $a) {

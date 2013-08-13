@@ -20,7 +20,7 @@
 .icon32_yahoo {background:transparent url(images/icons/web/32/yahoo.png) no-repeat center center;}
 .icon32_yim {background:transparent url(images/icons/web/32/yim.png) no-repeat center center;}
 .icon32_youtube {background:transparent url(images/icons/web/32/Youtube.png) no-repeat center center;}
-
+.icon32_hotmail {background:transparent url(images/icons/web/32/hotmail.png) no-repeat center center;}
 
 /*16x Icons*/
 .icon16_aim {background:transparent url(images/icons/web/16/AIM_16.gif) no-repeat center center; width:16px height:16px; }
@@ -42,6 +42,7 @@
 .icon16_yim {background:transparent url(images/icons/web/16/yahoo_16.gif) no-repeat center center; width:16px height:16px; }
 .icon16_youtube {background:transparent url(images/icons/web/16/youtube_16.gif) no-repeat center center; width:16px height:16px; }
 .icon16_tumblr {background:transparent url(images/icons/web/16/Tumblr_16.gif) no-repeat center center; width:16px height:16px; }
+.icon16_hotmail {background:transparent url(images/icons/web/16/hotmail.png) no-repeat center center;}
 
 /*----Other Mini Icons---------------------*/
 .icon16_ask {background:transparent url(images/icons/web/16/ASK_16.gif) no-repeat center center; width:16px height:16px; }

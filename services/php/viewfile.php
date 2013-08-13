@@ -111,6 +111,7 @@ function printHeader($filename,$type) {
 		header("Content-type: $mime");
 		header("Content-Transfer-Encoding: binary\n");
 		header("Expires: 0");
+		header("Content-Disposition: filename=$filename");
 		//header('Content-length: '.sizeOf($imgcode));
 	} elseif($type=="download") {
 		if(strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== FALSE) {

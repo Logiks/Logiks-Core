@@ -87,7 +87,7 @@ if(getConfig("MAIL_ENGINE")=="simple" && $attach==null) {
 	$a=$email->sendMimeMessageAdvanced($to,$subject,$cc,$bcc,$data,$attach);
 }
 
-if($a==true) {
+if($a) {
 	if(substr(strtolower($onsuccess),0,7)=="http://" || substr(strtolower($onsuccess),0,8)=="https://") {
 		header("Location:$onsuccess");
 	} else {

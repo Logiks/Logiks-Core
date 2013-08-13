@@ -5,8 +5,8 @@ if(defined('ROOT')) exit('Only Direct Access Is Allowed');
 //Commands : scmd,stype,enc,format
 //Formats : html(table,list,select), json, xml, raw
 
-ini_set("display_errors", "strerr");
-ini_set("error_reporting", E_ALL);
+//ini_set("display_errors", "strerr");
+//ini_set("error_reporting", E_ALL);
 
 session_start();
 ob_start();

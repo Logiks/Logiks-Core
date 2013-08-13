@@ -115,6 +115,11 @@ if(!function_exists("printHTMLPageHeader")) {
 		$headerHTML.="<!DOCTYPE ".getConfig('HEADER.DOCTYPE').">\n";
 		$headerHTML.="<html ".getConfig('HEADER.HTML_ATTRIBUTES').">\n";
 		$headerHTML.="<head ".getConfig('HEADER.HEAD_ATTRIBUTES').">\n";
+		
+		echo $headerHTML;
+		runHooks("preHead");
+		$headerHTML="";
+		
 		$headerHTML.="\t<title>$title</title>\n";
 		$headerHTML.="\t<meta http-equiv='content-type' content='text/html;charset=".getConfig('PAGE_ENCODING')."' />\n";
 
@@ -177,6 +182,7 @@ if(!function_exists("printHTMLPageHeader")) {
 			$headerHTML.=$meta['metatags'];
 		}
 		echo $headerHTML;
+		runHooks("afterHead");
 	}
 
 	function getMetaTags() {

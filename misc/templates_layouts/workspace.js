@@ -23,7 +23,7 @@ function resizeLayoutUI() {
 	$("#content").css("height",h1+"px");	
 	$("#content").css("width",(w1-0)+"px");
 	$("#sidebar-inner").css("height",(h1-3)+"px");
-	$("#dashboard").css("height",($("#content").height()-70)+"px");
+	$("#dashboard").css("height",($("#content").height()-50)+"px");
 	$(".ui-tabs-panel").css("height",$("#dashboard").height());
 }
 function loadBrowserCompatiblity() {

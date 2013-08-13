@@ -23,6 +23,7 @@ if(!$a) {
 
 if(!(isset($_GET['lgksHeader']) && $_GET['lgksHeader']=="false")) {
 	printHTMLPageHeader();
+	runHooks("postHeader");
 }
 
 $pageLinkPath=getPageToLoad();

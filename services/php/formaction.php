@@ -130,18 +130,19 @@ function saveToDB() {
 	if(isset($_REQUEST["on_error"])) $onFailure=$_REQUEST["on_error"]; else $onFailure="";
 
 	$sysDb=false;
-	$date=date(str_replace("yy","Y",getConfig("DATE_FORMAT")));
+	$fFormat=str_replace("yy","Y",getConfig("DATE_FORMAT"));
+	$date=date($fFormat);
 
 	$oriData=array();
 	$oriData["date"]=$date;
-	$oriData["time"]=date("H:i:s");
 	$oriData["doc"]=$date;
 	$oriData["doe"]=$date;
+	$oriData["time"]=date(getConfig("TIME_FORMAT"));
 	$oriData["toc"]=date(getConfig("TIME_FORMAT"));
-	$oriData["toe"]=date(getConfig("TIME_FORMAT"));//"H:m:s"
-	$oriData["tsoc"]=date(getConfig("TIMESTAMP_FORMAT"));
-	$oriData["tsoe"]=date(getConfig("TIMESTAMP_FORMAT"));
-	$oriData["last_modified"]=date("Y-m-d H:i:s");
+	$oriData["toe"]=date(getConfig("TIME_FORMAT"));
+	$oriData["tsoc"]=$oriData["dtoc"]=date($fFormat." ".getConfig("TIME_FORMAT"));
+	$oriData["tsoe"]=$oriData["dtoe"]=$oriData["dtoc"];
+	$oriData["last_modified"]=$oriData["dtoc"];
 
 	$usr=getUserInfo();
 	$oriData["username"]=$usr["SESS_USER_NAME"];

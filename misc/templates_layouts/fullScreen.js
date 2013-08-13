@@ -52,7 +52,7 @@ function resizeLayoutUI() {
 		$("#content").css("top",insetContent+"px");
 	}
 	if($("#dashboard").length>0) {
-		$("#dashboard").css("height",($("#content").height()-25)+"px");
+		$("#dashboard").css("height",($("#content").height()-5)+"px");
 		$(".ui-tabs-panel").css("height",$("#dashboard").height()-10);
 	}
 }

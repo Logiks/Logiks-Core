@@ -36,6 +36,7 @@ if($pwd == '') {
 
 $date=date('Y-m-d');
 
+//$q1="SELECT id, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where (userid='$userid' OR email='$userid') AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
 $q1="SELECT id, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where userid='$userid' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
 $result=$dbLink->executeQuery($q1);
 if($result) {

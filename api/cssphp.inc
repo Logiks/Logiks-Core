@@ -104,25 +104,31 @@ class CssPHP extends DataEmbedder {
 	public function loadCSS($css,$themeName="*",$browser="",$media="") {
 		$paths=array();
 
-		if(defined('BASEPATH')) array_push($paths,BASEPATH."css/$css.css");
-
-		if($themeName=="*") {
-			if(!in_array($this->theme.$css . ".css",$paths)) array_push($paths, $this->theme.$css . ".css");
-			if(!in_array(THEME_FOLDER.DEFAULT_THEME."/". $css . ".css",$paths)) array_push($paths,THEME_FOLDER.DEFAULT_THEME."/". $css . ".css" );//Failsafe
-			if(!in_array(SKINS_FOLDER."default/". $css . ".css",$paths)) array_push($paths, SKINS_FOLDER."default/".$css . ".css");//Failsafe For Other Themes Skins
-			if(!in_array(SKINS_FOLDER. $css . ".css",$paths)) array_push($paths, SKINS_FOLDER.$css . ".css");//Failsafe For Skins
-		} else {
-			if(!in_array(THEME_FOLDER.$themeName . "/" . $css . ".css",$paths)) array_push($paths, THEME_FOLDER.$themeName . "/" . $css . ".css");
-			if(!in_array($this->theme.$css . ".css",$paths)) array_push($paths, $this->theme.$css . ".css");
-			if(!in_array(THEME_FOLDER.DEFAULT_THEME."/". $css . ".css",$paths)) array_push($paths, THEME_FOLDER.DEFAULT_THEME."/". $css . ".css");//Failsafe
-			if(!in_array(SKINS_FOLDER."default/". $css . ".css",$paths)) array_push($paths, SKINS_FOLDER."default/".$css . ".css");//Failsafe For Other Themes Skins
-			if(!in_array(SKINS_FOLDER. $css . ".css",$paths)) array_push($paths, SKINS_FOLDER.$css . ".css");//Failsafe For Skins
+		if(defined('BASEPATH')) {
+			array_push($paths,BASEPATH."css/$css");
+			array_push($paths,BASEPATH."plugins/modules/$css/style");
 		}
-
+		array_push($paths,"plugins/modules/$css/style");
+		if($themeName=="*") {
+			if(!in_array($this->theme.$css,$paths)) array_push($paths, $this->theme.$css);
+			if(!in_array(THEME_FOLDER.DEFAULT_THEME."/". $css,$paths)) array_push($paths,THEME_FOLDER.DEFAULT_THEME."/". $css);//Failsafe
+			if(!in_array(SKINS_FOLDER."default/". $css,$paths)) array_push($paths, SKINS_FOLDER."default/".$css);//Failsafe For Other Themes Skins
+			if(!in_array(SKINS_FOLDER. $css,$paths)) array_push($paths, SKINS_FOLDER.$css);//Failsafe For Skins
+		} else {
+			if(!in_array(THEME_FOLDER.$themeName . "/" . $css,$paths)) array_push($paths, THEME_FOLDER.$themeName . "/" . $css);
+			if(!in_array($this->theme.$css,$paths)) array_push($paths, $this->theme.$css);
+			if(!in_array(THEME_FOLDER.DEFAULT_THEME."/". $css,$paths)) array_push($paths, THEME_FOLDER.DEFAULT_THEME."/". $css);//Failsafe
+			if(!in_array(SKINS_FOLDER."default/". $css,$paths)) array_push($paths, SKINS_FOLDER."default/".$css);//Failsafe For Other Themes Skins
+			if(!in_array(SKINS_FOLDER. $css,$paths)) array_push($paths, SKINS_FOLDER.$css);//Failsafe For Skins
+		}
+		//printArray($paths);
 		$themePath="";
 		foreach($paths as $p) {
-			if(file_exists(ROOT . $p)) {
-				$themePath=$p;
+			if(file_exists(ROOT . $p . ".css")) {
+				$themePath=$p . ".css";
+				break;
+			} elseif(file_exists(ROOT . $p . ".less")) {
+				$themePath=$p . ".less";
 				break;
 			}
 		}
@@ -131,7 +137,7 @@ class CssPHP extends DataEmbedder {
 	}
 
 	private function loadCSSFromPath($css,$themePath,$browser="",$media="") {
-		//echo $themePath . "\n";
+		//println($themePath);
 		//Failsafe
 		if(strlen($themePath)<=0) {
 			if(file_exists(ROOT.THEME_FOLDER."default/".$css.".css")) {
@@ -253,10 +259,9 @@ class CssPHP extends DataEmbedder {
 	}
 
 	protected function getCSSPath($a) {
-		$file=$a;
-		if(!file_exists(ROOT.$file)) {
-			$t=explode(DIRECTORY_SEPARATOR,$a);
-			$file=$this->defaulTheme.$t[sizeof($t)-1];
+		if(!file_exists(ROOT.$a)) {
+			$t=end(explode(DIRECTORY_SEPARATOR,$a));
+			$a=$this->defaulTheme.$t;
 		}
 		return $a;
 	}
@@ -264,19 +269,26 @@ class CssPHP extends DataEmbedder {
 	protected function getCSSWebPath($a,$params) {
 		$a=$this->getCSSPath($a);
 		if(getConfig("CSS_CACHEBUSTER")=="true") $a.="?".rand();
-		return SiteLocation.$a;
+		$ext=strtolower(end(explode(".",$a)));
+
+		$fp="";
+		if($ext=="css") {
+			$fp=SiteLocation.$a;
+		} else {
+			$fp=_service("resources","load","css")."&src=".base64_encode($a);
+		}
+		if(function_exists('getCDNNetwork')) $fp=getCDNNetwork($fp);
+		return $fp;
 	}
 
 	protected function getCSSContents($a,$params) {
 		$file=$this->getCSSPath($a);
 		if(!file_exists(ROOT.$file)) return "";
+		
 		$cssData=file_get_contents(ROOT.$file);
 		$cssData=$this->parseCSS($cssData,$file);
 
-		if(strtolower($this->typeOfDispatch)=="compressed") {
-			$cssData=$this->compress($cssData);
-		}
-		//Uncompressed
+		//$cssData=$this->compress($cssData);
 
 		return $cssData;
 	}
@@ -291,25 +303,27 @@ class CssPHP extends DataEmbedder {
 	}
 
 	protected function parseCSS($cssData,$cssFile) {
-		$p="";
-		if($this->prependURL) $p=SiteLocation;
-		$p.=dirname($cssFile) . "/";
-		//$p.=$this->theme;
+		$p=getWebpath($cssFile);
+		//$p=substr($p,0,strlen($p)-1);
 
-		$cssData=str_replace("url( ","url($p",$cssData);
-		$cssData=str_replace("url(","url($p",$cssData);
+		if(function_exists('getCDNNetwork')) $p=getCDNNetwork($p);
+		$search = '#url\((?!\s*[\'"]?(?:https?:)?//)\s*([\'"])?#';
+		$replace = "url($1{$p}";
+		$cssData = preg_replace($search, $replace, $cssData);
 
-		//TODO :: lesscss integration
-		$lessData=$this->getLessData();
-		if(strlen($lessData)>0) {
+		$ext=strtolower(end(explode(".",$cssFile)));
+		if($ext=="less") {
+			$lessData=$this->getLessData();
+			$cssData=str_replace("/*CONFIG*/",$lessData,$cssData);
 			$less = new lessc();
-			$cssData=$less->parse($lessData.$cssData);
+			$cssData=$less->parse($cssData);
 		}
 		return $cssData;
 	}
 
 	protected function getLessData() {
 		if($this->lessData==null) {
+			$this->lessData="";
 			$f="";
 			if(defined("APPROOT")) {
 				if(file_exists(APPROOT."config/theme.less")) {
@@ -328,11 +342,7 @@ class CssPHP extends DataEmbedder {
 			if(strlen($f)>0 && is_readable($f)) {
 				if(file_exists($f)) {
 					$this->lessData=file_get_contents($f);
-				} else {
-					$this->lessData="";
 				}
-			} else {
-				$this->lessData="";
 			}
 		}
 		if(isset($_ENV['THEME_LESS_DATA'])) $this->lessData.=$_ENV['THEME_LESS_DATA'];
