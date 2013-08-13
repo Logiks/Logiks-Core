@@ -182,7 +182,7 @@ if(!function_exists("printHTMLPageHeader")) {
 			$headerHTML.=$meta['metatags'];
 		}
 		echo $headerHTML;
-		runHooks("afterHead");
+		runHooks("postHeader");
 	}
 
 	function getMetaTags() {
