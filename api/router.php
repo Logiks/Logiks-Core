@@ -29,24 +29,26 @@ if(file_exists(APPROOT)) {
 	}
 
 	loadConfigDir(APPROOT."config/");
+	if(!defined("APPS_CONFIG_FOLDER")) {
+		foreach($_ENV as $x=>$y) {
+			if(!defined($x) && substr($x,0,4)=="APPS" && substr($x,strlen($x)-6)=="FOLDER") {
+				define($x,$y);
+			}
+		}
+	}
 
 	if(defined("LINGUALIZER_DICTIONARIES")) $ling->loadLocaleFile(LINGUALIZER_DICTIONARIES);
 
 	checkSiteMode($site);
 
 	//Constuct Current Page
+	if(!isset($_REQUEST['page']) || strlen($_REQUEST['page'])<=0) {
+		$_REQUEST['page']=getConfig("LANDING_PAGE");
+	}
 	if(isset($params["PAGE"]) && strlen($params["PAGE"])>0) {
 		$current_page=$params["PAGE"];
 	} else {
-		$current_page="home";
-	}
-	if(isset($_REQUEST["sos"])) {
-		$a=true;
-		if(defined("ALLOW_DEFAULT_SYSTEM_PAGES")) $a=(ALLOW_DEFAULT_SYSTEM_PAGES=="true")?true:false;
-		if($a && file_exists(ROOT.PAGES_FOLDER."sos/".$current_page.".php")) {
-			include ROOT.PAGES_FOLDER."sos/".$current_page.".php";
-			exit();
-		}
+		$current_page=getConfig("LANDING_PAGE");
 	}
 	if(defined("ACCESS") && strtolower(ACCESS)=="private") {
 		$check=session_check(false);

@@ -16,7 +16,7 @@ else $icon=SiteLocation."misc/themes/default/images/ajax/loading.gif";
 </head>
 <body>
 <div style='color:#888;font:bold 15px Georgia;'><?=$msg?></div>
-<div style='width:300px' align=center><img src='<?=$icon?>' alt=''></div>
+<div style='width:300px' align=center><img src='<?=$icon?>' alt='Loading ...'></div>
 </body>
 </html>
 

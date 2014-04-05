@@ -4,15 +4,19 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 //Password Related Functionalities
 if(!function_exists("getPWDHash")) {
 	function getPWDHash($pwd) {
-		if(!defined("PWD_HASH_TYPE")) define("PWD_HASH_TYPE","pwdhash");
-		if(PWD_HASH_TYPE=="md5") return md5($pwd);
-		elseif(PWD_HASH_TYPE=="sha1") return sha1($pwd);
+		if(strlen(getConfig("PWD_HASH_TYPE"))<=0 || !getConfig("PWD_HASH_TYPE")) {
+			setConfig("PWD_HASH_TYPE","pwdhash");
+		}
+		if(getConfig("PWD_HASH_TYPE")=="md5") return md5($pwd);
+		elseif(getConfig("PWD_HASH_TYPE")=="sha1") return sha1($pwd);
 		else return PwdHash::hash($pwd);
 	}
 	function matchPWD($hash, $pwd) {
-		if(!defined("PWD_HASH_TYPE")) define("PWD_HASH_TYPE","pwdhash");
-		if(PWD_HASH_TYPE=="md5") return ($hash==md5($pwd));
-		elseif(PWD_HASH_TYPE=="sha1") return ($hash==sha1($pwd));
+		if(strlen(getConfig("PWD_HASH_TYPE"))<=0 || !getConfig("PWD_HASH_TYPE")) {
+			setConfig("PWD_HASH_TYPE","pwdhash");
+		}
+		if(getConfig("PWD_HASH_TYPE")=="md5") return ($hash==md5($pwd));
+		elseif(getConfig("PWD_HASH_TYPE")=="sha1") return ($hash==sha1($pwd));
 		else return PwdHash::check_password($hash, $pwd);
 	}
 }

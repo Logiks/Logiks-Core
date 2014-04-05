@@ -17,7 +17,7 @@ unset($_SESSION["USER_DETAILS_SITE"]);
 unset($_SESSION["USER_DETAILS_USERID"]);
 unset($_SESSION["USER_DETAILS_ID"]);
 
-include ROOT."config/countries.php";
+include_once ROOT.API_FOLDER."helpers/countries.php";
 
 $frmHash=_randomid("USER_DETAILS_");
 $_SESSION[$frmHash]=$mode;

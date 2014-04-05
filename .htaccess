@@ -38,7 +38,7 @@ DirectoryIndex index.php index.html index.htm
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 
-	RewriteBase /devlogiks/
+	RewriteBase /devlogiks36/
 
 	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
@@ -76,11 +76,11 @@ DirectoryIndex index.php index.html index.htm
 </IfModule>
 
 #Error Files
-ErrorDocument 400 /devlogiks/error.php?code=400
-ErrorDocument 401 /devlogiks/error.php?code=401
-ErrorDocument 403 /devlogiks/error.php?code=403
-ErrorDocument 404 /devlogiks/error.php?code=404
-ErrorDocument 500 /devlogiks/error.php?code=500
+ErrorDocument 400 /devlogiks36/error.php?code=400
+ErrorDocument 401 /devlogiks36/error.php?code=401
+ErrorDocument 403 /devlogiks36/error.php?code=403
+ErrorDocument 404 /devlogiks36/error.php?code=404
+ErrorDocument 500 /devlogiks36/error.php?code=500
 
 # Force simple error message for requests for non-existent favicon.ico.
 <Files favicon.ico>

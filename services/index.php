@@ -90,7 +90,7 @@ include_once "ServiceController.inc";
 if(!isset($_REQUEST['scmd'])) {
 	$_REQUEST['scmd']="";
 	if(!isset($_REQUEST['site'])) $_REQUEST['site']=$GLOBALS["CURRENT_SITE"];
-	printErr("MethodNotAllowed","Access to the Requested Command Failed Due To Security Reasons.");
+	printErr("AccessDenial","Access to the Requested Command Failed Due To Security Reasons.");
 	exit();
 }
 
@@ -123,11 +123,9 @@ $secure->cleanSecurityConfigs();
 
 loadAppConfigs();
 
-$serviceCtrlDb=getServiceCtrlConfig();
-
-$request=$secure->checkSecurity($request,$serviceCtrlDb);
+$request=$secure->checkSecurity($request);
 if(count($request)==0) {
-	printErr('MethodNotAllowed',"Requested Command Method Is No Enabled/Found In Service Engine.");
+	printErr('MethodNotAllowed',"Requested Command/Method Is Not Enabled/Found In Service Engine.");
 	exit();
 }
 //loadHelpers("urlkit");

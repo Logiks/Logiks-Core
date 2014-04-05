@@ -1,3 +1,8 @@
+--
+-- MySQL 5.5.29
+-- Sun, 30 Mar 2014 16:00:37 +0000
+--
+
 CREATE TABLE `lgks_log_activity` (
    `id` int(10) unsigned not null auto_increment,
    `date` date not null,
@@ -13,7 +18,7 @@ CREATE TABLE `lgks_log_activity` (
    `user_agent` varchar(255),
    `device` varchar(50),
    PRIMARY KEY (`id`)
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_log_error` (
@@ -31,7 +36,7 @@ CREATE TABLE `lgks_log_error` (
    `user_agent` varchar(255),
    `device` varchar(50),
    PRIMARY KEY (`id`)
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_log_login` (
@@ -48,7 +53,7 @@ CREATE TABLE `lgks_log_login` (
    `msg` varchar(255),
    `device` varchar(50),
    PRIMARY KEY (`id`)
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_log_pcron` (
@@ -61,7 +66,7 @@ CREATE TABLE `lgks_log_pcron` (
    `task_md5_hash` varchar(40) not null,
    `run_only_once` varchar(10) not null,
    PRIMARY KEY (`id`)
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_log_requests` (
@@ -77,7 +82,7 @@ CREATE TABLE `lgks_log_requests` (
    `user_agent` varchar(255),
    `device` varchar(50),
    PRIMARY KEY (`id`)
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_log_search` (
@@ -94,7 +99,7 @@ CREATE TABLE `lgks_log_search` (
    `user_agent` varchar(255),
    `device` varchar(50),
    PRIMARY KEY (`id`)
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_log_sessions` (
@@ -109,7 +114,7 @@ CREATE TABLE `lgks_log_sessions` (
    `perpectual` varchar(5) default 'true',
    `device` varchar(50),
    PRIMARY KEY (`sessionid`)
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `lgks_log_sql` (
@@ -126,7 +131,7 @@ CREATE TABLE `lgks_log_sql` (
    `site` varchar(255),
    `client` varchar(55),
    PRIMARY KEY (`id`)
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_log_system` (
@@ -144,7 +149,7 @@ CREATE TABLE `lgks_log_system` (
    `user_agent` varchar(255),
    `device` varchar(50),
    PRIMARY KEY (`id`)
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_log_visitor` (
@@ -160,4 +165,4 @@ CREATE TABLE `lgks_log_visitor` (
    `user_agent` varchar(255),
    `device` varchar(50),
    PRIMARY KEY (`id`)
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;

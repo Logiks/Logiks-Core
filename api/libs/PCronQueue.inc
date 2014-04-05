@@ -37,7 +37,7 @@ class PCronQueue {
 		}
     }
     public function runTaskById($taskId,$autoEcho=false) {
-		$tbl=_dbTable("cron_jobs",true);
+		$tbl=_dbtable("cron_jobs",true);
 		$sql = "SELECT id,title,scriptpath,script_params,method,schdulle,last_completed,run_only_once,task_md5_hash FROM ";
 		$sql.="$tbl WHERE id=$taskId";
 		$r=_dbQuery($sql,true);
@@ -52,7 +52,7 @@ class PCronQueue {
 		return $this->run($autoEcho);
 	}
 	private function checkTasks() {
-		$tbl=_dbTable("cron_jobs",true);
+		$tbl=_dbtable("cron_jobs",true);
 		$sql = "SELECT id,title,scriptpath,script_params,method,schdulle,last_completed,run_only_once,task_md5_hash FROM ";
 		$sql.="$tbl WHERE now()-last_completed>schdulle and retired='false' and blocked='false'";
 		$r=_dbQuery($sql,true);
@@ -137,8 +137,8 @@ class PCronQueue {
     }
     private function mark_complete($task) {
 		$task_id=$task["id"];
-		$tbl1=_dbTable("cron_jobs",true);
-		$tbl2=_dbTable("log_pcron",true);
+		$tbl1=_dbtable("cron_jobs",true);
+		$tbl2=_dbtable("log_pcron",true);
 		if($task["run_only_once"]=="true") {
 			$sql1 = "UPDATE $tbl1 SET last_completed = NOW(), retired='true' WHERE id = $task_id";
 		} else {
@@ -156,7 +156,7 @@ class PCronQueue {
     }
     
     public static function get_tasks() {
-		$tbl=_dbTable("cron_jobs",true);
+		$tbl=_dbtable("cron_jobs",true);
         $sql = "SELECT * FROM $tbl WHERE now()-last_completed>schdulle and retired='false' and blocked='false'";
         $r=_dbQuery($sql,true);
         $out = array();
@@ -170,7 +170,7 @@ class PCronQueue {
     }
     
      public static function get_all_tasks() {
-		$tbl=_dbTable("cron_jobs",true);
+		$tbl=_dbtable("cron_jobs",true);
         $sql = "SELECT * FROM $tbl order by site,id";
         $r=_dbQuery($sql,true);
         $out = array();
@@ -187,7 +187,7 @@ class PCronQueue {
 		/*if(PCronQueue::taskExists($script,$params)) {
 			return "Task Exists";
 		}*/
-		$tbl=_dbTable("cron_jobs",true);
+		$tbl=_dbtable("cron_jobs",true);
         $serialized_params = serialize($params);
         $date=date("Y-m-d");
         $user="guest";
@@ -209,7 +209,7 @@ class PCronQueue {
 	}
 	
 	public static function taskExists($run_script, Array $params) {
-        $tbl=_dbTable("cron_jobs",true);
+        $tbl=_dbtable("cron_jobs",true);
         $serialized_params = serialize($params);
         
         $sql = "SELECT count(*) FROM $tbl WHERE task_md5_hash ='".md5($run_script.$serialized_params)."';";

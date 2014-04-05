@@ -103,7 +103,7 @@ if(!function_exists("getEncodings")) {
 }
 if(!function_exists("getCountries")) {
 	function getCountries() {
-		include_once ROOT."config/countries.php";
+		include_once ROOT.API_FOLDER."helpers/countries.php";
 		$arr=getCountryList();
 		foreach($arr as $a=>$b) {
 			unset($arr[$a]);
@@ -114,7 +114,7 @@ if(!function_exists("getCountries")) {
 }
 if(!function_exists("getLocales")) {
 	function getLocales() {
-		include_once ROOT."config/countries.php";
+		include_once ROOT.API_FOLDER."helpers/countries.php";
 		$arr=array();
 		$o=getLocaleList();
 		foreach($o as $a=>$b) {

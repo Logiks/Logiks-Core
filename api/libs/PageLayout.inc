@@ -12,6 +12,11 @@ class PageLayout {
 	private $layout="";
 	private $layoutDir="";
 
+	private $html5Containers=array(
+			"article","aside","canvas",
+			"footer","header","mark","nav","section",
+		);
+
 	public function __construct() {
 		if(defined("APPS_TEMPLATE_LAYOUT_FOLDER")) {
 			if(!in_array(BASEPATH . APPS_TEMPLATE_LAYOUT_FOLDER,$this->layoutTemplateDir) && file_exists(ROOT.BASEPATH . APPS_TEMPLATE_LAYOUT_FOLDER)) {
@@ -64,7 +69,11 @@ class PageLayout {
 						include $ft;
 						$s=ob_get_contents();
 						ob_clean();
-						$params[$pkey]="<div id='{$pkey}'>{$s}</div>";
+						if(in_array($pkey, $this->html5Containers)) {
+							$params[$pkey]="<$pkey id='{$pkey}'>{$s}</$pkey>";
+						} else {
+							$params[$pkey]="<div id='{$pkey}'>{$s}</div>";
+						}
 					} else {
 						$params[$pkey]="";
 					}
@@ -75,7 +84,11 @@ class PageLayout {
 					} else {
 						$s=_template($params[$pkey]);
 					}
-					$params[$pkey]="<div id='{$pkey}'>{$s}</div>";
+					if(in_array($key, $this->html5Containers)) {
+						$params[$pkey]="<$pkey id='{$pkey}'>{$s}</$pkey>";
+					} else {
+						$params[$pkey]="<div id='{$pkey}'>{$s}</div>";
+					}
 				} else {
 					$params[$pkey]="";
 				}

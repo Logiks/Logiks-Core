@@ -72,16 +72,24 @@ function printLoading($msg="Loading ...") {
 }
 function getErrorMsg($err) {
 	global $services_error_codes,$error_codes;
+	$errArr=array(
+			"msg"=>"",
+			"code"=>"400"
+		);
 	if(array_key_exists($err,$services_error_codes)) {
-		return $services_error_codes[$err];
+		$errArr['msg']=$services_error_codes[$err][0];
+		if(isset($services_error_codes[$err][1])) {
+			$errArr['code']=$services_error_codes[$err][1];
+		}
 	} elseif(array_key_exists($err,$error_codes)) {
-		$errArr=$error_codes[$err];
-		/*if(strlen($errArr[1])>0) return $errArr[1];
-		else return $errArr[0];*/
-		return $err."::".$errArr[0]."<br/><h4 style='color:#338833;font:15px Arial;'>$errArr[1]</h4>";
+		$errx=$error_codes[$err];
+		$errArr['msg']=$err."::".$errx[0]."<br/><h4 style='color:#338833;font:15px Arial;'>$errx[1]</h4>";
+		$errArr['code']=$err;
 	} else {
-		return $services_error_codes["*"];
+		$errArr['msg']=$services_error_codes["*"];
+		$errArr['code']="500";
 	}
+	return $errArr;
 }
 function passErrorMsg($msg) {
 	echo "<script language='javascript' type='text/javascript'>self.parent.showError('#$msg');</script><h3>$msg</h3>";

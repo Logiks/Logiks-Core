@@ -269,7 +269,9 @@ class CssPHP extends DataEmbedder {
 	protected function getCSSWebPath($a,$params) {
 		$a=$this->getCSSPath($a);
 		if(getConfig("CSS_CACHEBUSTER")=="true") $a.="?".rand();
-		$ext=strtolower(end(explode(".",$a)));
+		$ext=explode(".",$a);
+		$ext=end($ext);
+		$ext=strtolower($ext);
 
 		$fp="";
 		if($ext=="css") {

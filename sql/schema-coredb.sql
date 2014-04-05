@@ -1,3 +1,8 @@
+--
+-- MySQL 5.5.29
+-- Sun, 30 Mar 2014 16:02:14 +0000
+--
+
 CREATE TABLE `lgks_access` (
    `id` int(10) unsigned not null auto_increment,
    `master` varchar(255),
@@ -6,7 +11,7 @@ CREATE TABLE `lgks_access` (
    `doc` date,
    `doe` date,
    PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_admin_links` (
@@ -32,7 +37,8 @@ CREATE TABLE `lgks_admin_links` (
    `doc` date,
    `doe` date,
    PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
 
 CREATE TABLE `lgks_config_sites` (
    `id` int(10) unsigned not null auto_increment,
@@ -47,7 +53,7 @@ CREATE TABLE `lgks_config_sites` (
    `doc` date,
    `doe` date,
    PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_config_users` (
@@ -64,7 +70,7 @@ CREATE TABLE `lgks_config_users` (
    `doc` date,
    `doe` date,
    PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_cron_jobs` (
@@ -84,7 +90,7 @@ CREATE TABLE `lgks_cron_jobs` (
    `retired` enum('true','false') default 'false',
    `blocked` enum('true','false') default 'false',
    PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_privileges` (
@@ -97,7 +103,20 @@ CREATE TABLE `lgks_privileges` (
    `doc` date,
    `doe` date,
    PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+
+CREATE TABLE `lgks_sys_redirects` (
+   `id` int(11) unsigned not null auto_increment,
+   `link_from` varchar(255) not null,
+   `link_to` varchar(255) not null,
+   `redirect_type` varchar(55) not null,
+   `redirect_msg` varchar(355) not null,
+   `blocked` enum('false','true') not null,
+   `dtoc` datetime not null,
+   `dtoe` datetime not null,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_rolemodel` (
@@ -113,7 +132,7 @@ CREATE TABLE `lgks_rolemodel` (
    `doc` date,
    `doe` date,
    PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_server_msgs` (
@@ -129,7 +148,7 @@ CREATE TABLE `lgks_server_msgs` (
    `obsolate` enum('true','false') default 'false',
    `tsoc` datetime,
    PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_sys_iplist` (
@@ -142,7 +161,7 @@ CREATE TABLE `lgks_sys_iplist` (
    `doc` date,
    `doe` date,
    PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_users` (
@@ -154,25 +173,27 @@ CREATE TABLE `lgks_users` (
    `access` int(11) not null default '1',
    `name` varchar(255) not null,
    `dob` date,
-   `email` varchar(255),
+   `gender` enum('male','female') default 'male',
+   `email` varchar(200),
+   `mobile` varchar(20),
    `address` varchar(255),
    `region` varchar(255),
    `country` varchar(150),
    `zipcode` varchar(15),
-   `mobile` varchar(30),
+   `geolocation` varchar(15),
+   `geoip` varchar(15),
    `blocked` enum('true','false') default 'false',
    `expires` date,
-   `remarks` varchar(30),
-   `notes` varchar(30),
-   `vcode` varchar(30),
+   `remarks` varchar(250),
+   `vcode` varchar(65),
+   `mauth` varchar(65),
    `refid` varchar(30),
    `privacy` enum('private','public','protected') default 'protected',
    `avatar` varchar(200),
-   `avatar_type` varchar(15) not null default 'auto',
-   `q1` varchar(255),
-   `a1` varchar(255),
+   `avatar_type` varchar(15) not null default 'photoid',
+   `last_login` datetime,
    `doc` date,
    `doe` date,
    PRIMARY KEY (`id`),
    UNIQUE KEY (`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;

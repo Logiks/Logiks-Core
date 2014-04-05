@@ -66,8 +66,8 @@ class JsPHP extends DataEmbedder {
 			array_push($paths, $a[0]. "/" . $jslib);
 			array_push($paths, $a[0]. "/" . str_replace($a[0].".","",$jslib));
 		}
-		foreach($paths as $p) {
-			if(defined("APPROOT")) {
+		if(defined("APPROOT")) {
+			foreach($paths as $p) {
 				if(file_exists(APPROOT."js/{$p}.js")) {
 					$jsp="js/". $p;
 					$JSLINK=WEBAPPROOT . $jsp . ".js";
@@ -88,31 +88,57 @@ class JsPHP extends DataEmbedder {
 					$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
 
 					return $data;
+				} elseif(file_exists(ROOT."plugins/modules/{$p}/script.js")) {
+					$jsp="plugins/modules/{$p}/script";
+					$JSLINK=WEBROOT . $jsp . ".js";
+					$JSFILE=ROOT . $jsp . ".js";
+					$JSCACHE=ROOT . CACHE_FOLDER . md5($JSFILE) . ".js";
+					$JSCACHELINK=SiteLocation . CACHE_FOLDER . md5($JSFILE) . ".js";
+
+					$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
+
+					return $data;
+				} elseif(file_exists($JS_PATH . "{$p}.js")) {
+					$jsp=$p;
+					if(strlen($jsp)<=0) {
+						$jsp=$jslib . $vers;
+					}
+					$JSLINK=$JS_LINK . $jsp . ".js";
+					$JSFILE=$JS_PATH . $jsp . ".js";
+					$JSCACHE=ROOT . CACHE_FOLDER . md5($JSFILE) . ".js";
+					$JSCACHELINK=SiteLocation . CACHE_FOLDER . md5($JSFILE) . ".js";
+
+					$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
+
+					return $data;
 				}
 			}
-			if(file_exists(ROOT."plugins/modules/{$p}/script.js")) {
-				$jsp="plugins/modules/{$p}/script";
-				$JSLINK=WEBROOT . $jsp . ".js";
-				$JSFILE=ROOT . $jsp . ".js";
-				$JSCACHE=ROOT . CACHE_FOLDER . md5($JSFILE) . ".js";
-				$JSCACHELINK=SiteLocation . CACHE_FOLDER . md5($JSFILE) . ".js";
+		} else {
+			foreach($paths as $p) {
+				if(file_exists(ROOT."plugins/modules/{$p}/script.js")) {
+					$jsp="plugins/modules/{$p}/script";
+					$JSLINK=WEBROOT . $jsp . ".js";
+					$JSFILE=ROOT . $jsp . ".js";
+					$JSCACHE=ROOT . CACHE_FOLDER . md5($JSFILE) . ".js";
+					$JSCACHELINK=SiteLocation . CACHE_FOLDER . md5($JSFILE) . ".js";
 
-				$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
+					$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
 
-				return $data;
-			} elseif(file_exists($JS_PATH . "{$p}.js")) {
-				$jsp=$p;
-				if(strlen($jsp)<=0) {
-					$jsp=$jslib . $vers;
+					return $data;
+				} elseif(file_exists($JS_PATH . "{$p}.js")) {
+					$jsp=$p;
+					if(strlen($jsp)<=0) {
+						$jsp=$jslib . $vers;
+					}
+					$JSLINK=$JS_LINK . $jsp . ".js";
+					$JSFILE=$JS_PATH . $jsp . ".js";
+					$JSCACHE=ROOT . CACHE_FOLDER . md5($JSFILE) . ".js";
+					$JSCACHELINK=SiteLocation . CACHE_FOLDER . md5($JSFILE) . ".js";
+
+					$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
+
+					return $data;
 				}
-				$JSLINK=$JS_LINK . $jsp . ".js";
-				$JSFILE=$JS_PATH . $jsp . ".js";
-				$JSCACHE=ROOT . CACHE_FOLDER . md5($JSFILE) . ".js";
-				$JSCACHELINK=SiteLocation . CACHE_FOLDER . md5($JSFILE) . ".js";
-
-				$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
-
-				return $data;
 			}
 		}
 	}

@@ -1,4 +1,6 @@
 <?php
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 $ERROR_ICON_LOCATION="media/images/errors/";
 
 $error_pages=array(
@@ -46,25 +48,25 @@ $error_codes=array(
 			"505"=>array("HTTP Version not supported",""),
 		);
 $services_error_codes=array (
-		"WrongFormat"=>"Illegal Service Command Format ...",
-		"NotFound"=>"Service Not Found !",
-		"TypeNotFound"=>"Service Type Not Found !",
-		"DataNotFound"=>"Data Not Found !",
-		"FileNotFound"=>"File/Page Not Found !",
-		"NotSupported"=>"Format Not Supported !",
-		"TypeNotSupported"=>"Type Not Supported !",
-		"AccessDenial"=>"Access is forbidden !",
-		"MethodNotAllowed"=>"Method Not Allowed !",
-		"NotAcceptable"=>"Not Acceptable !",
-		"PreconditionFailed"=>"Precondition Failed !",
-		"ServerError"=>"Server Error !",
-		"SourceError"=>"Error At Source Or Parsing Script !",
-		"NotImplemented"=>"Not Implemented !",
-		"Blacklisted"=>"You have been blacklisted by Server.",
-		"404"=>"Sorry, Requested URI Not Available",
-		"CrossSite"=>"CrossSite Request With Out Key Not Allowed",
-		"*"=>"Unknown Error",
-		"Bug"=>"OOOOPs!, Hit A Bug ?",
+		"WrongFormat"=>array("Illegal Service Command Format ..."),
+		"NotFound"=>array("Service Not Found !"),
+		"TypeNotFound"=>array("Service Type Not Found !"),
+		"DataNotFound"=>array("Data Not Found !"),
+		"FileNotFound"=>array("File/Page Not Found !"),
+		"NotSupported"=>array("Format Not Supported !"),
+		"TypeNotSupported"=>array("Type Not Supported !"),
+		"AccessDenial"=>array("Access is forbidden !"),
+		"MethodNotAllowed"=>array("Method Not Allowed !",405),
+		"NotAcceptable"=>array("Not Acceptable !"),
+		"PreconditionFailed"=>array("Precondition Failed !"),
+		"ServerError"=>array("Server Error !"),
+		"SourceError"=>array("Error At Source Or Parsing Script !"),
+		"NotImplemented"=>array("Not Implemented !"),
+		"Blacklisted"=>array("You have been blacklisted by Server."),
+		"404"=>array("Sorry, Requested URI Not Available",404),
+		"CrossSite"=>array("CrossSite Request With Out Key Not Allowed"),
+		"*"=>array("Unknown Error"),
+		"Bug"=>array("OOOOPs!, Hit A Bug ?"),
 	);
 function phpErrorLevelNames($errLevel) {
     switch($errLevel) {

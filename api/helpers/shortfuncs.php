@@ -138,7 +138,7 @@ if(!function_exists("_cache")) {
 if(!function_exists("_template")) {
 	//$file=group.file_name;
 	function _template($file,$dataArr=null,$sqlData=null,$editable=true) {
-		$file=str_replace(".","/",$file);
+		//$file=str_replace(".","/",$file);
 		if(strtolower(strstr($file,"."))!=".tpl") {
 			$file.=".tpl";
 		}
@@ -304,7 +304,7 @@ if(!function_exists("_url")) {
 		elseif($_SERVER["SERVER_PROTOCOL"]=="HTTP/1.1")	$url="http://$url";
 		if(strpos($url,"?")>2) {
 			$url.=$params;
-		} else {
+		} elseif(strlen($params)>0) {
 			$url.="?$params";
 		}
 		return $url;
@@ -428,13 +428,32 @@ if(!function_exists("_date")) {
 		if($date==null || strlen($date)<=0) return "";
 		if($inFormat=="*" || $inFormat=="")  $inFormat=getConfig("DATE_FORMAT");
 
-		$dArr=array("d"=>"","m"=>"","Y"=>"");
+		$dArr=array("d"=>"","m"=>"","Y"=>"","y"=>"","n"=>"","M"=>"","F"=>"");
 
 		$outFormat=str_replace("yy","Y",$outFormat);
 
 		$inFormat=str_replace("yy","Y",$inFormat);
 		$inFormat=str_replace("-","/",$inFormat);
 		$inFormat=str_replace(DATE_SEPARATOR,"/",$inFormat);
+
+		$months=array(
+				1=>"Jan",2=>"Feb",3=>"Mar",4=>"Apr",
+				5=>"May",6=>"Jun",7=>"Jul",8=>"Aug",
+				9=>"Sept",10=>"Oct",11=>"Nov",12=>"Dec",
+			);
+		$monthsFull=array(
+				1=>"January",2=>"February",3=>"March",4=>"April",
+				5=>"May",6=>"June",7=>"July",8=>"August",
+				9=>"September",10=>"October",11=>"November",12=>"December",
+			);
+		$days=array(
+				1=>"Mon",2=>"Teu",3=>"Wed",4=>"Thu",
+				5=>"Fri",6=>"Sat",7=>"Sun"
+			);
+		$daysFull=array(
+				1=>"Monday",2=>"Teusday",3=>"Wednesday",4=>"Thursday",
+				5=>"Friday",6=>"Saturday",7=>"Sunday"
+			);
 
 		if($inFormat==$outFormat) return $date;
 		if($inFormat=="d/m/Y") {
@@ -458,15 +477,19 @@ if(!function_exists("_date")) {
 			$dArr["m"]=$regs[3];
 			$dArr["Y"]=$regs[1];
 		}
-		$a=explode("/",$outFormat);
-		$d1="";
-		foreach($a as $q=>$w) {
-			$d1.=$dArr[$w].DATE_SEPARATOR;
+
+		$dArr["n"]=intval($dArr["m"]);
+		$dArr["j"]=intval($dArr["d"]);
+		//$dArr["D"]=$days[floor($dArr["j"]%7)];
+		$dArr["M"]=$months[$dArr["n"]];
+		$dArr["F"]=$monthsFull[$dArr["n"]];
+		$dArr["y"]=substr($dArr["Y"], 2);
+
+		$out=$outFormat;
+		foreach ($dArr as $key => $value) {
+			$out=str_replace($key, $value, $out);
 		}
-		$d1=substr($d1,0,strlen($d1)-1);
-		$d1=str_replace(DATE_SEPARATOR.DATE_SEPARATOR,DATE_SEPARATOR,$d1);
-		if($d1==DATE_SEPARATOR) $d1="";
-		return $d1;
+		return $out;
 	}
 }
 if(!function_exists("_pDate")) {

@@ -104,22 +104,32 @@ function printServiceErrorMsg($errCode,$errMsg,$errorImg="") {
 	$arr['RequestedCommand']=$_REQUEST['scmd'];
 	$arr['RequestedSite']=$_REQUEST['site'];
 
+	$errArr=getErrorMsg($errCode);
+
+	$errBaseMsg=$errArr['msg'];
+	$err_code=$errArr['code'];
+
+	if(getConfig("SERVICE_ERROR_HEADER")=="true") {
+		header("HTTP/1.1 $err_code $errBaseMsg");
+	} elseif(!isset($_SERVER["HTTP_HOST"])) {
+		header("HTTP/1.1 $err_code $errBaseMsg");
+	}
+
 	header("Content-Type:text/{$_REQUEST['format']}");
-	header("Status: ERROR::$errCode");
-	//http_response_code(404);
-	//header(":",true,404);
+	//header("Status: $err_code");
+	header(':', true, $err_code);
 
 	if($_REQUEST['format']=="html") {
 		if($errorImg!=null && strlen($errorImg)>0) {
 			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>
 				<img src='{$errorImg}'  width=48 height=48><p style='color:#AA0000;font:20px Arial;'>" .
-				getErrorMsg($errCode) . "</p>$errMsg</td></tr></table>{$envelop['end']}";
+				$errBaseMsg . "</p>$errMsg</td></tr></table>{$envelop['end']}";
 		} else {
 			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'><h3 style='color:#AA0000;font:20px Arial;'>" .
-				getErrorMsg($errCode) . "</h3>$errMsg</td></tr></table>{$envelop['end']}";
+				$errBaseMsg . "</h3>$errMsg</td></tr></table>{$envelop['end']}";
 		}
 	} elseif($_REQUEST['format']=="select") {
-		echo "<option>$errCode :: $errMsg :: ".getErrorMsg($errCode)."</option>";
+		echo "<option>$errCode :: $errMsg :: ".$errBaseMsg."</option>";
 	} elseif($_REQUEST['format']=="xml") {
 		$xml=new SimpleXMLElement("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><service></service>");
 		$arr=arrayToXML($arr,$xml);
@@ -137,10 +147,10 @@ function printServiceErrorMsg($errCode,$errMsg,$errorImg="") {
 		if($errorImg!=null && strlen($errorImg)>0) {
 			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>
 				<img src='{$errorImg}'  width=48 height=48><p style='color:#AA0000;font:20px Arial;'>" .
-				getErrorMsg($errCode) . "</p>$errMsg</td></tr></table>{$envelop['end']}";
+				$errBaseMsg . "</p>$errMsg</td></tr></table>{$envelop['end']}";
 		} else {
 			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'><h3 style='color:#AA0000;font:20px Arial;'>" .
-				getErrorMsg($errCode) . "</h3>$errMsg</td></tr></table>{$envelop['end']}";
+				$errBaseMsg . "</h3>$errMsg</td></tr></table>{$envelop['end']}";
 		}
 	}
 }

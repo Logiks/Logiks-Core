@@ -15,7 +15,7 @@ log_VisitorEvent();
 
 if(_databus("PAGE_BUFFER_ENCODING")!="plain") startOPBuffer();
 
-$a=isLinkAccessable();
+$a=isLinkAccessible();
 if(!$a) {
 	trigger_ForbiddenError("Requested Page is Forbidden From Your Access.");
 	exit();
@@ -27,48 +27,8 @@ if(!(isset($_GET['lgksHeader']) && $_GET['lgksHeader']=="false")) {
 
 $pageLinkPath=getPageToLoad();
 if(strlen($pageLinkPath)>0 && file_exists($pageLinkPath)) {
-?>
-<script language=javascript>
-SiteLocation="<?=SiteLocation?>";
-SITENAME="<?=SITENAME?>";
-function getServiceCMD(cmd) {
-	sxx="<?=SiteLocation?>services/?site=<?=SITENAME?>";
-	<?php
-		if(isset($_REQUEST["forsite"]) && strlen($_REQUEST["forsite"])>0)
-			echo "sxx+='&forsite={$_REQUEST["forsite"]}';";
-	?>
-	if(cmd!=null && cmd.length>0) {
-		sxx+="&scmd="+cmd;
-	}
-	return sxx;
-}
-function _link(href) {
-	if(href.indexOf("http")>=0) {
-	} else if(href.indexOf("ftp")>=0) {
-	} else if(href.indexOf("/")===0) {
-		href="<?=SiteLocation?>"+href.substr(1);
-	} else {
-		<?php if(getConfig("GENERATED_PERMALINK_STYLE")=="default") { ?>
-		if(href.indexOf("page=")>=0) {
-			href="<?=SiteLocation."?site=".SITENAME?>&"+href;
-		} else {
-			href="<?=SiteLocation."?site=".SITENAME?>&page="+href;
-		}
-		<?php } else { ?>
-		href="<?=SiteLocation.SITENAME."/"?>"+href;
-		<?php } ?>
-	}
-	return href;
-}
-function appMedia(media,userData) {
-	if(userData)
-		return "<?=SiteLocation.APPS_FOLDER.SITENAME."/".APPS_USERDATA_FOLDER?>"+media;
-	else
-		return "<?=SiteLocation.APPS_FOLDER.SITENAME."/".APPS_MEDIA_FOLDER?>"+media;
-}
-</script>
-<?php
-	runHooks("beforepage");
+	include "api/scripts.php";
+	runHooks("prePage");
 	$cacheFile=RequestCache::getCachePath("pages");
 	switch(getConfig("FULLPAGE_CACHE_ENABLED")) {
 		case "true":
@@ -94,9 +54,8 @@ function appMedia(media,userData) {
 			include $pageLinkPath;
 			break;
 	}
-	runHooks("afterpage");
+	runHooks("postPage");
 } else {
 	trigger_NotFound("Sorry , Page Not Found. Page::" . $current_page);
 }
-exit();
 ?>

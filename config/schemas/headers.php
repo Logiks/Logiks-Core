@@ -3,7 +3,9 @@ if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 
 $cfgSchema["PAGE_ENCODING"]=array(
 		"type"=>"list",
-		"function"=>"getEncodings"
+		"function"=>array(
+				"UTF-8","UTF-7","ASCII","Latin"
+			)
 	);
 $cfgSchema["PAGE_BUFFER_ENCODING"]=array(
 		"type"=>"list",

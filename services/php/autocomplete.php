@@ -11,6 +11,7 @@ if($src=="sqltbl") {
 	$cols=$_REQUEST["cols"];
 	if(isset($_REQUEST["term"])) $term=$_REQUEST["term"]; else $term="";
 	if(isset($_REQUEST["where"])) $where=$_REQUEST["where"]; else $where="";
+	if(isset($_REQUEST["groupby"])) $group=$_REQUEST["groupby"]; else $group="";
 	if(isset($_REQUEST["form"])) $formCols=$_REQUEST["form"];
 
 	if(strlen($where)>0) {
@@ -64,6 +65,9 @@ if($src=="sqltbl") {
 		$sql="$sql AND $where";
 	}
 
+	if(strlen($group)>0) {
+		$sql="$sql group by $group";
+	}
 	//exit("<option>$sql</option>");
 	if(sizeOf($colArr)>1) {
 		$col1=$colArr[1];
@@ -132,7 +136,10 @@ function dispatchSelectorData($sql,$cols,$sys=false) {
 			$n=$b["name"];
 			$a=$b["value"];
 			$d=json_encode($b["data"]);
-			echo "<option value='$a' data='$d'>$n</option>";
+			$a=stripslashes($a);
+			$n=stripslashes($n);
+			//$d=stripslashes($d);
+			echo "<option value=\"$a\" data='$d'>$n</option>";
 		}
 	}
 }

@@ -1,4 +1,6 @@
 <?php 
+if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
+
 if(isset($_SESSION['LGKS_MSG'])) {
 	echo "<script language='javascript'>\n$(function() {\n";
 	echo "if(typeof jqPopupData=='function') lgksAlert('{$_SESSION['LGKS_MSG']}');\n";

@@ -140,9 +140,11 @@ if(file_exists($apps_login_cfg)) {
 if(file_exists($apps_dir_cfg)) {
 	LoadConfigFile($apps_dir_cfg);
 }
+if(strlen(getConfig("APPS_NAME"))>0 && !defined("APPS_NAME")) define("APPS_NAME",getConfig("APPS_NAME"));
+if(strlen(getConfig("APPS_VERS"))>0 && !defined("APPS_VERS")) define("APPS_VERS",getConfig("APPS_VERS"));
+if(strlen(getConfig("APPS_COMPANY"))>0 && !defined("APPS_COMPANY")) define("APPS_COMPANY",getConfig("APPS_COMPANY"));
+if(strlen(getConfig("APPS_COPYRIGHT"))>0 && !defined("APPS_COPYRIGHT")) define("APPS_COPYRIGHT",getConfig("APPS_COPYRIGHT"));
 
-if(!defined("APPS_NAME")) define("APPS_NAME",getConfig("APPS_NAME"));
-if(!defined("APPS_VERS")) define("APPS_VERS",getConfig("APPS_VERS"));
 if(defined("LINGUALIZER_DICTIONARIES")) $ling->loadLocaleFile(LINGUALIZER_DICTIONARIES);
 
 if(defined("APPS_THEME") && file_exists(ROOT.THEME_FOLDER.APPS_THEME."/login.css")) {
@@ -155,10 +157,11 @@ if(defined("APPS_THEME") && file_exists(ROOT.THEME_FOLDER.APPS_THEME."/login.css
 
 checkSiteMode($site);
 checkDevMode();
-if(ENABLE_AUTO_PCRON=="true") {
+
+/*if(ENABLE_AUTO_PCRON=="true") {
 	$_REQUEST['pcron_key']=PCRON_KEY;
 	include "pcron.php";
-}
+}*/
 
 if((defined("ACCESS") && ACCESS!='private') && !(is_array($domains) && sizeOf($domains)>1)) {
 	header("Location:index.php?site=$site");
@@ -189,23 +192,23 @@ if(getConfig("USE_MOBILITY_LOGIN")=="true") {
 $loginTemplate="";
 if($device=="mobile" || $device=="tablet") {
 	if(defined("APPROOT") && defined("APPS_PAGES_FOLDER")) {
-		if(file_exists(APPROOT.APPS_PAGES_FOLDER."/logins/mlogin.php")) {
-			$loginTemplate=APPROOT.APPS_PAGES_FOLDER."/logins/mlogin.php";
+		if(file_exists(APPROOT.APPS_PAGES_FOLDER."logins/mlogin.php")) {
+			$loginTemplate=APPROOT.APPS_PAGES_FOLDER."logins/mlogin.php";
 		}
 	}
-	if(strlen($loginTemplate)<=0 && file_exists(ROOT.PAGES_FOLDER."/logins/mlogin.php")) {
-		$loginTemplate=ROOT.PAGES_FOLDER."/logins/mlogin.php";
+	if(strlen($loginTemplate)<=0 && file_exists(ROOT.PAGES_FOLDER."logins/mlogin.php")) {
+		$loginTemplate=ROOT.PAGES_FOLDER."logins/mlogin.php";
 	}
 	if(strlen($loginTemplate)<=0)
-		$loginTemplate=ROOT.PAGES_FOLDER."/logins/login.php";
+		$loginTemplate=ROOT.PAGES_FOLDER."logins/login.php";
 } else {
 	if(defined("APPROOT") && defined("APPS_PAGES_FOLDER")) {
-		if(file_exists(APPROOT.APPS_PAGES_FOLDER."/logins/login.php")) {
-			$loginTemplate=APPROOT.APPS_PAGES_FOLDER."/logins/login.php";
+		if(file_exists(APPROOT.APPS_PAGES_FOLDER."logins/login.php")) {
+			$loginTemplate=APPROOT.APPS_PAGES_FOLDER."logins/login.php";
 		}
 	}
 	if(strlen($loginTemplate)<=0)
-		$loginTemplate=ROOT.PAGES_FOLDER."/logins/login.php";
+		$loginTemplate=ROOT.PAGES_FOLDER."logins/login.php";
 }
 if(strlen($loginTemplate)>0 && file_exists($loginTemplate)) {
 	ob_start();

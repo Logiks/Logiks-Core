@@ -30,8 +30,10 @@ class SimpleJSONDB {
 	public function __construct($dataDir=null) {
 		if($dataDir!=null) {
 			$this->dataDir=dirname($dataDir)."/".basename($dataDir)."/";
-		} else {
+		} elseif(defined("APPS_MISC_FOLDER")) {
 			$this->dataDir=APPROOT.APPS_MISC_FOLDER."jsondb/";
+		} else {
+			$this->dataDir=ROOT.MISC_FOLDER."jsondb/";
 		}
 		if(!is_dir($this->dataDir)) {
 			if(!mkdir($this->dataDir,0777,true)) {
@@ -110,6 +112,10 @@ class SimpleJSONDB {
 	}
 	public function getAll($name,$infoType="data") {
 		if(isset($this->jsonList[$name])) {
+			if($this->jsonList[$name]["data"]==null) {
+				$this->load($name);
+			}
+			
 			if(isset($this->jsonList[$name][$infoType]))
 				return $this->jsonList[$name][$infoType];
 			else {

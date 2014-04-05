@@ -62,7 +62,7 @@ if($_REQUEST['action']=="load") {
 	$where=trim($where);
 	$n1=strlen($where);
 	if(substr($where,0,1)=="(" && substr($where,$n1-1,$n1)==")") {
-		$where=substr($where,1,$n1-2);
+		//$where=substr($where,1,$n1-2);
 	}
 	$where1=trim($where);
 	$nn=strpos(strtolower($where1)," group by ");
@@ -83,7 +83,7 @@ if($_REQUEST['action']=="load") {
 		if(MASTER_DEBUG_MODE=="true")
 			$arr["MSG"]="Error $q1<br/>"._db()->getError();
 		else
-			$arr["MSG"]="Error Generating Report Query.";
+			$arr["MSG"]="Error Generating Report Query (1).";
 		header("Content-type: application/json");
 		exit(json_encode($arr));
 	}
@@ -124,7 +124,7 @@ if($_REQUEST['action']=="load") {
 		if(MASTER_DEBUG_MODE=="true")
 			$arr["MSG"]="Error $q1<br/>"._db()->getError();
 		else
-			$arr["MSG"]="Error Generating Report Query.";
+			$arr["MSG"]="Error Generating Report Query (2).";
 		header("Content-type: application/json");
 		exit(json_encode($arr));
 	}
@@ -134,7 +134,7 @@ if($_REQUEST['action']=="load") {
 	$params["total"]=$total_pages;
 	$params["records"]=$count;
 
-	printSQLResult($result, $_REQUEST['datatype'],$params,"");//$SQL,$_SERVER['QUERY_STRING']
+	printSQLResult($result, $_REQUEST['datatype'],$params,"",false);//$SQL,$_SERVER['QUERY_STRING']
 	_db()->freeResult($result);
 } elseif($_REQUEST['action']=="edit") {
 	echo json_encode(array("msg"=>"No Edit Allowed"));

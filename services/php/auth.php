@@ -8,13 +8,16 @@ $userid=clean($_POST['userid']);
 $pwd=clean($_POST['password']);
 if(isset($_REQUEST['site'])) $domain=$_REQUEST['site']; else $domain="";
 
-if(ALLOW_LOGIN_RELINKING=="true" || ALLOW_LOGIN_RELINKING) {
+LoadConfigFile(ROOT . "config/auth.cfg");
+
+if(ALLOW_LOGIN_RELINKING=="true") {
 	if(isset($_REQUEST['onsuccess'])) $onsuccess=$_REQUEST['onsuccess']; else $onsuccess="";
 	if(isset($_REQUEST['onerror'])) $onerror=$_REQUEST['onerror']; else $onerror="";
 } else {
 	$onsuccess="";
 	$onerror="";
 }
+
 /*
 CLEAR_OLD_SESSION=true
 @session_start();
@@ -36,19 +39,42 @@ if($pwd == '') {
 
 $date=date('Y-m-d');
 
-//$q1="SELECT id, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where (userid='$userid' OR email='$userid') AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
-$q1="SELECT id, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where userid='$userid' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
+$userFields=explode(",", USERID_FIELDS);
+
+$q1="SELECT id, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
+//$q1="SELECT id, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where userid='$userid' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
+
+if(CASE_SENSITIVE_AUTH=="true") {
+	foreach ($userFields as $key => $value) {
+		$userFields[$key]="BINARY ".trim($value)."='$userid'";
+	}
+} else {
+	foreach ($userFields as $key => $value) {
+		$userFields[$key]=trim($value)."='$userid'";
+	}
+}
+
+$userFields=implode(" OR ", $userFields);
+if(strlen($userFields)>0) $q1.=" AND ($userFields)";
+else {
+	relink('Wrong Configuration For Authenetication System',$domain);
+}
+
 $result=$dbLink->executeQuery($q1);
 if($result) {
 	$data=$dbLink->fetchData($result);
 	if($data==null) {
-		relink("UserID/Password Wrong Or Expired.",$domain);
+		relink("Sorry, you have not yet joined us or your userid has expired.",$domain);
 	}
 } else {
-	relink("UserID/Password Wrong Or Expired.",$domain);
+	relink("Sorry, you have not yet joined us or your userid has expired.",$domain);
 }
+
 if(!matchPWD($data['pwd'],$pwd)) {
-	relink("UserID/Password Wrong Or Expired.",$domain);
+	relink("UserID/Password Wrong/Mismatch",$domain);
+}
+if($data['blocked']=="true") {
+	relink("Sorry, you are currently blocked by system admin.",$domain);
 }
 
 //Creating Access Rules
@@ -124,26 +150,55 @@ if(strlen($_SESSION['SESS_USER_NAME'])<=0) {
 }
 $dbLink->freeResult($result);
 
+loadHelpers("mobility");
+$device=getUserDeviceType();
+$client=$_SERVER["REMOTE_ADDR"];
+$persistant="false";
+$mauth_key=md5(base64_encode($domain.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'].$_SESSION['SESS_TOKEN'].$device, $client));
+
+if(isset($_POST['persistant']) && $_POST['persistant']=="true") {
+	$persistant="true";
+}
+
 $q1=$dbLink->_insertQ(_dbTable("log_login",true),
-	array('DATE', 'user', 'site', 'login_time', 'logout_time', 'sys_spec', 'user_agent', 'token', 'status'),
-	array($date,$userid,$domain,date('H:i:s'),'',$_SERVER['REMOTE_ADDR'],$_SERVER['HTTP_USER_AGENT'],$_SESSION['SESS_TOKEN'],'LOGGED IN'));
+	array('DATE', 'user', 'site', 'login_time', 'logout_time', 'sys_spec', 'user_agent', 'token', 'status', 'device', 'client', 'persistant', 'mauth_key'),
+	array($date,$userid,$domain,date('H:i:s'),'',$_SERVER['REMOTE_ADDR'],$_SERVER['HTTP_USER_AGENT'],$_SESSION['SESS_TOKEN'],'LOGGED IN', $device, $client,$persistant,$mauth_key));
 $dbLogLink->executeQuery($q1);
 
-if($domain!=$data['site']) {
-	if(!in_array($domain,$_SESSION['SESS_ACCESS_SITES'])) {
-		relink("Please Login Using Appropriate Credentials",$data['site']);
-	}
-}
 
 setcookie("LOGIN", "true", time()+36000);
 setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000);
 setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000);
 setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000);
 
-if(strlen($onsuccess)==0 || $onsuccess=="*")
-	header("location: ../index.php?site=$domain");
-else
-	header("location: $onsuccess");
+if(ALLOW_MAUTH=="true") {
+	if(isset($_POST['mauth']) && $_POST['mauth']=="authkey") {
+		echo $mauth_key;
+	} elseif(isset($_POST['mauth']) && $_POST['mauth']=="jsonkey") {
+		$arr=array(
+				"user"=>$userid,
+				"authkey"=>$mauth_key,
+				"date"=>$date,
+				"site"=>$domain,
+				"client"=>$client,
+			);
+		header("Content-Type:text/json");
+		echo json_encode($arr);
+	} else {
+		echo "<h5>Securing Access Authentication ... </h5>";
+		if(strlen($onsuccess)==0 || $onsuccess=="*")
+			header("location: ../index.php?site=$domain");
+		else
+			header("location: $onsuccess");
+	}
+} else {
+	echo "<h5>Securing Access Authentication ... </h5>";
+	if(strlen($onsuccess)==0 || $onsuccess=="*")
+		header("location: ../index.php?site=$domain");
+	else
+		header("location: $onsuccess");
+}
+exit();
 
 //All Functions Required By Authentication System
 function relink($msg,$domain) {
@@ -191,25 +246,24 @@ function checkBlacklists($data,$domain,$dbLink,$userid) {
 }
 //LogBook Checking
 function checkLoginLogTables($userid,$domain, $dbLink) {
-	//$arr=get_defined_constants(true);print_r($arr['user']);
-	$q1="SELECT count(*), date, login_time, logout_time, sys_spec, token FROM "._dbTable("log_login",true)." where user='$userid' and status='LOGGED IN'";// and site='$domain'
+	$q1=$dbLink->_selectQ("lgks_log_login",
+						"count(*), date, login_time, logout_time, sys_spec, token, client, persistant",
+						array("user"=>$userid,"status"=>"LOGGED IN")// and site='$domain'
+					);
 	$result=$dbLink->executeQuery($q1);
 	if($result) {
 		$data=$dbLink->fetchData($result);
 		if($data!=null && $data["count(*)"]>0) {
-			if(ALLOW_MULTI_LOGIN=="false") {
+			if($data['persistant']=="false") {
+				$sql=$dbLink->_updateQ("lgks_log_login",
+						array('logout_time'=>date('Y-m-d H:i:s'), 'status'=>'LOGGED OUT'),
+						array("user"=>$userid,"status"=>"LOGGED IN")
+					);
+				$dbLink->executeQuery($sql);
+			} elseif(ALLOW_MULTI_LOGIN=="false") {
 				relink("MultiLogin Attempt, You are logged in from the system {$data['sys_spec']} since {$data['login_time']} On {$data['date']}.",$domain);
 			}
 		}
-		/*if($data!=null && $data["count(*)"]>0) {
-			$msg="Multi Login Attempt";
-			$q0=$dbLink->_updateQ(_dbTable("log_login",true),
-				array('logout_time'=>date('Y-m-d H:i:s'), 'status'=>'LOGGED OUT'),
-				array("user"=>$userid,"status"=>"LOGGED IN"));
-			//,"site"=>$_SESSION['SESS_LOGIN_SITE']
-			//$q0="UPDATE "._dbTable("log_login",true)." SET " . "logout_time = '".date('Y-m-d H:i:s')."', status = 'LOGGED OUT', msg='$msg' WHERE userid ='$userid' and status='LOGGED IN' and site='$domain'";
-			//$dbLink->executeQuery($q0);
-		}*/
 	}
 }
 ?>

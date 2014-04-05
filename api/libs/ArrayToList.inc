@@ -63,8 +63,8 @@ class ArrayToList {
 					$data=$b[$dataStr];
 					unset($b[$dataStr]);
 
-					if(isset($colDefn["classCol"]) && isset($data[$colDefn["classCol"]])) $claz="class='{$data[$colDefn['classCol']]}'";
-					if(isset($colDefn["tipsCol"]) && isset($data[$colDefn["tipsCol"]])) $tips="title=\"{$data[$colDefn['tipsCol']]}\"";
+					if(isset($colDefn["classCol"]) && isset($data[$colDefn["classCol"]]) && !is_array($data[$colDefn["classCol"]])) $claz="class='{$data[$colDefn['classCol']]}'";
+					if(isset($colDefn["tipsCol"]) && isset($data[$colDefn["tipsCol"]]) && !is_array($data[$colDefn["tipsCol"]])) $tips="title=\"{$data[$colDefn['tipsCol']]}\"";
 
 					foreach($colDefn as $m=>$n) {
 						if(isset($data[$n])) {

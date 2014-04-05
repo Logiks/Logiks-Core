@@ -1,7 +1,7 @@
 <?php
 if (!defined('ROOT')) exit('No direct script access allowed');
 	_js(array("mobile.jquery-1.4.4.min","mobile.jquery.mobile-1.0a2.min","ajax"));
-	_css(array("jquery.mobile-1.0a2"));//,"mobile","handheld"
+	_css(array("jquery.mobile-1.0a2","mobile-login"));//,"mobile","handheld"
 	
 	$theme_page=getConfig("MOBILITY_PAGE_THEME");
 	$theme_header=getConfig("MOBILITY_HEADER_THEME");
@@ -57,13 +57,13 @@ if (!defined('ROOT')) exit('No direct script access allowed');
 	</div>
 	<?php
 		if($GLOBALS["CONFIG"]["SHOW_COPYRIGHT"]=="true") {
-			echo "<div id=loginFooter data-role='footer' align=center data-theme='$theme_footer'><p>";
+			echo "<div id=loginFooter data-role='content' align=center data-theme='$theme_footer'>";
 			if(defined("APPS_COPYRIGHT")) {
-				echo "<div id=loginFooter>".APPS_COPYRIGHT."</div>";
+				echo "<div>".APPS_COPYRIGHT."</div>";
 			} else {
-				echo "<div id=loginFooter>".Framework_Copyright."</div>";
+				echo "<div>".Framework_Copyright."</div>";
 			}
-			echo "</p></div>";
+			echo "</div>";
 		}
 	?>
 	<!-- /pagefooter -->

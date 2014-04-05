@@ -15,15 +15,15 @@ class APIValidation {
 			if($httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) {
 				$a=true;
 			} else {
-				if(isset($_REQUEST['APIKEY']) && API_KEY==$_REQUEST['APIKEY']) {
+				if(isset($_REQUEST['APIKEY']) && getConfig("API_KEY")==$_REQUEST['APIKEY']) {
 					$a=true;
 				} else {
 					$a=false;
 				}
 			}
 		} else {
-			if(strlen(API_KEY)>0) {
-				if(isset($apiKey) && API_KEY==$apiKey) {
+			if(strlen(getConfig("API_KEY"))>0) {
+				if(isset($apiKey) && getConfig("API_KEY")==$apiKey) {
 					$a=true;
 				}
 			} else {

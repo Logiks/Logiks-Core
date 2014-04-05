@@ -4,17 +4,22 @@ if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 include "APIValidation.inc";
 
 class ServiceSecurity {
-	function checkSecurity($request,$serviceCtrlDb) {
-		$cmdCntrls=null;
-
+	function checkSecurity($request) {
 		$scmd=$request['scmd'];
 		$scmd=str_replace("/",".",$scmd);
 
-		if(isset($serviceCtrlDb['SERVICE_ACCESS_CONTROLS']) && isset($serviceCtrlDb['SERVICE_ACCESS_CONTROLS'][$scmd])) {
-			$cmdCntrls=$serviceCtrlDb['SERVICE_ACCESS_CONTROLS'][$scmd];
-		} else {
-			$cmdCntrls=array();
+		$cmdCntrls=array(
+				"default_print_format"=>"json",
+				"privilege_model"=>array(),
+				"access_control"=>"public",
+				"autocache"=>"false",
+				"nocache"=>"false",
+			);
+		$serviceCtrlDb=loadSecureConfig("services");
+		if(isset($serviceCtrlDb[$scmd])) {
+			$cmdCntrls=$serviceCtrlDb[$scmd];
 		}
+		
 		if(!isset($_GET['format']) && isset($cmdCntrls['default_print_format'])) {
 			$_REQUEST['format']=$cmdCntrls['default_print_format'];
 		}
@@ -31,10 +36,17 @@ class ServiceSecurity {
 				return $request;
 			} elseif($cmdCntrls['access_control']=="apikey") {
 				$httpRef=parseHTTPReferer();
-				if(isset($httpRef["HTTP_HOST"]) && $httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) return $request;
+				if(isset($httpRef["HTTP_HOST"]) && strlen($httpRef["HTTP_HOST"])>0 && $httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) return $request;
 				$this->isRemoteKeyValid(true);
 				$this->checkHTTPReferenceLocks(true);
 				return $request;
+			} elseif($cmdCntrls['access_control']=="hostlock") {
+				$httpRef=parseHTTPReferer();
+				if(isset($httpRef["HTTP_HOST"]) && strlen($httpRef["HTTP_HOST"])>0 && $httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) {
+					return $request;
+				} else {
+					return array();
+				}
 			} elseif($cmdCntrls['access_control']=="adminonly") {
 				isAdminSite();
 				checkServiceSession();
@@ -48,22 +60,23 @@ class ServiceSecurity {
 				return array();
 			}
 		}
-		if(DEFAULT_ACCESS_CONTROL=="public"){
+		$defaultAccessControl=getConfig("DEFAULT_ACCESS_CONTROL");
+		if($defaultAccessControl=="public"){
 			return $request;
-		} elseif(DEFAULT_ACCESS_CONTROL=="apikey") {
+		} elseif($defaultAccessControl=="apikey") {
 			$httpRef=parseHTTPReferer();
 			if(isset($httpRef["HTTP_HOST"]) && $httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) return $request;
 			$this->isRemoteKeyValid(true);
 			$this->checkHTTPReferenceLocks(true);
 			return $request;
-		} elseif(DEFAULT_ACCESS_CONTROL=="adminonly") {
+		} elseif($defaultAccessControl=="adminonly") {
 			checkServiceSession();
 			isAdminSite();
 			return $request;
-		} elseif(DEFAULT_ACCESS_CONTROL=="onlogin") {
+		} elseif($defaultAccessControl=="onlogin") {
 			checkServiceSession();
 			return $request;
-		} elseif(DEFAULT_ACCESS_CONTROL=="none") {
+		} elseif($defaultAccessControl=="none") {
 			return array();
 		}
 		return array();
@@ -97,7 +110,7 @@ class ServiceSecurity {
 			}
 		}
 		$a=false;
-		if(API_KEY_ENGINE=="single") {
+		if(getConfig("API_KEY_ENGINE")=="single") {
 			if(strlen(API_KEY)>0) {
 				if(API_KEY==$_REQUEST['APIKEY']) {
 					$a=true;
@@ -106,7 +119,7 @@ class ServiceSecurity {
 				$a=true;
 			}
 		} else {
-			$api=new APIValidation(API_KEY_ENGINE);
+			$api=new APIValidation(getConfig("API_KEY_ENGINE"));
 			$a=$api->checkAPIKey($_REQUEST['APIKEY'],SITENAME);
 		}
 		if($autoQuit && !$a) {

@@ -17,6 +17,8 @@ unset($_REQUEST['action']);
 //multitablesubmit,multiinserts
 if($action=='load') {
 	loadForm();
+} elseif($action=='autoload') {
+	autoloadForm();
 } elseif($action=='mail') {
 	mailForm();
 } elseif($action=='dbmail') {
@@ -35,6 +37,11 @@ if($action=='load') {
 }
 exit();
 
+function autoloadForm() {
+	$dataPost=$_POST;
+
+	printArray($dataPost);
+}
 function loadForm() {
 	$dataPost=$_POST;
 
@@ -86,26 +93,33 @@ function loadForm() {
 	}
 	$sWhere=$arr;
 	$sWhere=generateWhere($sWhere);
-
-	if($sCols==null && strlen(trim($sCols))<=0) {
-		$sCols=array();
-		foreach($dataPost as $a=>$b) {
-				array_push($sCols,$a);
-		}
-		$sCols=implode(",",$sCols);
-	}
-
-	$sql="SELECT $sCols FROM $sTable";
-	if(strlen($sWhere)>0) {
-		$sql.=" WHERE {$sWhere}";
-	}
-
+	
 	$tblCols=_db()->getTableInfo($sTable);
-	$arrCols=array(0);
+	$arrCols=array();
 	foreach($tblCols[0] as $a=>$b) {
 		$arrCols[$b]=$tblCols[1][$a];
 	}
 	$tblCols=$arrCols;
+
+	if($sCols==null && strlen(trim($sCols))<=0) {
+		$sCols=array();
+		foreach($dataPost as $a=>$b) {
+			if(array_key_exists($a,$tblCols)) array_push($sCols,$a);
+		}
+		$sCols=implode(",",$sCols);
+	} else {
+		$tempCols=explode(",",$sCols);
+		$sCols=array();
+		foreach($tempCols as $a) {
+			if(array_key_exists($a,$tblCols)) array_push($sCols,$a);
+		}
+		$sCols=implode(",",$sCols);
+	}
+	if(strlen($sCols)<=0) exit("");
+	$sql="SELECT $sCols FROM $sTable";
+	if(strlen($sWhere)>0) {
+		$sql.=" WHERE {$sWhere}";
+	}
 
 	$res1=_dbQuery($sql);
 	if($res1 && _db()->recordCount($res1)>0) {
@@ -118,7 +132,8 @@ function loadForm() {
 			}
 		}
 		if(!isset($_REQUEST["format"])) $_REQUEST["format"]="json";
-		printFormattedArray($data);
+		//printFormattedArray($data);
+		printServiceMsg($data);
 	}
 }
 function mailForm() {
@@ -300,7 +315,7 @@ function saveToDB() {
 			} else {
 				echo $onSuccess;
 			}
-			if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM Submited Success ::$sForm/$sTable, For ID::"._db()->insert_id(),"User",4,"forms",_dbTable("forms"));
+			if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM Submited Success ::$sForm/$sTable, For ID::"._db()->insert_id(),"User",4,"forms",_dbtable("forms"));
 		} else {
 			$stmt=explode(" ",trim($sql));
 			$stmt=strtoupper($stmt[0]);
@@ -316,7 +331,7 @@ function saveToDB() {
 					echo "Error:: "._db($sysDb)->getError()."<br/>";
 				}
 				if(MASTER_DEBUG_MODE=='true') echo _db($sysDb)->getError();
-				if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM Submit Failed ::$sForm/$sTable","User",4,"forms",_dbTable("forms"));
+				if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM Submit Failed ::$sForm/$sTable","User",4,"forms",_dbtable("forms"));
 			}
 		}
 	} else {
@@ -326,7 +341,7 @@ function saveToDB() {
 			echo "Error:: "._db($sysDb)->getErrorNo()."<br/>";
 		}
 		if(MASTER_DEBUG_MODE=='true') echo _db($sysDb)->getError();
-		if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM SQL Creation Error ::$sForm/$sTable","User",4,"forms",_dbTable("forms"));
+		if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM SQL Creation Error ::$sForm/$sTable","User",4,"forms",_dbtable("forms"));
 	}
 }
 function updateFormById() {
@@ -350,9 +365,9 @@ function updateFormById() {
 	if(strlen($sql)>0) {
 		$a=_dbQuery($sql,$sysDb);
 		if($a) {
-			if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM Update Success ::$sTable, For ID::$id","User",4,"forms",_dbTable("forms"));
+			if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM Update Success ::$sTable, For ID::$id","User",4,"forms",_dbtable("forms"));
 		} else {
-			if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM Update Failed ::$sTable, For ID::$id","User",4,"forms",_dbTable("forms"));
+			if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM Update Failed ::$sTable, For ID::$id","User",4,"forms",_dbtable("forms"));
 		}
 	}
 }
@@ -406,8 +421,8 @@ function deleteForm() {
 		if(MASTER_DEBUG_MODE=='true') echo _db($sysDb)->getError();
 	}
 	if(function_exists("log_ActivityEvent")) {
-		if(isset($_POST["delete_id"])) log_ActivityEvent("Record Form Deleted From Table $sTable, For ID::$id","User",4,"forms",_dbTable("forms"));
-		else log_ActivityEvent("Record Form Deleted For Query $sql","User",4,"forms",_dbTable("forms"));
+		if(isset($_POST["delete_id"])) log_ActivityEvent("Record Form Deleted From Table $sTable, For ID::$id","User",4,"forms",_dbtable("forms"));
+		else log_ActivityEvent("Record Form Deleted For Query $sql","User",4,"forms",_dbtable("forms"));
 	}
 }
 

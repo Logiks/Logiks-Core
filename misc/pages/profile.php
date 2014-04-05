@@ -12,7 +12,7 @@ if($res) {
 } else {
 	exit("Permission Denied ?");
 }
-include "config/countries.php";
+loadHelpers("countries");
 ?>
 <style>
 textarea {

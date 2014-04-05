@@ -38,6 +38,8 @@ if(isset($_POST['footer'])) $footer=$_POST['footer']; else $footer="";
 if(isset($_POST['onsuccess'])) $onsuccess=$_POST['onsuccess']; else $onsuccess="Mail Successfully Sent.";
 if(isset($_POST['onerror'])) $onerror=$_POST['onerror']; else $onerror="Error Occured While Sending Mail!";
 
+if(!isset($_POST['mode'])) $_POST['mode']="bulk";
+
 unset($_POST['onsuccess']);unset($_POST['onerror']);
 
 if(isset($_POST['template'])) $body=_template($_POST['template']);
@@ -81,10 +83,31 @@ ob_clean();
 
 $a=false;
 if(getConfig("MAIL_ENGINE")=="simple" && $attach==null) {
-	$a=sendMail($to,$subject,$data,$from,$cc,$bcc);
+	if($_POST['mode']=="bulk") {
+		$a=sendMail($to,$subject,$data,$from,$cc,$bcc);
+	} else {
+		set_time_limit(0);
+		$to=explode(",", $to);
+		foreach ($to as $mailto) {
+			updateUserEnv($mailto);
+			$datax=_replace($data);
+			$a=sendMail($mailto,$subject,$datax,$from,$cc,$bcc);
+		}
+	}
 } else {//Pear::Mail
-	$email=new EMail();
-	$a=$email->sendMimeMessageAdvanced($to,$subject,$cc,$bcc,$data,$attach);
+	if($_POST['mode']=="bulk") {
+		$email=new EMail();
+		$a=$email->sendMimeMessageAdvanced($to,$subject,$cc,$bcc,$data,$attach);
+	} else {
+		set_time_limit(0);
+		$to=explode(",", $to);
+		foreach ($to as $mailto) {
+			updateUserEnv($mailto);
+			$datax=_replace($data);
+			$email=new EMail();
+			$a=$email->sendMimeMessageAdvanced($mailto,$subject,$cc,$bcc,$datax,$attach);
+		}
+	}
 }
 
 if($a) {
@@ -101,4 +124,26 @@ if($a) {
 	}
 }
 if(file_exists($target_path)) unlink($target_path);
+
+
+function updateUserEnv($userid) {
+	clearUserEnv();
+	$sql=_db()->_selectQ("lgks_users",
+		"userid as 'mailto-userid',name as 'mailto-name',email as 'mailto-email',mobile as 'mailto-mobile'").
+		" WHERE email='$userid'";
+	$res=_dbQuery($sql,true);
+	$userInfo=_dbData($res);
+	_dbFree($res);
+	if(isset($userInfo[0])) {
+		foreach($userInfo[0] as $key => $value) {
+			$_REQUEST[$key]=$value;
+		}
+	}
+}
+function clearUserEnv() {
+	unset($_REQUEST['mailto-userid']);
+	unset($_REQUEST['mailto-name']);
+	unset($_REQUEST['mailto-mail']);
+	unset($_REQUEST['mailto-mobile']);
+}
 ?>

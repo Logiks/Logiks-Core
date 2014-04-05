@@ -7,7 +7,7 @@ class DomainMap {
 	private $notMappedSiteList=array();
 
 	function __construct() {
-		$dmF=ROOT.CFG_FOLDER."domainmap.json";
+		$dmF=ROOT.CFG_FOLDER."security/domainmap.json";
 		if(!file_exists($dmF)) {
 			$this->createDefaultDomainMap();
 		}
@@ -112,6 +112,11 @@ class DomainMap {
 						$l="index.php{$qp}";
 						$l=str_replace("?&","?",$l);
 						header("Location:$l");
+					} else {
+						header('HTTP/1.0 404 Not Found');
+						echo "<h1>404 Not Found</h1>";
+						echo "The page that you have requested could not be found.";
+						exit();
 					}
 				}
 			} else {
@@ -175,7 +180,7 @@ class DomainMap {
 		return $last;
 	}
 	public static function createDefaultDomainMap() {
-		$dmF=ROOT.CFG_FOLDER."jsondb/domainmap.json";
+		$dmF=ROOT.CFG_FOLDER."security/domainmap.json";
 		if(!is_writable(dirname($dmF))) exit("DomainMap Configuration Cannot Be Created ...");
 		$dmArr=array();
 		$dmArr["localhost"]=array("appsite"=>"cms","nodal"=>"","active"=>true,"doc"=>date("Y-m-d"),"doe"=>date("Y-m-d"));

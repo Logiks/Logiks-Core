@@ -1,5 +1,5 @@
 {
-	"SERVICE_ACCESS_CONTROLS":{
+	"GLOBALS":{
 		"auth":{
 			"default_print_format":"text",
 			"privilege_model":{},

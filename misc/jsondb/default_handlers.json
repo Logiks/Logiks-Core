@@ -1,5 +1,5 @@
 {
-    "all_editors": {
+    "editors": {
         "opts": [
             "ckeditor",
             "nicedit",

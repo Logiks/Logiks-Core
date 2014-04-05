@@ -60,8 +60,10 @@ if(!function_exists('printSQLResult')) {
 							}
 						} elseif($type=="blob") {
 							if($maxTextLength>0 && strlen($b)>$maxTextLength) $b=substr($b,0,200)."...";
+							else $b=stripslashes($b);
+							$b=htmlentities($b);//str_replace('"',"\\'",$b));
 						} else {
-							if($autoLing) $b=_ling($b);
+							if($autoLing) $b=_ling($b,true);
 						}
 					}
 					array_push($responce->rows[$i]['cell'],$b);

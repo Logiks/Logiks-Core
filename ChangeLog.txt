@@ -1,0 +1,52 @@
+Changelog for Logiks v3.6
+	
+API Level Changes (api, helpers, libraries)
+	inifuncs.php : to include few new functions to simplify creating cms.php
+	removed docs library and helper.
+	added new security library.
+	added countries,mimes,timezones to helpers,
+	updated:dateops,email, shortfuncs helpers.
+
+Services Level Changed
+	autocomplete,datagrid,formactions,avatar have been improved.
+	auth has been upgraded to be more customizable and is now userid, emails and mobiles can be used to login.
+
+Other Changes
+	Pulled in all changes done across all installations.
+	Altered the configuration system for a more robust system. The next version will contain sigularization and cacheing of the configurations.
+	Permission control management upgraded, next version to contain permission cachinfg system.
+	PageLayout now includes HTML5 tags support.
+	EMail supports Bulk mode.
+	Initialization Of Page Requests has been given new API functions.
+	UIComponents, and many other APIs are better.
+	MISC/pages/SOS system has been removed.
+	Cleaned and remove unwanted systems.
+
+Database Changes
+	Changed the default collations, charset and engine.
+	Updated the lgks_users : removed q1,a1,notes added geolocation,geoip,last_login,mauth
+
+Physical Changes To Folders, Configurations, Files and Structures
+	hooks-state names changed
+	   afterHead->preHead
+	   afterPage->postPage
+	   beforePage->prePage
+	folders.cfg changed
+	   misc/templates_layouts->misc/uilayouts
+	   config/pcron->misc/pcron
+	   config/features/db.json=>config/security/db.json
+	   config/features/fs.json=>config/security/fs.json
+	Removed misc/pages/sos folder
+
+Depreciated
+	DataBus
+	isLayoutConfig -> isLogiksLayout
+
+Introduction of changelogs
+
+Lots of Bug Fixes, and changes in the path of a major update in next version.
+
+VERDICT
+This is final stable update, this will be supported for the next upgrade to v4.0
+Updated lots of security features,routing features, hooks.
+Altered configuration system and updated page layout systems.

@@ -26,15 +26,15 @@ class Widgets {
 		$s=md5(SITENAME . "_" . $current_page . "_" . $funcCode);
 		return $s;
 	}
-	public static function printWidget($name, $widgetPath, $params=array(), $asPortlets=true) {
+	public static function printWidget($name, $widgetPath, $params=array()) {
 		global $js,$css,$ling,$cache,$templates;
 
 		if(strlen($widgetPath)<=0) return;
-		if($asPortlets) echo "<div name='$name' class='portlet'>";
+		echo "<div name='$name' class='lgks-widget'>";
 		$WIDGET_PARAMS=$params;
 		$WIDGET_PARAMS["WIDGET_GROUP_ID"]=Widgets::getWidgetGroupCode($name);
 		include $widgetPath;
-		if($asPortlets) echo "</div>";
+		echo "</div>";
 	}
 	public static function unsetWidgetSettings($WIDGET_PARAMS) {
 		unset($WIDGET_PARAMS['WIDGET_WEB_PATH']);

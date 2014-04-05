@@ -82,8 +82,8 @@ if(!function_exists("getUserInfo")) {
 		if($_SESSION['SESS_PRIVILEGE_ID']>2) {
 			$site=SITENAME;
 		}
-		//$sql="SELECT sites FROM "._dbTable("access",true)." WHERE id=(SELECT access from "._dbTable("users",true)." WHERE userid='{$userid}' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())) AND blocked='false'";
-		$sql="SELECT sites FROM "._dbTable("access",true)." WHERE id=(SELECT access from "._dbTable("users",true)." WHERE userid='{$userid}')";
+		//$sql="SELECT sites FROM "._dbtable("access",true)." WHERE id=(SELECT access from "._dbtable("users",true)." WHERE userid='{$userid}' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())) AND blocked='false'";
+		$sql="SELECT sites FROM "._dbtable("access",true)." WHERE id=(SELECT access from "._dbtable("users",true)." WHERE userid='{$userid}')";
 		//echo $sql;
 		$res=_dbQuery($sql,true);
 		if($res) {
@@ -108,8 +108,8 @@ if(!function_exists("getUserInfo")) {
 			return "UserID Exists";
 		}
 		loadHelpers("pwdhash");
-		$sql1="SELECT COUNT(*) AS cnt FROM "._dbTable("privileges",true)." WHERE ID=$privilegeID";
-		$sql2="SELECT COUNT(*) AS cnt,sites FROM "._dbTable("access",true)." WHERE ID=$accessID";
+		$sql1="SELECT COUNT(*) AS cnt FROM "._dbtable("privileges",true)." WHERE ID=$privilegeID";
+		$sql2="SELECT COUNT(*) AS cnt,sites FROM "._dbtable("access",true)." WHERE ID=$accessID";
 		$res=_dbQuery($sql1,true);
 		$data=_dbData($res);
 		_dbFree($res);
@@ -148,15 +148,15 @@ if(!function_exists("getUserInfo")) {
 				"privacy"=>"protected",
 				"avatar_type"=>"photoid",
 				"avatar"=>"",
-				"q1"=>"",
-				"a1"=>"",
+				//"q1"=>"",
+				//"a1"=>"",
 				"doc"=>date('Y-m-d'),
 				"doe"=>date('Y-m-d'),
 			);
 		foreach($params as $a=>$b) {
 			if(isset($attrs[$a])) $params[$a]=$attrs[$a];
 		}
-		$sql=_db(true)->_insertQ(_dbTable("users",true),array_keys($params),array_values($params));
+		$sql=_db(true)->_insertQ(_dbtable("users",true),array_keys($params),array_values($params));
 		if(strlen($sql)>0) {
 			$res=_dbQuery($sql,true);
 			if($res) {
@@ -205,14 +205,14 @@ if(!function_exists("getUserInfo")) {
 					unset($attrs[$a]);
 				}
 			}
-			$sql1=_db(true)->_selectQ(_dbTable("users",true),array("userid"),array("userid"=>"$userID","site"=>"$site"));
+			$sql1=_db(true)->_selectQ(_dbtable("users",true),array("userid"),array("userid"=>"$userID","site"=>"$site"));
 			$res=_dbQuery($sql1,true);
 			$uData=_dbData($res);
 			_dbFree($res,true);
 			if(count($uData)<=0) {
 				return "User Not Found";
 			}
-			$sql2=_db(true)->_updateQ(_dbTable("users",true),$attrs,array("userid"=>"$userID","site"=>"$site"));
+			$sql2=_db(true)->_updateQ(_dbtable("users",true),$attrs,array("userid"=>"$userID","site"=>"$site"));
 			$res=_dbQuery($sql2,true);
 			if(!$res) return "Error Updating User Info";
 			else return "";

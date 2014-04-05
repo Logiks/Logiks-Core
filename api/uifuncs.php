@@ -29,13 +29,17 @@ if(!function_exists('getUserPageStyle')) {
 			_skin("{$skinSpec}{$skin}");
 		}
 	}
-	function getBodyContext() {
+	function getBodyContext($params=array()) {
 		$bodyContext="";
 		if(getConfig("LOCK_CONTEXTMENU")=="true") $bodyContext.="oncontextmenu='return false' ";
 		if(getConfig("LOCK_SELECTION")=="true") $bodyContext.="onselectstart='return false' ";
 		if(getConfig("LOCK_MOUSEDRAG")=="true") $bodyContext.="ondragstart='return false' ";
 		$bClass=getConfig("BODY_CLASS");
-		if(strlen($bClass)>0) $bodyContext.="class='$bClass' ";
+		$pClass=str_replace("/", "-", $_REQUEST["page"]);
+		if(strlen(trim($bClass.$pClass))>0) $bodyContext.="class='".trim($bClass." ".$pClass)."' ";
+		foreach ($params as $key => $value) {
+			$bodyContext.="$key='$value' ";
+		}
 		return $bodyContext;
 	}
 }
@@ -101,6 +105,14 @@ if(!function_exists('displayLayout')) {
 			dispErrMessage("Layout Configuration File Missing OR UnReadable.","Layout Config Error",409,'apps');
 			exit();
 		}
+	}
+	function isLogiksLayout($layout) {
+		$appLayoutDir=APPROOT.APPS_PAGES_FOLDER."layouts/";
+		$f1=$appLayoutDir."{$layout}.json";
+		if(file_exists($f1) && is_readable($f1)) {
+			return true;
+		}
+		return false;
 	}
 	function isLayoutConfig($layout) {
 		$appLayoutDir=APPROOT.APPS_PAGES_FOLDER."layouts/";

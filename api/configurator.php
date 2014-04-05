@@ -11,6 +11,33 @@ include ROOT. "api/databus.inc";
 DataBus::singleton();
 if(!function_exists('LoadConfigFile')) {
 	function LoadConfigFile($path,$mode="DEFINE") {
+		if(is_array($path)) {
+			foreach($path as $file=>$testParam) {
+				if(strlen($testParam)>0) {
+					$testParam=explode("#",$testParam);
+					if(count($testParam)==2) {
+						if($testParam[0]=="CONFIG" && isset($GLOBALS['CONFIG'][$testParam[1]])) {
+							continue;
+						} elseif($testParam[0]=="DBCONFIG" && isset($_SESSION['DBCONFIG'][$testParam[1]])) {
+							continue;
+						} elseif($testParam[0]=="SESSION" && isset($_SESSION[$testParam[1]])) {
+							continue;
+						} elseif($testParam[0]=="COOKIE" && isset($_COOKIE[$testParam[1]])) {
+							continue;
+						} elseif($testParam[0]=="ENV" && isset($_ENV[$testParam[1]])) {
+							continue;
+						} else {
+							LoadConfigFile($file,$mode);
+						}//DEFINE
+					} else {
+						LoadConfigFile($file,$mode);
+					}
+				} else {
+					LoadConfigFile($file,$mode);
+				}
+			}
+			return true;
+		}
 		if(file_exists($path) && is_readable($path))	{
 			$cfgData=file_get_contents($path);
 			$cfgData=explode("\n",$cfgData."\n");
@@ -114,11 +141,64 @@ if(!function_exists('LoadConfigFile')) {
 			}
 		}
 	}
+	function loadSecureConfig($configName,$key=null,$mode="auto") {
+		$cfgData=array();
+		$f=ROOT.CFG_FOLDER."security/{$configName}.json";
+		if(file_exists($f)) {
+			$data=file_get_contents($f);
+			if(strlen($data)>2) {
+				$json=json_decode($data,true);
+				if($key==null) {
+					$fData=array();
+					if(isset($json['GLOBALS'])) {
+						$fData[]=$json['GLOBALS'];
+					}
+					if(isset($json[SITENAME])) {
+						$fData[]=$json[SITENAME];
+					}
+					for ($i=1; $i <count($fData) ; $i++) { 
+						$fData[0]=array_merge($fData[0],$fData[$i]);
+					}
+					$cfgData=$fData[0];
+				} else {
+					if(isset($json[$key])) {
+						$cfgData=$json[$key];
+					} elseif(isset($json["GLOBALS"])) {
+						$cfgData=$json["GLOBALS"];
+					}
+				}
+				
+			}
+		}
+		switch ($mode) {
+			case 'DEFINE':
+				foreach ($cfgData as $key => $value) {
+					if(!defined($key)) define($key,$value);
+				}
+			break;
+			case 'SESSION':
+				foreach ($cfgData as $key => $value) {
+					$_SESSION[$key]=$value;
+				}
+			break;
+			case 'CONFIG':
+				foreach ($cfgData as $key => $value) {
+					$GLOBALS['CONFIG'][$key]=$value;
+				}
+			break;
+			case 'COOKIE':
+				foreach ($cfgData as $key => $value) {
+					$_COOKIE[$key]=$value;
+				}
+			break;
+		}
+		return $cfgData;
+	}
 	function fixPHPINIConfigs() {
 		if(function_exists("ini_set")) {
 			ini_set("date.timezone",getConfig("DEFAULT_TIMEZONE"));
 			ini_set("upload_max_filesize",MAX_UPLOAD_FILE_SIZE);
-			ini_set("post_max_size",MAX_UPLOAD_FILE_SIZE);
+			ini_set("post_max_size",MAX_UPLOAD_FILE_SIZE*10);
 			$a=ini_get("error_reporting");
 			$a=explode(",",$a);
 			$err=0;
@@ -137,6 +217,7 @@ if(!function_exists('LoadConfigFile')) {
 		} elseif(strlen(getConfig("SiteProtocol"))>0) {
 			$hostProtocol=getConfig("SiteProtocol")."://";
 		}
+		setConfig("SiteProtocol",str_replace("://","",$hostProtocol));
 		define("SiteRoot",$_SERVER['DOCUMENT_ROOT']."/".InstallFolder);
 		define("SiteLocation",$hostProtocol.$_SERVER['HTTP_HOST']."/".InstallFolder);
 		define("WEBROOT", SiteLocation);

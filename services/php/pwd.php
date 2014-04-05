@@ -13,7 +13,7 @@ if($_REQUEST["type"]=="dialog") {
 	changePWD();
 } elseif($_REQUEST["type"]=="generate") {
 	loadHelpers("pwdgen");
-	$pwd=generatePasswordY(PWD_MIN_LENGTH,3);
+	$pwd=generatePasswordY(getConfig("PWD_MIN_LENGTH"),3);
 	echo $pwd;	
 }
 exit();

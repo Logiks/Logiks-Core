@@ -1,14 +1,14 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-include "Mail.php";
-@include "Mail/mime.php";
-
 //$headers["Reply-To"] = "reply@address.com"; 
 //$headers["Content-Type"] = "text/plain; charset=ISO-2022-JP"; 
 //$headers["Return-path"] = "returnpath@address.com"; 
 
-if(!function_exists('validEmail')) {
+if(!function_exists('isValidEmail')) {
+	include "Mail.php";
+	@include "Mail/mime.php";
+
 	function isValidEmail($address) {
 		return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
 	}
@@ -30,7 +30,7 @@ if(!function_exists('validEmail')) {
 		}
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
 		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		$headers .= "To: $to" . "\r\n";
+		//$headers .= "To: $to" . "\r\n";
 		if(strlen($from)>0) $headers .= "From: $from" . "\r\n";
 		if(strlen($replyTo)>0) $headers .= "Reply-To: $replyTo" . "\r\n";
 		if(strlen($cc)>0) $headers .= "Cc: $cc" . "\r\n";
@@ -219,10 +219,11 @@ class EMail {
 		return $text;
 	}
 	private function createFrom() {
-		if(isset($_SESSION["SESS_USER_EMAIL"]) && strlen($_SESSION["SESS_USER_EMAIL"])>0) {
+		if(isset($_POST["from_email"]) && strlen($_POST["from_email"])>0 && strpos($_POST["from_email"],"@")>1) {
+			return $_POST["from_email"];
+		} elseif(isset($_SESSION["SESS_USER_EMAIL"]) && strlen($_SESSION["SESS_USER_EMAIL"])>0 && strpos($_SESSION["SESS_USER_EMAIL"],"@")>1) {
 			//return "From: ".$_SESSION["SESS_USER_NAME"]." ".$_SESSION["SESS_USER_EMAIL"]; 
-			//return $_SESSION["SESS_USER_EMAIL"];
-			return "";
+			return $_SESSION["SESS_USER_EMAIL"];
 		} else {
 			return "";
 		}

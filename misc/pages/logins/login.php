@@ -2,7 +2,7 @@
 if (!defined('ROOT')) exit('No direct script access allowed');
 
 _js(array("jquery","jquery.ui","jquery.ghosttext"));
-$css->loadSkin("jquery.ui.".$GLOBALS["CONFIG"]["LOGIN_JQTHEME"]);
+$css->loadSkin("jquery.ui.".$GLOBALS["CONFIG"]["LOGIN_SKIN"]);
 _css("login");
 
 $watermark=$GLOBALS["CONFIG"]["WATERMARK"];

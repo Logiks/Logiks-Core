@@ -3,16 +3,16 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists('loadAllWidgets')) {
-	function loadAllWidgets($widgetList, $params=array(), $asPortlets=false) {
+	function loadAllWidgets($widgetList, $params=array()) {
 		if(!is_array($widgetList)) {
 			$widgetList=explode(",",$widgetList);
 		} elseif(strlen($widgetList)<=0) return;
 
 		foreach($widgetList as $a) {
-			loadWidget($a,$params, $asPortlets);
+			loadWidget($a,$params);
 		}
 	}
-	function loadWidget($widget, $params=array(), $asPortlets=false) {
+	function loadWidget($widget, $params=array()) {
 		if(strlen($widget)<=0) return;
 		if(!Widgets::isEnabled($widget)) return;
 

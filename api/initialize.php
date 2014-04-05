@@ -37,15 +37,23 @@ if(!isset($initialized)) {
 	require_once ROOT. "api/configurator.php";
 
 	LoadConfigFile(ROOT . "config/basic.cfg");
-	LoadConfigFile(ROOT . "config/headers.cfg");
+	//LoadConfigFile(ROOT . "config/headers.cfg");
 	LoadConfigFile(ROOT . "config/system.cfg");
+	LoadConfigFile(ROOT . "config/developer.cfg");
 	LoadConfigFile(ROOT . "config/security.cfg");
-	LoadConfigFile(ROOT . "config/sysops.cfg");
-	LoadConfigFile(ROOT . "config/xtras.cfg");
-	LoadConfigFile(ROOT . "config/headers.cfg");
-	LoadConfigFile(ROOT . "config/framework.cfg");
-	LoadConfigFile(ROOT . "config/db.cfg");
 	LoadConfigFile(ROOT . "config/folders.cfg");
+	LoadConfigFile(ROOT . "config/others.cfg");
+	LoadConfigFile(ROOT . "config/xtras.cfg");
+	LoadConfigFile(ROOT . "config/framework.cfg");
+	
+	LoadConfigFile(ROOT . "config/db.cfg");
+	
+	LoadConfigFile(array(
+			ROOT . "config/masters_headers.cfg"=>"",
+			ROOT . "config/masters_folders.cfg"=>"",
+			ROOT . "config/masters_mobility.cfg"=>"",
+			ROOT . "config/masters_page.cfg"=>"",
+		));
 
 	header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
 
@@ -136,6 +144,9 @@ if(!isset($initialized)) {
 	$_REQUEST['site']=$site;
 	setcookie('LGKS_SESS_SITE',$site,time()+3600,"/");
 	if(!defined("SITENAME")) define("SITENAME",$site);
+	if(isset($_GET['page']) && (!isset($_REQUEST['page']) OR strlen($_REQUEST['page'])<=0)) {
+		$_REQUEST['page']=$_GET['page'];
+	}
 
 	include_once ROOT. "api/loaders.php";
 	include_once ROOT. "api/security.php";

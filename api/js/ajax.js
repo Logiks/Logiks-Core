@@ -80,8 +80,11 @@ function LAJAX() {
 
 		http.open("POST", formElement.getAttribute('action'), true);
 		http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		http.setRequestHeader("Content-length", params.length);
-		http.setRequestHeader("Connection", "close");
+		try {
+			http.setRequestHeader("Content-length", params.length);
+			http.setRequestHeader("Connection", "close");
+		} catch(e) {
+		}
 		http.send(params);
 	}
 
@@ -120,8 +123,11 @@ function LAJAX() {
 
 		xmlhttp.open("POST",linkURL,true);
 		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xmlhttp.setRequestHeader("Content-length", qurl.length);
-		xmlhttp.setRequestHeader("Connection", "close");
+		try {
+			xmlhttp.setRequestHeader("Content-length", qurl.length);
+			xmlhttp.setRequestHeader("Connection", "close");
+		} catch(e) {
+		}
 		xmlhttp.send(qurl);
 		xmlhttp.onreadystatechange=function() {
 			if (xmlhttp.readyState==4) {
@@ -170,8 +176,11 @@ function LAJAX() {
 
 		xmlhttp.open("POST",url,true);
 		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xmlhttp.setRequestHeader("Content-length", qurl.length);
-		xmlhttp.setRequestHeader("Connection", "close");
+		try {
+			xmlhttp.setRequestHeader("Content-length", qurl.length);
+			xmlhttp.setRequestHeader("Connection", "close");
+		} catch(e) {
+		}
 		xmlhttp.send(qurl);
 		xmlhttp.onreadystatechange=function() {
 			if (xmlhttp.readyState==4) {
@@ -262,6 +271,9 @@ function AJAXSubmit(id,href,func, hidden) {
 		function(txt){
 			$("*").removeClass("PageLoadWait");
 			invokeFunction(func,txt);
+		}
+	).fail(function() {
+	    lgksAlert("Sorry, could not save your data. Try Again.");
 	});
 	/*$.ajax({
 		  type: 'POST',

@@ -172,6 +172,47 @@ if(!function_exists("getQueryParams")) {
 		}
 		return $s;
 	}
+	function getPrettyLink() {
+		$link="";
+		$link=SiteLocation.SITENAME."/".$_REQUEST['page'];
+		$temp=$_REQUEST;
+		unset($temp['site']);unset($temp['page']);
+		unset($temp['forsite']);
+		foreach ($temp as $key => $value) {
+			$link.="/{$value}";
+		}
+		return $link;
+	}
+	function getCanonicalLink($pretty=true) {
+		$link="";
+		if($pretty) {
+			$link=SiteLocation.SITENAME."/".$_REQUEST['page'];
+			if(isset($_REQUEST['mod']) && $_REQUEST['page']=="modules") {
+				$link.="/".$_REQUEST['mod'];
+				if($_REQUEST['mod']=="forms") {
+					$link.="/".$_REQUEST['fid'];
+				} elseif($_REQUEST['mod']=="reports" || $_REQUEST['mod']=="reports2") {
+					$link.="/".$_REQUEST['rid'];
+				}
+			}
+			if(isset($_REQUEST['id'])) {
+				$link.="/".$_REQUEST['id'];
+			}
+		} else{
+			$link=SiteLocation;
+			$links=array();
+			$temp=$_REQUEST;
+			unset($temp['site']);
+			$links[]="site=".SITENAME;
+			foreach ($temp as $key => $value) {
+				$links[]="{$key}={$value}";
+			}
+			if(count($links)>0) {
+				$link.="?".implode("&", $links);
+			}
+		}
+		return $link;
+	}
 	function getPrettyPageLinkStyles() {
 		$arr=array(
 				"Logiks Default Style"=>"default",

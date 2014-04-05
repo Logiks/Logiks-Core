@@ -51,31 +51,6 @@ function __autoload($class) {
 	if(!$found && SERVICE_DEBUG=="true") trigger_error("$class Class Not Found within given paths");
 }
 
-function getServiceCtrlConfig() {
-	$jsonDb=array();
-	
-	if(defined("APPS_CONFIG_FOLDER"))
-		$f1=APPROOT.APPS_CONFIG_FOLDER."security/services.json";
-	else
-		$f1="";
-	$f2=ROOT.CFG_FOLDER."security/services.json";
-	$db1=array();$db2=array();
-	if(strlen($f1)>0 && file_exists($f1)) {
-		$d1=file_get_contents($f1);
-		$db1=json_decode($d1,true);
-	}
-	if(strlen($f2)>0 && file_exists($f2)) {
-		$d1=file_get_contents($f2);
-		$db2=json_decode($d1,true);
-	}
-	if($db1==null) $db1=array();
-	if($db2==null) $db2=array();
-
-	$jsonDb=array_merge($db2,$db1);
-	//printArray($jsonDb);
-	return $jsonDb;
-}
-
 function loadSysConfigs() {
 	LoadConfigFile(ROOT . "config/system.cfg");
 	LoadConfigFile(ROOT . "config/xtras.cfg");
@@ -83,6 +58,8 @@ function loadSysConfigs() {
 	LoadConfigFile(ROOT . "config/framework.cfg");
 	LoadConfigFile(ROOT . "config/db.cfg");
 	LoadConfigFile(ROOT . "config/folders.cfg");
+	
+	ini_set("error_reporting",getConfig("SERVICE_ERROR_REPORTING_LEVEL"));
 
 	fixPHPINIConfigs();
 }

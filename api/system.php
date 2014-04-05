@@ -59,7 +59,7 @@ if(!function_exists("createTimeStamp")) {
 	//Initializes The User Names, etc...
 	function initUserCredentials() {
 		if(isset($_SESSION["SESS_USER_ID"])) {
-			$q1="SELECT userid,name,email,mobile,address,access,privilege FROM "._dbTable("users",true)." where userid='".$_SESSION["SESS_USER_ID"]."'";
+			$q1="SELECT userid,name,email,mobile,address,access,privilege FROM "._dbtable("users",true)." where userid='".$_SESSION["SESS_USER_ID"]."'";
 			$res1=_dbQuery($q1,true);
 			if($res1) {
 				$data=_db()->fetchData($res1);
@@ -172,7 +172,8 @@ if(!function_exists("createTimeStamp")) {
 	function get_handlers($activity,$forceReload=false) {
 		if($activity==null || strlen($activity)<=0) return array();
 		if(!isset($GLOBALS['DEFAULT_HANDLERS']) || $forceReload) {
-			$dmArr=loadFeature("default_handlers");
+			$jsondb=new SimpleJSONDB(ROOT.MISC_FOLDER."jsondb/");
+			$dmArr=$jsondb->getAll("default_handlers");
 			if(!$dmArr) {
 				$dmArr=array();
 			}

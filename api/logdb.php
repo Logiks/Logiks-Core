@@ -181,6 +181,7 @@ class LogDB {
 			$_SESSION["LOGPARAMS"]["site"]=$site;
 			$_SESSION["LOGPARAMS"]["errorParams"]=$errorParams;
 			$_SESSION["LOGPARAMS"]["device"]=$this->getMyDevice();
+			$_SESSION["LOGPARAMS"]["referer"]=$_SERVER["HTTP_REFERER"];
 			
 			$sql=preg_replace_callback("/%[a-zA-Z0-9-_]+%/",array($this,"processSQLfunction"),$sql);
 			
@@ -204,7 +205,8 @@ class LogDB {
 			$errorLog=$_SERVER['REQUEST_URI'];
 		}
 		if($errorMsg==null) {
-			include ROOT."config/errors.php";
+			include_once ROOT."config/errors.php";
+			global $error_codes;
 			if(array_key_exists($errorCode,$error_codes)) {
 				$errorMsg=$error_codes[$errorCode][0];
 				if($errorLog==null || strlen($errorLog)==0) {
@@ -287,7 +289,9 @@ class LogDB {
 			$dbtbl=$this->getSQLTableName($query);
 		}
 		if($db==null) {			
-			$db=_db()->getdbName();
+			if(is_object(_db()))
+				$db=_db()->getdbName();
+			else return false;
 		}
 		
 		$query=str_replace('"','\"',$query);
@@ -328,7 +332,7 @@ class LogDB {
 	}
 	public function log_VisitorEvent() {
 		if(LOG_EVENTS_VISITOR=="none") {
-			return;
+			return true;
 		}
 		$infoQuery="";
 		if(LOG_EVENTS_VISITOR=="lifetime") {
@@ -342,9 +346,10 @@ class LogDB {
 		} elseif(LOG_EVENTS_VISITOR=="always") {
 			$infoQuery="1=1";
 		} else {
-			return false;
+			return true;
 		}
-		if(!isset($_SESSION["SESS_USER_ID"]) || $_SESSION["SESS_USER_ID"]=="guest") {
+		
+		if(!isset($_SESSION["SESS_USER_ID"]) || strtolower($_SESSION["SESS_USER_ID"])=="guest") {
 			$where="";
 			if(LOG_VISITORS_PAGE=="true" || LOG_VISITORS_PAGE==1) {
 				$where="page='$page' ";

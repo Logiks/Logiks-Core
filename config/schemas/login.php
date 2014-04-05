@@ -14,7 +14,7 @@ $cfgSchema["LOGIN_THEME"]=array(
 		"type"=>"list",
 		"function"=>"getLGThemeList"
 	);
-$cfgSchema["LOGIN_JQTHEME"]=array(
+$cfgSchema["LOGIN_SKIN"]=array(
 		"type"=>"list",
 		"function"=>"getJQSkinList"
 	);

@@ -67,10 +67,64 @@ if(!function_exists("redirectToApp")) {
 	}
 }
 if(!function_exists("printHTMLPageHeader")) {
-	function printHTMLPageHeader() {
+	function printHTMLBodyHeader($params=array()) {
+		loadModule("core");loadModule(SITENAME);
+		foreach ($params as $key => $value) {
+			switch ($key) {
+				case 'css':
+					_css($value);
+				break;
+				case 'js':
+					_js($value);
+				break;
+				case 'modules':
+					if(is_array($value)) {
+						foreach ($value as $f) {
+							if($f!="core" && $f!=SITENAME) {
+								loadModules($f);
+							}
+						}
+					} else{
+						if($value!="core" && $value!=SITENAME) {
+							loadModules($value);
+						}
+					}
+				break;
+				case 'helpers':
+					loadHelpers($value);
+				break;
+				case 'function':
+					if(function_exists($value)) {
+						call_user_func($value);
+					}
+				break;
+				case 'config':
+					if(is_array($value)) {
+						foreach ($value as $f) {
+							LoadConfigFile($f);
+						}
+					} else{
+						LoadConfigFile($value);
+					}
+				break;
+			}
+		}
+		_css(explode(",", getConfig("DEFAULT_CSS_TO_LOAD")));
+		_js(explode(",", getConfig("DEFAULT_JS_TO_PRELOAD")));
+		getUserPageStyle(true);
+		echo "</head>";
+		echo "<body ".getBodyContext().">";
+		runHooks("afterPage");
+	}
+	function printHTMLBodyClose() {
+		echo "</body>";
+		_js(explode(",", getConfig("DEFAULT_JS_TO_POSTLOAD")));
+	}
+	function printHTMLPageHeader($closeHead=false) {
 		if(!isset($_REQUEST["page"]) || strlen($_REQUEST["page"])==0) {
 			$_REQUEST["page"]=getConfig("LANDING_PAGE");
 		}
+		runHooks("preHead");
 		$meta=getMetaTags();
 
 		$title=$meta['title'];
@@ -117,7 +171,7 @@ if(!function_exists("printHTMLPageHeader")) {
 		$headerHTML.="<head ".getConfig('HEADER.HEAD_ATTRIBUTES').">\n";
 		
 		echo $headerHTML;
-		runHooks("preHead");
+		runHooks("afterHead");
 		$headerHTML="";
 		
 		$headerHTML.="\t<title>$title</title>\n";
@@ -182,7 +236,8 @@ if(!function_exists("printHTMLPageHeader")) {
 			$headerHTML.=$meta['metatags'];
 		}
 		echo $headerHTML;
-		runHooks("postHeader");
+		runHooks("postHead");
+		if($closeHead) echo "</head>";
 	}
 
 	function getMetaTags() {

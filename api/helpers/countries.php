@@ -1022,6 +1022,7 @@ if(!function_exists("getCountryList")) {
 		sort($arr1);
 		$arrReverse=array_flip($arr);
 		$default=strtoupper($default);
+		$s="";
 		foreach($arr1 as $a=>$b) {
 			$a=$arrReverse[$b];
 			if($useShortCode) {

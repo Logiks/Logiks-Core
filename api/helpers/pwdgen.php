@@ -66,7 +66,7 @@ if(!function_exists("generatePassword")) {
 		if (strlen($pwd) < 4) {
 			return $strength[1];
 		}		
-		if (strlen($pwd) >= PWD_MIN_LENGTH) {
+		if (strlen($pwd) >= getConfig("PWD_MIN_LENGTH")) {
 			$score++;
 		}
 		if (strlen($pwd) >= 12) {

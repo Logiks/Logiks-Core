@@ -84,12 +84,14 @@ if(!function_exists("createSelector")) {
 				}
 				$s .="<tr class='$tr_class' row='$i'>";
 				if(is_array($data[$i])){
+					$key=array_keys($data[$i]);
 					for($j=0;$j<count($data[$i]);$j++){
-						$d=explodeTagData($data[$i][$j]);
+						$d=explodeTagData($data[$i][$key[$j]]);
 
 						$s .="<td";
 						if(strlen($d['id'])>0) $s.=" id='".$d['id']."'";
-						if(strlen($d['class'])>0) $s.=" class='".$d['class']."'";
+						if(isset($d['class']) && strlen($d['class'])>0) $s.=" class='".$d['class']."'";
+						else  $s.=" class='".$key[$j]."'";
 						$s.=" col='$j'";
 						if($named && isset($cols[$j])) $s.=" name='".$cols[$j]."'";
 						$s .=">";

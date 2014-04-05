@@ -117,7 +117,9 @@ class PHooksQueue {
 				$arr=scandir(ROOT.HOOKS_FOLDER.$hookState);
 				unset($arr[0]);unset($arr[1]);
 				foreach($arr as $b) {
-					if(strpos($b,"~")!==0 && strpos($b,".")!==0 && end(explode(".",$b))=="php") {
+					$bx=explode(".",$b);
+					$bx=end($bx);
+					if(strpos($b,"~")!==0 && strpos($b,".")!==0 && $bx=="php") {
 						array_push($out["CORE"],$b);
 					}
 				}
