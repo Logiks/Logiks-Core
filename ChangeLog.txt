@@ -49,4 +49,3 @@ Lots of Bug Fixes, and changes in the path of a major update in next version.
 VERDICT
 This is final stable update, this will be supported for the next upgrade to v4.0
 Updated lots of security features,routing features, hooks.
-Altered configuration system and updated page layout systems.
