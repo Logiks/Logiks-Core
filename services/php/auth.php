@@ -41,8 +41,8 @@ $date=date('Y-m-d');
 
 $userFields=explode(",", USERID_FIELDS);
 
-$q1="SELECT id, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
-//$q1="SELECT id, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where userid='$userid' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
+$q1="SELECT id, guid, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
+//$q1="SELECT id, guid, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where userid='$userid' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
 
 if(CASE_SENSITIVE_AUTH=="true") {
 	foreach ($userFields as $key => $value) {
@@ -126,6 +126,7 @@ if(count($allSites)>0) {
 $_SESSION['SESS_USER_ID'] = $userid;
 $_SESSION['SESS_PRIVILEGE_ID'] = $data['privilege'];
 $_SESSION['SESS_ACCESS_ID'] = $data['access'];
+$_SESSION['SESS_GUID'] = $data['guid'];
 
 $_SESSION['SESS_PRIVILEGE_NAME'] = $d2['name'];
 $_SESSION['SESS_ACCESS_NAME'] = $d1['master'];

@@ -233,5 +233,38 @@ if (!function_exists('printArray')) {
 		}
 		return md5($pwd);
 	}
+	function arrayToHTML($arr=array(),$format="table") {
+		$out="";
+		//printArray($arr);
+		switch ($format) {
+			case 'list':
+				$out="<ul>";
+				foreach($arr as $a=>$v){
+					$a=toTitle($a);
+					if(is_array($v)){
+						$out.="<li>$a : </li>";
+						$out.=arrayToHTML($v,$format);
+					} else {
+						$out.="<li>$a : $v</li>";
+					}
+				}
+				$out.="</ul>";
+				break;
+			case 'table':
+			default:
+				$out = '<table width=100%>';
+				foreach($arr as $a=>$v){
+					$a=toTitle($a);
+					if(is_array($v)){
+				      $out .= '<tr><td colspan=10>'.arrayToHTML($v).'</td></tr>';
+				    }else{
+				      $out .= "<tr><td>$a</td><td>$v</td></tr>";
+				    }
+				}
+				$out.='</table>';
+				break;
+		}
+		return $out;
+	}
 }
 ?>

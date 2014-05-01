@@ -106,11 +106,93 @@ if(!function_exists('displayLayout')) {
 			exit();
 		}
 	}
+	function findPage($page) {
+		$layout=isLogiksLayout($page);
+		$loaded=false;
+		if($layout) {
+			$loaded=true;
+			getUserPageStyle(true);
+			echo "</head>\n\n<body ".getBodyContext().">";
+			generatePageLayout($page);
+			echo "</body>";
+		} else {
+			$device=strtoupper(getUserDeviceType());
+			$arrPages=array();
+			$arrErrPages=array();
+			if(defined("APPS_{$device}_PAGES_FOLDER")) {
+				array_push($arrPages,APPROOT.constant("APPS_{$device}_PAGES_FOLDER")."{$page}.php");
+				array_push($arrErrPages,APPROOT.constant("APPS_{$device}_PAGES_FOLDER")."error.php");
+			}
+			if(defined("APPS_PAGES_FOLDER")) {
+				array_push($arrPages,APPROOT.APPS_PAGES_FOLDER."{$page}.php");
+				array_push($arrErrPages,APPROOT.APPS_PAGES_FOLDER."error.php");
+			}
+			if(getConfig("ALLOW_DEFAULT_SYSTEM_PAGES")=="true") {
+				array_push($arrPages,ROOT.PAGES_FOLDER."{$page}.php");
+				array_push($arrErrPages,ROOT.PAGES_FOLDER."errors/404.php");
+				array_push($arrErrPages,ROOT.PAGES_FOLDER."errors/default.php");
+			}
+			foreach($arrPages as $f) {
+				if(file_exists($f)) {
+					$loaded=true;
+					getUserPageStyle(true);
+					echo "</head>\n\n<body ".getBodyContext().">";
+					include $f;
+					echo "</body>";
+					break;
+				}
+			}
+		}
+		if(!$loaded) {
+			$page="error";
+			$layout=isLogiksLayout($page);
+			$deviceFolder="APPS_{$device}_PAGES_FOLDER";
+			if($layout) {
+				$loaded=true;
+				getUserPageStyle(true);
+				echo "</head>\n\n<body ".getBodyContext().">";
+				generatePageLayout($page);
+				echo "</body>";
+			} elseif(constant($deviceFolder) && file_exists(APPROOT.constant($deviceFolder)."{$page}.php")) {
+				$f=APPROOT.constant($deviceFolder)."{$page}.php";
+				$loaded=true;
+				getUserPageStyle(true);
+				echo "</head>\n\n<body ".getBodyContext().">";
+				include $f;
+				echo "</body>";
+			} elseif(defined("APPS_PAGES_FOLDER") && file_exists(APPROOT.APPS_PAGES_FOLDER."{$page}.php")) {
+				$f=APPROOT.APPS_PAGES_FOLDER."{$page}.php";
+				$loaded=true;
+				getUserPageStyle(true);
+				echo "</head>\n\n<body ".getBodyContext().">";
+				include $f;
+				echo "</body>";
+			} else {
+				trigger_ErrorCode(404,"Sorry, Requested <i>{$_REQUEST['page']}</i> Page Not Found.");
+			}
+		}
+	}
 	function isLogiksLayout($layout) {
-		$appLayoutDir=APPROOT.APPS_PAGES_FOLDER."layouts/";
-		$f1=$appLayoutDir."{$layout}.json";
-		if(file_exists($f1) && is_readable($f1)) {
-			return true;
+		$device=strtoupper(getUserDeviceType());
+		$deviceFolder="APPS_{$device}_PAGES_FOLDER";
+
+		if(constant($deviceFolder)) {
+			$pagesDir=APPROOT.constant($deviceFolder);
+			if(is_dir($pagesDir)) {
+				$f1=$pagesDir."layouts/{$layout}.json";
+				if(file_exists($f1) && is_readable($f1)) {
+					return $f1;
+				}
+				return false;
+			}	
+		}
+		$pagesDir=APPROOT.constant("APPS_PAGES_FOLDER");
+		if(is_dir($pagesDir)) {
+			$f1=$pagesDir."layouts/{$layout}.json";
+			if(file_exists($f1) && is_readable($f1)) {
+				return $f1;
+			}
+			return false;
 		}
 		return false;
 	}

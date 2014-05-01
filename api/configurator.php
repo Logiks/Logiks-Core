@@ -114,7 +114,7 @@ if(!function_exists('LoadConfigFile')) {
 								$mode="COOKIE";
 								break;
 							case "[DATABUS]":
-								$mode="DATABUS";
+								$mode="CONFIG";
 								break;
 							default:
 								$mode="DEFINE";

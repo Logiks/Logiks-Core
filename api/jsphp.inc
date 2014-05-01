@@ -38,6 +38,7 @@ class JsPHP extends DataEmbedder {
 	}
 
 	public function getDataPath($jslib,$vers="*") {
+		if(strlen($jslib)<=0) return false;
 		global $JS_PATH, $JS_LINK;
 
 		if($vers=="*") $vers="";
@@ -66,6 +67,7 @@ class JsPHP extends DataEmbedder {
 			array_push($paths, $a[0]. "/" . $jslib);
 			array_push($paths, $a[0]. "/" . str_replace($a[0].".","",$jslib));
 		}
+		$theme=CssPHP::singleton()->getTheme();
 		if(defined("APPROOT")) {
 			foreach($paths as $p) {
 				if(file_exists(APPROOT."js/{$p}.js")) {
@@ -77,6 +79,16 @@ class JsPHP extends DataEmbedder {
 
 					$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
 
+					return $data;
+				} elseif(file_exists(ROOT.THEME_FOLDER."$theme/{$p}.js")) {
+					$jsp=THEME_FOLDER."$theme/{$p}";
+					$JSLINK=WEBROOT . $jsp . ".js";
+					$JSFILE=ROOT . $jsp . ".js";
+					$JSCACHE=ROOT . CACHE_FOLDER . md5($JSFILE) . ".js";
+					$JSCACHELINK=SiteLocation . CACHE_FOLDER . md5($JSFILE) . ".js";
+
+					$data=array($JSLINK, $JSFILE, $JSCACHE,$JSCACHELINK);
+					
 					return $data;
 				} elseif(file_exists(APPROOT."plugins/modules/{$p}/script.js")) {
 					$jsp="plugins/modules/{$p}/script";

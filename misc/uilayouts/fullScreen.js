@@ -51,10 +51,6 @@ function resizeLayoutUI() {
 		$("#content").css("width",(w1-0)+"px");
 		$("#content").css("top",insetContent+"px");
 	}
-	if($("#dashboard").length>0) {
-		$("#dashboard").css("height",($("#content").height()-5)+"px");
-		$(".ui-tabs-panel").css("height",$("#dashboard").height()-10);
-	}
 }
 function loadBrowserCompatiblity() {
 	if(navigator.appName.toLowerCase().indexOf("explorer")>-1) {

@@ -189,39 +189,47 @@ if(!function_exists("printHTMLPageHeader")) {
 		$headerHTML.="\t<meta name='viewport' content='".getConfig("PAGE_VIEWPORT")."'>\n";
 		$headerHTML.="\t<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>\n\n";
 
-		$headerHTML.="\t<meta http-equiv='content-language' content='$defaultLocale' />\n";
-		$headerHTML.="\t<meta http-equiv='cache-control' content='$pageCacheControl'>	\n";
-		$headerHTML.="\t<meta http-equiv='pragma' content='$pagePragma'>\n";
-		if(strlen($expires)>0) {
-			$headerHTML.="\t<meta http-equiv='expires' content='$expires GMT'>\n";
-		}
-		if(strlen($lastModified)>0) {
-			$headerHTML.="\t<meta http-equiv='last-modified' content='$lastModified GMT'>\n";
-		}
-		if(strlen($refresh)>0) {
-			$headerHTML.="\t<meta http-equiv='refresh' content='$refresh' />\n";
-		}
+		$device=getUserDeviceType();
 
-		if(getConfig("SHOW_DEVELOPER_META")=="true") {
-			$headerHTML.="\n\t<meta name='author' lang='$defaultLocale' content='$devAuthor; e-mail:$devMail' />\n";
-			$headerHTML.="\t<meta name='copyright' lang='$defaultLocale' content='$devCopy' />\n\n";
-		} else {
-			$headerHTML.="\n";
-		}
-		$headerHTML.="\t<meta name='author' lang='$defaultLocale' content='$appsCompany; e-mail:$appsMail' />\n";
-		$headerHTML.="\t<meta name='copyright' lang='$defaultLocale' content='$appsCopy' />\n\n";
+		if($device=="pc") {
+			$headerHTML.="\t<meta http-equiv='content-language' content='$defaultLocale' />\n";
+			$headerHTML.="\t<meta http-equiv='cache-control' content='$pageCacheControl'>	\n";
+			$headerHTML.="\t<meta http-equiv='pragma' content='$pagePragma'>\n";
+			if(strlen($expires)>0) {
+				$headerHTML.="\t<meta http-equiv='expires' content='$expires GMT'>\n";
+			}
+			if(strlen($lastModified)>0) {
+				$headerHTML.="\t<meta http-equiv='last-modified' content='$lastModified GMT'>\n";
+			}
+			if(strlen($refresh)>0) {
+				$headerHTML.="\t<meta http-equiv='refresh' content='$refresh' />\n";
+			}
 
-		if(strlen($descs)>0) {
-			$headerHTML.="\t<meta name='description' content='$descs' />\n";
-		}
-		if(strlen($keywords)>0) {
-			$headerHTML.="\t<meta name='keywords' content='$keywords' />\n";
-		}
-		if(strlen($robots)>0) {
-			$headerHTML.="\t<meta name='robots' content='$robots' />\n";
-		}
+			if(getConfig("SHOW_DEVELOPER_META")=="true") {
+				$headerHTML.="\n\t<meta name='author' lang='$defaultLocale' content='$devAuthor; e-mail:$devMail' />\n";
+				$headerHTML.="\t<meta name='copyright' lang='$defaultLocale' content='$devCopy' />\n\n";
+			} else {
+				$headerHTML.="\n";
+			}
+			$headerHTML.="\t<meta name='author' lang='$defaultLocale' content='$appsCompany; e-mail:$appsMail' />\n";
+			$headerHTML.="\t<meta name='copyright' lang='$defaultLocale' content='$appsCopy' />\n\n";
 
-		$headerHTML.="\t\n";
+			if(strlen($descs)>0) {
+				$headerHTML.="\t<meta name='description' content='$descs' />\n";
+			}
+			if(strlen($keywords)>0) {
+				$headerHTML.="\t<meta name='keywords' content='$keywords' />\n";
+			}
+			if(strlen($robots)>0) {
+				$headerHTML.="\t<meta name='robots' content='$robots' />\n";
+			}
+
+			$headerHTML.="\t\n";
+
+			if(getConfig("PRINT_METATAGS")=="true") {
+				$headerHTML.=$meta['metatags'];
+			}
+		}
 
 		if(getConfig("PRINT_PHP_HEADERS")=="true") {
 			header( "Content-language: $defaultLocale" );
@@ -232,9 +240,6 @@ if(!function_exists("printHTMLPageHeader")) {
 			if(strlen($lastModified)>0) header( "Last-Modified: $lastModified GMT" );
 		}
 
-		if(getConfig("PRINT_METATAGS")=="true") {
-			$headerHTML.=$meta['metatags'];
-		}
 		echo $headerHTML;
 		runHooks("postHead");
 		if($closeHead) echo "</head>";

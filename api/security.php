@@ -193,8 +193,7 @@ if(!function_exists("session_check")) {
 		if($pridid>0 && $pridid<3) return true;
 
 		$site=SITENAME;
-		$privilege=md5($pridid);
-		$f=ROOT.CACHE_PERMISSIONS_FOLDER."{$site}/{$privilege}.dat";
+		$f=Security::generateUserLinksFile($pridid);
 		
 		if(!file_exists($f)) {
 			Security::generateUserLinksCache($pridid);

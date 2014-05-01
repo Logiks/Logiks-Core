@@ -23,10 +23,7 @@
 	padding: 1px 4px 1px 4px;
 	width:90%;
 }
-.formTable select {
-	width:93%;
-}
-ul.formTable select {
+.formTable select,ul.formTable select {
 	width:92%;
 }
 .formTable input[type=radio], .formTable input[type=checkbox] {

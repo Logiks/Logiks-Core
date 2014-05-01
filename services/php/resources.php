@@ -13,7 +13,6 @@ if(isset($_REQUEST['src'])) {
 			$lessData=file_get_contents($_REQUEST['src']);
 
 			$p=getWebpath($_REQUEST['src']);
-			if(function_exists('getCDNNetwork')) $p=getCDNNetwork($p);
 			$search = '#url\((?!\s*[\'"]?(?:https?:)?//)\s*([\'"])?#';
 			$replace = "url($1{$p}";
 			$lessData = preg_replace($search, $replace, $lessData);

@@ -106,11 +106,16 @@ class Security {
 		}
 		file_put_contents($f,$s);
 	}
+	public static function generateUserLinksFile($pridid) {
+		$privilege=md5($pridid.$_SERVER['HTTP_HOST'].SITENAME);
+		$f=ROOT.CACHE_PERMISSIONS_FOLDER."{$site}/{$privilege}.dat";
+		return $f;
+	}
 	public static function generateUserLinksCache($pridid) {
 		$site=SITENAME;
 
-		$privilege=md5($pridid);
-		$f=ROOT.CACHE_PERMISSIONS_FOLDER."{$site}/{$privilege}.dat";
+		$f=Security::generateUserLinksFile($pridid);
+		
 		
 		$sys=false;
 		if(isAdminSite(false)) {

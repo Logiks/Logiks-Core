@@ -166,6 +166,7 @@ CREATE TABLE `lgks_sys_iplist` (
 
 CREATE TABLE `lgks_users` (
    `id` int(11) not null auto_increment,
+   `guid` varchar(150) not null default '3cbfc610b158e774809db3a5bdf4124c',
    `userid` varchar(150) not null,
    `pwd` varchar(100),
    `site` varchar(150) not null,

@@ -35,7 +35,7 @@ if(!isset($initialized)) {
 	define ('ROOT', dirname(dirname(__FILE__)) . '/');
 
 	require_once ROOT. "api/configurator.php";
-
+	
 	LoadConfigFile(ROOT . "config/basic.cfg");
 	//LoadConfigFile(ROOT . "config/headers.cfg");
 	LoadConfigFile(ROOT . "config/system.cfg");

@@ -84,7 +84,7 @@ if(!function_exists('loadMedia')) {
 		}
 		return array();
 	}
-	function loadContent($p,$defaultContent=null) {
+	function loadContentData($p,$defaultContent=null) {
 		global $js,$css,$ling,$cache,$templates;
 		if(strlen($p)<=0) return;
 		$paths=array();
@@ -118,6 +118,13 @@ if(!function_exists('loadMedia')) {
 			else
 				echo $defaultContent;
 		}
+	}
+	function loadDefaultPage($page) {
+		$f=ROOT.PAGES_FOLDER.$page.".php";
+		if(file_exists($f)) {
+			include $f;
+			return true;
+		} else return false;
 	}
 	function getAllMediaFolders() {
 		$paths=array();

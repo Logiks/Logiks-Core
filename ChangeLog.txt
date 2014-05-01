@@ -1,5 +1,22 @@
-Changelog for Logiks v3.6
+Changelog for Logiks v3.6.1
+===========================
 	
+Modified the themeing system to be more compatible with mobility works
+The head tag now contains less head tags and lesser meta tags
+
+Modified auth system to contain guid now, this would help in more SAAS apps.
+
+Updated the controller and intrduces few system functions like findPage for cleaner and more automatic controller files.
+
+Now Theme folders can have js files as well.
+Template modifications
+
+Minor misc changes.
+
+
+Changelog for Logiks v3.6
+=========================
+
 API Level Changes (api, helpers, libraries)
 	inifuncs.php : to include few new functions to simplify creating cms.php
 	removed docs library and helper.
@@ -45,7 +62,3 @@ Depreciated
 Introduction of changelogs
 
 Lots of Bug Fixes, and changes in the path of a major update in next version.
-
-VERDICT
-This is final stable update, this will be supported for the next upgrade to v4.0
-Updated lots of security features,routing features, hooks.

@@ -31,6 +31,7 @@ if(!function_exists("_js")) {
 		$js->display();
 	}
 }
+//depreciated
 if(!function_exists("_skin")) {
 	function _skin($skin) {
 		$css=CssPHP::singleton();

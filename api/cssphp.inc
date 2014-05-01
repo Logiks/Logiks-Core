@@ -279,7 +279,6 @@ class CssPHP extends DataEmbedder {
 		} else {
 			$fp=_service("resources","load","css")."&src=".base64_encode($a);
 		}
-		if(function_exists('getCDNNetwork')) $fp=getCDNNetwork($fp);
 		return $fp;
 	}
 
@@ -308,7 +307,6 @@ class CssPHP extends DataEmbedder {
 		$p=getWebpath($cssFile);
 		//$p=substr($p,0,strlen($p)-1);
 
-		if(function_exists('getCDNNetwork')) $p=getCDNNetwork($p);
 		$search = '#url\((?!\s*[\'"]?(?:https?:)?//)\s*([\'"])?#';
 		$replace = "url($1{$p}";
 		$cssData = preg_replace($search, $replace, $cssData);

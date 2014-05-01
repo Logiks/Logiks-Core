@@ -10,68 +10,41 @@ if(!isset($_REQUEST["page"]) || strlen($_REQUEST["page"])==0) {
 }
 
 if(!isset($_SESSION["SESS_PRIVILEGE_NAME"])) $_SESSION["SESS_PRIVILEGE_NAME"]="guest";
-if(!isset($_SESSION["SESS_PRIVILEGE_ID"])) $_SESSION["SESS_PRIVILEGE_ID"]="guest";
+if(!isset($_SESSION["SESS_PRIVILEGE_ID"])) $_SESSION["SESS_PRIVILEGE_ID"]="Guest";
 if(!isset($_SESSION["SESS_USER_NAME"])) $_SESSION["SESS_USER_NAME"]="Guest";
 if(!isset($_SESSION["SESS_USER_ID"])) $_SESSION["SESS_USER_ID"]="-1";
 
 //echo $_REQUEST["page"];
-function __printPage() {
-	$page=$_REQUEST["page"];
-
-	_css(explode(",", getConfig("DEFAULT_CSS_TO_LOAD")));
-	_css("ie6","*","ie6");
-	_css("print","*","","print");
-	printSubSkin();
-
-	_js(explode(",", getConfig("DEFAULT_JS_TO_PRELOAD")));
+function __printPage($page=null) {
+	if($page==null) {
+		if(!isset($_REQUEST["page"]) || strlen($_REQUEST["page"])==0) {
+			$_REQUEST["page"]=getConfig("LANDING_PAGE");
+		}
+		$page=$_REQUEST["page"];
+	}
 
 	loadModule("core");loadModule(SITENAME);
+
+	$device=strtoupper(getUserDeviceType());
+	if($device=="PC") {
+		_css(explode(",", getConfig("DEFAULT_CSS_TO_LOAD")));
+		_css("ie6","*","ie6");
+		_css("print","*","","print");
+		printSubSkin();
+
+		_js(explode(",", getConfig("DEFAULT_JS_TO_PRELOAD")));
+
+		findPage($page);
 	
-	$loaded=false;
-	if(isLogiksLayout($page)) {
-		$loaded=true;
-		getUserPageStyle(true);
-		echo "</head><body ".getBodyContext().">";
-		generatePageLayout($page);
-		echo "</body>";
+		_js(explode(",", getConfig("DEFAULT_JS_TO_POSTLOAD")));	
 	} else {
-		$arrPages=array();
-		if(defined("APPS_PAGES_FOLDER")) {
-			array_push($arrPages,APPROOT.APPS_PAGES_FOLDER."{$page}.php");
-		}
-		if(getConfig("ALLOW_DEFAULT_SYSTEM_PAGES")=="true") {
-			array_push($arrPages,ROOT.PAGES_FOLDER."{$page}.php");
-		}
-		foreach($arrPages as $f) {
-			if(file_exists($f)) {
-				$loaded=true;
-				getUserPageStyle(true);
-				echo "</head><body ".getBodyContext().">";
-				include $f;
-				echo "</body>";
-				break;
-			}
-		}
+		_css(explode(",", getConfig("{$device}_CSS_TO_LOAD")));
+
+		_js(explode(",", getConfig("{$device}_JS_TO_PRELOAD")));
+
+		findPage($page);
+	
+		_js(explode(",", getConfig("{$device}_JS_TO_POSTLOAD")));	
 	}
-	if(!$loaded) {
-		$page="error";
-		if(isLogiksLayout($page)) {
-			$loaded=true;
-			getUserPageStyle(true);
-			echo "</head><body ".getBodyContext().">";
-			generatePageLayout($page);
-			echo "</body>";
-		} elseif(defined("APPS_PAGES_FOLDER") && file_exists(APPROOT.APPS_PAGES_FOLDER."{$page}.php")) {
-			$f=APPROOT.APPS_PAGES_FOLDER."{$page}.php";
-			$loaded=true;
-			getUserPageStyle(true);
-			echo "</head><body ".getBodyContext().">";
-			include $f;
-			echo "</body>";
-		} else {
-			trigger_ErrorCode(404,"Sorry, Requested <i>{$_REQUEST['page']}</i> Page Not Found.");
-		}
-	}
-	_js(explode(",", getConfig("DEFAULT_JS_TO_POSTLOAD")));
 }
 ?>

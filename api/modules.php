@@ -12,7 +12,7 @@ if(!function_exists('loadModule')) {
 	}
 	function loadModule($module) {
 		global $js,$css,$ling,$cache,$templates;
-		if(strlen($module)<=0) return;
+		if(strlen($module)<=0) return false;
 
 		$modulespath=getAllModulesFolders();
 
