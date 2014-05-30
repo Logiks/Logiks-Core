@@ -8,78 +8,58 @@ class ServiceSecurity {
 		$scmd=$request['scmd'];
 		$scmd=str_replace("/",".",$scmd);
 
-		$cmdCntrls=array(
-				"default_print_format"=>"json",
+		$cmdCntrlsDefault=array(
+				"default_print_format"=>getConfig("DEFAULT_OUTPUT_FORMAT"),
 				"privilege_model"=>array(),
-				"access_control"=>"public",
+				"access_control"=>getConfig("DEFAULT_ACCESS_CONTROL"),
 				"autocache"=>"false",
 				"nocache"=>"false",
 			);
 		$serviceCtrlDb=loadSecureConfig("services");
 		if(isset($serviceCtrlDb[$scmd])) {
 			$cmdCntrls=$serviceCtrlDb[$scmd];
+		} else {
+			$cmdCntrls=array();
 		}
+		$cmdCntrls=array_merge($cmdCntrlsDefault,$cmdCntrls);
 		
-		if(!isset($_GET['format']) && isset($cmdCntrls['default_print_format'])) {
+		if(!isset($_GET['format'])) {
 			$_REQUEST['format']=$cmdCntrls['default_print_format'];
 		}
-		if(!isset($_REQUEST['autocache']) && isset($cmdCntrls['autocache'])) {
+		if(!isset($_REQUEST['autocache'])) {
 			$_REQUEST['autocache']=$cmdCntrls['autocache'];
 		}
-		if(!isset($_REQUEST['nocache']) && isset($cmdCntrls['nocache'])) {
+		if(!isset($_REQUEST['nocache'])) {
 			$_REQUEST['nocache']=$cmdCntrls['nocache'];
 		}
-
-		if(isset($cmdCntrls['access_control'])) {
-			//access_control :: public,apikey,adminonly,onlogin,privileged
-			if($cmdCntrls['access_control']=="public") {
-				return $request;
-			} elseif($cmdCntrls['access_control']=="apikey") {
-				$httpRef=parseHTTPReferer();
-				if(isset($httpRef["HTTP_HOST"]) && strlen($httpRef["HTTP_HOST"])>0 && $httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) return $request;
-				$this->isRemoteKeyValid(true);
-				$this->checkHTTPReferenceLocks(true);
-				return $request;
-			} elseif($cmdCntrls['access_control']=="hostlock") {
-				$httpRef=parseHTTPReferer();
-				if(isset($httpRef["HTTP_HOST"]) && strlen($httpRef["HTTP_HOST"])>0 && $httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) {
-					return $request;
-				} else {
-					return array();
-				}
-			} elseif($cmdCntrls['access_control']=="adminonly") {
-				isAdminSite();
-				checkServiceSession();
-				return $request;
-			} elseif($cmdCntrls['access_control']=="onlogin") {
-				checkServiceSession();
-				return $request;
-			} elseif($cmdCntrls['access_control']=="none") {
-				return array();
-			} else {
-				return array();
-			}
-		}
-		$defaultAccessControl=getConfig("DEFAULT_ACCESS_CONTROL");
-		if($defaultAccessControl=="public"){
+		//access_control :: public,apikey,adminonly,onlogin,privileged
+		if($cmdCntrls['access_control']=="public") {
 			return $request;
-		} elseif($defaultAccessControl=="apikey") {
+		} elseif($cmdCntrls['access_control']=="apikey") {
 			$httpRef=parseHTTPReferer();
-			if(isset($httpRef["HTTP_HOST"]) && $httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) return $request;
+			if(isset($httpRef["HTTP_HOST"]) && strlen($httpRef["HTTP_HOST"])>0 && $httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) return $request;
 			$this->isRemoteKeyValid(true);
 			$this->checkHTTPReferenceLocks(true);
 			return $request;
-		} elseif($defaultAccessControl=="adminonly") {
-			checkServiceSession();
+		} elseif($cmdCntrls['access_control']=="hostlock") {
+			$httpRef=parseHTTPReferer();
+			if(isset($httpRef["HTTP_HOST"]) && strlen($httpRef["HTTP_HOST"])>0 && $httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) {
+				return $request;
+			} else {
+				return array();
+			}
+		} elseif($cmdCntrls['access_control']=="adminonly") {
 			isAdminSite();
-			return $request;
-		} elseif($defaultAccessControl=="onlogin") {
 			checkServiceSession();
 			return $request;
-		} elseif($defaultAccessControl=="none") {
+		} elseif($cmdCntrls['access_control']=="onlogin") {
+			checkServiceSession();
+			return $request;
+		} elseif($cmdCntrls['access_control']=="none") {
+			return array();
+		} else {
 			return array();
 		}
-		return array();
 	}
 
 	function isBlacklisted($autoQuit=false) {

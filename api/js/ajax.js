@@ -210,7 +210,7 @@ function LAJAX() {
 		else if(code=="50x") return "Server Errors";
 		else if(code==500) return "Internal Server Error";
 		else if(code==999) return "Null Initiallization Error";
-		else return "Unknown Error Code";
+		else return "Unknown Error Code #"+code;
 	}
 }
 function runAJAXPostForm(formElement, func) {

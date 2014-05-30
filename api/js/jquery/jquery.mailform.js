@@ -12,7 +12,7 @@ jQuery.mailform = function(to, subject, body, submitURL) {
 	}
 	id='mailform_'+to;
 	if((typeof lgksConfirm) == "function") {
-		s="<div style='width:770px;' align=left title='Mail To :"+to+"'>";
+		s="<div style='width:770px;' align=left>";
 		s+="<table id="+id+" width=100% border=0>";
 		s+="<tr valign=top><td width=120px><b>Mail To</b></td><td><input name=mailto class='emailfield' type=text style='width:100%;border:1px solid #aaa;' value='"+to+"' /></td></tr>";
 		s+="<tr valign=top><td width=120px><b>Subject</b></td><td><input name=subject type=text style='width:100%;border:1px solid #aaa;' value='"+subject+"'/></td></tr>";

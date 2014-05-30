@@ -157,7 +157,7 @@ function printHeader($ftype, $format, $fname="file") {
 	}
 	$format=strtolower($format);
 	
-	include_once ROOT.CFG_FOLDER."mimes.php";
+	loadHelpers("mimes");
 	
 	header("Cache-Control: private");
 	header("Pragma: no-cache");

@@ -104,6 +104,11 @@ class CssPHP extends DataEmbedder {
 	public function loadCSS($css,$themeName="*",$browser="",$media="") {
 		$paths=array();
 
+		$cdn=$this->getCDNResource($css,'css');
+		if($cdn!==false) {
+			return $this->loadCSSFromPath($css,$cdn,$browser,$media);
+		}
+
 		if(defined('BASEPATH')) {
 			array_push($paths,BASEPATH."css/$css");
 			array_push($paths,BASEPATH."plugins/modules/$css/style");
@@ -148,7 +153,22 @@ class CssPHP extends DataEmbedder {
 				return false;
 			}
 		}
-		if(file_exists(ROOT.$themePath)) {
+		if(substr($themePath, 0,2)=="//" ||
+			substr($themePath, 0,7)=="http://" ||
+			substr($themePath, 0,8)=="https://" ||
+			substr($themePath, 0,8)=="ftp://") {
+
+			$this->scripts[$css]=$themePath;
+			if(strlen($browser)>0) {
+				$this->specialLibs[$css]=$browser;
+			}
+			if(strlen($media)>0) {
+				$this->allMedias[$css]=strtolower($media);
+			} else {
+				$this->allMedias[$css]="screen";
+			}
+			return true;
+		} elseif(file_exists(ROOT.$themePath)) {
 			$this->scripts[$css]=$themePath;
 			if(strlen($browser)>0) {
 				$this->specialLibs[$css]=$browser;
@@ -267,6 +287,13 @@ class CssPHP extends DataEmbedder {
 	}
 
 	protected function getCSSWebPath($a,$params) {
+		if(substr($a, 0,2)=="//" ||
+			substr($a, 0,7)=="http://" ||
+			substr($a, 0,8)=="https://" ||
+			substr($a, 0,8)=="ftp://") {
+
+			return $a;
+		}
 		$a=$this->getCSSPath($a);
 		if(getConfig("CSS_CACHEBUSTER")=="true") $a.="?".rand();
 		$ext=explode(".",$a);

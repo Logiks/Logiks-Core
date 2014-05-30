@@ -1,7 +1,7 @@
 <?php
 require_once ('api/initialize.php');
 
-if(session_check()  && isset($_SESSION['SESS_USER_ID']) && $_SESSION['SESS_LOGIN_SITE']!="guest") {
+if(session_login_check()) {
 	header("location: index.php?site=".$_SESSION['SESS_LOGIN_SITE']);
 }
 
@@ -140,6 +140,7 @@ if(file_exists($apps_login_cfg)) {
 if(file_exists($apps_dir_cfg)) {
 	LoadConfigFile($apps_dir_cfg);
 }
+
 if(strlen(getConfig("APPS_NAME"))>0 && !defined("APPS_NAME")) define("APPS_NAME",getConfig("APPS_NAME"));
 if(strlen(getConfig("APPS_VERS"))>0 && !defined("APPS_VERS")) define("APPS_VERS",getConfig("APPS_VERS"));
 if(strlen(getConfig("APPS_COMPANY"))>0 && !defined("APPS_COMPANY")) define("APPS_COMPANY",getConfig("APPS_COMPANY"));
@@ -181,46 +182,46 @@ if(isset($domains) && is_array($domains)) {
 		if($t!=$site) $site_selector.="<option value='$t'>".strtoupper($b)."</option>";
 	}
 }
-$device="desktop";
+$device="pc";
 if(getConfig("USE_MOBILITY_LOGIN")=="true") {
 	$device=getUserDeviceType();
 } else {
-	$device="desktop";
+	$device="pc";
 }
-//$device="mobile";
-
 $loginTemplate="";
-if($device=="mobile" || $device=="tablet") {
-	if(defined("APPROOT") && defined("APPS_PAGES_FOLDER")) {
-		if(file_exists(APPROOT.APPS_PAGES_FOLDER."logins/mlogin.php")) {
-			$loginTemplate=APPROOT.APPS_PAGES_FOLDER."logins/mlogin.php";
-		}
+$loginPgArr=array();
+
+$p1=getConfig("LOGIN_PAGE_".strtoupper($device));
+$p2=getConfig("LOGIN_PAGE");
+
+if(defined("APPROOT") && defined("APPS_PAGES_FOLDER")) {
+	if(strlen($p1)>0) {
+		$loginPgArr[]=$p1;
+		$loginPgArr[]=APPROOT.APPS_PAGES_FOLDER."{$p1}.php";
 	}
-	if(strlen($loginTemplate)<=0 && file_exists(ROOT.PAGES_FOLDER."logins/mlogin.php")) {
-		$loginTemplate=ROOT.PAGES_FOLDER."logins/mlogin.php";
+	if(strlen($p2)>0) {
+		$loginPgArr[]=$p2;
+		$loginPgArr[]=APPROOT.APPS_PAGES_FOLDER."{$p2}.php";
 	}
-	if(strlen($loginTemplate)<=0)
-		$loginTemplate=ROOT.PAGES_FOLDER."logins/login.php";
-} else {
-	if(defined("APPROOT") && defined("APPS_PAGES_FOLDER")) {
-		if(file_exists(APPROOT.APPS_PAGES_FOLDER."logins/login.php")) {
-			$loginTemplate=APPROOT.APPS_PAGES_FOLDER."logins/login.php";
-		}
-	}
-	if(strlen($loginTemplate)<=0)
-		$loginTemplate=ROOT.PAGES_FOLDER."logins/login.php";
+	$loginPgArr[]=APPROOT.APPS_PAGES_FOLDER.GLOBAL_LOGIN_PAGE."-$device.php";
+	$loginPgArr[]=APPROOT.APPS_PAGES_FOLDER.GLOBAL_LOGIN_PAGE.".php";
 }
-if(strlen($loginTemplate)>0 && file_exists($loginTemplate)) {
-	ob_start();
-	include $loginTemplate;
-	$mainbody = ob_get_contents();
-	ob_end_clean();
-} else {
-	echo "<style>body {overflow:hidden;}</style>";
-	dispErrMessage("Login Page Missing For Site <u>{$site}</u>, It May Have Been Moved.","404:Login Not Found",
-		404,"media/images/unknown.png");
-	exit();
+$loginPgArr[]=ROOT.PAGES_FOLDER."login.php";
+foreach ($loginPgArr as $pg) {
+	if(strpos($pg,".php")===false) {
+		if(isLogiksLayout($pg)) {
+			$loginTemplate=$pg;
+			break;
+		}
+	} elseif(file_exists($pg)) {
+		$loginTemplate=$pg;
+		break;
+	}
 }
+if(strlen($loginTemplate)<=0) {
+	$loginTemplate=ROOT.PAGES_FOLDER."login.php";
+}
+//printArray($loginPgArr);exit($loginTemplate);
 
 $bodyContext="";
 if(getConfig("LOCK_CONTEXTMENU")=="true") $bodyContext.="oncontextmenu='return false' ";
@@ -236,31 +237,22 @@ $css->TypeOfDispatch("Tagged");
 $css->display();
 $js->TypeOfDispatch("Tagged");
 $js->display();
-
-_js(array("dialog"));
 ?>
 </head>
 <body <?=$bodyContext?>>
 <?php
 	runHooks("beforepageLogin");
-	echo $mainbody;	
+	if(file_exists($loginTemplate)) {
+		include $loginTemplate;
+	} elseif(strpos($loginTemplate,".php")===false) {
+		generatePageLayout($loginTemplate);
+	} else {
+		echo "<style>body {overflow:hidden;}</style>";
+		dispErrMessage("Login Page Missing For Site <u>{$site}</u>, It May Have Been Moved.","404:Login Not Found",
+			404,"media/images/unknown.png");
+	}
 	runHooks("afterpageLogin");
 ?>
-<div style="display:none">
-<div id=pwdrecover title="Password Recovery">
-	<table>
-		<tr>
-			<th align=left width=150px>UserID</th><td><input name=userid type=text readonly value="" class='ui-corner-all' /></td>
-		</tr>
-		<tr>
-			<th align=left width=150px>EMail</th><td><input name=email type=text class='ui-corner-all' /></td>
-		</tr>
-		<tr>
-			<th align=left width=150px>Date Of Birth</th><td><input name=dob type=text class='ui-corner-all' /></td>
-		</tr>
-	</table>
-</div>
-</div>
 </body>
 </html>
 <?php

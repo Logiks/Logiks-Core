@@ -113,9 +113,8 @@ class DomainMap {
 						$l=str_replace("?&","?",$l);
 						header("Location:$l");
 					} else {
-						header('HTTP/1.0 404 Not Found');
-						echo "<h1>404 Not Found</h1>";
-						echo "The page that you have requested could not be found.";
+						if(strlen($site)<=0) $site=$_REQUEST['site'];
+						trigger_NotFound("Site <b>'$site'</b> Was Not Found On System");
 						exit();
 					}
 				}

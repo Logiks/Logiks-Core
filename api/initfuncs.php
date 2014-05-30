@@ -243,6 +243,7 @@ if(!function_exists("printHTMLPageHeader")) {
 		echo $headerHTML;
 		runHooks("postHead");
 		if($closeHead) echo "</head>";
+		$_SERVER['HEADER-PRINTED']=true;
 	}
 
 	function getMetaTags() {

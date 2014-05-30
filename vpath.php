@@ -28,6 +28,7 @@ function analyzeQuery() {
 	}
 	$_SERVER['REQUEST_PATH']=$relUri;
 	$_SERVER['REQUEST_URI']=$ruri;
+	$_SERVER['ACTUAL_URI']=$uri;
 }
 function clearSiteParams() {
 	unset($_REQUEST['site']);
@@ -42,7 +43,6 @@ function debugQuery() {
 	echo "{$_REQUEST['site']} :: {$_REQUEST['page']}";
 	exit();
 }
-
 analyzeQuery();
 //debugQuery();
 

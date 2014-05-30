@@ -1,3 +1,23 @@
+Changelog for Logiks v3.6.2
+===========================
+
+Introduce php.cfg
+Cleaned up themes and improved login.php
+CDN System inclusion
+Fixed errors in logging because of db structure mismatch.
+Improved the logging system by adding to automatic services for requests and services logging.
+Changed the default error page looks, now mobile friendly.
+Changed the default login page looks, now mobile friendly.
+Improved the login system to store persistent logins as well.
+Persistant Session support.
+Now session continues beyond logins, ie persistent logins will have same session across multiple logins in same setup (browser and os).
+Updated the avatar service to remove a bug and added new methods like avatar using http://avatar.io/.
+Changed the logout link from api/logout.php to logout.php
+Added security paramters for blocking User Agents that are bots and spamwares and spywares.
+Improved Services sytem access controls, now default is hostlock, thus giving more security to the service section.
+Minor fixes.
+Additional new functions.
+
 Changelog for Logiks v3.6.1
 ===========================
 	
@@ -38,7 +58,7 @@ Other Changes
 	UIComponents, and many other APIs are better.
 	MISC/pages/SOS system has been removed.
 	Cleaned and remove unwanted systems.
-
+	Replaced through out system where privilege is to be sorted out (find_in_set('$pridid',privilege) OR privilege='*')
 Database Changes
 	Changed the default collations, charset and engine.
 	Updated the lgks_users : removed q1,a1,notes added geolocation,geoip,last_login,mauth

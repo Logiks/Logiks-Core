@@ -56,7 +56,10 @@ class DataEmbedder {
 		$s=$this->getSerializedName($jslib,$vers);
 		$p=$this->getDataPath($jslib,$vers);
 		
-		if(file_exists($p[1])) {
+		if($p[1]=="CDN") {
+			$this->scripts[$s]=$p;
+			return true;
+		} elseif(file_exists($p[1])) {
 			$this->scripts[$s]=$p;
 			return true;
 		} else {
@@ -106,6 +109,30 @@ class DataEmbedder {
 	
 	public function reset() {
 		$this->scripts=array();
+	}
+	public function getCDNResource($resource,$type) {
+		if(getConfig("CDN_DISABLE")=="true") {
+			unset($_SESSION['CDN-RESOURCES']);
+			return false;
+		}
+		if(!isset($_SESSION['CDN-RESOURCES'])) {
+			$cdnF="";
+			if(file_exists(APPROOT.JSONDB_FOLDER."cdn.json")) {
+				$cdnF=APPROOT.JSONDB_FOLDER."cdn.json";
+			} elseif(file_exists(ROOT.JSONDB_FOLDER."cdn.json")) {
+				$cdnF=ROOT.JSONDB_FOLDER."cdn.json";
+			} else {
+				return false;
+			}
+			$data=file_get_contents($cdnF);
+			$cdnSrc=json_decode($data,true);
+			$_SESSION['CDN-RESOURCES']=$cdnSrc;
+		}
+		$cdnSrc=$_SESSION['CDN-RESOURCES'];
+		if(isset($cdnSrc[$type][$resource])) {
+			return $cdnSrc[$type][$resource];
+		}
+		return false;
 	}
 }
 ?>

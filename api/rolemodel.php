@@ -42,7 +42,7 @@ class RoleModel {
 			$data=_dbData($r);
 			foreach($data as $d) {
 				$pid=$d['id'];
-				if($pid<=3) continue;
+				if($pid<=2) continue;
 				$privilegeid=$d['name'];
 				$sql="SELECT count(*) as cnt FROM {$roleTbl} WHERE ";
 				$sql.="site='".SITENAME."' AND category='$category' AND module='$module' AND activity='$activity' AND privilegeid='$privilegeid'";

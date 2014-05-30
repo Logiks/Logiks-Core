@@ -5,102 +5,29 @@ html,body {
 	width:100%;
 	height:100%;
 	
-	background: #e0f3fa; /* Old browsers */
-	background: url(../../../services/?scmd=gensvg&from=DEF3FA&to=7893A1);
-	background: -moz-linear-gradient(top, #DEF3FA 0%, #7893A1 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#DEF3FA), color-stop(100%,#7893A1)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #DEF3FA 0%, #7893A1 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #DEF3FA 0%,#7893A1 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #DEF3FA 0%, #7893A1 100%); /* IE10+ */
-	background: linear-gradient(top, #DEF3FA 0%, #7893A1 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#DEF3FA', endColorstr='#7893A1',GradientType=0 ); /* IE6-8 */
-	
+	background: url(../../../media/cssbg/slate.jpg);
+
 	display:block;
 	
-	font-family:Georgia;
+	font-family: Lucida Grande, Verdana, Lucida Sans Regular, Lucida Sans Unicode, Arial, sans-serif;
+	font-size: 12px;
 }
 img {
 	margin-right:2px;
 	border:0px;
 }
-
-label {
-	float:left;
-	width:100px;
-	height:22px;
-    font-weight:bold;
-    color:#FFF;
-    margin:0px;
-    margin-top:5px;
-}
-
-input[type=text], input[type=password] {
-	width:100%;
-	height:18px;
-	font-weight:bold;
-	font-family:Georgia;
-	border:1px solid #aaa;
-	background:white;
-}
-select {
-	width:100%;
-	height:25px;
-	float:right;
-	font-weight:bold;
-	
-	-moz-border-radius:5px; 
-	-webkit-border-radius:5px; 
-	-khtml-border-radius:5px; 
-	border-radius:5px;
-	border:1px solid #aaa;
-	
-	font-family: Lucida Grande, Verdana, Lucida Sans Regular, Lucida Sans Unicode, Arial, sans-serif;
-	font-size: 11px;
-	color:black;	
-	background:white;	
-}
-input[type=checkbox] {
-	float:left;
-	margin-top:5px;
-}
-button {
-	width:110px;
-	height:30px;
-	font-size:1em;
-	font-weight:bold;
-	cursor:pointer;
-	border-radius:1em;	
-	-webkit-border-radius: 1em;
-	-moz-border-radius: 1em;
-	-khtml-border-radius: 1em;
-}
-hr {
-	float:left;
-	margin-top:5px;
-	margin-left:-5%;
-	width:110%;
-	border-color:white;
-}
-#screentable {	
+#screentable {
+	width:100%;height:100%;
 }
 #logindiv {
-	width:350px;
-	height:350px;
+	width:320px;
+	height:260px;
 	margin-top:-160px;
 	
-	background: #356aa0;
-	background: #356aa0 url(../../../services/?scmd=gensvg&from=356aa0&to=356aa0);
-	background: -moz-linear-gradient(top, #356aa0 0%, #356aa0 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#356aa0), color-stop(100%,#356aa0));
-	background: -webkit-linear-gradient(top, #356aa0 0%,#356aa0 100%);
-	background: -o-linear-gradient(top, #356aa0 0%,#356aa0 100%);
-	background: -ms-linear-gradient(top, #356aa0 0%,#356aa0 100%);
-	background: linear-gradient(top, #356aa0 0%,#356aa0 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#356aa0', endColorstr='#356aa0',GradientType=0 );
-	
 	border:2px solid #356aa0;
-    
-    border-radius:1em;	
+	padding: 10px;
+
+	border-radius:1em;	
 	-webkit-border-radius: 1em;
 	-moz-border-radius: 1em;
 	-khtml-border-radius: 1em;
@@ -112,10 +39,7 @@ hr {
 }
 
 #loginLogo {
-	background: transparent url(images/login/lock.png) no-repeat center center;
-	width:85px;
-	height:85px;
-	margin:0px;
+	display: none;
 }
 #loginHeader {
     font-size: 25pt;
@@ -137,14 +61,12 @@ hr {
 	padding-top:0px;
 	
     border:0px;
-    font-family:Georgia;
     font-size:1em;
 }
 #loginForm a {
 	font-size:14px;
-	font-family:Georgia;
 	cursor:pointer;
-	color:#C9D93F;
+	color:#333;
 	text-decoration:none;
 }
 #loginForm a:hover {
@@ -152,8 +74,71 @@ hr {
 	color:#C1C973;
 	font-weight:bold;
 }
+
+label {
+	float: left;
+	width: 70%;
+	height: 22px;
+	color: #FFF;
+	margin: 0px;
+	margin-top: 5px;
+	font-size: 12px;
+}
+
+input[type=text], input[type=password], select {
+	width:100%;
+	padding: 6px;
+	font-weight:bold;
+	border:1px solid #aaa;
+	font-size: 11px;
+	color:black;	
+	background:white;	
+}
+input[type=checkbox] {
+	float:left;
+	margin-top:5px;
+}
+button {
+	padding: 5px;padding-top: 10px;padding-right: 10px;
+	font-weight: 500;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid transparent;
+	-webkit-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	-moz-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
+	box-shadow: inset 0px -1px 0px 0px rgba(0, 0, 0, 0.09);
+	background-color: #fafafa;
+	color: #666;
+	border-color: #ddd;
+	border-bottom-color: #ddd;
+	cursor: pointer;
+}
+button:hover {
+	border: 1px solid #999;
+	box-shadow: 0 1px 1px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3);
+	background-color: #ccc;
+	background-image: -webkit-linear-gradient(bottom,#ccc 0%,#ccc 100%);
+	background-image: linear-gradient(to top,#ccc 0%,#ccc 100%);
+	color: #333;
+}
+button:disabled {
+	border: 1px solid #999;
+	box-shadow: 0 1px 1px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3);
+	background-color: #ccc;
+	background-image: -webkit-linear-gradient(bottom,#ccc 0%,#ccc 100%);
+	background-image: linear-gradient(to top,#ccc 0%,#ccc 100%);
+	color: #333;
+}
+hr {
+	float:left;
+	margin-top:5px;
+	margin-left:-5%;
+	width:110%;
+	border-color:white;
+}
 #loginbtns {
-	margin-top:100px;
+	margin-top:10px;
 	width:100%;
 	text-align:right;
 }
@@ -164,12 +149,13 @@ hr {
 	margin-top:15px;
 }
 #pagelinks a {
+	color: #AAA;
 	margin-right:10px;
 }
 #errormsg {
 	width:600px;
 	height:100%;
-	
+	padding: 10px;
 	border: 1px solid #eeb7ba;
     background-color: #fae2e2;
     background-image: -o-linear-gradient(top,  #fae2e2,  #f2cacb);
@@ -192,12 +178,26 @@ hr {
 	left:0;
 }
 #loginFooter a {text-decoration:none;color:#333;font-weight:bold;font-size:1em;}
-#loginicon,#reseticon {
+.loginicon,.reseticon {
 	background:transparent url(images/login/house.png) no-repeat center center;
 	width:20px;
 	height:20px;
 	float:left;
-	margin-left:15px;
+	margin-left:7px;
+	margin-right:7px;
 }
-#loginicon {background: transparent url(images/login/accept.png) no-repeat center center;}
-#reseticon {background: transparent url(images/login/refresh.png) no-repeat center center;}
+.loginicon {background: transparent url(images/login/accept.png) no-repeat center center;}
+.reseticon {background: transparent url(images/login/refresh.png) no-repeat center center;}
+
+.browserLogos {
+	position:absolute;bottom:10px;right:10px;
+}
+
+@media screen and (max-device-width : 800px) {
+	.browserLogos {
+		display: none;
+	}
+	#screentable {
+		background: transparent !important;
+	}
+}

@@ -33,6 +33,8 @@ header("X-Powered-By: Logiks [http://openlogiks.org]",false);
 //header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
 //print_r($_SERVER);exit();
 
+$_SERVER['SERVICE']=true;
+
 $defSite=DEFAULT_SITE;
 $predefinedSite=true;
 
@@ -98,7 +100,6 @@ $sysdbLink=new Database();
 $sysdbLink->connect();
 $appdbLink=null;
 
-
 define("SITENAME",$GLOBALS["CURRENT_SITE"]);
 define("APPROOT",ROOT . APPS_FOLDER . SITENAME . "/");
 define("WEBAPPROOT",SiteLocation . "apps/" . SITENAME . "/");
@@ -140,6 +141,10 @@ function __cleanup() {
 	//echo PHP_EOL;
 }
 register_shutdown_function("__cleanup");
+
+log_ServiceRequest();
+
+loadModule("core");loadModule(SITENAME);
 
 runHooks("serviceOnRequest");
 

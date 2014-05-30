@@ -521,7 +521,7 @@ function lgksOverlay(msg, title, func) {
 				if(typeof(func)=='function') func(txt);
 				else window[func](txt);
 			}
-		}, true,$(window).width()-50,$(window).height()-50,"fade");
+		}, true,$(window).width()-50,$(window).height()-100,"fade");
 }
 function lgksOverlayURL(url, title, func) {
 	if(title==null) {
@@ -535,7 +535,7 @@ function lgksOverlayURL(url, title, func) {
 				if(typeof(func)=='function') func(txt);
 				else window[func](txt);
 			}
-		}, true,$(window).width()-50,$(window).height()-50,"fade");
+		}, true,$(window).width()-50,$(window).height()-100,"fade");
 	}
 }
 function lgksOverlayDiv(divID, func) {
@@ -544,7 +544,7 @@ function lgksOverlayDiv(divID, func) {
 				if(typeof(func)=='function') func(txt);
 				else window[func](txt);
 			}
-		}, true,$(window).width()-50,$(window).height()-50,"fade");
+		}, true,$(window).width()-50,$(window).height()-100,"fade");
 }
 function lgksOverlayFrame(url, title, func) {
 	if(title==null) {
@@ -556,7 +556,7 @@ function lgksOverlayFrame(url, title, func) {
 	if(func==null) {
 		params={
 			width:$(window).width()-50,
-			height:$(window).height()-50,
+			height:$(window).height()-100,
 			modal:true,
 			stack:true,
 			show:'fade',

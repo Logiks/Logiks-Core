@@ -7,10 +7,6 @@ include_once "modules.php";
 include_once "widgets.php";
 
 if(!function_exists('loadMedia')) {
-	function loadTheme($theme) {
-		global $css;
-		$css->loadTheme($theme);
-	}
 	function loadAllMedia($media,$relativeOnly=false,$defaultMedia=null) {
 		if(strlen($media)<=0) return "";
 		$linkedApps=getConfig("LINKED_APPS");
@@ -147,6 +143,10 @@ if(!function_exists('loadMedia')) {
 			$paths=$_ENV['MEDIA_DIRS'];
 		}
 		return $paths;
+	}
+	function loadTheme($theme) {
+		global $css;
+		$css->loadTheme($theme);
 	}
 }
 ?>

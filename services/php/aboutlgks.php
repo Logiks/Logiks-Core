@@ -20,7 +20,7 @@ if(isset($_REQUEST["abt"])) {
 		printErr("DataNotFound","About Page Not Found");
 	}
 } else {
-	echo "Nothing Asked, Nothing Delivered ...";
+	echo "Nothing Asked, Nothing Delivered :-)";
 }
 function countInDir($dir,$scanMode="*",$checkFile="") {
 	$fs=scandir($dir);

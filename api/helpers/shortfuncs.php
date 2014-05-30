@@ -124,16 +124,10 @@ if(!function_exists("_dataBus")) {
 }
 /*Cache And Template Oriented Functions*/
 if(!function_exists("_cache")) {
-	function _cache($lnk,$cacheId=null,$reCache=false) {
+	//This function checks if cache exists, yes returns cached data, no creates and returns cached data
+	function _cache($source,$cacheID=null,$reCache=false) {
 		$cache=CacheManager::singleton();
-		if(strpos($lnk,"http://")===0 || strpos($lnk,"https://")===0) {
-			$a=$cache->getCacheURL($lnk,$cacheId,$reCache);
-			if(strlen($a)>0) {
-				return file_get_contents($a);
-			}
-		} else {
-			return $cache->getCacheData($lnk,$cacheId,$reCache);
-		}
+		$cache->getCache($source,$cacheID,$reCache);
 	}
 }
 if(!function_exists("_template")) {

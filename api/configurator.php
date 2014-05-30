@@ -38,7 +38,7 @@ if(!function_exists('LoadConfigFile')) {
 			}
 			return true;
 		}
-		if(file_exists($path) && is_readable($path))	{
+		if(file_exists($path) && is_readable($path)) {
 			$cfgData=file_get_contents($path);
 			$cfgData=explode("\n",$cfgData."\n");
 			foreach($cfgData as $s) {
@@ -69,7 +69,7 @@ if(!function_exists('LoadConfigFile')) {
 								break;
 							case "PHPINI":
 								if(function_exists("ini_set")) {
-									ini_set($name,processServerStrings($value));
+									@ini_set($name,processServerStrings($value));
 								}
 								break;
 							case "ENV":

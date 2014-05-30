@@ -1,0 +1,70 @@
+CORE Xtras
+	Some config.php files to helpers (mimes,)
+	Naming and authoring
+	template_layouts -> uilayouts change the name of misc folders
+	Error Template css modifications
+	misc/sos : remove
+	Logging System Improvments : 
+	auth login system improvments : 
+	misc/loading
+	misc/logins
+	router.php
+	lgks_sys_iplist	Done
+	lgks_sys_redirects
+	isLinkAccessable($link=null)
+
+----------------------------------------------------------------------
+Replace through out system where privilege is to be sorted out
+
+(find_in_set('$pridid',privilege) OR privilege='*')
+
+----------------------------------------------------------------------
+
+
+ADMINCP 
+	UI Fixes
+	
+	
+	Site Manager
+	DB Manager
+	File Manager
+	Domain Map
+	CMS Controls
+	
+	Configurations =>
+	Site Defaults =>
+	
+	Access Manager
+	Privlege Manager
+	User Manager
+	Permission Controls
+	
+	Trashbox
+	Backup/Restore Sites
+	
+	Site Reports =>
+	
+	Task Schduller
+	dbAdmin
+	Powershell
+	Manage Hooks
+
+
+
+	
+CMS 
+
+digiOffice
+
+MODULES 
+
+WIDGETS 
+
+
+
+
+
+Last Updated Servers 
+	OpenLogiks EC2				30-Mar-2014	
+	SLKS Office:81 SLKS,OLGKS 	
+	SLKS Office:82 SLKS,OLGKS 	

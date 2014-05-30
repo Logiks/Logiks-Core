@@ -1,32 +1,36 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-$avlMethods=array("facebook","gravatar","logiks");//,"googleplus","twitter"
+//Major support from http://avatars.io/.
+
+$avlMethods=array("facebook","gravatar","logiks","twitter","instagram","email");//,"googleplus"
 
 if(!isset($_REQUEST['authorid']) || strlen($_REQUEST['authorid'])<=0) {
 	if(isset($_SESSION['SESS_USER_ID'])) $_REQUEST['authorid']=$_SESSION['SESS_USER_ID'];
 	else printDefaultAvatar();
 }
-$method="facebook";
+$method="email";
 if(isset($_REQUEST['method'])) {
 	$method=$_REQUEST['method'];
+}
+if(!in_array($method,$avlMethods)) {
+	printServiceErrorMsg("Method Not Supported");
 }
 
 if(isset($_REQUEST['action'])) {
 	if($_REQUEST['action']=="src") {
 		printServiceMsg($avlMethods);
 	} else {
-		printAvatarPhoto($method,$avlMethods);
+		printAvatarPhoto($method);
 	}
 } else {
-	printAvatarPhoto($method,$avlMethods);
+	printAvatarPhoto($method);
 }
 
-function printAvatarPhoto($method,$avlMethods) {
-	if(isset($_REQUEST['authorid']) && strlen($_REQUEST['authorid'])>0 && in_array($method,$avlMethods)){
+function printAvatarPhoto($method) {
+	if(isset($_REQUEST['authorid']) && strlen($_REQUEST['authorid'])>0){
 		$authorid=explode("@",$_REQUEST['authorid']);
 		$authorid=$authorid[0];
-
 		if($method=="facebook") {
 			$url="http://graph.facebook.com/{$authorid}/picture?type=large";//?redirect=false
 			$data=file_get_contents($url);
@@ -35,8 +39,20 @@ function printAvatarPhoto($method,$avlMethods) {
 			$url="http://www.gravatar.com/avatar/".md5(strtolower(trim($_REQUEST['authorid'])))."?s=80&d=mm&r=g";
 			$data=file_get_contents($url);
 			printAvatar($data,"png");
+		} elseif($method=="twitter") {
+			$url="http://avatars.io/twitter/{$authorid}?size=large";
+			$data=file_get_contents($url);
+			printAvatar($data,"jpeg");
+		} elseif($method=="instagram") {
+			$url="http://avatars.io/instagram/{$authorid}?size=large";
+			$data=file_get_contents($url);
+			printAvatar($data,"jpeg");
+		} elseif($method=="email") {
+			$url="http://avatars.io/email/{$authorid}?size=large";
+			$data=file_get_contents($url);
+			printAvatar($data,"jpeg");
 		}
-		/*elseif($method=="twitter") {
+		/*
 			$url="https://api.twitter.com/1/users/profile_image?screen_name={$authorid}&size=bigger";
 			$data=file_get_contents($url);
 			printAvatar($data,"png");
@@ -89,8 +105,8 @@ function printAvatar($data,$format,$default="") {
 	}
 }
 function printDefaultAvatar() {
-	$f=loadMedia("images/avatar.png");
-	if(!file_exists($f)) $f=loadMedia("images/user.png");
+	$f=ROOT.loadMedia("images/avatar.png",true);
+	if(!file_exists($f)) $f=ROOT.loadMedia("images/user.png",true);
 	header("content-type:image/png");
 	readfile($f);
 }

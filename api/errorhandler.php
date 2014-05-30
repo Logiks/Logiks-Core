@@ -265,16 +265,33 @@ if(!function_exists("errorHandler")) {
 		if($errorParams["errorType"]!=501) {
 			log_ErrorEvent($errorParams["errorType"],$errorParams["msg_header"]);
 		}
+
+		if(function_exists("_css")) {
+			_css("error");
+			_css("errorprint","*","","print");
+		} else {
+			$css=CssPHP::singleton();
+			$css->loadCSS("error");
+			$css->loadCSS("errorprint","*","","print");
+			$css->display();
+		}
 		if(file_exists($ERR_FILE)) {
 			include $ERR_FILE;
 			exit();
 		} else {
-			echo "<div align=center style='width:600px;margin:auto;margin-top:50px;border:2px solid #aaa;'>";			
-			echo "<h2 style='color:#FF4524;border-bottom:2px solid #aaa;margin:0px;padding:0px;'>".$errorParams["msg_header"]."</h2>";
-			echo "<h5 style='color:#1D5BCF;border-bottom:1px dotted #aaa;margin:0px;padding:0px;' align=right>".$errorParams["posted_by"]." [".$errorParams["posted_on"]."]</h5>";
-			echo "<div align=left style='padding:5px;'>".$errorParams["msg_body"]."</div>";
-			echo "</div>";
-			echo "<p style='margin:auto;font:13px Arial;' align=center>".APPS_COPYRIGHT."</p>";
+			//$errorParams["posted_by"]
+		?>
+		<div id="errormsg" align=center style='margin-top:50px;text-align:justify;'>
+			<img src='<?=$icon?>' style='float:left'/>
+			<h1 align=center><?=$errorParams["msg_header"]?></h1>
+			<br/>
+			<hr/><br/>
+			<h3><?=$errorParams["msg_body"]?></h3>
+			<br/><hr/>
+			<h5>Dated On [<?=$errorParams["posted_on"]?>]</h5>
+			<h5><?=APPS_COPYRIGHT?></h5>
+		</div>
+		<?php
 			exit();
 		}
 	}
@@ -307,19 +324,10 @@ if(!function_exists("errorHandler")) {
 		if(is_file(ROOT.$icon)) {
 			$icon=SiteLocation.$icon;
 		}
-		
+		_css("error");
+		_css("errorprint","*","","print");
 		?>
-			<style>
-			#errormsg {border:0px solid #aaa;}
-			#errormsg h4,h5,h6 {margin:0px;padding:0px;}
-			#errormsg {width:400px;margin:auto;}
-			#errormsg h1 {color:#9C1F14;font-size:1.8em;}
-			#errormsg h3 {color:#245A9C;text-align:left;font-size:1.0em;}
-			#errormsg h4 {color:#245A9C;text-align:right;font-size:0.8em;}
-			#errormsg h5 {color:#3C82E6;text-align:right;}
-			#errormsg h6 {color:#3C82E6;text-align:right;}
-			</style>
-			<div id=errormsg align=center style='margin-top:50px;text-align:justify;'>
+			<div id="errormsg" align=center style='margin-top:50px;text-align:justify;'>
 				<img src='<?=$icon?>' style='float:left'/>
 				<h1 align=center><?=$msgTitle?></h1>
 				<br/>

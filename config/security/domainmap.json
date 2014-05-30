@@ -1,16 +1,1 @@
-{
-    "localhost": {
-        "appsite": "erp",
-        "nodal": "",
-        "active": true,
-        "doc": "2013-01-16",
-        "doe": "2013-01-16"
-    },
-    "192.168.1.200:82":{
-        "appsite": "erp",
-        "nodal": "",
-        "active": true,
-        "doc": "2013-01-16",
-        "doe": "2013-01-16"
-    }
-}
+{"192.168.1.200:82":{"appsite":"default","nodal":"","active":true,"doc":"2013-01-16","doe":"2013-01-16"},"localhost:81":{"appsite":"default","nodal":"","active":true,"doc":"2014-05-06","doe":"2014-05-06"}}

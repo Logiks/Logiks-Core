@@ -5,9 +5,9 @@ if(!function_exists("createDataSelector")) {
 	//Primary Functions To Create Selector Lists
 	function createDataSelector($dbLink, $groupID,$allowNone=true,$format="select",$orderBy=null,$params=array()) {
 		if(isset($_SESSION['SESS_PRIVILEGE_ID'])) {
-			$where="groupid='$groupID' and (privilege='*' or privilege>='".$_SESSION['SESS_PRIVILEGE_ID']."')";
+			$where="blocked='false' && groupid='$groupID' and (privilege='*' or privilege>='".$_SESSION['SESS_PRIVILEGE_ID']."')";
 		} else {
-			$where="groupid='$groupID' and privilege='*'";
+			$where="blocked='false' && groupid='$groupID' and privilege='*'";
 		}
 		if($orderBy==null) $where.=" ORDER BY title";
 		elseif(strlen($orderBy)>0) $where.=" ORDER BY $orderBy";
@@ -43,9 +43,9 @@ if(!function_exists("createDataSelector")) {
 		}
 		$sql.=" FROM $table";
 		if($where!=null && strlen($where)>0) {
-			$sql.=" WHERE blocked='false' AND $where";
+			$sql.=" WHERE $where";
 		} else {
-			$sql.=" where blocked='false' AND length($nameCol)>0";
+			$sql.=" where length($nameCol)>0";
 		}
 		//if($groupBy!=null && strlen($groupBy)>0) {
 			//$sql.=" GROUP BY $groupBy";

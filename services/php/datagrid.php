@@ -118,6 +118,7 @@ if($_REQUEST['action']=="load") {
 			$SQL.=" LIMIT $start , $limit";
 	}
 	//echo json_encode(array("msg"=>$SQL));
+
 	$result = _dbQuery($SQL,$sys);
 	if(!$result) {
 		$arr=array();
@@ -133,8 +134,12 @@ if($_REQUEST['action']=="load") {
 	$params["page"]=$page;
 	$params["total"]=$total_pages;
 	$params["records"]=$count;
-
-	printSQLResult($result, $_REQUEST['datatype'],$params,"",false);//$SQL,$_SERVER['QUERY_STRING']
+	
+	if(isset($_REQUEST['src']) && $_REQUEST['src']=="reports") {
+		printSQLResult($result, $_REQUEST['datatype'],$params,"",true);//$SQL,$_SERVER['QUERY_STRING']
+	} else {
+		printSQLResult($result, $_REQUEST['datatype'],$params,"",false);//$SQL,$_SERVER['QUERY_STRING']
+	}
 	_db()->freeResult($result);
 } elseif($_REQUEST['action']=="edit") {
 	echo json_encode(array("msg"=>"No Edit Allowed"));

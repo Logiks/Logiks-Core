@@ -2,6 +2,15 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("getUserInfo")) {
+	function getMyUserInfo() {
+		$cols="guid,userid,refid,name,dob,gender,email,mobile,address,region,country,zipcode,privacy,avatar,avatar_type";
+		$sql="SELECT $cols FROM lgks_users WHERE userid='{$_SESSION['SESS_USER_ID']}'";
+		$res=_dbQuery($sql,true);
+		$data=_dbData($res);
+		_dbFree($res);
+		if(isset($data[0])) return $data[0];
+		return array();
+	}
 	function getUserInfo($forcereInit=true) {
 		$arr=array();
 		
@@ -38,13 +47,29 @@ if(!function_exists("getUserInfo")) {
 		}
 		return $userid;
 	}
-	
+	function getPrivilegeList($where="") {
+		$sql="SELECT id,name,site,remarks,blocked FROM "._dbTable("privileges",true)." WHERE blocked='false'";
+		if($_SESSION['SESS_PRIVILEGE_ID']<=1) {
+			$sql.="";
+		} else if($_SESSION['SESS_PRIVILEGE_ID']<=3) {
+			$sql.=" AND (site='".SITENAME."' OR site='*')";
+		} else{
+			$sql.=" AND site='".SITENAME."'";
+		}
+		if(strlen($where)>0) {
+			$sql.=" and ($where)";
+		}
+		$res=_dbQuery($sql,true);
+		$arr=_dbData($res);
+		_dbFree($res);
+		return $arr;
+	}
 	function getUserList($cols=null, $where="", $orderBy="", $limit="") {
 		if($cols==null || sizeOf($cols)==0) {
 			$cols=array("userid", "privilege", "access", "name", "email", "address", "region", "country", "zipcode", "mobile");
 		}
 		$arr=array();
-		$sql="SELECT userid,privilege,access,name,email,address,region,country,zipcode,mobile FROM lgks_users WHERE blocked='false'";
+		$sql="SELECT userid,privilege,access,name,email,address,region,country,zipcode,mobile FROM "._dbTable("users",true)." WHERE blocked='false'";
 		if($_SESSION['SESS_PRIVILEGE_ID']<=1) {
 			$sql.="";
 		} else if($_SESSION['SESS_PRIVILEGE_ID']<=3) {
@@ -148,8 +173,8 @@ if(!function_exists("getUserInfo")) {
 				"privacy"=>"protected",
 				"avatar_type"=>"photoid",
 				"avatar"=>"",
-				//"q1"=>"",
-				//"a1"=>"",
+				"q1"=>"",
+				"a1"=>"",
 				"doc"=>date('Y-m-d'),
 				"doe"=>date('Y-m-d'),
 			);

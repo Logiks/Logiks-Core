@@ -2,6 +2,7 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 loadHelpers("filetransfer");
+
 class CacheManager {
 	private static $instance=null;
 	private $cacheFolder=null;
@@ -16,6 +17,7 @@ class CacheManager {
 		}
 		return self::$instance;
 	}
+	//Creates and manages the cache folder that is used By CacheManager
 	public function getCacheFolder() {
 		if(defined("APPS_CACHE_FOLDER")) {
 			$this->cacheFolder=APPROOT.APPS_CACHE_FOLDER."var/";
@@ -44,8 +46,17 @@ class CacheManager {
 		}
 		return $this->cacheFolder;
 	}
-	
-	private function isExpired($cacheLink) {
+	//Generates the Cache ID for the link.
+	public function getCacheID($source) {
+		return md5($source);
+	}
+	//Generates the Cache Link for the source.
+	public function getCachePath($source) {
+		return $this->getCacheFolder().md5($source);
+	}
+	//Checks if the cache is expired from cacheLink
+	public function isExpired($source) {
+		$cacheLink=$this->getCachePath($source);
 		$tm=time()-filemtime($cacheLink);
 		$diff=intval(getConfig("CACHE_EXPIRY"))-$tm;
 		if($diff<0) {
@@ -54,31 +65,23 @@ class CacheManager {
 			return false;
 		}
 	}
-	//Locates the CacheFile From the Link used in the cache folders.
-	private function cacheFilePathName($cacheID) {
-		$cacheDir=$this->getCacheFolder();
-		if(file_exists($cacheDir.$cacheID)) {
-			return $cacheDir.$cacheID;
+	//Checks if the cacheID is expired from cacheLink
+	public function isExpiredCacheID($cacheID) {
+		$cacheLink=$this->getCacheFolder().$cacheID;
+		$tm=time()-filemtime($cacheLink);
+		$diff=intval(getConfig("CACHE_EXPIRY"))-$tm;
+		if($diff<0) {
+			return true;
+		} else {
+			return false;
 		}
-		return "";
 	}
-	
-	public function getCacheID($link,$cacheID=null) {
-		if($cacheID==null) $cacheID=md5($link);
-		return $cacheID;
-	}
-	
-	public function isCached($cacheName) {
-		$cacheID=$this->getCacheID($cacheName);
-		return $this->isCachedByID($cacheID);
-	}
-	
-	private function isCachedByID($cacheId) {
-		$found=$this->cacheFilePathName($cacheId);
-		
-		if(strlen($found)>0) {
-			if($this->isExpired($found)) {
-				unlink($found);
+	//Checks cache's source and determines if its cached
+	public function isCached($source) {
+		$cacheID=md5($source);
+		$cacheLink=$this->getCacheFolder().$cacheID;
+		if(file_exists($cacheLink)) {
+			if($this->isExpiredCacheID($cacheID)) {
 				return false;
 			} else {
 				return true;
@@ -87,98 +90,80 @@ class CacheManager {
 			return false;
 		}
 	}
-	//Gets The Cache Data/Link/URL If Exists, else creates and returns the link/data.
-	public function getCacheData($link,$cacheId=null,$reCache=false) {
-		if($link==null || strlen($link)==0) return "";
-		$fpath=$this->getCacheLink($link,$cacheId,$reCache);
-		if(strlen($fpath)>0) {
-			return file_get_contents($fpath);
-		} else {
-			return "";
-		}
-	}	
-	public function getCacheLink($link,$cacheId=null,$reCache=false) {
-		$fpath="";
-		$cid=$this->getCacheID($link,$cacheId);
-		if(!$reCache && $this->isCachedByID($cid)) {
-			$fpath=$this->cacheFilePathName($cid);
-		} else {
-			$fpath=$this->cacheLink($link,$cacheId);
-		}
-		return $fpath;
-	}
-	public function getCacheURL($url,$cacheId=null,$reCache=false) {
-		$fpath="";
-		$cid=$this->getCacheID($url,$cacheId);
-		if(!$reCache && $this->isCachedByID($cid)) {
-			$fpath=$this->cacheFilePathName($cid);
-		} else {
-			$fpath=$this->cacheURL($url,$cacheId);
-		}
-		return $fpath;
-	}
-	
-	//All Cacheing Functions That Are Used To Create Caches
-	public function cacheURL($url,$cacheName=null,$forceUpdate=false) {
-		if($url==null || strlen($url)==0) return "";
-		if($cacheName!=null && strlen($cacheName)>0) $cacheId=md5($cacheName);
-		else $cacheId=md5($url);
-		$fpath=$this->getCacheFolder().$cacheId;
-		
-		transferFileHTTPToLocal($url,$fpath);
-		if(file_exists($fpath)) {
-			return $fpath;
-		}
-		return "";
-	}
-	public function cacheLink($link,$cacheName=null,$forceUpdate=true) {
-		if($link==null || strlen($link)==0) return "";
-		if($cacheName!=null && strlen($cacheName)>0) $cacheId=md5($cacheName);		
-		else $cacheId=md5($link);
-		$fpath=$this->getCacheFolder().$cacheId;
-		
-		if(!file_exists($link)) {
-			if(file_exists(ROOT.$link)) {
-				$link=ROOT.$link;
-			} elseif(file_exists(APPROOT.$link)) {
-				$link=APPROOT.$link;
-			} else {
+	//Checks cache's cacheid and determines if its cached
+	public function isCachedByID($cacheID) {
+		$cacheLink=$this->getCacheFolder().$cacheID;
+		if(file_exists($cacheLink)) {
+			if($this->isExpiredCacheID($cacheID)) {
 				return false;
-			}
-		}
-		if($this->isCachedByID($cacheId)) {
-			if($forceUpdate) {
-				ob_start();
-				include $link;
-				$data=ob_get_contents();
-				file_put_contents($fpath,$data);
-				ob_clean();
+			} else {
+				return true;
 			}
 		} else {
+			return false;
+		}
+	}
+	//Cache or no cache, source is called upon if required, else returns : cache file link.
+	public function getCacheLink($source,$cacheID=null,$forceRecache=false) {
+		if($cacheID==null) $cacheID=md5($source);
+		if($forceRecache || !$this->isCachedByID($cacheID)) {
+			$this->cacheSource($source);
+		}
+		$cacheLink=$this->getCacheFolder().$cacheID;
+		if(file_exists($cacheLink)) {
+			return $cacheLink;
+		} else {
+			$this->cacheError($source);
+		}
+	}
+	//Cache or no cache, source is called upon if required, else return cached data.
+	public function getCache($source,$cacheID=null,$forceRecache=false) {
+		if($cacheID==null) $cacheID=md5($source);
+		if($forceRecache || !$this->isCachedByID($cacheID)) {
+			$this->cacheSource($source);
+		}
+		$cacheLink=$this->getCacheFolder().$cacheID;
+		if(file_exists($cacheLink)) {
+			readfile($cacheLink);
+		} else {
+			$this->cacheError($source);
+		}
+	}
+	//Creates New Cache From Source where params are function,method,file
+	private function cacheSource($source,$cacheID=null,$params=null) {
+		if($cacheID==null) $cacheID=md5($source);
+		$cacheLink=$this->getCacheFolder().$cacheID;
+		if(function_exists($source)) {
 			ob_start();
-			include $link;
+			call_user_func($source,$params);
 			$data=ob_get_contents();
-			file_put_contents($fpath,$data);
 			ob_clean();
-		}
-		return $fpath;
-	}
-	public function cacheDataLink($data,$cacheName,$forceUpdate=false) {
-		if($data==null || strlen($data)==0) return "";
-		if($cacheName!=null && strlen($cacheName)>0) $cacheId=md5($cacheName);
-		else $cacheId=md5($data);
-		$fpath=$this->getCacheFolder().$cacheId;
-				
-		if($this->isCachedByID($cacheId)) {
-			if($forceUpdate) {
-				file_put_contents($fpath,$data);
-			}
+			file_put_contents($cacheLink,$data);
+		} elseif(is_object($params)) {
+			ob_start();
+			call_user_method($source,$params);
+			$data=ob_get_contents();
+			ob_clean();
+			file_put_contents($cacheLink,$data);
+		} elseif(file_exists($source)) {
+			ob_start();
+			include $source;
+			$data=ob_get_contents();
+			ob_clean();
+			file_put_contents($cacheLink,$data);
+		} elseif(strpos($source,"http://")===0 || 
+			strpos($source,"https://")===0 ||
+			strpos($source,"ftp://")===0) {
+			transferFileHTTPToLocal($source,$cacheLink);
 		} else {
-			file_put_contents($fpath,$data);
+			$this->cacheError($source);
 		}
-		return $fpath;
+		return file_exists($cacheLink);
 	}
-	
+	//Displays the Error in caching source
+	private function cacheError($source) {
+		trigger_ErrorCode(404,"Unable to Cache Resource.");
+	}
 	//All Cache Clearing Functions
 	public function clearCache($fileLink="") {
 		if($fileLink==null || strlen($fileLink)<=0 || $fileLink=="*") {
@@ -198,7 +183,8 @@ class CacheManager {
 		}
 		return false;
 	}
-	
+
+	//Clears Cache Of APPROOT system
 	public function clearLocalCache() {
 		if(defined("APPS_CACHE_FOLDER")) {
 			if(file_exists(APPROOT.APPS_CACHE_FOLDER)) {
@@ -212,10 +198,11 @@ class CacheManager {
 				chmod(APPROOT.APPS_CACHE_FOLDER,0777);
 				return true;
 			}
-		}		
+		}
 		return false;
 	}
-	
+
+	//Clears Cache Of ROOT system
 	public function clearGlobalCache() {
 		if(file_exists(ROOT.CACHE_FOLDER)) {
 			$arr=scandir(ROOT.CACHE_FOLDER);

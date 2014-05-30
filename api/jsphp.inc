@@ -47,6 +47,17 @@ class JsPHP extends DataEmbedder {
 
 		$a=explode($this->DS,$jslib);
 
+		$cdn=$this->getCDNResource($jslib,'js');
+		if($cdn!==false) {
+			$JSLINK=$cdn;
+			$JSFILE=$cdn;
+			$JSCACHE=ROOT . CACHE_FOLDER . md5($JSFILE) . ".js";
+			$JSCACHELINK=SiteLocation . CACHE_FOLDER . md5($JSFILE) . ".js";
+
+			$data=array($JSLINK, "CDN", $JSCACHE,$JSCACHELINK);
+			return $data;
+		}
+
 		$paths=array();
 
 		//creating all feasible script file names
@@ -179,7 +190,7 @@ class JsPHP extends DataEmbedder {
 
 	public function display($scriptTag=true) {
 		$jsScripts=$this->getScripts();
-		if(sizeOf($jsScripts)<=0) {
+		if(count($jsScripts)<=0) {
 			return;
 		}
 		foreach($jsScripts as $a=>$b) {
@@ -188,7 +199,7 @@ class JsPHP extends DataEmbedder {
 			}
 		}
 		foreach($jsScripts as $a=>$b) {
-			$GLOBALS["JS_PRINTED"][sizeOf($GLOBALS["JS_PRINTED"])]=$a;
+			$GLOBALS["JS_PRINTED"][count($GLOBALS["JS_PRINTED"])]=$a;
 		}
 		
 		//exit($this->typeOfDispatch);

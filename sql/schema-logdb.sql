@@ -47,10 +47,13 @@ CREATE TABLE `lgks_log_login` (
    `login_time` varchar(200),
    `logout_time` varchar(200),
    `sys_spec` varchar(255),
-   `user_agent` varchar(255),
    `token` varchar(255),
+   `mauth_key` varchar(155),
    `status` varchar(255),
    `msg` varchar(255),
+   `persistant` varchar(50),
+   `client` varchar(50),
+   `user_agent` varchar(255),
    `device` varchar(50),
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
@@ -76,6 +79,30 @@ CREATE TABLE `lgks_log_requests` (
    `script` varchar(255),
    `source` varchar(255),
    `page` varchar(150),
+   `referer` varchar(250),
+   `requestURI` varchar(500),
+   `actualURI` varchar(500),
+   `user` varchar(155),
+   `site` varchar(155),
+   `client` varchar(50),
+   `user_agent` varchar(255),
+   `device` varchar(50),
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE `lgks_log_services` (
+   `id` int(10) unsigned not null auto_increment,
+   `date` date,
+   `time` time,
+   `apikey` varchar(255),
+   `token` varchar(255),
+   `source` varchar(255),
+   `get` varchar(255),
+   `post` varchar(255),
+   `heads` varchar(255),
+   `requestURI` varchar(500),
+   `actualURI` varchar(500),
+   `referer` varchar(255),
    `site` varchar(155),
    `user` varchar(155),
    `client` varchar(50),
@@ -83,7 +110,6 @@ CREATE TABLE `lgks_log_requests` (
    `device` varchar(50),
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
 
 CREATE TABLE `lgks_log_search` (
    `id` int(10) unsigned not null auto_increment,
@@ -103,18 +129,20 @@ CREATE TABLE `lgks_log_search` (
 
 
 CREATE TABLE `lgks_log_sessions` (
-   `sessionid` varchar(50) not null,
-   `date` date,
-   `userid` varchar(255) not null,
-   `ip_address` varchar(25),
-   `user_agent` varchar(100),
-   `last_activity` datetime,
-   `login_time` datetime,
+   `id` int(10) unsigned not null auto_increment,
+   `sessionid` varchar(100) not null,
+   `timestamp` datetime not null,
+   `last_updated` datetime not null,
+   `user` varchar(155) not null,
+   `site` varchar(255) default 'default',
    `session_data` text,
-   `perpectual` varchar(5) default 'true',
+   `global_data` text,
+   `client` varchar(255),
+   `user_agent` varchar(255),
    `device` varchar(50),
-   PRIMARY KEY (`sessionid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+   PRIMARY KEY (`id`),
+   UNIQUE KEY (`sessionid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 CREATE TABLE `lgks_log_sql` (
@@ -130,6 +158,8 @@ CREATE TABLE `lgks_log_sql` (
    `page` varchar(255),
    `site` varchar(255),
    `client` varchar(55),
+   `user_agent` varchar(255),
+   `device` varchar(50),
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 

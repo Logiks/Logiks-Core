@@ -28,6 +28,9 @@ if(!isset($initialized)) {
 		}
 		$_SERVER['REQUEST_URI'] = $request_uri;
 	}
+	if(!isset($_SERVER['ACTUAL_URI'])) {
+		$_SERVER['ACTUAL_URI']=$_SERVER['REQUEST_URI'];
+	}
 	if(empty( $_SERVER['PHP_SELF'])) {
 		$_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'];
 	}
@@ -36,17 +39,17 @@ if(!isset($initialized)) {
 
 	require_once ROOT. "api/configurator.php";
 	
-	LoadConfigFile(ROOT . "config/basic.cfg");
-	//LoadConfigFile(ROOT . "config/headers.cfg");
-	LoadConfigFile(ROOT . "config/system.cfg");
-	LoadConfigFile(ROOT . "config/developer.cfg");
-	LoadConfigFile(ROOT . "config/security.cfg");
-	LoadConfigFile(ROOT . "config/folders.cfg");
-	LoadConfigFile(ROOT . "config/others.cfg");
-	LoadConfigFile(ROOT . "config/xtras.cfg");
-	LoadConfigFile(ROOT . "config/framework.cfg");
-	
-	LoadConfigFile(ROOT . "config/db.cfg");
+	LoadConfigFile(array(
+			ROOT . "config/basic.cfg"=>"",
+			ROOT . "config/php.cfg"=>"",
+			ROOT . "config/system.cfg"=>"",
+			ROOT . "config/developer.cfg"=>"",
+			ROOT . "config/security.cfg"=>"",
+			ROOT . "config/folders.cfg"=>"",
+			ROOT . "config/others.cfg"=>"",
+			ROOT . "config/xtras.cfg"=>"",
+			ROOT . "config/framework.cfg"=>"",
+		));
 	
 	LoadConfigFile(array(
 			ROOT . "config/masters_headers.cfg"=>"",
@@ -54,6 +57,8 @@ if(!isset($initialized)) {
 			ROOT . "config/masters_mobility.cfg"=>"",
 			ROOT . "config/masters_page.cfg"=>"",
 		));
+
+	LoadConfigFile(ROOT . "config/db.cfg");
 
 	header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
 
@@ -186,6 +191,8 @@ if(!isset($initialized)) {
 
 	if(!isset($_SESSION['SESS_USER_ID'])) $_SESSION['SESS_USER_ID']="Guest";
 	if(!isset($_SESSION['SESS_USER_NAME'])) $_SESSION['SESS_USER_NAME']="Guest";
+
+	log_Requests();
 
 	runHooks("postinit");
 }

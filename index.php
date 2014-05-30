@@ -1,6 +1,7 @@
 <?php
 require_once ('api/initialize.php');
 include ('api/router.php');
+$_SESSION['SESS_ACTIVE_SITE']=SITENAME;
 
 if(defined("APPS_THEME")) $css->loadTheme(APPS_THEME);
 else define("APPS_THEME","default");
@@ -9,6 +10,7 @@ if(!defined("APPS_NAME")) define("APPS_NAME",getConfig("APPS_NAME"));
 if(!defined("APPS_VERS")) define("APPS_VERS",getConfig("APPS_VERS"));
 $_SESSION["SITELOCATION"]=SiteLocation;
 
+checkBadBot();
 checkDevMode();
 runHooks("startup");
 log_VisitorEvent();
@@ -58,4 +60,5 @@ if(strlen($pageLinkPath)>0 && file_exists($pageLinkPath)) {
 } else {
 	trigger_NotFound("Sorry , Page Not Found. Page::" . $current_page);
 }
+exit();
 ?>

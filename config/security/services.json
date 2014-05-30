@@ -12,8 +12,8 @@
 			"access_control":"public",
 			"autocache":"false"
 		},
-		"datagrid":{
-			"default_print_format":"json",
+		"avatar":{
+			"default_print_format":"raw",
 			"privilege_model":{},
 			"access_control":"public",
 			"autocache":"false"

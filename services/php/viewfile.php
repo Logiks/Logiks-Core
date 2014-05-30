@@ -2,7 +2,7 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 checkServiceSession();
 
-include ROOT."/config/mimes.php";
+loadHelpers("mimes");
 
 //http://localhost/projects/logiks3/services/?scmd=viewfile&type=view&loc=local&file=z.pdf
 //http://localhost/projects/logiks3/services/?scmd=viewfile&type=view&loc=dbfile&dbtbl=do_files&file=1

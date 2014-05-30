@@ -6,19 +6,56 @@
  * Version: 1.0
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
-//Functions ::  session_check,isAdminSite,user_admin_check,checkUserSiteAccess,isLinkAccessable
+//Functions ::  session_check,isAdminSite,user_admin_check,checkUserSiteAccess,isLinkAccessible
 // 				checkDevMode, checkBlacklist,checkSiteMode
 if(!function_exists("session_check")) {
 	//User Is Logged In
 	//Site Being Accessed Is Correct
+	function session_login_check() {
+		if(session_check()) {
+			return true;
+		} else{
+			$t1=_dbTable("log_login",true);
+			$t2=_dbTable("log_sessions",true);
+			$q1=_db()->_selectQ("$t1,$t2","token,session_data,global_data",
+					array("$t1.status"=>"LOGGED IN","$t1.persistant"=>"true",
+						"$t1.mauth_key"=>generateMAuthKey())
+				)." AND {$t1}.token={$t2}.sessionid";
+			$dbLink=LogDB::singleton()->getLogDBCon();
+			$result=$dbLink->executeQuery($q1);
+			if($result) {
+				$logData=$dbLink->fetchAllData($result);
+				$dbLink->freeResult($result);
+				if($logData!=null && count($logData)>0) {
+					$logData=$logData[0];
+					
+					$logData['session_data']=stripslashes($logData['session_data']);
+					$logData['session_data']=json_decode($logData['session_data'],true);
+					
+					session_regenerate_id();
+					foreach($logData['session_data'] as $key => $value) {
+						$_SESSION[$key]=$value;
+					}
+					setcookie("LOGIN", "true", time()+36000);
+					setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000);
+					setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000);
+					setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000);
+
+					return session_check();
+				}
+			}
+		}
+		return false;
+	}
 	function session_check($redirect=false,$showErrorMsg=false) {
 		$valid=false;
-
+		
 		if(defined("SITENAME")) {
 			if(isset($_SESSION['SESS_USER_ID']) && isset($_SESSION['SESS_PRIVILEGE_ID']) && isset($_SESSION['SESS_ACCESS_ID']) &&
 				isset($_SESSION['SESS_TOKEN']) && isset($_SESSION['SESS_SITEID']) &&
 				isset($_SESSION['SESS_LOGIN_SITE']) && isset($_SESSION['SESS_ACCESS_SITES'])) {
-				if($_SESSION['SESS_TOKEN'] == md5(SiteID.session_id())) {
+				if($_SESSION['SESS_TOKEN'] == session_id() ||
+					$_SESSION['MAUTH_KEY']==generateMAuthKey()) {
 					if(is_numeric($_SESSION['SESS_PRIVILEGE_ID']) && $_SESSION['SESS_PRIVILEGE_ID']>0) {
 						if($_SESSION['SESS_LOGIN_SITE']==$_REQUEST['site'])
 							$valid=true;
@@ -28,7 +65,6 @@ if(!function_exists("session_check")) {
 				}
 			}
 		}
-
 		if($valid) {
 			return true;
 		} else {
@@ -44,6 +80,22 @@ if(!function_exists("session_check")) {
 				return false;
 			}
 		}
+	}
+	function session_save() {
+		//printArray($_SESSION);
+		$q1=_db()->_updateQ(_dbTable("log_sessions",true),array(
+				"last_updated"=>date("Y-m-d H:i:s"),
+				"session_data"=>session_encode(),
+				"global_data"=>json_encode($GLOBALS),
+				"user_agent"=>$_SERVER['HTTP_USER_AGENT'],
+				"device"=>$_COOKIE['USER_DEVICE'],
+			),array(
+				"sessionid"=>$_SESSION['SESS_TOKEN'],
+				"user"=>$_SESSION['SESS_USER_ID'],
+				"client"=>$_SERVER['REMOTE_ADDR'],
+			));
+		$dbLogLink=LogDB::singleton()->getLogDBCon();
+		$dbLogLink->executeQuery($q1);	
 	}
 	function isAdminSite($autoExit=true) {
 		if(!defined("ADMIN_APPSITES")) {
@@ -105,6 +157,9 @@ if(!function_exists("session_check")) {
 			return false;
 		}
 		return false;
+	}
+	function generateMAuthKey() {
+		return md5(base64_encode($_REQUEST['site'].$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'].SiteID));
 	}
 	function checkDevMode($site=null) {
 		if($site==null) $site=SITENAME;
@@ -215,7 +270,7 @@ if(!function_exists("session_check")) {
 			return true;
 		} else {
 			if(defined("ACCESS")) {
-				if(ACCESS=="public") {
+				if(ACCESS=="public" || ACCESS=="protected") {
 					$menuArr[]=SiteLocation.SITENAME."/%";
 				}
 			}
@@ -254,6 +309,19 @@ if(!function_exists("session_check")) {
 		if(strlen($ipArr[count($ipArr)-1])==0) unset($ipArr[count($ipArr)-1]);
 		if(in_array($client,$ipArr)) {
 			return true;
+		}
+		return false;
+	}
+	function checkBadBot($autoBlock=true) {
+		if(getConfig("STOP_BAD_BOTS")=="false") return false;
+		$uAgent=$_SERVER['HTTP_USER_AGENT'];
+		$blockedAgents=getConfig("BAD_BOTS");
+		$regex="/\b({$blockedAgents})\b/i";
+		if(preg_match($regex,$uAgent)>0) {
+			if($autoBlock) {
+				header("HTTP/1.1 403 Bots Not Allowed");
+				exit("Bots Not Allowed");
+			}
 		}
 		return false;
 	}
