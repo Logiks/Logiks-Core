@@ -4,7 +4,11 @@
  * embed data/scripts/etc into outgoing php.
  * 
  * eg> jsphp, cssphp
- * */
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
+if(!defined('ROOT')) exit('No direct script access allowed');
 
 class DataEmbedder {
 	protected $typeOfDispatch="Tagged";//Tagged,Uncompressed,Compressed,SerializedCacheLink,SerializedCacheData

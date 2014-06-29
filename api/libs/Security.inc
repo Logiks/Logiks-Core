@@ -6,6 +6,8 @@
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 05/04/2014
  * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 class Security {
 	public static function isLinkRedirected($link,$site=null) {
 		if($site==null) $site=SITENAME;

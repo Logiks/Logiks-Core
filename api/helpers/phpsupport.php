@@ -1,8 +1,13 @@
 <?php
+/*
+ * PHP core functionality support,
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-// PHP_VERSION_ID is available as of PHP 5.2.7, if our 
-// version is lower than that, then emulate it
+//PHP_VERSION_ID is available as of PHP 5.2.7, if our version is lower than that, then emulate it
 if (!defined('PHP_VERSION_ID')) {
     $version = explode('.', PHP_VERSION);
 

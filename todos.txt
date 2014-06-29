@@ -1,22 +1,5 @@
 CORE Xtras
-	Some config.php files to helpers (mimes,)
-	Naming and authoring
-	template_layouts -> uilayouts change the name of misc folders
-	Error Template css modifications
-	misc/sos : remove
-	Logging System Improvments : 
-	auth login system improvments : 
-	misc/loading
-	misc/logins
-	router.php
-	lgks_sys_iplist	Done
-	lgks_sys_redirects
 	isLinkAccessable($link=null)
-
-----------------------------------------------------------------------
-Replace through out system where privilege is to be sorted out
-
-(find_in_set('$pridid',privilege) OR privilege='*')
 
 ----------------------------------------------------------------------
 

@@ -2,8 +2,6 @@
 /*
  * Simple PHP JSON DataSource Implementation
  * This belongs to PHPJson Package.
- * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 2012/09/15
- * Version: 1.0
  *
  * ToDo :: addFile :: Add external jsonfiles to db.
  * ToDo :: import :: Import External Files
@@ -12,14 +10,19 @@
  * ToDo :: info,meta,update functions to set get other infos
  *
  * USAGE
-	$jsondb=new SimpleJSONDB(dirname(__FILE__)."/data/");
-
-	$jsondb->load("test");
-	//$jsondb->add("test",array("W"=>"m","U"=>"Hypo"));
-	//$jsondb->delete("test",4);
-	//$jsondb->update("test",4,array("Q"=>"W","R"=>false));
-	printArray($jsondb->fetchByIndex("test"));
+ *	$jsondb=new SimpleJSONDB(dirname(__FILE__)."/data/");
+ *
+ *	$jsondb->load("test");
+ *	//$jsondb->add("test",array("W"=>"m","U"=>"Hypo"));
+ *	//$jsondb->delete("test",4);
+ *	//$jsondb->update("test",4,array("Q"=>"W","R"=>false));
+ *	printArray($jsondb->fetchByIndex("test"));
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 2012/09/15
+ * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 class SimpleJSONDB {
 
 	private $dataDir=null;

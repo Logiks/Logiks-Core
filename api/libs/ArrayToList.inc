@@ -77,8 +77,12 @@ class ArrayToList {
 				if($n>0) {
 					//$colData[$colDefn["titleCol"]]
 					$as=$this->createTag($format[3],$a,$colData,$showID);
-					if($depth==0) $s.="<{$format[1]}><{$format[2]}>{$as}</{$format[2]}>";
-					else $s.="<{$format[1]}>{$as}";
+					if($depth==0) {
+						$s.="<{$format[1]} class='dropdown'>";
+						$s.="<{$format[2]} class='dropdown-toggle' data-toggle='dropdown'>{$as}<strong class='caret'></strong></{$format[2]}>";
+					} else {
+						$s.="<{$format[1]}>{$as}";
+					}
 					$s.=$this->getTree($b,$dataStr,$depth+1,$showID);
 					$s.="</{$format[1]}>";
 				} else {
@@ -113,7 +117,10 @@ class ArrayToList {
 			}
 		}
 		if(strlen($s)<0) return "";
-		else return "<{$format[0]}>$s</{$format[0]}>";
+		else {
+			if($depth==0) return "<{$format[0]}>$s</{$format[0]}>";
+			else return "<{$format[0]} class='dropdown-menu'>$s</{$format[0]}>";
+		}
 	}
 
 	//This function creates the final tags to be put into the holder spaces.

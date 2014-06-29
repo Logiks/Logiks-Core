@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file bootstraps the system into a running system by configuring 
+ * all the parameters and including the basic required files.
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.2
+ */
 //Check Installation
 $bpath=dirname(dirname(__FILE__));
 if(!file_exists("$bpath/config/basic.cfg") || !file_exists("$bpath/config/db.cfg")) {

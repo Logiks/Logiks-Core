@@ -13,6 +13,7 @@
 // investigate trouble with ^M
 // fix the alpha value with color when using a percent
 //
+if(!defined('ROOT')) exit('No direct script access allowed');
 
 class lessc {
 	private $buffer;

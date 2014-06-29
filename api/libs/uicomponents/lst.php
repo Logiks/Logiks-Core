@@ -1,4 +1,10 @@
 <?php
+/*
+ * List(.lst) Data/File Into UIComponents (table,select,list)
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("createSelectorFromListFile")) {

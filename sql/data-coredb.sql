@@ -12,6 +12,7 @@ INSERT INTO `lgks_privileges` (`id`, `name`, `site`, `blocked`, `remarks`, `user
 ('1', 'root', '*', 'false', '', '', '', ''),
 ('2', 'devroot', '*', 'false', '', '', '', ''),
 ('3', 'admin', '*', 'false', '', '', '', ''),
+('4', 'manager', '*', 'false', 'General Manager Level', 'installer', CURDATE(), CURDATE()),
 ('5', 'moderator', '*', 'false', 'General Moderator Level', 'installer', CURDATE(), CURDATE()),
 ('6', 'editor', '*', 'false', 'General Editor Level', 'installer', CURDATE(), CURDATE()),
 ('7', 'user', '*', 'false', 'General User Level', '', '', '');

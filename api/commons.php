@@ -1,7 +1,12 @@
 <?php
+/*
+ * This contains all the Commonly Required functions that are used through out the Framework
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
-//This class is used for storing all the Commonly Required functions that are used
-//through out the Framework
 
 if (!function_exists('printArray')) {
 	function printArray($arr,$noPrint=false) {

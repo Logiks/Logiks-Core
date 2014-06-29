@@ -1,4 +1,11 @@
 <?php
+/*
+ * This file contains the Request Routing logic for Logiks Framework. 
+ *
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.1
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 $params=processUserRequest();

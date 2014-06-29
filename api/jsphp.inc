@@ -1,4 +1,11 @@
 <?php
+/*
+ * This class contains the JS-PHP bridge for Logiks Framework
+ *
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 $JS_LINK=SiteLocation . JS_FOLDER;

@@ -1,6 +1,4 @@
 <?php
-if(!defined('ROOT')) exit('No direct script access allowed');
-
 /*
  * This Class : DataCnversion Is Used To Convert Data From Given Source/Input/Form To Required O/P Form
  * Mainly Used for Creating Components
@@ -9,6 +7,8 @@ if(!defined('ROOT')) exit('No direct script access allowed');
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 24/02/2012
  * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 include_once "xml2array.inc";
 
 class DataConversion {

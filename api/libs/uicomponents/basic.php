@@ -1,7 +1,13 @@
 <?php
+/*
+ * UIComponents array to  (table,select,list)
+ * Selector/List-Tree/Table/Form
+ *  
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-//Selector/List-Tree/Table/Form
 if(!function_exists("createSelector")) {
 	function createSelector($data,$printTopLevels=false,
 		$params=array("style"=>"")) {

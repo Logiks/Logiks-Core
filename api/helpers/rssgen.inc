@@ -1,13 +1,16 @@
 <?php
-if(!defined('ROOT')) exit('No direct script access allowed');
 /*
  * This file helps in generating RSS Feeds From database using SQL
- * 
  * //Template Params
  * #datatable#
  * #image#
  * 
- **/
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
+ 
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 class RSSGen {
 	private static $encoding="ISO-8859-1";
 	private static $rssVersion="2.0";

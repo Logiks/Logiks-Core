@@ -6,11 +6,43 @@
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 24/02/2012
  * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 class PageLayout {
 	private $layoutTemplateDir=array();
 
 	private $layout="";
 	private $layoutDir="";
+
+	private $default_Layout_Params=array(
+			"preheader"=>"",
+			//{wrapper}
+				"header"=>"",
+				"prebanner"=>"",
+				"banner"=>"",
+				"breadcrumb"=>"",
+				//{contentspace}
+					"precontent"=>"",
+					"sidebar_left"=>"",
+					//{content}
+						"content"=>"",
+					//{content}
+					"sidebar_right"=>"",
+					"postcontent"=>"",
+				//{contentspace}
+				"prefooter"=>"",
+			//{wrapper}
+			"footer"=>"",
+			"copyright"=>"",
+			"postfooter"=>"",
+			
+			"topbar"=>"",
+			"bottombar"=>"",
+			"leftbar"=>"",
+			"rightbar"=>"",
+			
+			"sidebar"=>"",//Used In WorkSpace Layout
+		);
 
 	private $html5Containers=array(
 			"article","aside","canvas",
@@ -45,7 +77,6 @@ class PageLayout {
 		return false;
 	}
 	public function printLayout($params) {
-		include ROOT."config/layoutareas.php";
 		if(!is_array($params) || count($params)<=0) {
 			dispErrMessage("Layout Configuration Array MissConfigured.","Layout Config Error",409,'apps');
 			exit();
@@ -57,7 +88,7 @@ class PageLayout {
 		if(defined("APPROOT")) $bdir=APPROOT; else $bdir=ROOT;
 		if(defined("APPS_PAGES_FOLDER")) $bdir.=APPS_PAGES_FOLDER; else $bdir.=PAGES_FOLDER;
 
-		foreach($default_Layout_Params as $pkey=>$plnk) {
+		foreach($this->default_Layout_Params as $pkey=>$plnk) {
 			if(array_key_exists($pkey,$params)) {
 				$ft=$bdir.trim($params[$pkey]);
 				$fInfo=pathinfo($ft);
@@ -141,6 +172,9 @@ class PageLayout {
 			}
 		}
 		return $out;
+	}
+	public function getDefaultLayoutParams() {
+		return $this->default_Layout_Params;
 	}
 }
  ?>

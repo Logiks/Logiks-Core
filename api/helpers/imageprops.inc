@@ -1,8 +1,14 @@
 <?php
+/*
+ * This class contains all the image related operations.
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 class ImageProps {
-   
    var $image;
    var $image_type;
    

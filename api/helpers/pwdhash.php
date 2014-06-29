@@ -1,7 +1,13 @@
 <?php
+/*
+ * Password Related Functionalities
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-//Password Related Functionalities
 if(!function_exists("getPWDHash")) {
 	function getPWDHash($pwd) {
 		if(strlen(getConfig("PWD_HASH_TYPE"))<=0 || !getConfig("PWD_HASH_TYPE")) {

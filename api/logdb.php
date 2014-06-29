@@ -1,7 +1,15 @@
 <?php
-//This is the dbLogger for Logiks Framework. It helps in Logging Events 
-//Specific to Logiks Into Database Tables. This is advanced Logger.
-//This is table Specific.
+/*
+ * This file contains the Logging operations into files through syslogger.php and 
+ * logging into database using LogDB class.
+ * 
+ * This is the dbLogger for Logiks Framework. It helps in Logging Events 
+ * Specific to Logiks Into Database Tables. This is advanced Logger.
+ * This is table Specific.
+ *   
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 include_once "libs/syslogger.php";

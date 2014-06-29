@@ -1,5 +1,12 @@
 <?php
-//This class is used for CSS embeding.
+/*
+ * This class contains the CSS-PHP bridge for Logiks Framework
+ * This class is used for CSS embeding.
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!defined('CSS_DISP_TYPE')) define("CSS_DISP_TYPE","compressed");
@@ -204,12 +211,12 @@ class CssPHP extends DataEmbedder {
 			}
 		}
 		foreach($keys as $a=>$b) {
-			$GLOBALS["CSS_PRINTED"][sizeOf($GLOBALS["CSS_PRINTED"])]=$b;
+			$GLOBALS["CSS_PRINTED"][count($GLOBALS["CSS_PRINTED"])]=$b;
 		}
 		$cnt=count($keys);
 		if(strtolower($this->typeOfDispatch)=="tagged") {
 			foreach($keys as $k) {
-				if(in_array($k, $x)) {
+				if(array_key_exists($k, $x)) {
 					$this->printIfTag($x[$k]);
 					$a=$arr[$k];
 					$p=$this->getCSSWebPath($a,$params);
@@ -229,7 +236,7 @@ class CssPHP extends DataEmbedder {
 			if($scriptTag) {
 				if($this->isolatedBlocks) {
 					foreach($keys as $k) {
-						if(in_array($k, $x)) {
+						if(array_key_exists($k, $x)) {
 							$this->printIfTag($x[$k]);
 
 							$a=$arr[$k];
@@ -259,7 +266,7 @@ class CssPHP extends DataEmbedder {
 				}
 			} else {
 				foreach($keys as $k) {
-					if(in_array($k, $x)) {
+					if(array_key_exists($k, $x)) {
 						$this->printIfTag($x[$k]);
 
 						$a=$arr[$k];
@@ -382,7 +389,8 @@ class CssPHP extends DataEmbedder {
 	}
 
 	public function printIfTag($a) {
-		if(strtolower($a)=="ie6") echo "<!--[if IE 6]>\n";
+		//if(strtolower($a)=="ie6") 
+		echo "<!--[if $a]>\n";
 	}
 }
 ?>

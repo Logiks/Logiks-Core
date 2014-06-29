@@ -3,7 +3,11 @@
  * This file is used for session based minor Encryption And Decryption.
  * This mostly does not support cross session encryption and decryption.
  *
- * */
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 class LogiksEncryption {
     private $skey = "asd4564asd5as4";//session_id();
 

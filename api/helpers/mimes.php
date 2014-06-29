@@ -1,14 +1,19 @@
 <?php
-// This is inspired from many of the other systems eg. Drupal
-
-/**
+/*
  * Default File MIME extension mapping.
- *
+ * This is inspired from many of the other systems eg. Drupal
+ * 
  * @return
  *   Array of mimetypes correlated to the extensions that relate to them.
  *
  * @see getFileMimeArray()
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 if(!function_exists("getFileMimes")) {
 	function getFileMimes() {
 	  return array(

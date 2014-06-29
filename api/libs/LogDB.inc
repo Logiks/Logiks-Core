@@ -7,6 +7,8 @@
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 24/02/2012
  * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 class LogDB {
 	private static $instance=null;
 	private static $noErr=array();

@@ -1,13 +1,14 @@
 <?php
 /*
  * This contains all the security related functions.
- *
+ * Functions ::  session_check,isAdminSite,user_admin_check,checkUserSiteAccess,isLinkAccessible
+ *  				checkDevMode, checkBlacklist,checkSiteMode
+ * 
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Version: 1.0
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
-//Functions ::  session_check,isAdminSite,user_admin_check,checkUserSiteAccess,isLinkAccessible
-// 				checkDevMode, checkBlacklist,checkSiteMode
+
 if(!function_exists("session_check")) {
 	//User Is Logged In
 	//Site Being Accessed Is Correct
@@ -168,7 +169,7 @@ if(!function_exists("session_check")) {
 			$ips=explode(",",DEV_MODE_IP);
 			if(count($ips)>0) {
 				loadHelpers("devmode");
-				__initDevMode($ips);
+				__testDevMode($ips);
 			}
 		}
 	}

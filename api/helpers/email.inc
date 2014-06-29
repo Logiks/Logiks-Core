@@ -1,4 +1,11 @@
 <?php
+/*
+ * All Email related functions
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 //$headers["Reply-To"] = "reply@address.com"; 
@@ -128,9 +135,13 @@ class EMail {
 			$this->smtpinfo=$this->createDefaultSMTPInfo();
 		}
 		
+		$userMail=$_SESSION['SESS_USER_EMAIL'];
+		if(strlen($userMail)<=1) $userMail=$this->smtpinfo["username"];
 		$hdrs = array(
-				  'From'    => $this->smtpinfo["username"],
+				  'From'    => $userMail,
 				  'To'    => $recipients,
+				  'Reply-To' => $userMail,
+				  'Return-path' => $userMail,
 				  'Subject' => $subject,
 				  'Cc' => $this->smtpinfo["cc"].",".$cc,
 				  'Bcc' => $this->smtpinfo["bcc"].",".$bcc,

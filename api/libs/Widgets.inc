@@ -1,7 +1,13 @@
 <?php
 /*
  * This class is used for creating widget views,etc.
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 class Widgets {
 	public static function isEnabled($widget) {
 		$wGroups=array();

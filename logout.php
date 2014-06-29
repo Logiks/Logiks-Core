@@ -1,5 +1,11 @@
 <?php
-//Logout file, used to destroy everything
+/*
+ * This centralizes the logout operation
+ *
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 require_once ('api/initialize.php');
 
 $domain=$_SESSION['SESS_LOGIN_SITE'];

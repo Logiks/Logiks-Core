@@ -1,8 +1,13 @@
 <?php
-// This is inspired from many of the other systems eg. Drupal
 /*
- *  Default Country Code -> Name Mapping
+ * This is inspired from many of the other systems eg. Drupal
+ * Default Country Code -> Name Mapping
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 if(!function_exists("getCountryList")) {
 	define("LANGUAGE_RTL","left-to-right");
 	function getCountryList($sortedByName=false) {

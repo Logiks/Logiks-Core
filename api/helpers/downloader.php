@@ -1,4 +1,11 @@
 <?php
+/*
+ * For handling Downloads data from From Server To Clients
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if (!function_exists('startsWith')) {

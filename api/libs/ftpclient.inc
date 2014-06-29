@@ -6,6 +6,7 @@
  * Author: Kshyana Prava kshyana23@gmail.com on 18/03/2012
  * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
 
 class FTPClient {
 	private $host,$port,$userid,$pwd,$remoteFolder;

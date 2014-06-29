@@ -33,6 +33,7 @@ class ServiceSecurity {
 			$_REQUEST['nocache']=$cmdCntrls['nocache'];
 		}
 		//access_control :: public,apikey,adminonly,onlogin,privileged
+		//echo $cmdCntrls['access_control'];
 		if($cmdCntrls['access_control']=="public") {
 			return $request;
 		} elseif($cmdCntrls['access_control']=="apikey") {

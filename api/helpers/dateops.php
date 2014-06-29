@@ -1,4 +1,12 @@
 <?php
+/*
+ * Date related operations. They contain functions like
+ * add,subtract, time diff simmilar to '2 months ago'
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("subtractDates")) {

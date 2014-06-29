@@ -21,6 +21,7 @@
  * Author: Kshyana Prava kshyana23@gmail.com on 24/02/2012
  * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
 
 class PHooksQueue {
 	//Runs Only Hooks Based In System Hooks Folder

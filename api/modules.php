@@ -1,5 +1,10 @@
 <?php
-//This class is used for Loading And Managing Modules
+/*
+ * This file contains functions for Module Level Operations
+ *
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists('loadModule')) {

@@ -1,3 +1,12 @@
+<?php
+/*
+ * This contains all the basic scripts inserted into loading request.
+ *
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
+if(!defined('ROOT')) exit('No direct script access allowed');
+?>
 <script language='javascript'>
 SiteLocation="<?=SiteLocation?>";
 SITENAME="<?=SITENAME?>";

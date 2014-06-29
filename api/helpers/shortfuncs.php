@@ -1,5 +1,11 @@
 <?php
-//ShortHand Functions For Some Most Used functions
+/*
+ * ShortHand Functions For Some Most Used functions 
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.5
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 /*Style And Theme Related Functions*/

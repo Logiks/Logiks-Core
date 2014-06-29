@@ -1,4 +1,10 @@
 <?php
+/*
+ * This file contains the functions that can be used for transfering data from various protocols
+ * 
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("transferFileHTTPToLocal")) {

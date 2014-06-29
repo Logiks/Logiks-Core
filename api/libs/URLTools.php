@@ -1,6 +1,4 @@
 <?php
-if(!defined('ROOT')) exit('No direct script access allowed');
-
 /*
  * This file helps in generating and understanding of URL structs that
  * are used to access the pages of the site.
@@ -16,7 +14,11 @@ if(!defined('ROOT')) exit('No direct script access allowed');
  *
  * /index.php/page?site=
  * /index.php/site?page=
- * */
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
+if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("getQueryParams")) {
 	function getQueryParams($basics=false) {

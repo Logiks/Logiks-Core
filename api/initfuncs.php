@@ -1,7 +1,13 @@
 <?php
-//This class is used for Storing Special Logiks PHP Functions.
-//This is one time called by initialize.php only.
-//No other file should cak these functions as that may be fatal.
+/*
+ * This class is used for Storing Special Logiks PHP Functions.
+ * This is one time called by initialize.php only. 
+ * No other file should call these functions as that may be fatal.
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("redirectToApp")) {

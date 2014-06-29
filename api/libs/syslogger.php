@@ -1,9 +1,14 @@
 <?php
+/*
+ * Contains LogHandler, LogController classes for systematic logging
+ * into system process.
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-/* Contains LogHandler, LogController classes for systematic logging
- * into system process.
- */
 $CONFIG['Log_Priority']=array(
 				"SYSTEM"=>1, //System,Core
 				"USER"=>2, //ACTIVITY

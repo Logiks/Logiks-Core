@@ -3,8 +3,11 @@
  * RequestCache handles the way the requested command (scmd) is executed
  * based on the command type (stype) for all sync/async requests.
  *
- * @author : Bismay Kumar Mohapatra
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 class RequestCache {
 	public static function getCachePath($type) {
 		$cacheDir=ROOT.TMP_FOLDER."fullcache/{$type}/".SITENAME."/";

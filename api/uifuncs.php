@@ -1,5 +1,10 @@
 <?php
-//Here all ui related common tasks are kept, for easier updates.
+/*
+ * This class is central to various functions used for ui generations and others.
+ *
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists('getUserPageStyle')) {
@@ -48,7 +53,7 @@ if(!function_exists('displayLayout')) {
 		$pageLayout=new PageLayout();
 		if($pageLayout->loadLayoutTemplate($layoutTemplate)) {
 			if(!is_array($params)) {
-				$appLayoutDir=APPROOT."config/layouts/";
+				$appLayoutDir=APPROOT.APPS_PAGES_FOLDER."layouts/";
 				$f1=$appLayoutDir."{$params}.layout";
 				if(file_exists($f1)) {
 					$params=PageLayout::readLayoutConfig($f1);

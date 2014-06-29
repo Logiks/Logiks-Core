@@ -1,6 +1,12 @@
 <?php
-//The central configuration functions
-//Types :: DEFINE, SESSION, CONFIG, PHPINI, DBCONFIG,DATABUS
+/*
+ * This file contains all the configuration functions
+ * Supported Types :: DEFINE, SESSION, CONFIG, PHPINI, DBCONFIG
+ *  
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 2.0
+ */
 if(!defined('ROOT')) {
 	define('ROOT',dirname(dirname(__FILE__)) . '/');
 }

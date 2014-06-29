@@ -1,4 +1,11 @@
 <?php
+/*
+ * This file contains all Logiks Caching System and may be used to create,delete and update 
+ * systemwide as well as applevel caches.
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 loadHelpers("filetransfer");
@@ -107,7 +114,7 @@ class CacheManager {
 	public function getCacheLink($source,$cacheID=null,$forceRecache=false) {
 		if($cacheID==null) $cacheID=md5($source);
 		if($forceRecache || !$this->isCachedByID($cacheID)) {
-			$this->cacheSource($source);
+			$this->cacheSource($source,$cacheID);
 		}
 		$cacheLink=$this->getCacheFolder().$cacheID;
 		if(file_exists($cacheLink)) {
@@ -120,7 +127,7 @@ class CacheManager {
 	public function getCache($source,$cacheID=null,$forceRecache=false) {
 		if($cacheID==null) $cacheID=md5($source);
 		if($forceRecache || !$this->isCachedByID($cacheID)) {
-			$this->cacheSource($source);
+			$this->cacheSource($source,$cacheID);
 		}
 		$cacheLink=$this->getCacheFolder().$cacheID;
 		if(file_exists($cacheLink)) {

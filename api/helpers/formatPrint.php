@@ -1,7 +1,13 @@
 <?php
+/*
+ * Contains formating functions that formats the data in array into various formats
+ * Supported Output Formats : table,select,list,text,xml,json
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
-
-//Handles Printing To Client in formats==select,table,list,json
 
 if(!function_exists("printFormattedArray")) {
 	function printFormattedArray($arr,$autoTitle=true,$format=null) {

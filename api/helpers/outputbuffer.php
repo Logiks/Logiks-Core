@@ -1,4 +1,10 @@
 <?php
+/*
+ * Contains the output buffer supporting functions
+ * 
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("startBuffer")) {

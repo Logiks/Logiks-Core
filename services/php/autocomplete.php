@@ -2,7 +2,6 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 //checkServiceSession();
 
-//"table"=>"table","columns"=>"cols","where"=>"where","orderby"=>"orderby","index"=>"index","limit"=>"limit",
 $src=$_REQUEST["src"];
 if($src=="sqltbl") {
 	$formCols="";
@@ -12,32 +11,16 @@ if($src=="sqltbl") {
 	if(isset($_REQUEST["term"])) $term=$_REQUEST["term"]; else $term="";
 	if(isset($_REQUEST["where"])) $where=$_REQUEST["where"]; else $where="";
 	if(isset($_REQUEST["groupby"])) $group=$_REQUEST["groupby"]; else $group="";
+	if(isset($_REQUEST["orderby"])) $order=$_REQUEST["orderby"]; else $orderby="";
+	if(isset($_REQUEST["i"])) $i=$_REQUEST["i"]; else $i=0;
+	if(isset($_REQUEST["l"])) $l=$_REQUEST["l"]; else $l=1000;
 	if(isset($_REQUEST["form"])) $formCols=$_REQUEST["form"];
 
 	if(strlen($where)>0) {
-		$where=str_replace(":eq:","=",$where);
-		$where=str_replace(":neq:","<>",$where);
-		$wA=explode(",",$where);
-		foreach($wA as $a1=>$a2) {
-			if(strpos($a2,"=")>0) {
-				$wA1=explode("=",$a2);
-				$wA11=$wA1[0];
-				$wA12=$wA1[1];
-				if($wA12=="null") {
-					$wA[$a1]="($wA11='$wA12' OR $wA11='') ";
-				} else {
-					if($wA12[0]=="@")
-						$wA[$a1]="$wA11='"._replace("#".substr($wA12,1)."#")."' ";
-					else
-						$wA[$a1]="$wA11='{$wA12}' ";
-				}
-			} else {
-				$wA[$a1]="$a2 ";
-			}
-		}
-		$where=implode(",",$wA);
+		loadHelpers("sqlsrc");
+		$where=parseSQLWhere($where);
 	}
-
+	
 	$colArr=explode(",",$cols);
 	$col=$colArr[0];
 	$sys=false;
@@ -56,9 +39,16 @@ if($src=="sqltbl") {
 	$sql="SELECT $cols FROM $tbl";// WHERE $col LIKE '$term%'
 
 	$whrArr=array();
-	foreach($colArr as $q=>$e) {
-		$whrArr[$q]=current(explode(" ",$e))." LIKE '$term%'";
+	if(!isset($_REQUEST['match']) || $_REQUEST['match']=="starts") {
+		foreach($colArr as $q=>$e) {
+			$whrArr[$q]=current(explode(" ",$e))." LIKE '$term%'";
+		}
+	} else {
+		foreach($colArr as $q=>$e) {
+			$whrArr[$q]=current(explode(" ",$e))." LIKE '%$term%'";
+		}
 	}
+	
 	$sql.=" WHERE (".implode(" OR ",$whrArr).")";
 
 	if(strlen($where)>0) {
@@ -66,10 +56,15 @@ if($src=="sqltbl") {
 	}
 
 	if(strlen($group)>0) {
-		$sql="$sql group by $group";
+		$sql="$sql GROUP BY $group";
 	}
+	if(strlen($order)>0) {
+		$sql="$sql ORDER BY $order";
+	}
+	$sql="$sql LIMIT $i,$l";
 	//exit("<option>$sql</option>");
-	if(sizeOf($colArr)>1) {
+	//exit($sql);
+	if(count($colArr)>1) {
 		$col1=$colArr[1];
 	} else {
 		$col1=$colArr[0];

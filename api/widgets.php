@@ -1,5 +1,10 @@
 <?php
-//This class is used for Loading And Managing Widgets
+/*
+ * This class is used for Loading And Managing Widgets
+ *
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists('loadAllWidgets')) {

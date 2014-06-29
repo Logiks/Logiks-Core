@@ -1,4 +1,10 @@
 <?php
+/*
+ * Confiuration File Type (cfg,dat,lst,ini,xml,json) special reader
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 class SpecialCfgFiles {

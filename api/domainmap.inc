@@ -1,11 +1,18 @@
 <?php
+/*
+ * This class controls the Domain Control Logic for Logiks Framework.
+ * Here we manage what Domains are mapped to which apps and thus vice versa.
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 class DomainMap {
 	private $domainList=array();
 	private $siteList=array();
 	private $notMappedSiteList=array();
-
+	
 	function __construct() {
 		$dmF=ROOT.CFG_FOLDER."security/domainmap.json";
 		if(!file_exists($dmF)) {
@@ -18,7 +25,7 @@ class DomainMap {
 		foreach($dmArr as $a=>$b) {
 			if($b["active"]) {
 				$this->domainList[strtoupper(trim($a))]=$b;
-				array_push($this->siteList,$b["appsite"]);
+				if(!in_array($b["appsite"],$this->siteList)) array_push($this->siteList,$b["appsite"]);
 			}
 		}
 
@@ -27,13 +34,17 @@ class DomainMap {
 		elseif(DOMAIN_CONTROLS_FLOWTYPE=="site") $list=$this->getSiteList();
 		else $list=$this->getAppList();
 		//blocking
-
-		if(DOMAIN_CONTROLS_FLOWTYPE!="blocking") {
-			foreach($list as $a=>$b) {
-				if(!in_array($b,$this->siteList)) {
-					array_push($this->notMappedSiteList,$b);
+		
+		if(DOMAIN_CONTROLS_STRICT=="true") {
+			if(DOMAIN_CONTROLS_FLOWTYPE!="blocking") {
+				foreach($list as $a=>$b) {
+					if(!in_array($b,$this->siteList)) {
+						array_push($this->notMappedSiteList,$b);
+					}
 				}
 			}
+		} else {
+			$this->notMappedSiteList=$list;
 		}
 	}
 	function getDomainList() {

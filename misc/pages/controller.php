@@ -22,7 +22,9 @@ function __printPage($page=null) {
 		}
 		$page=$_REQUEST["page"];
 	}
-
+	$page=explode("/",$page);
+	$page=current($page);
+	
 	loadModule("core");loadModule(SITENAME);
 
 	$device=strtoupper(getUserDeviceType());

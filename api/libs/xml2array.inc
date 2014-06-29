@@ -1,4 +1,14 @@
 <?php
+/*
+ * This class contains methods for converting xml data/streams into valid php arrays
+ * and vice versa.
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 class xml2array {
 	function xml2array($xml) {
 		if(is_file($xml)) {

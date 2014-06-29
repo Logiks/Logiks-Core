@@ -1,4 +1,11 @@
 <?php
+/*
+ * This class contains the Privilege/Permission/Role Model based permission system
+ * for all the logical inputs within Logiks Framework
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("checkUserRoles")) {

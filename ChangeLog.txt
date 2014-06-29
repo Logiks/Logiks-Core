@@ -1,3 +1,13 @@
+Changelog for Logiks v3.6.3
+===========================
+
+Code documenting at file level.
+Minor Performance Improvements.
+Removes some js libs, converted them to modules, for decreasing the base framework size.
+api/libs/ArrayToList.inc
+Service>AutoComplete updated to take orderby
+Cachemanager.inc updated
+
 Changelog for Logiks v3.6.2
 ===========================
 

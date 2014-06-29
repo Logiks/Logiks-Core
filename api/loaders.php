@@ -1,5 +1,11 @@
 <?php
-//This class is used for managing and using loaders.
+/*
+ * This file is used to manage and use all loaders like helpers,modules,widgets, etc..
+ *
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 include_once "helpers.php";

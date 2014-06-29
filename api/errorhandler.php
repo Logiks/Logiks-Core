@@ -1,4 +1,10 @@
 <?php
+/*
+ * This handles all the errors in Logiks Framework.
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 ini_set("display_errors",1);

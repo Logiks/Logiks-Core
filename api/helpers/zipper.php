@@ -1,4 +1,10 @@
 <?php
+/*
+ * Contains all the functions that can be used to zip and unzip files across Logiks Framework.
+ * 
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("unzipFile")) {

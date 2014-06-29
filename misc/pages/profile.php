@@ -19,12 +19,12 @@ textarea {
 	border:1px solid #aaa;
 }
 </style>
-<div id=toolbar>
+<div id="toolbar">
 <button onclick='submitForm()'>Save</button><button onclick='resetForm()'>Reset</button>
 <h2 style='float:right;margin:0px;margin-right:20px;color:#102F69;'>My Profile</h2>
 </div>
-<form id=profileForm method=POST action="services/?scmd=formaction&action=submit" target='targetForm'>
-<div id=configurations>
+<form id="profileForm" method=POST action="services/?scmd=formaction&action=submit" target='targetForm'>
+<div id="configurations">
 		<input type=hidden name='frmMode' value='update' />
 		<input type=hidden name='submit_table' value='lgks_users' />
 		<input type=hidden name='submit_wherecol' value='userid' />
@@ -55,12 +55,12 @@ textarea {
 				</select>
 			</li>
 			<li class=title>ZipCode</li>
-			<li class=input><input name=zipcode id=title type=text class='textfield' value='<?=$data["zipcode"]?>'/></li>
+			<li class=input><input name="zipcode" id="title" type=text class='textfield' value='<?=$data["zipcode"]?>'/></li>
 		</ul>
 </div>
 
-<div id=settings align=right>
-	<iframe id=targetForm name=targetForm width=100% height=200px frameborder=0 align=center></iframe>
+<div id="settings" align=right>
+	<iframe id="targetForm" name="targetForm" width=100% height=200px frameborder=0 align=center></iframe>
 </div>
 </form>
 <script language='javascript'>

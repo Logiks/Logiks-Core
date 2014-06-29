@@ -2,10 +2,13 @@
 /*
  * Simple PHP Task Queue implementation. 
  * This belongs to PCron Package.
+ *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 24/02/2012
  * Author: Kshyana Prava kshyana23@gmail.com on 24/02/2012
  * Version: 1.0
  */
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 class PCronQueue {
 	private $taskToRun=array();
     public function __construct() {

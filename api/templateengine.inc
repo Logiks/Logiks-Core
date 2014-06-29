@@ -1,7 +1,15 @@
 <?php
+/*
+ * This class is a gateway to smarty engine and is used to operate on templates.
+ * This class configures smarty to be used inside Logiks Framework
+ * This is the template engine used by Logiks 3, Powered By Smarty
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-/*This is the template engine used by Logiks 3, Powered By Smarty*/
 define('SMARTY_DIR', dirname(__FILE__) . "/libs/smarty/");
 include_once dirname(__FILE__) . "/libs/smarty/Smarty.inc";
 

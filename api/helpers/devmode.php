@@ -1,8 +1,15 @@
 <?php
+/*
+ * DevMode functionality allows limiting access to used server/app only to
+ * limited developer ips
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-if(!function_exists("__initDevMode")) {
-	function __initDevMode($addr,$msg="OOPs, Down For Maintaince/Updates. Back In A Bit.") {
+if(!function_exists("__testDevMode")) {
+	function __testDevMode($addr,$msg="OOPs, Down For Maintaince/Updates. Back In A Bit.") {
 		if(is_array($addr)) {
 			if(!in_array($_SERVER["REMOTE_ADDR"],$addr)) {
 				trigger_ForbiddenError("Site Is Down For Maintenance.",
@@ -24,13 +31,6 @@ if(!function_exists("__initDevMode")) {
 				//exit("<h1 style='color:maroon;font:bold 3.0em Georgia,Verdana,san-seriff;' align=center>$msg</h1>");
 			}
 		}
-	}
-	function printResponseTime() {
-		$t1=$_SERVER['REQUEST_TIME'];
-		$t2=time();
-		$t3=abs($t2 - $t1);
-		$t4=round($t3 / 60,2);
-		echo "Response In $t3 secs OR $t4 minute";
 	}
 }
 ?>

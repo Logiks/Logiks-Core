@@ -65,7 +65,6 @@
  *   UTF-8 in your files... 
  */
 
-
 class JavaScriptPacker {
 	// constants
 	const IGNORE = '$1';

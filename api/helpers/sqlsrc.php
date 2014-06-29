@@ -1,4 +1,11 @@
 <?php
+/*
+ * SQL SRC across sessions
+ * 
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.0
+ */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists('getSQLSrc')) {
@@ -11,13 +18,6 @@ if(!function_exists('getSQLSrc')) {
 				$arr["where"]=$_SESSION[$sid]["where"];
 				return $arr;
 			}
-		}
-		elseif($src=="databus") {
-			$arr=array();
-			$arr["table"]=$_dataBus["{$sid}/table"];
-			$arr["cols"]=$_dataBus["{$sid}/cols"];
-			$arr["where"]=$_dataBus["{$sid}/where"];
-			return $arr;
 		}
 		elseif($src=="cookie") {
 			$arr=array();
@@ -92,19 +92,39 @@ if(!function_exists('processSQLQuery')) {
 		$q=preg_replace_callback("/#[a-zA-Z0-9-_]+#/","replaceFromEnviroment",$q);
 		$q=preg_replace_callback("/:[a-z]+:/","parseRelation",$q);
 		
-		//unset($_SESSION["date"]);unset($_SESSION["site"]);unset($_SESSION["user"]);
 		unset($_SESSION["privilege"]);unset($_SESSION["username"]);unset($_SESSION["privilegename"]);
 		
 		return $q;
 	}
 }
+if(!function_exists('parseSQLWhere')) {
+	function parseSQLWhere($where) {
+		if(!is_array($whr)) {
+			$wA=explode(",",$where);
+		} else {
+			$wA=$where;
+		}
+		foreach($wA as $a1=>$a2) {
+			$a3=preg_split("/(:[a-zA-Z0-9]+:)/",$a2,-1,PREG_SPLIT_DELIM_CAPTURE);
+			if(!isset($a3[2]) || $a3[2]==null || $a3[2]=="") {
+				$wA[$a1]="({$a3[0]} IS NULL OR {$a3[0]}='') ";
+				continue;
+			} elseif($a3[2][0]=="@") {
+				$a3[2]=_replace("#".substr($a3[2], 1)."#");
+			}
+			$wA[$a1]=getRelation(substr($a3[1], 1,strlen($a3[1])-2),$a3[0],$a3[2]);
+		}
+		$where=implode(" AND ",$wA);
+		return $where;
+	}
+}
 if(!function_exists('parseRelation')) {
 	function parseRelation($func) {
-		$func=$func[0];
+		if(is_array($func)) $func=$func[0];
 		$func=substr($func,1,strlen($func)-2);
 		if($func=="eq") {
 			return "=";
-		} elseif($func=="ne") {
+		} elseif($func=="ne" || $func=="neq") {
 			return "<>";
 		} elseif($func=="lt") {
 			return "<";
@@ -126,7 +146,7 @@ if(!function_exists('getRelation')) {
 		}
 		if($func=="eq") {
 			return "$col= $r";
-		} elseif($func=="ne") {
+		} elseif($func=="ne" || $func=="neq") {
 			return "$col<> $r";
 		} elseif($func=="bw") {
 			return "$col LIKE '$value%'";
@@ -161,4 +181,3 @@ if(!function_exists('getRelation')) {
 	}
 }
 ?>
-

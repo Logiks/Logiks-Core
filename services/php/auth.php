@@ -11,13 +11,6 @@ else $domain="";
 LoadConfigFile(ROOT . "config/auth.cfg");
 include ROOT."api/helpers/pwdhash.php";
 
-if(ALLOW_LOGIN_RELINKING=="true") {
-	if(isset($_REQUEST['onsuccess'])) $onsuccess=$_REQUEST['onsuccess']; else $onsuccess="";
-	if(isset($_REQUEST['onerror'])) $onerror=$_REQUEST['onerror']; else $onerror="";
-} else {
-	$onsuccess="";
-	$onerror="";
-}
 /*
 CLEAR_OLD_SESSION=true
 @session_start();
@@ -346,6 +339,11 @@ function restoreOldSession($sessionData, $userid, $domain, $dbLink, $params=arra
 	exit();
 }
 function gotoSuccessLink() {
+	$onsuccess="";
+	if((ALLOW_LOGIN_RELINKING=="true" || ALLOW_LOGIN_RELINKING)) {
+		if(isset($_REQUEST['onsuccess'])) $onsuccess=$_REQUEST['onsuccess'];
+	}
+
 	$domain=$_SESSION['SESS_ACTIVE_SITE'];//ACTIVE
 	if(ALLOW_MAUTH=="true") {
 		if(isset($_POST['mauth']) && $_POST['mauth']=="authkey") {
@@ -378,5 +376,4 @@ function gotoSuccessLink() {
 	}
 	exit();
 }
-
 ?>
