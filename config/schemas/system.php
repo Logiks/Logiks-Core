@@ -56,9 +56,6 @@ $cfgSchema["TEMPLATE_EXPIRY"]=array(
 $cfgSchema["CACHE_EXPIRY"]=array(
 		"tips"=>"(secs) Seconds after which Cache Expires.",
 	);
-$cfgSchema["DATABUS_TIMEOUT"]=array(
-		"tips"=>"(secs) Seconds after which DataBus Garbage Collector Cleans Unused Variables.",
-	);
 $cfgSchema["GENERATED_PERMALINK_STYLE"]=array(
 		"type"=>"list",
 		"function"=>"getPrettyPageLinkStyles",

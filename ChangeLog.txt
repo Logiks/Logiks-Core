@@ -1,3 +1,9 @@
+Changelog for Logiks v3.6.4
+===========================
+
+Remove DataBus class for all future releases and updated system throughout.
+Improved misc other functions.
+
 Changelog for Logiks v3.6.3
 ===========================
 

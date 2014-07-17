@@ -115,16 +115,12 @@ if(!function_exists("__dbtable")) {
 }
 if(!function_exists("_dataBus")) {
 	function _dataBus($keyTag,$val=null) {
-		$keyTag=explode(".",$keyTag);
-		if(count($keyTag)==1) {
-			$a=$keyTag[0];
-			$keyTag[0]="/";
-			$keyTag[1]=$a;
-		}
 		if($val==null && !is_array($val)) {
-			return DataBus::singleton()->getData($keyTag[1],$keyTag[0]);
+			if(isset($_ENV[$keyTag])) return $_ENV[$keyTag];
+			return false;
 		} else {
-			return DataBus::singleton()->setData($keyTag[1],$val,$keyTag[0]);
+			$_ENV[$keyTag]=$val;
+			return $_ENV[$keyTag];
 		}
 	}
 }

@@ -92,8 +92,8 @@ class ServiceSecurity {
 		}
 		$a=false;
 		if(getConfig("API_KEY_ENGINE")=="single") {
-			if(strlen(API_KEY)>0) {
-				if(API_KEY==$_REQUEST['APIKEY']) {
+			if(strlen(getConfig("API_KEY"))>0) {
+				if(getConfig("API_KEY")==$_REQUEST['APIKEY']) {
 					$a=true;
 				}
 			} else {

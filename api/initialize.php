@@ -190,7 +190,6 @@ if(!isset($initialized)) {
 			printOPBuffer();
 		}
 		//ob_flush();
-		DataBus::singleton()->dumpToSession();
 		if(_db(true)!=null && _db(true)->isOpen()) _db(true)->close();
 		if(_db()!=null && _db()->isOpen()) _db()->close();
 		echo "</html>";

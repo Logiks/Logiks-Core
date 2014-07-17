@@ -12,9 +12,7 @@ if(!defined('ROOT')) {
 }
 
 include ROOT. "config/classpath.php";
-include ROOT. "api/databus.inc";
 
-DataBus::singleton();
 if(!function_exists('LoadConfigFile')) {
 	function LoadConfigFile($path,$mode="DEFINE") {
 		if(is_array($path)) {
@@ -65,7 +63,6 @@ if(!function_exists('LoadConfigFile')) {
 								break;
 							case "CONFIG":
 								$GLOBALS['CONFIG'][$name] = processServerStrings($value);
-								//$CONFIG[$name] = processServerStrings($value);
 								break;
 							case "DBCONFIG":
 								$GLOBALS['DBCONFIG'][$name] = processServerStrings($value);
@@ -85,13 +82,7 @@ if(!function_exists('LoadConfigFile')) {
 								setcookie($name,processServerStrings($value),time() + (86400 * 1)); // 86400 = 1 day
 								break;
 							case "DATABUS":
-								$keyTag=explode(".",$name);
-								if(count($keyTag)==1) {
-									$a=$keyTag[0];
-									$keyTag[0]="/";
-									$keyTag[1]=$a;
-								}
-								DataBus::singleton()->setData($keyTag[1],processServerStrings($value),$keyTag[0]);
+								$_ENV[$name] = processServerStrings($value);
 								break;
 							default:
 								break;
@@ -259,8 +250,6 @@ if(!function_exists('LoadConfigFile')) {
 			return $_COOKIE[$name];
 		} elseif(isset($GLOBALS['CONFIG'][$name])) {
 			return $GLOBALS['CONFIG'][$name];
-		} elseif(DataBus::singleton()->issetData($keyTag,$context)) {
-			return DataBus::singleton()->getData($keyTag,$context);
 		}
 		return "";
 	}
@@ -291,10 +280,6 @@ if(!function_exists('LoadConfigFile')) {
 			$GLOBALS['CONFIG'][$name]=$value;
 		} elseif(isset($_COOKIE[$name])) {
 			$_COOKIE[$name]=$value;
-		} elseif(DataBus::singleton()->issetData($keyTag,$context)) {
-			DataBus::singleton()->setData($keyTag,$value,$context);
-		} else {
-			DataBus::singleton()->setData($keyTag,$value,"/");
 		}
 		return true;
 	}

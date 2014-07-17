@@ -129,6 +129,9 @@ function loadForm() {
 				$data[$a]="";
 			} elseif($tblCols[$a]=="date") {
 				$data[$a]=_pDate($b);
+			} elseif($tblCols[$a]=="datetime") {
+				$b=explode(" ",$b);
+				$data[$a]=_pDate($b[0])." {$b[1]}";
 			}
 		}
 		if(!isset($_REQUEST["format"])) $_REQUEST["format"]="json";
