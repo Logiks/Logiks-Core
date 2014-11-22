@@ -10,7 +10,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 loadHelpers("pathfuncs");
 //Some Special System Functions
-if(!function_exists("createTimeStamp")) {
+if(!function_exists("getSysDBLink")) {
 	function deleteCookies($name) {
 		setcookie($name, "", time()-1000000000);
 		if(isset($_COOKIE[$name])) unset($_COOKIE[$name]);
@@ -25,20 +25,6 @@ if(!function_exists("createTimeStamp")) {
 	function getLocation($refs) {
 		$x=SiteLocation . "/" .str_replace(ROOT,"",$refs);
 		return $x;
-	}
-	function createTimeStamp($encoded=true) {
-		if($encoded) {
-			$s=date(TIMESTAMP_FORMAT).microtime();
-			if(function_exists("md5")) {
-				$s=md5($s);
-			} else {
-				$s=base64_encode($s);
-			}
-			return $s;
-		} else {
-			$s=date(TIMESTAMP_FORMAT).microtime();
-			return $s;
-		}
 	}
 	function getSysDBLink($toClose=false) {
 		if(getConfig("ALLOW_ROOTDB_ACCESS")=="false") return;
@@ -189,6 +175,10 @@ if(!function_exists("createTimeStamp")) {
 		if(isset($GLOBALS['DEFAULT_HANDLERS'][$activity]) && $GLOBALS['DEFAULT_HANDLERS'][$activity]["enabled"]) {
 			return $GLOBALS['DEFAULT_HANDLERS'][$activity]["opts"];
 		} else return array();
+	}
+	//Gets the time difference between current time and time of request.
+	function getRequestTime() {
+		return (microtime(true)-$_SESSION['REQUEST_START']);
 	}
 }
 ?>

@@ -271,5 +271,37 @@ if (!function_exists('printArray')) {
 		}
 		return $out;
 	}
+	function createTimeStamp($encoded=true) {
+		if($encoded) {
+			$s=date(TIMESTAMP_FORMAT).microtime();
+			if(function_exists("md5")) {
+				$s=md5($s);
+			} else {
+				$s=base64_encode($s);
+			}
+			return $s;
+		} else {
+			$s=date(TIMESTAMP_FORMAT).microtime();
+			return $s;
+		}
+	}
+	function parseTags($txt) {
+		$breaks = array("<br />","<br>","<br/>");  
+		$abstractText = str_ireplace($breaks, "\r\n", $txt); 
+		$abstract=strip_tags($abstractText);
+		$pattern = '/\s*#(.+?)\s/';
+		preg_match_all($pattern, $txt, $matches);
+		$tags=$matches[1];
+		return $tags;	
+	}
+	function parseUserid($txt) {
+		$breaks = array("<br />","<br>","<br/>");  
+		$abstractText = str_ireplace($breaks, "\r\n", $txt); 
+		$abstract=strip_tags($abstractText);
+		$pattern = '/\s*@(.+?)\s/';
+		preg_match_all($pattern, $txt, $matches);
+		$tags=implode(",",$matches[1]);
+		return $tags;
+	}
 }
 ?>

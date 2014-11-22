@@ -17,6 +17,8 @@ define("APPROOT",ROOT . APPS_FOLDER . $params["SITE"] . "/");
 define("WEBAPPROOT",SiteLocation . "apps/" . $params["SITE"] . "/");
 define("BASEPATH",APPS_FOLDER . $params["SITE"] . "/");
 
+$_SESSION['SiteLocation']=SiteLocation;
+
 $site=$params["SITE"];
 if(file_exists(APPROOT)) {
 	$apps_cfg=APPROOT."apps.cfg";

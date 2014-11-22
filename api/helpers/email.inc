@@ -21,15 +21,17 @@ if(!function_exists('isValidEmail')) {
 	}
 	function sendMail($to,$subject,$body,$from="",$cc="",$bcc="",$replyTo="") {
 		if($from==null || $from=="") {
-			$fx1=getConfig("default_from");
-			$fx2=getConfig("smtp_username");
-			
-			if(strlen($fx1)>0) $from=$fx1;
-			elseif(strlen($fx2)>0) $from=$fx2;
-			elseif(isset($_SESSION["SESS_USER_EMAIL"]) && strlen($_SESSION["SESS_USER_EMAIL"])>0) {
+			if(isset($_SESSION["SESS_USER_EMAIL"]) && strlen($_SESSION["SESS_USER_EMAIL"])>0) {
 				$from=$_SESSION["SESS_USER_EMAIL"];
 			} else {
-				$from=$fx2;
+				$fx1=getConfig("default_from");
+				$fx2=getConfig("smtp_username");
+
+				if(strlen($fx1)>0) $from=$fx1;
+				elseif(strlen($fx2)>0) $from=$fx2;	
+				else {
+					return "From Is Not Defined ...";
+				}
 			}
 		}
 		if($replyTo==null || $replyTo=="") {
@@ -103,7 +105,12 @@ class EMail {
 			$this->smtpinfo=$this->createDefaultSMTPInfo();
 		}
 
-		$headers["From"]    = $this->smtpinfo["username"];
+		$from=$this->smtpinfo["username"];
+		if(isset($_SESSION["SESS_USER_EMAIL"]) && strlen($_SESSION["SESS_USER_EMAIL"])>0) {
+			$from=$_SESSION["SESS_USER_EMAIL"];
+		}
+
+		$headers["From"]    = $from;
 		$headers["To"]      = $recipients;
 		$headers["Subject"] = $subject;
 		$headers["cc"] = $this->smtpinfo["cc"].",".$cc;
@@ -156,7 +163,7 @@ class EMail {
 		if($allowPlain) $mime->setTXTBody($this->processHTMLToText($body));
 
 		if($file!=null) {
-			include_once ROOT."config/mimes.php";
+			loadHelpers("mimes");
 			if(is_array($file)) {
 				for($i=0;$i<sizeof($file);$i++) {
 					$mime->addAttachment($file[$i], getMimeTypeForFile($file[$i]));

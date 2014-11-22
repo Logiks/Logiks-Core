@@ -27,10 +27,10 @@ if(!function_exists('loadAllWidgets')) {
 			$f1=ROOT . $a . $widget . "/index.php";
 			$f2=ROOT . $a . $widget . ".php";
 			if(file_exists($f1)) {
-				Widgets::printWidget($widget,$f1,$params, $asPortlets);
+				Widgets::printWidget($widget,$f1,$params);
 				return false;
 			} elseif(file_exists($f2)) {
-				Widgets::printWidget($widget, $f2, $params, $asPortlets);
+				Widgets::printWidget($widget, $f2, $params);
 				return false;
 			}
 		}
@@ -56,6 +56,12 @@ if(!function_exists('loadAllWidgets')) {
 		if(!isset($_ENV['WIDGETS_DIRS'])) {
 			if(defined("APPS_PLUGINS_FOLDER")) {
 				$p=BASEPATH.APPS_PLUGINS_FOLDER."widgets/";
+				if(file_exists(ROOT.$p)) {
+					if(!in_array($p,$paths)) array_push($paths, $p);
+				}
+			}
+			if(defined("COMMON_PLUGINS_FOLDER")) {
+				$p=COMMON_PLUGINS_FOLDER."widgets/";
 				if(file_exists(ROOT.$p)) {
 					if(!in_array($p,$paths)) array_push($paths, $p);
 				}

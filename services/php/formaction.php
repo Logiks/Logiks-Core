@@ -169,6 +169,7 @@ function saveToDB() {
 	$oriData["scanBy"]=$_SESSION["SESS_USER_ID"];
 	$oriData["submittedby"]=$usr["SESS_USER_ID"];
 	$oriData["createdBy"]=$usr["SESS_USER_ID"];
+	$oriData["guid"]=$usr["SESS_GUID"];
 	$oriData["site"]=SITENAME;
 
 	$dataPost=$_POST;
@@ -194,7 +195,31 @@ function saveToDB() {
 	unset($dataPost["submit_wherecol"]);
 
 	if(isset($dataPost[$sWhereCol]) && $dataPost[$sWhereCol]=="-1") {
-		exit("No Data Found");
+		exit("Error::No Data Found");
+	}
+
+	if(isset($_FILES) && count($_FILES)>0) {
+		$maxUdirLength=strlen(APPROOT.APPS_USERDATA_FOLDER);
+		$bpath=APPROOT.APPS_USERDATA_FOLDER."attachments/";
+		if(!is_dir($bpath)) {
+			exit("Error::Attachment Folder Not Found");
+		}
+		$bpath.=md5($sForm)."/";
+		if(!is_dir($bpath)) {
+			mkdir($bpath,true,0777);
+		}
+		foreach($_FILES as $key => $value) {
+			if($value['error']==0) {
+				$fPath=$bpath.$_SESSION['SESS_USER_ID']."-".$value['name'];
+				if(!move_uploaded_file($value['tmp_name'], $fPath)) {
+					exit("Error::Attachment Save Error For $key");
+				} else {
+					$dataPost[$key]=substr($fPath, $maxUdirLength);
+				}
+			} else {
+				exit("Error::Attachment Upload Error For $key");
+			}
+		}
 	}
 
 	$sql="";

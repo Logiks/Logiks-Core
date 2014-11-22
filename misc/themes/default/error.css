@@ -170,10 +170,6 @@ body.errorpage h1,
 	display:block;	
 }
 
-#onlyprint {
-	display:none;
-}
-
 #errormsg {border:0px solid #aaa;}
 #errormsg h4,h5,h6 {margin:0px;padding:0px;}
 #errormsg {width:400px;margin:auto;}
@@ -183,9 +179,38 @@ body.errorpage h1,
 #errormsg h5 {color:#3C82E6;text-align:right;font-weight: 100;}
 #errormsg h6 {color:#3C82E6;text-align:right;font-weight: 100;}
 
-.left {
+.errorbox .left {
 	float: left !important;
 }
-.right {
+.errorbox .right {
 	float: right !important;
+}
+
+#onlyprint {
+	display:none;
+}
+
+@media print {
+	#canvas,#traceholder,#footermessage {
+		display:none;
+	}
+	#onlyprint {
+		display:block;
+	}
+	#onlyprint pre, #onlyprint h1,#onlyprint h2,#onlyprint h3,#onlyprint h4,#onlyprint h5,#onlyprint h6,#onlyprint b {
+		font-size:12px;
+		font-weight:normal;
+		margin:0px;
+		display:inline;	
+	}
+	#onlyprint pre {
+		display:block;	
+	}
+
+	#onlyprint h1.header {
+		font-weight:bold;
+		font-size:25px;
+		border-bottom:1px solid #aaa;	
+	}
+
 }

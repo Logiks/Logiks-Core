@@ -85,8 +85,8 @@ if(!function_exists("_dbFetch")) {
 }
 if(!function_exists("_dbData")) {
 	function _dbData($result,$format="assoc") {
-		if($result && _db()!=NULL) {
-			$r=_db()->fetchAllData($result,$format);
+		if($result && _db(true)!=NULL) {
+			$r=_db(true)->fetchAllData($result,$format);
 			return $r;
 		} else {
 			return array();
@@ -94,9 +94,10 @@ if(!function_exists("_dbData")) {
 	}
 }
 if(!function_exists("_dbFree")) {
-	function _dbFree($result,$sys=false) {
-		if($result && _db($sys)!=NULL)
-			_db($sys)->freeResult($result);
+	function _dbFree($result) {
+		if($result) {
+			_db(true)->freeResult($result);
+		}
 	}
 }
 if(!function_exists("_dbtable")) {

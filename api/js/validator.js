@@ -18,6 +18,7 @@ function checkurl(e) {
 function checkphone(e){
 	e.value=e.value.trim();
 	v=e.value.replace(" ","");
+	v=e.value.replace("-","");
 	if(v.charAt(0)=="+") {
 		v=v.replace("+","");
 	}

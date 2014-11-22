@@ -9,16 +9,20 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("getUserInfo")) {
-	function getMyUserInfo() {
+	function getUserInfo($userid=null) {
+		if($userid==null) $userid=$_SESSION['SESS_USER_ID'];
 		$cols="guid,userid,refid,name,dob,gender,email,mobile,address,region,country,zipcode,privacy,avatar,avatar_type";
-		$sql="SELECT $cols FROM lgks_users WHERE userid='{$_SESSION['SESS_USER_ID']}'";
+		$sql="SELECT $cols FROM lgks_users WHERE userid='{$userid}'";
 		$res=_dbQuery($sql,true);
 		$data=_dbData($res);
 		_dbFree($res);
-		if(isset($data[0])) return $data[0];
+		if(isset($data[0])) {
+			$data[0]['avatarlink']=_service("avatar")."&authorid={$data[0]['avatar']}&method={$data[0]['avatar_type']}";
+			return $data[0];
+		}
 		return array();
 	}
-	function getUserInfo($forcereInit=true) {
+	function getMyUserInfo($forcereInit=true) {
 		$arr=array();
 		
 		if(isset($_SESSION['SESS_USER_ID'])) $arr["SESS_USER_ID"]=$_SESSION['SESS_USER_ID']; else $arr["SESS_USER_ID"]="Guest";
@@ -30,9 +34,15 @@ if(!function_exists("getUserInfo")) {
 		if(isset($_SESSION['SESS_USER_NAME'])) $arr["SESS_USER_NAME"]=$_SESSION['SESS_USER_NAME']; else $arr["SESS_USER_NAME"]="Guest";
 		if(isset($_SESSION['SESS_USER_EMAIL'])) $arr["SESS_USER_EMAIL"]=$_SESSION['SESS_USER_EMAIL']; else $arr["SESS_USER_EMAIL"]="";
 		if(isset($_SESSION['SESS_USER_CELL'])) $arr["SESS_USER_CELL"]=$_SESSION['SESS_USER_CELL']; else $arr["SESS_USER_CELL"]="";
+		if(isset($_SESSION['SESS_USER_AVATAR'])) $arr["SESS_USER_AVATAR"]=$_SESSION['SESS_USER_AVATAR']; else $arr["SESS_USER_AVATAR"]="";
 		if(isset($_SESSION['SESS_LOGIN_SITE'])) $arr["SESS_LOGIN_SITE"]=$_SESSION['SESS_LOGIN_SITE']; else $arr["SESS_LOGIN_SITE"]="guest";
 		if(isset($_SESSION['SESS_TOKEN'])) $arr["SESS_TOKEN"]=$_SESSION['SESS_TOKEN']; else $arr["SESS_TOKEN"]=session_id();
-		
+		if(isset($_SESSION['SESS_GUID'])) $arr["SESS_GUID"]=$_SESSION['SESS_GUID']; else $arr["SESS_GUID"]="";
+		if(isset($_SESSION['SESS_LOGIN_SITE'])) $arr["SESS_LOGIN_SITE"]=$_SESSION['SESS_LOGIN_SITE']; else $arr["SESS_LOGIN_SITE"]="";
+		if(isset($_SESSION['SESS_LOGIN_TIME'])) $arr["SESS_LOGIN_TIME"]=$_SESSION['SESS_LOGIN_TIME']; else $arr["SESS_LOGIN_TIME"]=time();
+
+		$arr['SESS_USER_AVATARLINK']=_service("avatar")."&avatar={$arr["SESS_USER_AVATAR"]}";
+
 		if($forcereInit) {
 			foreach($arr as $a=>$b) {
 				if(!isset($_SESSION[$a])) $_SESSION[$a]=$b;
@@ -99,10 +109,11 @@ if(!function_exists("getUserInfo")) {
 				if(sizeOf($cols)==sizeOf($record)) {
 					$arr[sizeOf($arr)]=$record;
 				} else {
-					$arr[sizeOf($arr)]=array();
+					$fData=array();
 					foreach($cols as $a=>$b) {
-						$arr[sizeOf($arr)][$b]=$record[$b];
+						$fData[$b]=$record[$b];
 					}
+					$arr[sizeOf($arr)]=$fData;
 				}
 			}
 			_db(true)->freeResult($sql);
@@ -158,6 +169,7 @@ if(!function_exists("getUserInfo")) {
 		}
 		
 		$params=array(
+				"guid"=>"c21f969b5f03d33d43e04f8f136e7682",
 				"userid"=>"$userID",
 				"pwd"=>getPWDHash($pwd),
 				"site"=>"$site",
@@ -165,23 +177,26 @@ if(!function_exists("getUserInfo")) {
 				"access"=>"$accessID",
 				"name"=>toTitle($userID),
 				"dob"=>"",
+				"gender"=>"male",
 				"email"=>"",
+				"mobile"=>"",
 				"address"=>"",
 				"region"=>"",
 				"country"=>"",
 				"zipcode"=>"",
-				"mobile"=>"",
+				"geolocation"=>"",
+				"geoip"=>"",
 				"blocked"=>"false",
 				"expires"=>"",
 				"remarks"=>"",
-				"notes"=>"",
 				"vcode"=>"",
+				"mauth"=>"",
 				"refid"=>"",
 				"privacy"=>"protected",
 				"avatar_type"=>"photoid",
 				"avatar"=>"",
-				"q1"=>"",
-				"a1"=>"",
+				//"q1"=>"",
+				//"a1"=>"",
 				"doc"=>date('Y-m-d'),
 				"doe"=>date('Y-m-d'),
 			);
@@ -209,27 +224,31 @@ if(!function_exists("getUserInfo")) {
 		}
 		if(checkUserID($userID,$site)) {
 			$params=array(
+				//"guid"=>"c21f969b5f03d33d43e04f8f136e7682",
 				//"privilege"=>"$privilegeID",
 				//"access"=>"$accessID",
 				"name"=>toTitle($userID),
 				"dob"=>"",
+				"gender"=>"male",
 				"email"=>"",
+				"mobile"=>"",
 				"address"=>"",
 				"region"=>"",
 				"country"=>"",
 				"zipcode"=>"",
-				"mobile"=>"",
+				"geolocation"=>"",
+				"geoip"=>"",
 				"blocked"=>"false",
 				"expires"=>"",
 				"remarks"=>"",
-				"notes"=>"",
 				"vcode"=>"",
+				"mauth"=>"",
 				"refid"=>"",
 				"privacy"=>"protected",
 				"avatar_type"=>"photoid",
 				"avatar"=>"",
-				"q1"=>"",
-				"a1"=>"",
+				//"q1"=>"",
+				//"a1"=>"",
 				"doe"=>date('Y-m-d'),
 			);
 			foreach($attrs as $a=>$b) {

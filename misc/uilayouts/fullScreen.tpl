@@ -1,6 +1,6 @@
-<div id=pageLoader class=ajaxloading style='margin-top:100px;'>Loading Workspace ...</div>
+<div id="pageLoader" class=ajaxloading style='margin-top:100px;'>Loading Workspace ...</div>
 #preheader#
-<div id=wrapper>
+<div id="wrapper">
 	#header#
 	#banner#
 	#sidebar#

@@ -228,7 +228,7 @@ if(getConfig("LOCK_CONTEXTMENU")=="true") $bodyContext.="oncontextmenu='return f
 if(getConfig("LOCK_SELECTION")=="true") $bodyContext.="onselectstart='return false' ";
 if(getConfig("LOCK_MOUSEDRAG")=="true") $bodyContext.="ondragstart='return false' ";
 
-if(_databus("PAGE_BUFFER_ENCODING")!="plain") startOPBuffer();
+if(getConfig("PAGE_BUFFER_ENCODING")!="plain") startOPBuffer();
 
 setConfig("TITLE_FORMAT","#APPS_NAME# :: Login");
 printHTMLPageHeader();
@@ -256,7 +256,7 @@ $js->display();
 </body>
 </html>
 <?php
-if(_databus("PAGE_BUFFER_ENCODING")!="plain") printOPBuffer();
+if(getConfig("PAGE_BUFFER_ENCODING")!="plain") printOPBuffer();
 if(getConfig("ALLOW_PERSISTENT_LOGIN")=="false") {
 	session_destroy();
 }

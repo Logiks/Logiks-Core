@@ -75,6 +75,7 @@ class RSSGen {
 		if($res) {
 			$data=_dbData($res);
 			_dbFree($res);
+
 			if(count($data)>0) {
 				$rssGen=new RSSGen();
 				
@@ -179,7 +180,8 @@ class RSSGen {
 		$res=_dbQuery($sql);
 		$data=_dbData($res);
 		_dbFree($res);
-		
+		//printArray($data);exit();
+
 		if(count($data)>0) {
 			foreach($data as $d) {
 				if(!isset($d["author"])) {
@@ -274,6 +276,7 @@ class RSSGen {
 		$descs="";
 		$category="";
 		$content="";
+		$pubDate=gmdate('D, d M Y H:i:s');
 		
 		$items="";
 		if(count($d)>0) {
@@ -308,12 +311,17 @@ class RSSGen {
 			} else {
 				$descs=$d["description"];
 			}
+			if(isset($d["pubdate"])) {
+				$pubDate=$d["pubdate"];
+			}
+			
 			if(isset($d["content"])) {
 				$content=$d['content'];
 			} else {
 				$datatable="<table width=100% cellpadding=2 cellspacing=0 border=0>";
 				foreach($d as $a=>$b) {
-					$datatable.="<tr><th align=left>".toTitle($a)."</th><td>$b</td></tr>";
+					$b=stripcslashes($b);
+					$datatable.="<tr><th width=100px align=left>".toTitle($a)."</th><td>$b</td></tr>";
 				}
 				$datatable.="</table>";
 				
@@ -337,6 +345,15 @@ class RSSGen {
 			} else {
 				$guid=md5(implode("#",$d));
 			}
+			/*if($link!=$this->refLINK && isset($d['id'])) {
+				if(strpos($link,"?")>1) {
+					$link.="&rssid={$rssID}&rssref={$d['id']}";
+				} else {
+					$link.="?rssid={$rssID}&rssref={$d['id']}";
+				}
+				$link=str_replace("&&","&",$link);
+			}*/
+			/*
 			if($link!=$this->refLINK && isset($d['id'])) {
 				$link+="&rssid={$rssID}&rssref={$d['id']}";
 				$link=str_replace("&&","&",$link);
@@ -346,6 +363,14 @@ class RSSGen {
 					<link>'.$link.'</link>
 					<pubDate>'.gmdate('D, d M Y H:i:s').' GMT</pubDate>
 					<guid isPermaLink="false">'.$guid.'/</guid>
+					<source url="'.$this->refLINK.'">'.SITENAME.'</source>
+				   ';//$this->refLINK.'rssnews/'._randomId()
+			*/
+			$items='<item>';
+			$items.='<title>'.strip_tags($title).'</title>
+					<link>'.$link.'</link>
+					<pubDate>'.$pubDate.' GMT</pubDate>
+					<guid isPermaLink="false">'.$guid.'</guid>
 					<source url="'.$this->refLINK.'">'.SITENAME.'</source>
 				   ';//$this->refLINK.'rssnews/'._randomId()
 			if(strlen($descs)>0) {
