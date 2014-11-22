@@ -70,7 +70,9 @@ if($_REQUEST['action']=="load") {
 		$where1=substr($where1,0,$nn);
 	}
 	if(strlen($where1)>0) {
-		if(strtolower(substr(trim($where1),0,5))!="group") {
+		if(strpos($where1, "WHERE")>0) {
+			$q1.=" $where1";
+		} else if(strtolower(substr(trim($where1),0,5))!="group") {
 			$q1.=" WHERE $where1";
 		} else {
 			$q1.=" $where1";
@@ -104,7 +106,9 @@ if($_REQUEST['action']=="load") {
 
 	$SQL =$q;
 	if(strlen($where)>0) {
-		if(strtolower(substr(trim($where),0,5))!="group") {
+		if(strpos($where1, "WHERE")>0) {
+			$SQL.=" $where1";
+		} else if(strtolower(substr(trim($where),0,5))!="group") {
 			$SQL.=" WHERE $where";
 		} else {
 			$SQL.=" $where";

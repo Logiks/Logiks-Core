@@ -120,6 +120,12 @@ if(!function_exists('loadModule')) {
 					if(!in_array($p,$paths)) array_push($paths, $p);
 				}
 			}
+			if(defined("COMMON_PLUGINS_FOLDER")) {
+				$p=COMMON_PLUGINS_FOLDER."modules/";
+				if(file_exists(ROOT.$p)) {
+					if(!in_array($p,$paths)) array_push($paths, $p);
+				}
+			}
 			if(defined("PLUGINS_FOLDER")) {
 				$p=PLUGINS_FOLDER."modules/";
 				if(file_exists(ROOT.$p)) {

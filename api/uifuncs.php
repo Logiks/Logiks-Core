@@ -181,7 +181,7 @@ if(!function_exists('displayLayout')) {
 		$device=strtoupper(getUserDeviceType());
 		$deviceFolder="APPS_{$device}_PAGES_FOLDER";
 
-		if(constant($deviceFolder)) {
+		if(defined($deviceFolder)) {
 			$pagesDir=APPROOT.constant($deviceFolder);
 			if(is_dir($pagesDir)) {
 				$f1=$pagesDir."layouts/{$layout}.json";

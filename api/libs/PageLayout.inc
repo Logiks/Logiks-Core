@@ -55,6 +55,7 @@ class PageLayout {
 				array_push($this->layoutTemplateDir,BASEPATH . APPS_TEMPLATE_LAYOUT_FOLDER);
 			}
 		}
+		array_push($this->layoutTemplateDir,BASEPATH."css/layouts/");
 		if(defined("APPS_THEME")) {
 			if(!in_array(THEME_FOLDER.APPS_THEME . "/layouts/",$this->layoutTemplateDir) && file_exists(ROOT.THEME_FOLDER.APPS_THEME . "/layouts/")) {
 				array_push($this->layoutTemplateDir,THEME_FOLDER.APPS_THEME . "/layouts/");
@@ -140,6 +141,7 @@ class PageLayout {
 		$f1=ROOT . $this->layoutDir . $this->layout . ".css";
 		$f2=ROOT . $this->layoutDir . $this->layout . "-ie6.css";
 		$f3=ROOT . $this->layoutDir . $this->layout . ".js";
+		$f4=BASEPATH."css/theme.js";
 
 		$n=_css(array("layout",$this->layout));
 		if($n<=0) {
@@ -156,6 +158,10 @@ class PageLayout {
 		}
 		if(file_exists($f3)) {
 			$x=SiteLocation . str_replace(ROOT,"",$f3);
+			echo "<script src='$x' type='text/javascript' language='javascript'></script> ";
+		}
+		if(file_exists($f4)) {
+			$x=SiteLocation . str_replace(ROOT,"",$f4);
 			echo "<script src='$x' type='text/javascript' language='javascript'></script> ";
 		}
 	}

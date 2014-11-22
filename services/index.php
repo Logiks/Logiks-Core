@@ -30,6 +30,14 @@ LoadConfigFile(ROOT . "config/folders.cfg");
 //LoadConfigFile(ROOT . "config/framework.cfg");
 
 header("X-Powered-By: Logiks [http://openlogiks.org]",false);
+header("SESSION-KEY:".session_id(),false);
+header("Access-Control-Allow-Origin:*");
+//Origin
+//Access-Control-Allow-Methods:OPTIONS,GET,POST,PUT,DELETE
+//Access-Control-Allow-Headers:Content-Type, Authorization, X-Requested-With
+//header("Access-Control-Allow-Headers", "access-control-allow-origin, accept, access-control-allow-methods, access-control-allow-headers, x-random-shit");
+//header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
+//print_r($_SERVER);exit();
 //header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
 //print_r($_SERVER);exit();
 
@@ -131,11 +139,9 @@ if(count($request)==0) {
 }
 //loadHelpers("urlkit");
 
-DataBus::singleton();
 function __cleanup() {
 	runHooks("serviceAfterRequest");
 	ob_flush();
-	DataBus::singleton()->dumpToSession();
 	if(_db(true)!=null && _db(true)->isOpen()) _db(true)->close();
 	if(_db()!=null && _db()->isOpen()) _db()->close();
 	//echo PHP_EOL;

@@ -92,13 +92,24 @@ class ServiceController {
 	}
 	function executeRequest($request) {
 		$ext=strtolower($request['ext']);
-		$cmdArr=array(
+		if(defined("COMMON_PLUGINS_FOLDER")) {
+			$cmdArr=array(
+				ROOT.APPS_FOLDER.SITENAME."/services/".$ext."/".$request['scmd'].".".$ext,
+				SERVICE_ROOT.$ext."/".$request['scmd'].".".$ext,
+				ROOT.APPS_FOLDER.SITENAME."/".APPS_PLUGINS_FOLDER."modules/".$request['scmd']."/service.$ext",
+				ROOT.COMMON_PLUGINS_FOLDER."modules/".$request['scmd']."/service.$ext",
+				ROOT.PLUGINS_FOLDER."modules/".$request['scmd']."/service.$ext",
+				SERVICE_ROOT.$ext."/".SITENAME."/".$request['scmd'].".".$ext,
+			);
+		} else {
+			$cmdArr=array(
 				ROOT.APPS_FOLDER.SITENAME."/services/".$ext."/".$request['scmd'].".".$ext,
 				SERVICE_ROOT.$ext."/".$request['scmd'].".".$ext,
 				ROOT.APPS_FOLDER.SITENAME."/".APPS_PLUGINS_FOLDER."modules/".$request['scmd']."/service.$ext",
 				ROOT.PLUGINS_FOLDER."modules/".$request['scmd']."/service.$ext",
 				SERVICE_ROOT.$ext."/".SITENAME."/".$request['scmd'].".".$ext,
 			);
+		}
 		//printArray($cmdArr);
 		foreach($cmdArr as $fl) {
 			if(file_exists($fl)) {

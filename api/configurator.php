@@ -12,9 +12,7 @@ if(!defined('ROOT')) {
 }
 
 include ROOT. "config/classpath.php";
-include ROOT. "api/databus.inc";
 
-DataBus::singleton();
 if(!function_exists('LoadConfigFile')) {
 	function LoadConfigFile($path,$mode="DEFINE") {
 		if(is_array($path)) {
@@ -65,7 +63,6 @@ if(!function_exists('LoadConfigFile')) {
 								break;
 							case "CONFIG":
 								$GLOBALS['CONFIG'][$name] = processServerStrings($value);
-								//$CONFIG[$name] = processServerStrings($value);
 								break;
 							case "DBCONFIG":
 								$GLOBALS['DBCONFIG'][$name] = processServerStrings($value);
@@ -75,7 +72,22 @@ if(!function_exists('LoadConfigFile')) {
 								break;
 							case "PHPINI":
 								if(function_exists("ini_set")) {
-									@ini_set($name,processServerStrings($value));
+									if($name=="error_reporting") {
+										if(is_numeric($value)) {
+											@ini_set($name,$value);
+										} else {
+											$a=explode(",",$value);
+											$err=1;
+											foreach($a as $b) {
+												if(defined($b)) {
+													$err=$err|constant($b);
+												}
+											}
+											@ini_set($name,$err);
+										}
+									} else {
+										@ini_set($name,processServerStrings($value));
+									}
 								}
 								break;
 							case "ENV":
@@ -85,13 +97,7 @@ if(!function_exists('LoadConfigFile')) {
 								setcookie($name,processServerStrings($value),time() + (86400 * 1)); // 86400 = 1 day
 								break;
 							case "DATABUS":
-								$keyTag=explode(".",$name);
-								if(count($keyTag)==1) {
-									$a=$keyTag[0];
-									$keyTag[0]="/";
-									$keyTag[1]=$a;
-								}
-								DataBus::singleton()->setData($keyTag[1],processServerStrings($value),$keyTag[0]);
+								$_ENV[$name] = processServerStrings($value);
 								break;
 							default:
 								break;
@@ -202,18 +208,9 @@ if(!function_exists('LoadConfigFile')) {
 	}
 	function fixPHPINIConfigs() {
 		if(function_exists("ini_set")) {
-			ini_set("date.timezone",getConfig("DEFAULT_TIMEZONE"));
-			ini_set("upload_max_filesize",MAX_UPLOAD_FILE_SIZE);
-			ini_set("post_max_size",MAX_UPLOAD_FILE_SIZE*10);
-			$a=ini_get("error_reporting");
-			$a=explode(",",$a);
-			$err=0;
-			foreach($a as $b) {
-				if(defined($b)) {
-					$err=$err|constant($b);
-				}
-			}
-			ini_set("error_reporting",$err);
+			@ini_set("date.timezone",getConfig("DEFAULT_TIMEZONE"));
+			@ini_set("upload_max_filesize",MAX_UPLOAD_FILE_SIZE);
+			@ini_set("post_max_size",MAX_UPLOAD_FILE_SIZE*10);
 		}
 	}
 	function fixLogiksVariables() {
@@ -259,8 +256,6 @@ if(!function_exists('LoadConfigFile')) {
 			return $_COOKIE[$name];
 		} elseif(isset($GLOBALS['CONFIG'][$name])) {
 			return $GLOBALS['CONFIG'][$name];
-		} elseif(DataBus::singleton()->issetData($keyTag,$context)) {
-			return DataBus::singleton()->getData($keyTag,$context);
 		}
 		return "";
 	}
@@ -291,10 +286,6 @@ if(!function_exists('LoadConfigFile')) {
 			$GLOBALS['CONFIG'][$name]=$value;
 		} elseif(isset($_COOKIE[$name])) {
 			$_COOKIE[$name]=$value;
-		} elseif(DataBus::singleton()->issetData($keyTag,$context)) {
-			DataBus::singleton()->setData($keyTag,$value,$context);
-		} else {
-			DataBus::singleton()->setData($keyTag,$value,"/");
 		}
 		return true;
 	}

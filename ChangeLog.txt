@@ -1,3 +1,23 @@
+Changelog for Logiks v3.6.5
+===========================
+
+Reinitialized some base components,helpers,services.
+Stabilized the version for production use and tested it on some live projects before commiting.
+Changed and fixed some bugs.
+Introduced new js libs backbone.js for templating, require.js for dynamic module loading.
+Removed a lot of the old js/jquery libs.
+Updated jquery and jquery.ui to there latest additions, though you can still use them using there versions.
+Moved some api to libs.
+SQL schema updated for core and log tables.
+Introduced : COMMON_PLUGINS_FOLDER for better plugin managment with additional folder for plugins, meant for extended installations.
+
+
+Changelog for Logiks v3.6.4
+===========================
+
+Remove DataBus class for all future releases and updated system throughout.
+Improved misc other functions.
+
 Changelog for Logiks v3.6.3
 ===========================
 

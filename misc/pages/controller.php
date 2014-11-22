@@ -15,7 +15,7 @@ if(!isset($_SESSION["SESS_USER_NAME"])) $_SESSION["SESS_USER_NAME"]="Guest";
 if(!isset($_SESSION["SESS_USER_ID"])) $_SESSION["SESS_USER_ID"]="-1";
 
 //echo $_REQUEST["page"];
-function __printPage($page=null) {
+function __printPage($page=null,$printSubSkinForDevices=false) {
 	if($page==null) {
 		if(!isset($_REQUEST["page"]) || strlen($_REQUEST["page"])==0) {
 			$_REQUEST["page"]=getConfig("LANDING_PAGE");
@@ -41,7 +41,8 @@ function __printPage($page=null) {
 		_js(explode(",", getConfig("DEFAULT_JS_TO_POSTLOAD")));	
 	} else {
 		_css(explode(",", getConfig("{$device}_CSS_TO_LOAD")));
-
+		if($printSubSkinForDevices) printSubSkin();
+		
 		_js(explode(",", getConfig("{$device}_JS_TO_PRELOAD")));
 
 		findPage($page);

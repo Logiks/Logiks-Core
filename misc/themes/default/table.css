@@ -1,4 +1,5 @@
 /*CSS Tables 2.0*/
+.tablediv {font:10px Verdana,Arial; margin:25px; background:#fff url(images/tables/bg.gif) repeat-x; color:#091f30}
 
 thead {
 	background: transparent url(images/tables/header-selected-bg.gif) repeat; padding: 6px 2px 6px 4px; text-align:center; font: 13px Verdana, Arial, Helvetica, sans-serif; font-weight:bold; color:#FFFFFF;
@@ -9,9 +10,6 @@ tbody {
 }
 
 tr,td {cursor:arrow;}
-
-
-.tablediv {font:10px Verdana,Arial; margin:25px; background:#fff url(images/tables/bg.gif) repeat-x; color:#091f30}
 
 /*.tablecontainer { padding: 7px 5px 10px 5px; border-top:1px solid #ddd;border-bottom:1px solid #ddd; border-right:1px solid #ddd; border-left:1px solid #ddd;}*/
 .tablecontainer,.sortable { padding: 3px 3px 3px 3px; border-color:#BBDAEC;border-width:1px;border-style:solid;}

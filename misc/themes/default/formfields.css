@@ -1,3 +1,4 @@
+/*formTable CSS*/
 .formTable td {
 	border:0px;
 }
@@ -30,6 +31,7 @@
 	width:20px;
 }
 
+/*General Field CSS*/
 .select, select {
 	width:92%;
 	height:22px;

@@ -88,7 +88,7 @@ if(!function_exists("subtractDates")) {
 
 		return $result;
 	}
-	function subtractDatesToStr($firstTime,$lastTime,$level=2) {
+	function subtractDatesToStr($firstTime,$lastTime,$level=10,$autoFill=true) {
 		// convert to unix timestamps
 		$firstTime=strtotime($firstTime);
 		$lastTime=strtotime($lastTime);
@@ -108,6 +108,38 @@ if(!function_exists("subtractDates")) {
 		$str="";
 		if($level>count($period)) $level=count($period);
 		for($i=0;$i<$level;$i++) $str.=$period[$i]." ".$names[$i].", ";
+		return $str;
+	}
+	function relativeDate($firstTime,$lastTime) {
+		// convert to unix timestamps
+		$firstTime=strtotime($firstTime);
+		$lastTime=strtotime($lastTime);
+		
+		// perform subtraction to get the difference (in seconds) between times
+		$difference=$lastTime-$firstTime;
+		
+		if($difference==0) return "now";
+		
+		$period[] = abs(floor($difference / 31536000));//years
+		//$period[] = abs(floor($difference / 31536000));//months
+		$period[] = abs(floor(($difference-($period[0] * 31536000))/86400));//days
+		$period[] = abs(floor(($difference-($period[0] * 31536000)-($period[1] * 86400))/3600));//hours
+		$period[] = abs(floor(($difference-($period[0] * 31536000)-($period[1] * 86400)-($period[2] * 3600))/60));//mins
+		$period[] = abs(floor(($difference-($period[0] * 31536000)-($period[1] * 86400)-($period[2] * 3600)-($period[3]*60))));//secs
+		
+		$names=array("Year","Day","Hour","Min","Sec");
+		
+		//$str="";
+		//if($level>count($period)) $level=;
+		for($i=0;$i<count($period);$i++) {
+			if($period[$i]>0) {
+				if($period[$i]<=1)
+					$str=$period[$i]." ".$names[$i]." ago";
+				else
+					$str=$period[$i]." ".$names[$i]."s ago";
+				break;
+			}
+		}
 		return $str;
 	}
 	function daysInMonth($month = 0, $year = '') {

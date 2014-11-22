@@ -41,6 +41,7 @@ function loadBrowserCompatiblity() {
 			$("#footer").fadeIn();
 			$("#sidebar").fadeIn();
 			$("#content").fadeIn();
+			$(window).resize();
 		}
 	} 
 	//else if(navigator.appName.toLowerCase()=="opera") {
@@ -54,6 +55,7 @@ function loadBrowserCompatiblity() {
 		$("#footer").fadeIn();
 		$("#sidebar").fadeIn();
 		$("#content").fadeIn();
+		$(window).resize();
 	}	
 }
 function notYetSupported(msg) {

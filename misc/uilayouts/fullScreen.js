@@ -71,6 +71,7 @@ function loadBrowserCompatiblity() {
 					$("#prefooter").fadeIn();
 					$("#footer").fadeIn();
 					$("#copyright").fadeIn();
+					$(window).resize();
 				}, 100);
 		}
 	}
@@ -89,6 +90,7 @@ function loadBrowserCompatiblity() {
 				$("#prefooter").fadeIn();
 				$("#footer").fadeIn();
 				$("#copyright").fadeIn();
+				$(window).resize();
 			}, 100);
 	}
 }

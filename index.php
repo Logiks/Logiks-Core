@@ -15,7 +15,7 @@ checkDevMode();
 runHooks("startup");
 log_VisitorEvent();
 
-if(_databus("PAGE_BUFFER_ENCODING")!="plain") startOPBuffer();
+if(getConfig("PAGE_BUFFER_ENCODING")!="plain") startOPBuffer();
 
 $a=isLinkAccessible();
 if(!$a) {

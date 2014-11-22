@@ -85,8 +85,8 @@ if(!function_exists("_dbFetch")) {
 }
 if(!function_exists("_dbData")) {
 	function _dbData($result,$format="assoc") {
-		if($result && _db()!=NULL) {
-			$r=_db()->fetchAllData($result,$format);
+		if($result && _db(true)!=NULL) {
+			$r=_db(true)->fetchAllData($result,$format);
 			return $r;
 		} else {
 			return array();
@@ -94,9 +94,10 @@ if(!function_exists("_dbData")) {
 	}
 }
 if(!function_exists("_dbFree")) {
-	function _dbFree($result,$sys=false) {
-		if($result && _db($sys)!=NULL)
-			_db($sys)->freeResult($result);
+	function _dbFree($result) {
+		if($result) {
+			_db(true)->freeResult($result);
+		}
 	}
 }
 if(!function_exists("_dbtable")) {
@@ -115,16 +116,12 @@ if(!function_exists("__dbtable")) {
 }
 if(!function_exists("_dataBus")) {
 	function _dataBus($keyTag,$val=null) {
-		$keyTag=explode(".",$keyTag);
-		if(count($keyTag)==1) {
-			$a=$keyTag[0];
-			$keyTag[0]="/";
-			$keyTag[1]=$a;
-		}
 		if($val==null && !is_array($val)) {
-			return DataBus::singleton()->getData($keyTag[1],$keyTag[0]);
+			if(isset($_ENV[$keyTag])) return $_ENV[$keyTag];
+			return false;
 		} else {
-			return DataBus::singleton()->setData($keyTag[1],$val,$keyTag[0]);
+			$_ENV[$keyTag]=$val;
+			return $_ENV[$keyTag];
 		}
 	}
 }

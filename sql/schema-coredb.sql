@@ -108,10 +108,12 @@ CREATE TABLE `lgks_privileges` (
 
 CREATE TABLE `lgks_sys_redirects` (
    `id` int(11) unsigned not null auto_increment,
+   `site` varchar(55) not null,
    `link_from` varchar(255) not null,
    `link_to` varchar(255) not null,
    `redirect_type` varchar(55) not null,
    `redirect_msg` varchar(355) not null,
+   `redirect_rule` varchar(200) not null default 'exact',
    `blocked` enum('false','true') not null,
    `dtoc` datetime not null,
    `dtoe` datetime not null,

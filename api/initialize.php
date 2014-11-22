@@ -24,6 +24,7 @@ if(!isset($initialized)) {
 
 	clearstatcache ();
 	session_start();
+	$_SESSION['REQUEST_START']=microtime(true);	
 
 	// platform neurtral url handling
 	if(isset($_SERVER['REQUEST_URI'] ) ) {
@@ -54,7 +55,7 @@ if(!isset($initialized)) {
 			ROOT . "config/developer.cfg"=>"",
 			ROOT . "config/security.cfg"=>"",
 			ROOT . "config/folders.cfg"=>"",
-			ROOT . "config/others.cfg"=>"",
+			ROOT . "config/others.cfg"=>"SESSION#CACHE_EXPIRY",
 			ROOT . "config/xtras.cfg"=>"",
 			ROOT . "config/framework.cfg"=>"",
 		));
@@ -186,13 +187,12 @@ if(!isset($initialized)) {
 	loadHelpers("shortfuncs");
 
 	function __cleanup() {
-		if(_databus("PAGE_BUFFER_ENCODING")!="plain") {
+		if(getConfig("PAGE_BUFFER_ENCODING")!="plain") {
 			printOPBuffer();
 		}
 		//ob_flush();
-		DataBus::singleton()->dumpToSession();
-		if(_db(true)!=null && _db(true)->isOpen()) _db(true)->close();
-		if(_db()!=null && _db()->isOpen()) _db()->close();
+		if(_db(true)!=null) _db(true)->close();
+		if(_db()!=null) _db()->close();
 		echo "</html>";
 	}
 	register_shutdown_function("__cleanup");

@@ -131,6 +131,7 @@ function dispatchSelectorData($sql,$cols,$sys=false) {
 			$n=$b["name"];
 			$a=$b["value"];
 			$d=json_encode($b["data"]);
+			$d=str_replace("'","`",$d);
 			$a=stripslashes($a);
 			$n=stripslashes($n);
 			//$d=stripslashes($d);

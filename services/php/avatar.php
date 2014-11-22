@@ -5,9 +5,16 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 $avlMethods=array("facebook","gravatar","logiks","twitter","instagram","email");//,"googleplus"
 
-if(!isset($_REQUEST['authorid']) || strlen($_REQUEST['authorid'])<=0) {
-	if(isset($_SESSION['SESS_USER_ID'])) $_REQUEST['authorid']=$_SESSION['SESS_USER_ID'];
-	else printDefaultAvatar();
+if(isset($_REQUEST['avatar'])) {
+	$avtr=explode("::", $_REQUEST['avatar']);
+	$_REQUEST['authorid']=$avtr[1];
+	$_REQUEST['method']=$avtr[0];
+} elseif(isset($_REQUEST['authorid'])) {
+
+} elseif(isset($_SESSION['SESS_USER_ID'])) {
+	$_REQUEST['authorid']=$_SESSION['SESS_USER_ID'];
+} else {
+	printDefaultAvatar();
 }
 $method="email";
 if(isset($_REQUEST['method'])) {
@@ -15,7 +22,9 @@ if(isset($_REQUEST['method'])) {
 }
 if(!in_array($method,$avlMethods)) {
 	printServiceErrorMsg("Method Not Supported");
+	//printDefaultAvatar();
 }
+//printArray($_REQUEST);exit();
 
 if(isset($_REQUEST['action'])) {
 	if($_REQUEST['action']=="src") {
@@ -48,7 +57,7 @@ function printAvatarPhoto($method) {
 			$data=file_get_contents($url);
 			printAvatar($data,"jpeg");
 		} elseif($method=="email") {
-			$url="http://avatars.io/email/{$authorid}?size=large";
+			$url="http://avatars.io/email/{$_REQUEST['authorid']}?size=large";
 			$data=file_get_contents($url);
 			printAvatar($data,"jpeg");
 		}
@@ -103,11 +112,13 @@ function printAvatar($data,$format,$default="") {
 			printDefaultAvatar();
 		}
 	}
+	exit();
 }
 function printDefaultAvatar() {
 	$f=ROOT.loadMedia("images/avatar.png",true);
 	if(!file_exists($f)) $f=ROOT.loadMedia("images/user.png",true);
 	header("content-type:image/png");
 	readfile($f);
+	exit();
 }
 ?>

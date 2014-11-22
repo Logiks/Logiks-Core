@@ -42,7 +42,7 @@ class Database {
 		if($dbhost==null) $this->dbhost=$GLOBALS['DBCONFIG']["DB_HOST"]; else $this->dbhost=$dbhost;
 		if($dbName==null) $this->dbName=$GLOBALS['DBCONFIG']["DB_DATABASE"]; else $this->dbName=$dbName;
 
-		if($GLOBALS['DBCONFIG']["DB_READ_ONLY"]=="true") $this->readOnly=true;
+		$this->readOnly=false;
 
 		$this->blockedStmnts=array();
 
@@ -90,6 +90,9 @@ class Database {
 		if (!$db) {
 			return false;
 		}
+		//unset($GLOBALS['DBCONFIG']['DB_USER']);unset($GLOBALS['DBCONFIG']['DB_PASSWORD']);
+		//unset($GLOBALS['DBCONFIG']['DB_HOST']);unset($GLOBALS['DBCONFIG']['DB_DATABASE']);
+		//unset($GLOBALS['DBCONFIG']['DB_READ_ONLY']);unset($GLOBALS['DBCONFIG']['BLOCK_STATEMENTS']);
 
 		return true;
 	}

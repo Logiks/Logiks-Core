@@ -11,7 +11,7 @@ if(!function_exists("createDataSelector")) {
 	//Primary Functions To Create Selector Lists
 	function createDataSelector($dbLink, $groupID,$allowNone=true,$format="select",$orderBy=null,$params=array()) {
 		if(isset($_SESSION['SESS_PRIVILEGE_ID'])) {
-			$where="blocked='false' && groupid='$groupID' and (privilege='*' or privilege>='".$_SESSION['SESS_PRIVILEGE_ID']."')";
+			$where="blocked='false' && groupid='$groupID' and (privilege='*' OR FIND_IN_SET('{$_SESSION['SESS_PRIVILEGE_NAME']}',privilege))";
 		} else {
 			$where="blocked='false' && groupid='$groupID' and privilege='*'";
 		}
@@ -23,11 +23,16 @@ if(!function_exists("createDataSelector")) {
 			$concatName=false,$allowNone=true,$format="select",$params=array()) {
 		if($col2==null) $col2=$col1;
 		$query="select $col1,$col2 from $table";
+		
+		$colx=$col1;
+		if(strpos($colx,"(")>0) $colx=$col2;
+
 		if($where!=null && strlen($where)>0) {
-			$query.=" WHERE $where GROUP BY $col1";
+			$query.=" WHERE $where GROUP BY $colx";
 		} else {
-			$query.=" where length($col1)>0 GROUP BY $col1";
+			$query.=" where length($col1)>0 GROUP BY $colx";
 		}
+		
 		return createDataSelectorFromSQL($dbLink, $query, $col1, $col2, null, $col1, null, $concatName,$allowNone,$format,$params);
 	}
 	function createDataSelectorFromTable($dbLink, $table, $nameCol, $valCol=null, $classCol=null, $dataCol=null, $where=null,

@@ -124,7 +124,7 @@ class DomainMap {
 						$l=str_replace("?&","?",$l);
 						header("Location:$l");
 					} else {
-						if(strlen($site)<=0) $site=$_REQUEST['site'];
+						if(!isset($site) || strlen($site)<=0) $site=$_REQUEST['site'];
 						trigger_NotFound("Site <b>'$site'</b> Was Not Found On System");
 						exit();
 					}

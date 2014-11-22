@@ -1,9 +1,9 @@
-<div id=pageLoader class=ajaxloading style='margin-top:100px;'>Loading Workspace ...</div>
+<div id="pageLoader" class="ajaxloading" style='margin-top:100px;'>Loading Workspace ...</div>
 #preheader#
-<div id=wrapper class='wrapper'>
+<div id="wrapper" class='wrapper'>
 	#header#
 	#banner#
-	<div id=contentwrapper class='contentwrapper'>
+	<div id="contentwrapper" class='contentwrapper'>
 		#sidebar_left#
 		#content#
 		#sidebar_right#

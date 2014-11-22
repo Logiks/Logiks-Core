@@ -1,12 +1,15 @@
-<h5>Securing Access Authentication ... </h5>
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
+
+if(!isset($_POST['mauth'])) {
+	echo "<h5>Securing Access Authentication ... </h5>";
+}
 
 $userid=clean($_POST['userid']);
 $pwd=clean($_POST['password']);
 if(isset($_POST['site'])) $domain=$_POST['site']; 
 elseif(isset($_REQUEST['site'])) $domain=$_REQUEST['site']; 
-else $domain="";
+else $domain=SITENAME;
 
 LoadConfigFile(ROOT . "config/auth.cfg");
 include ROOT."api/helpers/pwdhash.php";
@@ -34,7 +37,7 @@ $date=date('Y-m-d');
 
 $userFields=explode(",", USERID_FIELDS);
 
-$q1="SELECT id, guid, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
+$q1="SELECT id, guid, userid, pwd, site, privilege, access, name, email, mobile, blocked, avatar, avatar_type FROM "._dbTable("users",true)." where (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
 //$q1="SELECT id, guid, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where userid='$userid' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
 
 if(CASE_SENSITIVE_AUTH=="true") {
@@ -137,12 +140,18 @@ function relink($msg,$domain) {
 		if(isset($_REQUEST['onerror'])) $onerror=$_REQUEST['onerror'];
 	}
 	if(strlen($onerror)==0 || $onerror=="*") {
-		$s="../login.php";
+		$s=SiteLocation."login.php";
 		if(strlen($domain)>0) $s.="?site=$domain";
 		$onerror=$s;
 	}
-	header("Location:$onerror");
-	exit($msg);
+	if(substr($onerror,0,7)=="http://" || substr($onerror,0,8)=="https://" ||
+		substr($onerror,0,2)=="//" || substr($onerror,0,2)=="./" || substr($onerror,0,1)=="/") {
+			header("Location:$onerror");
+			exit($msg);
+	} else {
+		header("SESS_ERROR_MSG:".$msg,false);
+		exit($onerror);
+	}
 }
 function getAccessibleSitesArray() {
 	$arr=scandir(ROOT.APPS_FOLDER);
@@ -216,7 +225,7 @@ function startNewSession($userid, $domain, $dbLink, $params=array()) {
 	$data=$_ENV['AUTH-DATA'];
 	//printArray($data);exit();
 
-	$_SESSION['SESS_USER_ID'] = $userid;
+	$_SESSION['SESS_USER_ID'] = $data['userid'];
 	$_SESSION['SESS_PRIVILEGE_ID'] = $data['privilege'];
 	$_SESSION['SESS_ACCESS_ID'] = $data['access'];
 	$_SESSION['SESS_GUID'] = $data['guid'];
@@ -229,12 +238,15 @@ function startNewSession($userid, $domain, $dbLink, $params=array()) {
 	$_SESSION['SESS_USER_EMAIL'] = $data['email'];
 	$_SESSION['SESS_USER_CELL'] = $data['mobile'];
 
+	$_SESSION['SESS_USER_AVATAR'] = $data['avatar_type']."::".$data['avatar'];
+
 	$_SESSION['SESS_LOGIN_SITE'] = $domain;
 	$_SESSION['SESS_ACTIVE_SITE'] = $domain;
 	$_SESSION['SESS_TOKEN'] = session_id();
 	$_SESSION['SESS_SITEID'] = SiteID;
+	$_SESSION['SESS_LOGIN_TIME'] =time();
 	$_SESSION['MAUTH_KEY'] = generateMAuthKey();
-
+	
 	if($data['privilege']<=3) {
 		$_SESSION["SESS_FS_FOLDER"]=ROOT;
 		$_SESSION["SESS_FS_URL"]=SiteLocation;
@@ -246,6 +258,8 @@ function startNewSession($userid, $domain, $dbLink, $params=array()) {
 	if(strlen($_SESSION['SESS_USER_NAME'])<=0) {
 		$_SESSION['SESS_USER_NAME']=$_SESSION['SESS_USER_ID'];
 	}
+	header_remove("SESSION-KEY");
+	header("SESSION-KEY:".session_id(),false);
 
 	$q1=$dbLink->_insertQ1(_dbTable("log_login",true),array(
 			"date"=>date("Y-m-d"),
@@ -364,15 +378,23 @@ function gotoSuccessLink() {
 			echo "<h5>Securing Access Authentication ... </h5>";
 			if(strlen($onsuccess)==0 || $onsuccess=="*")
 				header("location: ".SiteLocation.$domain);
-			else
-				header("location: $onsuccess");
+			else {
+				if(substr($onsuccess,0,7)=="http://" || substr($onsuccess,0,8)=="https://" ||
+					substr($onsuccess,0,2)=="//" || substr($onsuccess,0,2)=="./" || substr($onsuccess,0,1)=="/") {
+						header("location: $onsuccess");
+				}
+			}
 		}
 	} else {
 		echo "<h5>Securing Access Authentication ... </h5>";
 		if(strlen($onsuccess)==0 || $onsuccess=="*")
 			header("location: ".SiteLocation.$domain);
-		else
-			header("location: $onsuccess");
+		else {
+			if(substr($onsuccess,0,7)=="http://" || substr($onsuccess,0,8)=="https://" ||
+				substr($onsuccess,0,2)=="//" || substr($onsuccess,0,2)=="./" || substr($onsuccess,0,1)=="/") {
+					header("location: $onsuccess");
+			}
+		}
 	}
 	exit();
 }

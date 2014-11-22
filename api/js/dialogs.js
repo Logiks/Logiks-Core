@@ -523,12 +523,15 @@ function lgksOverlay(msg, title, func) {
 			}
 		}, true,$(window).width()-50,$(window).height()-100,"fade");
 }
-function lgksOverlayURL(url, title, func) {
+function lgksOverlayURL(url, title, func, w, h) {
+	if(w==null) w=$(window).width()-50;
+	if(h==null) h=$(window).width()-100;
+
 	if(title==null) {
 		title="Message";
 	}
 	if(func==null) {
-		return jqPopupURL(url,title,null, true,$(window).width()-50,$(window).height()-50,"slide");
+		return jqPopupURL(url,title,null, true, w, h,"slide");
 	} else {
 		return jqPopupURL(url,title,function(txt) {
 			if(func!=null) {
@@ -538,15 +541,21 @@ function lgksOverlayURL(url, title, func) {
 		}, true,$(window).width()-50,$(window).height()-100,"fade");
 	}
 }
-function lgksOverlayDiv(divID, func) {
+function lgksOverlayDiv(divID, func, w, h) {
+	if(w==null) w=$(window).width()-50;
+	if(h==null) h=$(window).width()-100;
+
 	return jqPopupDiv(divID,function(txt) {
 			if(func!=null) {
 				if(typeof(func)=='function') func(txt);
 				else window[func](txt);
 			}
-		}, true,$(window).width()-50,$(window).height()-100,"fade");
+		}, true, w, h,"fade");
 }
-function lgksOverlayFrame(url, title, func) {
+function lgksOverlayFrame(url, title, func, w, h) {
+	if(w==null) w=$(window).width()-50;
+	if(h==null) h=$(window).width()-100;
+
 	if(title==null) {
 		title="Message";
 	}
@@ -555,8 +564,8 @@ function lgksOverlayFrame(url, title, func) {
 
 	if(func==null) {
 		params={
-			width:$(window).width()-50,
-			height:$(window).height()-100,
+			width:w,
+			height:h,
 			modal:true,
 			stack:true,
 			show:'fade',
@@ -571,8 +580,8 @@ function lgksOverlayFrame(url, title, func) {
 		};
 	} else {
 		params={
-			width:$(window).width()-50,
-			height:$(window).height()-50,
+			width:w,
+			height:h,
 			modal:true,
 			stack:true,
 			show:'fade',
@@ -639,7 +648,7 @@ function lgksPrompt(msg, title, fields, func) {
 				}
 			};
 		$("#spd123").css("width","200px");
-		s1="<input id=input name=input value='"+sr+"' type=text style='width:95%;border:1px solid #777;'>";
+		s1="<input id=input name=input value='"+sr+"' type=text style='width:98%;border:1px solid #777;'>";
 		$("#spd123").append(s1);
 	} else {
 		$("#spd123").generateForm(fields);
