@@ -1,3 +1,16 @@
+Changelog for Logiks v3.6.6
+===========================
+
+Updated the skins for Jquery to support the new Jquery libs.
+
+Logiks v3.6.5 was the last one in this series to add new features, from here on we will release when we have any major bug fixes, or events.
+We all eagerly working and waiting towards Logiks v4.0.0, follow us on twitter for updates.
+
+Also, we are happy to announce the release of admincp v2.5 and following cms v2.5 in coming weeks for you.
+
+Happy Coding.
+
+
 Changelog for Logiks v3.6.5
 ===========================
 

@@ -35,20 +35,20 @@ echo "</style>";
 						>
 						<input name=onsuccess type=hidden value="<?=$relinkPage?>" />
 						<input name=onerror type=hidden value="*" />
-						<span class='formbox username'>
+						<div class='formbox username'>
 							<label for='userid'>Username : </label>
 							<input placeholder='Username' name=userid type=text class='textfield' onchange="enableLogin();" onKeyUp="enableLogin();" value="" >
-						</span>
-						<span class='formbox password'>
+						</div>
+						<div class='formbox password'>
 							<label for='password'>Password : </label>
 							<input placeholder='Password' name=password type=password class='textfield pwdfield'  value="" disabled=true>
-						</span>
-						<span class='formbox domain'>
+						</div>
+						<div class='formbox domain'>
 							<label for='site'>Domain : </label>
 							<select name="site" id='domain'>
 								<?=$site_selector?>
 							</select>
-						</span>
+						</div>
 						<?php if($GLOBALS["CONFIG"]["ALLOW_PERSISTENT_LOGIN"]=="true") { ?>
 						<span class='formbox keepsigned'>
 							<input name='persistant' id="keepsigned" type=checkbox value='true'>

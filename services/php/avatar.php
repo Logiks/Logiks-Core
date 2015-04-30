@@ -3,7 +3,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 //Major support from http://avatars.io/.
 
-$avlMethods=array("facebook","gravatar","logiks","twitter","instagram","email");//,"googleplus"
+$avlMethods=array("facebook","gravatar","logiks","photoid","twitter","instagram","email");//,"googleplus"
 
 if(isset($_REQUEST['avatar'])) {
 	$avtr=explode("::", $_REQUEST['avatar']);
@@ -23,8 +23,9 @@ if(isset($_REQUEST['method'])) {
 if(!in_array($method,$avlMethods)) {
 	printServiceErrorMsg("Method Not Supported");
 	//printDefaultAvatar();
+	exit();
 }
-//printArray($_REQUEST);exit();
+//printArray($_REQUEST);exit($method);
 
 if(isset($_REQUEST['action'])) {
 	if($_REQUEST['action']=="src") {
@@ -87,6 +88,16 @@ function printAvatarPhoto($method) {
 			} else {
 				printDefaultAvatar();
 			}
+		} elseif($method=="photoid") {
+			if(!isset($_REQUEST['src'])) {
+				$_REQUEST['src']=getConfig("DBTABLE_AVATAR");
+				if(strlen($_REQUEST['src'])<=0) {
+					$_REQUEST['src']=_dbtable("avatar");
+				}
+			}
+			$lx=_service("viewphoto")."&type=view&loc=db&dbtbl={$_REQUEST['src']}&image={$_REQUEST['authorid']}";
+			header("Location:$lx");
+			exit();
 		}
 	} else {
 		printDefaultAvatar();

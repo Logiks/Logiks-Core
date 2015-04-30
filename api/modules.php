@@ -70,14 +70,8 @@ if(!function_exists('loadModule')) {
 		$fpath="";
 		foreach($modulespath as $a) {
 			$f1=ROOT . $a . $module . "/index.php";
-			$f2=ROOT . $a . $module . ".php";
 			if(file_exists($f1)) {
-				//include_once $f1;
 				$fpath=$f1;
-				break;
-			} elseif(file_exists($f2)) {
-				//include_once $f2;
-				$fpath=$f2;
 				break;
 			} else {
 				$fpath="";

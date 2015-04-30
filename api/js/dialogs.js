@@ -525,7 +525,7 @@ function lgksOverlay(msg, title, func) {
 }
 function lgksOverlayURL(url, title, func, w, h) {
 	if(w==null) w=$(window).width()-50;
-	if(h==null) h=$(window).width()-100;
+	if(h==null) h=$(window).height()-100;
 
 	if(title==null) {
 		title="Message";
@@ -543,7 +543,7 @@ function lgksOverlayURL(url, title, func, w, h) {
 }
 function lgksOverlayDiv(divID, func, w, h) {
 	if(w==null) w=$(window).width()-50;
-	if(h==null) h=$(window).width()-100;
+	if(h==null) h=$(window).height()-100;
 
 	return jqPopupDiv(divID,function(txt) {
 			if(func!=null) {
@@ -554,7 +554,7 @@ function lgksOverlayDiv(divID, func, w, h) {
 }
 function lgksOverlayFrame(url, title, func, w, h) {
 	if(w==null) w=$(window).width()-50;
-	if(h==null) h=$(window).width()-100;
+	if(h==null) h=$(window).height()-100;
 
 	if(title==null) {
 		title="Message";

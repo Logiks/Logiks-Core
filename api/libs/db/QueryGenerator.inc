@@ -107,7 +107,6 @@ class QueryGenerator {
 	public static function _insertQ1($table, $arr) {
 		$keys=array_keys($arr);
 		$values=array_values($arr);
-		$values=QueryGenerator::_cleanArr($values);
 		return QueryGenerator::_insertQ($table, $keys, $values);
 	}
 

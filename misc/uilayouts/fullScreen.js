@@ -17,21 +17,21 @@ function resizeLayoutUI() {
 	var w1=w;
 	var insetContent=0;
 	var insetPreFooter=0;
-	if($("#header").length>0) {
+	if($("#header").length>0 && $("#header").is(":visible")) {
 		h1=h-$("#header").height();
 		insetContent=$("#header").height();
 	}
-	if($("#sidebar").length>0) {
+	if($("#sidebar").length>0 && $("#sidebar").is(":visible")) {
 		w1=w-$("#sidebar").width();
 		$("#sidebar").css("height",h1+"px");
 		$("#sidebar-inner").css("height",(h1-3)+"px");
 	}
-	if($("#banner").length>0) {
+	if($("#banner").length>0 && $("#banner").is(":visible")) {
 		h1=h1-$("#banner").height();
 		insetContent=insetContent+$("#banner").height();
 		$("#banner").css("width",(w1-0)+"px");
 	}
-	if($("#footer").length>0) {
+	if($("#footer").length>0 && $("#footer").is(":visible")) {
 		h1=h1-$("#footer").height();
 		insetPreFooter=insetPreFooter+$("#footer").height();
 		$("#footer").css("width",w+"px");
@@ -40,13 +40,13 @@ function resizeLayoutUI() {
 			$("#sidebar-inner").css("height",($("#sidebar").height()-3)+"px");
 		}
 	}
-	if($("#prefooter").length>0) {
+	if($("#prefooter").length>0 && $("#prefooter").is(":visible")) {
 		h1=h1-$("#prefooter").height();
 		$("#prefooter").css("width",(w1-0)+"px");
 		$("#prefooter").css("bottom",insetPreFooter+"px");
 	}
 	
-	if($("#content").length>0) {
+	if($("#content").length>0 && $("#content").is(":visible")) {
 		$("#content").css("height",h1+"px");	
 		$("#content").css("width",(w1-0)+"px");
 		$("#content").css("top",insetContent+"px");
@@ -97,6 +97,10 @@ function loadBrowserCompatiblity() {
 function notYetSupported(msg) {
 	$("#pageLoader").detach();
 	$("body").html("<div id='loading-container' style='position:absolute; top:40%; left:37%;'><div class=ajaxerror></div>"+
-							"<p id='loading-content1' align=center style='font: bold 18px Verdana, Arial, Helvetica, sans-serif; color: #777; text-shadow: 1px 1px 0px #ccc;'>" +
-							msg);
+			"<p id='loading-content1' align=center style='font: bold 18px Verdana, Arial, Helvetica, sans-serif; color: #777; text-shadow: 1px 1px 0px #ccc;'>" +
+			msg);
+}
+function toggleSidebar() {
+	$("#sidebar").toggle();
+	$(window).resize();
 }

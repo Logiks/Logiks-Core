@@ -21,40 +21,31 @@ img {
 }
 #logindiv {
 	width:320px;
-	height:260px;
-	margin-top:-160px;
-	
-	border:2px solid #356aa0;
-	padding: 10px;
-
-	border-radius:1em;	
-	-webkit-border-radius: 1em;
-	-moz-border-radius: 1em;
-	-khtml-border-radius: 1em;
-	
-	border-shodow: 0 1px 50px rgba(0, 0, 0, .4);
-	-webkit-box-shadow: 0 1px 50px rgba(0, 0, 0, .4);
-	-moz-box-shadow: 0 1px 50px rgba(0, 0, 0, .4);
-	box-shodow: 0 1px 50px rgba(0, 0, 0, .4);
+	height:275px;
+	margin-bottom: 20px;
+	background-color: #fff;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	-webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+	box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
 
 #loginLogo {
 	display: none;
 }
 #loginHeader {
-    font-size: 25pt;
-    font-weight: bold;
-    color: #aaa;
-    text-align:center;
-    margin-bottom:10px;   
-    
-    text-shadow: -1px -1px white, 1px 1px #333; 
-    
-    display:none;
+	color: #333;
+	background-color: #f5f5f5;
+	border-color: #ddd;
+	padding: 10px 15px;
+	border-bottom: 1px solid transparent;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	text-align: left;
 }
 #loginForm {
 	width:90%;
-	height:125px;
+	height:auto;
 	margin:auto;
 	text-align:left;	
 	padding:10px;
@@ -62,6 +53,33 @@ img {
 	
     border:0px;
     font-size:1em;
+}
+#loginForm .formbox {
+	min-width: 0;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	margin-top: 14px;
+}
+#loginForm .formbox input[type=text],
+	#loginForm .formbox input[type=password],
+	#loginForm .formbox select {
+	display: block;
+	width: 100%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
 #loginForm a {
 	font-size:14px;
@@ -83,53 +101,52 @@ label {
 	margin: 0px;
 	margin-top: 5px;
 	font-size: 12px;
+	display: none;
 }
-
-input[type=text], input[type=password], select {
-	width:100%;
-	padding: 6px;
-	font-weight:bold;
-	border:1px solid #aaa;
-	font-size: 11px;
-	color:black;	
-	background:white;	
+.keepsigned * {
+	float: left;
+	margin-top:10px;
 }
-input[type=checkbox] {
-	float:left;
-	margin-top:5px;
+.keepsigned label {
+	display: inline-block;
+	color: black;
 }
 button {
-	padding: 5px;padding-top: 10px;padding-right: 10px;
-	font-weight: 500;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	border: 1px solid transparent;
-	-webkit-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
-	-moz-box-shadow: inset 0px -2px 0px 0px rgba(0, 0, 0, 0.09);
-	box-shadow: inset 0px -1px 0px 0px rgba(0, 0, 0, 0.09);
-	background-color: #fafafa;
-	color: #666;
-	border-color: #ddd;
-	border-bottom-color: #ddd;
+	display: inline-block;
+	padding: 6px 12px;
+	margin-bottom: 0;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	-ms-touch-action: manipulation;
+	touch-action: manipulation;
 	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	color: #fff;
+	background-color: #5cb85c;
+	border-color: #4cae4c;
 }
-button:hover {
-	border: 1px solid #999;
-	box-shadow: 0 1px 1px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3);
-	background-color: #ccc;
-	background-image: -webkit-linear-gradient(bottom,#ccc 0%,#ccc 100%);
-	background-image: linear-gradient(to top,#ccc 0%,#ccc 100%);
-	color: #333;
+button:hover,button:active {
+	color: #fff;
+	background-color: #449d44;
+	border-color: #398439;
 }
 button:disabled {
-	border: 1px solid #999;
-	box-shadow: 0 1px 1px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3);
-	background-color: #ccc;
-	background-image: -webkit-linear-gradient(bottom,#ccc 0%,#ccc 100%);
-	background-image: linear-gradient(to top,#ccc 0%,#ccc 100%);
 	color: #333;
+	background-color: #f5f5f5;
+	border-color: #ddd;
 }
+
+
 hr {
 	float:left;
 	margin-top:5px;

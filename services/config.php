@@ -105,7 +105,7 @@ $bugImg="<img src='" . SiteLocation . "services/images/bug.png' width=48 height=
 $cmdFormat=explode(",",SUPPORTED_COMMAND_FORMATS);
 
 if(!isset($_REQUEST['format'])) {
-	$_REQUEST['format']="html";
+	$_REQUEST['format']="json";
 } else {
 	$_REQUEST['format']=strtolower($_REQUEST['format']);
 }
