@@ -1,0 +1,33 @@
+{
+    "name": "gallery",
+    "version": "1.0.0",
+    "status": "beta",
+    "description": "Menu generator library and module",
+    "keywords": "",
+    "license": "MIT License",
+    "homepage": "",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/LogiksPlugins/gallery.git"
+    },
+    "logiks-core": {
+        "min": "*",
+        "max": "*"
+    },
+    "logiks-apps": "*",
+    "files": [],
+    "ignore": [
+        ".git",
+        "Readme.txt"
+    ],
+    "dependencies": [],
+    "devDependencies": [],
+    "permissions":[],
+    "schema":[],
+    "authors": [
+        {
+            "name": "Bismay Kumar Mohapatra",
+            "email": "bismay@openlogiks.org"
+        }
+    ]
+}

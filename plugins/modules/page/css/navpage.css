@@ -1,0 +1,169 @@
+#page #page {
+	overflow: auto;
+	overflow-x: hidden;
+}
+body>#page>#pgworkspace {
+	overflow: hidden !important;
+}
+#page .toolbar {
+	
+}
+#page .toolbar .toolbar1 {
+	margin-left:0px;margin-top:0px;
+}
+#page .toolbar .toolbar2 {
+	margin-left:0px;margin-top:0px;border-left:1px dashed #aaa;vertical-align:center;
+}
+#page .toolbar .toolbar3 {
+	margin-left:0px;margin-top:3px;border-left:1px dashed #aaa;vertical-align:center;
+}
+#page .toolbar .switchBar {
+	padding:0px;
+	margin-right:20px;margin-top:3px;
+	margin-left: 15px;margin-bottom:-3px;
+}
+#page .toolbar .switchBar.ui-widget-header {
+	-moz-border-radius-topright: 25px; -webkit-border-top-right-radius: 25px; -khtml-border-top-right-radius: 25px; border-top-right-radius: 25px;
+	-moz-border-radius-bottomright: 25px; -webkit-border-bottom-right-radius: 25px; -khtml-border-bottom-right-radius: 25px; border-bottom-right-radius: 25px;
+	
+}
+#page .toolbar .dpToolPanes, #page #pgworkspace .dpPanes {
+	display:none;
+	width:100%;height:100%;
+}
+#page .toolbar .switchBtn {
+	margin:0px;
+	margin-top:0px;
+	
+	padding:5px;
+	padding-left:22px;padding-right:10px;padding-top:6px;
+	cursor:pointer;
+	/*width:18px; text-align:center;margin-bottom:-3px;*/
+	width:auto;height:14px;
+	display:inline-block;
+	float: left;
+	background-position: 3px center;
+	font-weight:normal;
+}
+#page .toolbar .switchBtn.noicon {
+	padding-left:2px;
+}
+#page .toolbar .switchBtn.withimg {
+	padding-left:2px;
+}
+#page .toolbar .switchBtn.withimg img {
+	margin-right: 4px;
+}
+#page .toolbar .switchBar.ui-widget-header .switchBtn.active {
+	/*text-decoration:none;
+	background-color:#CCC;*/
+}
+#page .toolbar .switchBar .switchBtn.noload {
+	opacity:0.3;
+	font-style:italic;
+	cursor:default;
+}
+#page .toolbar .switchBar .switchBtn.active {
+	text-decoration:underline;
+	opacity:0.6;
+	font-weight:bold;
+	text-transform:uppercase;
+}
+#page .toolbar .switchBtn:first-child {
+	background-position: center center;
+}
+#page .toolbar .switchBar.ui-widget-header .switchBtn:last-child {
+	/*-moz-border-radius-topright: 25px; -webkit-border-top-right-radius: 25px; -khtml-border-top-right-radius: 25px; border-top-right-radius: 25px;
+	-moz-border-radius-bottomright: 25px; -webkit-border-bottom-right-radius: 25px; -khtml-border-bottom-right-radius: 25px; border-bottom-right-radius: 25px;
+	*/
+}
+#page .toolbar .switchBar.ui-widget-header .switchBtn:not(:last-child) {
+	/*border-right:1px solid #AAA;*/
+}
+#page .toolbar .switchBtn:not(:first-child) {
+	margin-left: 12px;
+	/*
+	padding-left:2px;padding-right :2px;*/
+}
+#page .toolbar .switchBtn:hover {
+	opacity:0.3;
+}
+#page .toolbar .switchBtn:active {
+	opacity:0.8;
+}
+#page .toolbar .switchBtn img {
+	outline:0px;
+	border:0px;
+	width:18px;height:18px;
+	float:left;
+}
+/*:not(:first-child)*/
+#page .toolbar .switchBar .arrowRight {
+	padding-left:22px;
+	padding-top: 24px;
+	margin-top: 0px;
+	margin-right: -13px;
+	float: left;
+	background:url(images/arrowRight.png) no-repeat center right;
+}
+#page .toolbar .switchBar.ui-widget-header .arrowRight {
+	/*display: none;*/
+}
+#page .toolbar .searchBar input {
+	margin-bottom: 2px;
+}
+#page .toolbar .searchCols {
+	width:100px;height:20px;
+	background:transparent;
+	border:0px;
+	padding:0px;
+}
+#toolbar .searchBar {
+	display: none;
+}
+.popupButton {
+	float:right;color:maroon;font-size:12px;
+	margin-right:10px;
+	cursor:pointer;
+	padding:5px;
+	color:white;
+}
+/*Icons*/
+.formicon {background:transparent url(images/datapane/forms.png) no-repeat center center;}
+.listsicon {background:transparent url(images/datapane/lists.png) no-repeat center center;}
+.reportsicon {background:transparent url(images/datapane/report.png) no-repeat center center;}
+.gridsicon {background:transparent url(images/datapane/grid.png) no-repeat center center;}
+.chartsicon {background:transparent url(images/datapane/charts.png) no-repeat center center;}
+.pieicon {background:transparent url(images/datapane/pie.png) no-repeat center center;}
+.viewsicon {background:transparent url(images/datapane/views.png) no-repeat center center;}
+.calendaricon {background:transparent url(images/datapane/calendar.png) no-repeat center center;}
+.mapsicon {background:transparent url(images/datapane/maps.png) no-repeat center center;}
+.notesicon {background:transparent url(images/datapane/notes.png) no-repeat center center;}
+.picturesicon {background:transparent url(images/datapane/pictures.png) no-repeat center center;}
+.foldersicon {background:transparent url(images/datapane/folder.png) no-repeat center center;}
+.feedssicon {background:transparent url(images/datapane/feed.png) no-repeat center center;}
+.appsicon {background:transparent url(images/datapane/apps.png) no-repeat center center;}
+
+/*Special Icons*/
+.filters {
+	background:transparent url(images/filter.png) no-repeat left center !important;
+}
+.grouped {
+	background:transparent url(images/grouped.png) no-repeat left center !important;
+}
+
+.advSearchButton {
+	background:transparent url(images/tools.png) no-repeat center center;
+	cursor:pointer;
+	padding:9px;display:inline-block;
+	margin-top:5px;width:0px;
+	cursor:pointer !important;
+}
+.searchColsButton {
+	background:transparent url(images/arrow.png) no-repeat center right;
+	cursor:pointer;
+	padding:9px;display:inline-block;
+	margin-top:5px;width:7px;margin-left:-20px;
+	cursor:pointer !important;
+}
+

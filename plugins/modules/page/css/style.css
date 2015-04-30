@@ -1,0 +1,223 @@
+/*CSS3 Compatible Stylesheet*/
+
+#page button {
+	cursor:pointer;
+}
+
+#page {
+	width:100%;height:100%;
+	padding:0px;margin:0px;
+	overflow:hidden;
+}
+#pgworkspace {
+	overflow:auto;
+}
+#loadingmsg {
+	display:none;
+}
+#page .left {
+	float:left;
+	height: 100%;
+}
+#page .right {
+	float:right;
+	height: 100%;
+}
+#page h1 {
+	padding:7px;margin:0px;
+	padding-bottom:2px;
+	color:#555;
+	text-align:left;
+}
+#page h3 {
+	padding:0px;margin:0px;
+	padding-bottom:2px;
+	color:maroon;
+	text-align:center;
+}
+
+#page .toolbar {
+	width:100%;height:35px;
+	padding-top:0px;
+}
+#page .toolbar button, #page .toolbar .label {
+	width:90px;
+	height: 100%;
+}
+#page .toolbar .button {
+	cursor:pointer;
+	margin:4px;
+	display:inline-block;
+}
+#page .toolbar .buttonColored {
+	cursor:pointer;
+	display:inline-block;
+	margin:4px;
+	padding: 6px 10px;
+
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	border-radius: 3px 3px 3px 3px;
+}
+#page .toolbar .buttonColored:hover {
+	opacity:0.5;
+}
+#page .toolbar select {
+	width:150px;height:30px;
+	height: 100%;
+}
+#page .toolbar .label {
+	margin-right:10px;
+	display:inline;
+	cursor:pointer;
+}
+#page .toolbar .searchBar {
+	padding-left:23px;padding-right:7px;
+	margin-right:20px;margin-top:11px;
+
+	clear:right;
+	width:auto;
+	cursor:pointer;
+
+	background:#FFF url(images/search.png) no-repeat left center;
+	border:1px solid #aaa;
+
+	-moz-border-radius: 45px;
+	-webkit-border-radius: 45px;
+	-khtml-border-radius: 45px;
+	border-radius: 45px;
+}
+#page .toolbar .searchBar>* {
+	outline:none;
+	display:inline-block;
+	cursor:default;
+}
+#page .toolbar .searchBar>* {
+	width:120px;
+}
+#page .toolbar .searchBar input {
+	margin-right:10px;margin-bottom:7px;
+	border:0px solid #CCC;
+	cursor:text;
+}
+#page .toolbar .searchBar select {
+	padding:4px;padding-left:20px;padding-top:4px;font-weight:normal !important;
+	font-size:10px;
+	border:0px solid #CCC;
+	vertical-align:center;
+	cursor:default;
+}
+
+#page #pgworkspace {
+
+}
+
+#page #pgworkspace .pageSidebar {
+	width:20%;height:100%;
+	background: white;overflow-y:auto;
+	float:left;
+}
+#page #pgworkspace .componentSpace {
+	width:80%;height:100%;
+	text-align: left;
+	float:right;
+	/*width: auto;
+	height: 100%;
+	text-align: left;*/
+}
+
+#page .buttonHover:hover {
+	opacity:0.5;
+	cursor:pointer;
+}
+
+.helpInfo {
+	width:100%;text-align:justify;font-size:14px;font-family:verdana;
+}
+.helpInfo h3 {
+	margin:0px;
+	padding:3px;
+}
+.helpInfo .infoIcon {
+	padding-left:24px;width:100%;
+	background-position:left center;
+}
+.helpInfo table {
+	border:1px dashed #aaa;
+	padding:3px;
+}
+.helpInfo thead tr.border th {
+	 border-bottom:2px solid #aaa !important;
+}
+.helpInfo ul {
+	list-style:square;
+}
+.helpInfo ul li {
+	padding-bottom:3px;
+}
+
+/*
+table.datatable thead th {
+	height:22px;
+	border-bottom:2px solid #777;
+}
+table.datatable tbody td {
+	padding:2px;
+}
+table.datatable tbody tr:not(.subheader):not(.nohover):hover td {
+	background-color:#E2FFC9;
+	cursor:pointer;
+}
+table.datatable tbody tr.active td {
+	background-color:#C9FFDE;
+	padding:2px;
+}
+table.datatable tbody tr.selected td {
+	background-color:#C9FFDE;
+	padding:2px;
+}
+
+table.datatable tbody tr.highlight {
+	background-color:#CCE9FF;
+}
+*/
+
+/*Icons*/
+.homeicon {background:transparent url(images/icons/home.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.reloadicon {background:transparent url(images/icons/reload.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.addicon {background:transparent url(images/icons/add.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.editicon {background:transparent url(images/icons/edit.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.mailicon {background:transparent url(images/icons/email.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.printicon {background:transparent url(images/icons/print.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.codeicon {background:transparent url(images/icons/code.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.designicon {background:transparent url(images/icons/design.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.layouticon {background:transparent url(images/icons/layout.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.linkicon {background:transparent url(images/icons/link.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.deleteicon {background:transparent url(images/icons/delete.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.trashicon {background:transparent url(images/icons/trash.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.uploadicon {background:transparent url(images/icons/upload.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.downloadicon {background:transparent url(images/icons/download.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.cloneicon {background:transparent url(images/icons/clone.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.openicon {background:transparent url(images/icons/open.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.closeicon {background:transparent url(images/icons/close.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.lockicon {background:transparent url(images/icons/lock.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.gearicon {background:transparent url(images/icons/gear.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.dbicon {background:transparent url(images/icons/dbms.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.searchicon {background:transparent url(images/icons/search.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.infoicon {background:transparent url(images/icons/info.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.helpicon {background:transparent url(images/icons/help.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.clearicon {background:transparent url(images/icons/clear.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.popupicon {background:transparent url(images/icons/popup.png) no-repeat left center; width:18px; height:18px;padding-left:25px;}
+.saveicon {background:transparent url(images/icons/save.png) no-repeat left center; width:18px; height:18px;padding-left:25px;}
+.viewicon {background:transparent url(images/icons/view.png) no-repeat left center; width:18px; height:18px;padding-left:25px;}
+.renameicon {background:transparent url(images/icons/rename.png) no-repeat left center; width:18px; height:18px;padding-left:25px;}
+.usericon {background:transparent url(images/icons/user.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.okicon {background:transparent url(images/icons/ok.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.notokicon {background:transparent url(images/icons/notok.png) no-repeat left center; width:18px; height:18px;padding-left:20px;}
+.blankicon {background:transparent; width:18px; height:18px;padding-left:20px;}
+
+/*JQUery UI Fixes*/
+.tabs {
+	border:0px !important;
+}
