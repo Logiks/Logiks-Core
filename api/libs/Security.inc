@@ -90,7 +90,6 @@ class Security {
 		$f=ROOT.CACHE_IPLIST_FOLDER."{$site}/{$type}.dat";
 		if(!is_dir(dirname($f))) {
 			mkdir(dirname($f),0777,true);
-			chmod(dirname($f),0777);
 		}
 		if(!is_dir(dirname($f))) {
 			return false;
@@ -129,7 +128,6 @@ class Security {
 		
 		if(!is_dir(dirname($f))) {
 			mkdir(dirname($f),0777,true);
-			chmod(dirname($f),0777);
 		}
 		if(!is_dir(dirname($f))) {
 			return false;

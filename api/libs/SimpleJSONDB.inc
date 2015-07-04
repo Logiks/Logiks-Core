@@ -42,8 +42,6 @@ class SimpleJSONDB {
 			if(!mkdir($this->dataDir,0777,true)) {
 				$this->dataDir=null;
 				$this->error="Data Directory Could Not Be Found/Created.";
-			} else {
-				chmod($this->dataDir,0777);
 			}
 		}
 		$this->reloadNames();

@@ -47,6 +47,10 @@ if(!function_exists("getUserDeviceType")) {
 			return "BlackBerry Tablet";
 		}elseif($detect->isAndroidtablet()){//$detect->isMobile()
 			return "Android Tablet";
+		}elseif($detect->isWindowsphone()){//$detect->isMobile()
+			return "Windows Phone";
+		}elseif($detect->isWindows()){//$detect->isMobile()
+			return "Windows Mobile";
 		}elseif($detect->isIpad()){//$detect->isMobile()
 			return "iPad";
 		}elseif($detect->isIphone()){//$detect->isMobile()
@@ -55,10 +59,6 @@ if(!function_exists("getUserDeviceType")) {
 			return "BlackBerry Mobile";
 		}elseif($detect->isAndroid()){//$detect->isMobile()
 			return "Android Mobile";
-		}elseif($detect->isWindowsphone()){//$detect->isMobile()
-			return "Windows Phone";
-		}elseif($detect->isWindows()){//$detect->isMobile()
-			return "Windows Mobile";
 		}elseif($detect->isPalm()){//$detect->isMobile()
 			return "Palm";
 		}elseif($detect->isGeneric()){//$detect->isMobile()
@@ -97,14 +97,15 @@ class DeviceDetection {
 		"ipad" => "(ipad)",
 		"palm" => "(avantgo|blazer|elaine|hiptop|palm|plucker|xiino)",
 		"windows" => "windows ce; (iemobile|ppc|smartphone)",
-		"windowsphone" => "windows phone os",
+		"windowsphone" => "(windows phone os|windows|microsoft)",
 		"generic" => "(kindle|mobile|mmp|midp|o2|pda|pocket|psp|symbian|smartphone|treo|up.browser|up.link|vodafone|wap|opera mini)"
 	);
 	
 	public function __construct() {
 		if(!isset($_SERVER['HTTP_USER_AGENT'])) $_SERVER['HTTP_USER_AGENT']="Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.168 Safari/535.19";
 		$this->userAgent = $_SERVER['HTTP_USER_AGENT'];
-		//$this->userAgent = "(iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML  like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5,CGI/1.1,HTTP/1.0,GET,219.91.184.34";		
+		//$this->userAgent = "(iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML  like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5,CGI/1.1,HTTP/1.0,GET,219.91.184.34";	
+		
 		if(isset($_SERVER['HTTP_ACCEPT'])) $this->accept = $_SERVER['HTTP_ACCEPT'];
 		else $this->accept="text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 		

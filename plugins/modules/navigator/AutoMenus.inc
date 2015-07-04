@@ -122,9 +122,9 @@ class AutoMenus {
 				}
 				if(isset($b['menu'])) {
 					$a=$b['menu'];
-					$master[sizeOf($master)][$a]=$last;
+					$master[count($master)][$a]=$last;
 				} else {
-					$master[sizeOf($master)][$a]=$last;
+					$master[count($master)][$a]=$last;
 				}
 			}
 		}

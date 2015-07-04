@@ -64,7 +64,6 @@ class PHooksQueue {
 			$hooksFolder=APPROOT.APPS_MISC_FOLDER.$pname;
 			if(!is_dir($hooksFolder)) {
 				@mkdir($hooksFolder,0777,true);
-				@chmod($hooksFolder,0777);
 			}
 			$hooksFolder.="{$plugin}/{$state}/";
 			if(is_dir($hooksFolder)) {
@@ -80,7 +79,6 @@ class PHooksQueue {
 			$hooksFolder=ROOT.MISC_FOLDER.$pname;
 			if(!is_dir($hooksFolder)) {
 				@mkdir($hooksFolder,0777,true);
-				@chmod($hooksFolder,0777);
 			}
 			$hooksFolder.="{$plugin}/{$state}/";
 			if(is_dir($hooksFolder)) {
@@ -136,13 +134,11 @@ class PHooksQueue {
 		if(defined("APPS_HOOKS_FOLDER")) {
 			if(!is_dir(APPROOT.APPS_HOOKS_FOLDER.$hookState) && is_writable(APPROOT.APPS_HOOKS_FOLDER)) {
 				@mkdir(APPROOT.APPS_HOOKS_FOLDER.$hookState,0777,true);
-				@chmod(APPROOT.APPS_HOOKS_FOLDER.$hookState,0777);
 			}
 		}
 		if(defined("HOOKS_FOLDER")) {
 			if(!is_dir(ROOT.HOOKS_FOLDER.$hookState) && is_writable(ROOT.HOOKS_FOLDER)) {
 				//@mkdir(ROOT.HOOKS_FOLDER.$hookState,0777,true);
-				//@chmod(ROOT.HOOKS_FOLDER.$hookState,0777);
 			}
 		}
 	}
@@ -162,7 +158,6 @@ class PHooksQueue {
 			$a=file_put_contents($f,$code);
 			if($a===false) return false;
 			else {
-				chmod($f,0777);
 				return true;
 			}
 		}

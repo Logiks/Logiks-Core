@@ -800,7 +800,8 @@ function lgksToast(msg,opts) {
         default:
             x = 2;
     }
-	toast = $("<div class='toast "+opts.bodyclass+"'>" + msg + "</div>");
+    $("body .lgksToast.toast").detach();
+	toast = $("<div class='toast lgksToast "+opts.bodyclass+"'>" + msg + "</div>");
     $("body").append(toast);
     var l = window.innerHeight;
     var j = window.innerWidth;
@@ -809,7 +810,7 @@ function lgksToast(msg,opts) {
             top: ((l - toast.outerHeight()) / y) + $(window).scrollTop() + "px",
 			position:"absolute",
 			padding:"10px",
-			"z-index":99999,
+			"z-index":99999999,
 			display:"none",
         });
     switch (opts.position[1]) {
@@ -831,7 +832,7 @@ function lgksToast(msg,opts) {
     if(opts.bodyclass=="" || opts.bodyclass==null) {
 		toast.css({
             color:"#ffffff",
-			"background-color":"rgba(0,0,0, 0.8)",
+			"background-color":"rgba(0,0,0, 0.7)",
 			"border-radius":"4px",
 			"-moz-border-radius":"4px",
 			"-webkit-border-radius":"4px",

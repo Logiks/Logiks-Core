@@ -17,7 +17,7 @@ include_once ROOT. "api/system.php";
 include_once ROOT. "api/user.php";
 include_once ROOT. "api/database.inc";
 
-include_once ROOT."config/errors.php";
+include_once ROOT."api/errors.php";
 
 include_once ROOT. "api/logdb.php";//For Apps Events
 include_once "serviceErrors.php";//Service Error Handling System
@@ -58,7 +58,8 @@ function loadSysConfigs() {
 	LoadConfigFile(ROOT . "config/framework.cfg");
 	LoadConfigFile(ROOT . "config/db.cfg");
 	LoadConfigFile(ROOT . "config/folders.cfg");
-	
+	LoadConfigFile(ROOT . "config/developer.cfg");
+
 	ini_set("error_reporting",getConfig("SERVICE_ERROR_REPORTING_LEVEL"));
 
 	fixPHPINIConfigs();
@@ -93,13 +94,10 @@ if(isset($_REQUEST['encoded'])) {
 
 loadHelpers("shortfuncs");
 loadHelpers("formatPrint");
+loadHelpers("hooks");
 
-if(ENABLE_AUTO_HOOKS=="true") {
-	loadHelpers("hooks");
-}
-
-$errorImg="<img src='" . SiteLocation . "services/images/error.png'  width=48 height=48>";
-$loadImg="<img src='" . SiteLocation . "services/images/loading.gif' width=200 height=20>";
+$errorImg="<img src='" . SiteLocation . "media/images/errors/msg_default.png'  width=48 height=48>";
+$loadImg="<img src='" . SiteLocation . "media/images/loading.gif' width=200 height=20>";
 $bugImg="<img src='" . SiteLocation . "services/images/bug.png' width=48 height=48>";
 
 $cmdFormat=explode(",",SUPPORTED_COMMAND_FORMATS);

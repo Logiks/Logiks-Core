@@ -5,8 +5,7 @@ function jsloader() {
 	var me=this;
 
 	this.loadFromLib=function(name,vers) {
-		var jsfile="services/?scmd=jsapi&jslib=" + name + "&vers=" + vers;
-		//var jsfile="http://localhost/incubator/logiks3/api/js/"+name+".js";
+		var jsfile=_service("jsapi")+"&jslib=" + name + "&vers=" + vers;
 		scripts.push(jsfile);
 	}
 	this.loadFromLink=function(jslink) {

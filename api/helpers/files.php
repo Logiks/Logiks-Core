@@ -39,7 +39,7 @@ if(!function_exists("getDirTree")) {
 				if (@is_dir($source_dir.$file) AND strncmp($file, '.', 1) !== 0 AND $top_level_only === FALSE) {
 					get_dir_file_info($source_dir.$file.DIRECTORY_SEPARATOR, $top_level_only, TRUE);
 				} elseif (strncmp($file, '.', 1) !== 0) {
-					$_filedata[$file] = get_file_info($source_dir.$file);
+					$_filedata[$file] = getFileInfo($source_dir.$file);
 					$_filedata[$file]['relative_path'] = $relative_path;
 				}
 			}
@@ -180,23 +180,19 @@ if(!function_exists("getDirTree")) {
 		}
 	}
 
-	function getFileSizeInString($size,$n=0) {
-		$size1=$size;
-		for($i=0;$i<$n;$i++) {
-			$size1=$size1/1024;
+	function getFileSizeInString($input) {
+		$prefix_arr = array (" B", " Kb", " Mb", " Gb", " Tb");
+		
+		$value = round($input, $dec);
+		$i = 0;
+		
+		while($value > 1024) {
+		   $value /= 1024;
+		   $i++;
 		}
-		if($size1>1024 && $n<2) {
-			return getFileSizeInString($size,$n+1);
-		} else {
-			$nx=strpos($size1,".");
-			if($nx>0) $size1=substr($size1,0,$nx+3);
-
-			if($n<=0) return $size1." bytes";
-			elseif($n==1) return $size1." kb";
-			elseif($n==2) return $size1." mb";
-			elseif($n==3) return $size1." Gb";
-			else return $size1." Tb";
-		}
+		$return_str = round($value, $dec).$prefix_arr[$i];
+		
+		return $return_str;
 	}
 
 	function fileExtension($filename) {

@@ -6,133 +6,31 @@ if(!isset($MODULE_PARAMS[1]['menuid'])) {
 	exit();
 }
 
-include_once "AutoMenus.inc";
+include_once dirname(__FILE__)."/api.php";
 
-$weightCol="w";
-$colDefn=array(
-		"idCol"=>"id",
-		"titleCol"=>"title",
-		"groupCol"=>"menugroup",
-		"categoryCol"=>"category",
-		"linkCol"=>"link",
-		"iconCol"=>"iconpath",
-		"classCol"=>"class",
-		"tipsCol"=>"tips",
-		"targetCol"=>"target",
-		"toCheckCol"=>"to_check",
-	);
-$site=null;
-$dbtable="";
-$dbLink=null;
-$sysdb=false;
-$menuid="default";
-$menuAutoGroupFile=null;
-$requiredTableList=null;
-$requiredModuleList=null;
-$menuType='sidebar';
-$printTitle=true;
-$noScript=false;
-$showID=false;
-$allGenerators=false;
-$orderBy=null;
+if(isset($MODULE_PARAMS[1]['menuAutoGroupFile'])) {
+	$menuAutoGroupFile=$MODULE_PARAMS[1]['menuAutoGroupFile'];
+} else $menuAutoGroupFile=null;
 
-if(is_array($MODULE_PARAMS[1])) {
-	if(isset($MODULE_PARAMS[1]['menuid'])) {
-		$menuid=$MODULE_PARAMS[1]['menuid'];
-	}
+if(isset($MODULE_PARAMS[1]['noScript'])) {
+	$noScript=$MODULE_PARAMS[1]['noScript'];
+} else $noScript=false;
 
-	if(isset($MODULE_PARAMS[1]['site'])) {
-		$site=$MODULE_PARAMS[1]['site'];
-	}
-	if(isset($MODULE_PARAMS[1]['dbtable'])) {
-		$dbtable=$MODULE_PARAMS[1]['dbtable'];
-	} else {
-		$dbtable=_dbtable("links");
-	}
-	if(isset($MODULE_PARAMS[1]['dbLink'])) {
-		$dbLink=$MODULE_PARAMS[1]['dbLink'];
-	} else {
-		$dbLink=getAppsDBLink();
-	}
-	if(isset($MODULE_PARAMS[1]['sysdb'])) {
-		$sysdb=$MODULE_PARAMS[1]['sysdb'];
-	}
-	//Optional Components
-	if(isset($MODULE_PARAMS[1]['colDefn']) && is_array($MODULE_PARAMS[1]['colDefn'])) {
-		$colDefn=$MODULE_PARAMS[1]['colDefn'];
-	}
-	if(isset($MODULE_PARAMS[1]['menuAutoGroupFile'])) {
-		$menuAutoGroupFile=$MODULE_PARAMS[1]['menuAutoGroupFile'];
-	}
-	if(isset($MODULE_PARAMS[1]['menuType'])) {
-		$menuType=$MODULE_PARAMS[1]['menuType'];
-	}
-	if(isset($MODULE_PARAMS[1]['printTitle'])) {
-		$printTitle=$MODULE_PARAMS[1]['printTitle'];
-	}
-	if(isset($MODULE_PARAMS[1]['useCategory'])) {
-		if(!$MODULE_PARAMS[1]['useCategory']) {
-			$colDefn["categoryCol"]="";
-			$colDefn["groupCol"]="";
-		}
-	}
-	if(isset($MODULE_PARAMS[1]['noScript'])) {
-		$noScript=$MODULE_PARAMS[1]['noScript'];
-	}
-	if(isset($MODULE_PARAMS[1]['showID'])) {
-		$showID=$MODULE_PARAMS[1]['showID'];
-	}
-	if(isset($MODULE_PARAMS[1]['allGenerators'])) {
-		$allGenerators=$MODULE_PARAMS[1]['allGenerators'];
-	}
-	if(isset($MODULE_PARAMS[1]['tableList'])) {
-		$requiredTableList=$MODULE_PARAMS[1]['tableList'];
-	} else {
-		$requiredTableList=_db(true)->getTableList();
-	}
-	if(isset($MODULE_PARAMS[1]['moduleList'])) {
-		$requiredModuleList=$MODULE_PARAMS[1]['moduleList'];
-	}
-	if(isset($MODULE_PARAMS[1]['orderBy'])) {
-		$orderBy=$MODULE_PARAMS[1]['orderBy'];
-	}
-}
-if($site==null) $site=SITENAME;
+if(isset($MODULE_PARAMS[1]['menuType'])) {
+	$menuType=$MODULE_PARAMS[1]['menuType'];
+} else $menuType="sidebar";
 
-if(strlen($dbtable)<=0) {
-	trigger_error("Proper Parameters Are Not Passed To Navigator Module.");
-}
-$arrMenu=array();
-if(file_exists($menuAutoGroupFile)) {
-	$json=file_get_contents($menuAutoGroupFile);
-	$arrMenu=json_decode($json, true);
-	if($arrMenu==null) $arrMenu=array();
-}
-foreach($arrMenu as $a=>$b) {
-	if(isset($b['enabled']) && !$b['enabled'] && !$allGenerators) {
-		unset($arrMenu[$a]);
-	}
-}
+$params=$MODULE_PARAMS[1];
 
-$sm=new AutoMenus($arrMenu);
-$sm->printTitle($printTitle);
-$sm->requiredTableList($requiredTableList);
-$sm->requiredModuleList($requiredModuleList);
 
-$sm->generateSQL($site,$_SESSION["SESS_PRIVILEGE_NAME"],$sysdb);
+$nav=getNav($params['menuid'],$menuAutoGroupFile,$params);
+//printArray($nav);
 
-$out=$sm->getMainMenuArray($dbtable,$menuid,$site,$_SESSION["SESS_PRIVILEGE_NAME"],$colDefn,$orderBy,$sysdb);
-$arr=$sm->getSubmenuArrays($sysdb);
-
-$treeArray=array();
-foreach($out as $a=>$b) {
-	$treeArray=array_merge_recursive($treeArray,$b);
-}
-foreach($arr as $a=>$b) {
-	$treeArray=array_merge_recursive($treeArray,$b);
-}
-//printArray($treeArray);exit();
-$sm->printMenuTree($treeArray,$showID);
+$atl=new ArrayToList();
+$atl->printTitle(true);
+$s=$atl->getTree($nav,'data',0,false);
+$s=substr($s,4,strlen($s)-9);
+echo $s;
 
 if(!$noScript) { ?>
 <script language=javascript>

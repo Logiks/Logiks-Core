@@ -32,7 +32,7 @@ $CONFIG['Log_Handlers']=array(
 			"Null"=>"",		//prints log events to Null Void/consumes log events (akin to sending them to /dev/null).
 		);
 if(!is_dir(ROOT.LOG_FOLDER)) {
-	if(mkdir(ROOT.LOG_FOLDER, 0777, true)) chmod(ROOT.LOG_FOLDER, 0777);
+	mkdir(ROOT.LOG_FOLDER, 0777, true);
 }
 
 if(!function_exists("log_SysEvent")) {

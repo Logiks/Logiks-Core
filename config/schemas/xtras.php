@@ -12,7 +12,7 @@ $cfgSchema["API_KEY"]=array(
 	);
 $cfgSchema["CFG_GROUPS"]=array(
 		"PCron Settings"=>array("ENABLE_AUTO_PCRON","AUTO_PCRON_PERIOD","PCRON_KEY","PCRON_DIR_USERNAME","PCRON_DIR_PASSWORD"),
-		"Hook Settings"=>array("ENABLE_HOOKS","ENABLE_AUTO_HOOKS"),
+		"Hook Settings"=>array("ENABLE_HOOKS"),
 		"Others"=>array(),
 	);
 ?>

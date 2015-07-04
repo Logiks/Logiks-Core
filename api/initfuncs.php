@@ -131,6 +131,12 @@ if(!function_exists("printHTMLPageHeader")) {
 			$_REQUEST["page"]=getConfig("LANDING_PAGE");
 		}
 		runHooks("preHead");
+		
+		if(getConfig("PAGE-HEADER")=="false" || (isset($_REQUEST['pageheader']) && $_REQUEST['pageheader']=="false")) {
+			runHooks("postHead");
+			return true;
+		}
+
 		$meta=getMetaTags();
 
 		$title=$meta['title'];

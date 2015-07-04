@@ -29,7 +29,7 @@ function LAJAX() {
 				xmlhttp = new XMLHttpRequest();
 
 				xmlhttp.ontimeout = function(){
-					alert("Request timed out");
+					console.error("Request timed out");
 				}
 
 			} else {
@@ -273,7 +273,7 @@ function AJAXSubmit(id,href,func, hidden) {
 			invokeFunction(func,txt);
 		}
 	).fail(function() {
-	    lgksAlert("Sorry, could not save your data. Try Again.");
+	    console.error("Sorry, could not save your data. Try Again.");
 	});
 	/*$.ajax({
 		  type: 'POST',

@@ -32,12 +32,11 @@ LoadConfigFile(ROOT . "config/folders.cfg");
 header("X-Powered-By: Logiks [http://openlogiks.org]",false);
 header("SESSION-KEY:".session_id(),false);
 header("Access-Control-Allow-Origin:*");
+
 //Origin
 //Access-Control-Allow-Methods:OPTIONS,GET,POST,PUT,DELETE
 //Access-Control-Allow-Headers:Content-Type, Authorization, X-Requested-With
 //header("Access-Control-Allow-Headers", "access-control-allow-origin, accept, access-control-allow-methods, access-control-allow-headers, x-random-shit");
-//header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
-//print_r($_SERVER);exit();
 //header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
 //print_r($_SERVER);exit();
 

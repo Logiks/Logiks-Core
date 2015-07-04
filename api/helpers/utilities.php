@@ -30,11 +30,6 @@ if(!function_exists("cleanSpecialCharacters")) {
 			$string = str_replace($character, '-' . $replacement . '-', $string);
 		}
 
-		/*$string = strtr($string,
-		"ÀÁÂÃÄÅ? áâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ",
-		"AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn"
-		);*/
-
 		// Remove all remaining other unknown characters
 		$string = preg_replace('/[^a-zA-Z0-9-]/', ' ', $string);
 		$string = preg_replace('/^[-]+/', '', $string);
@@ -84,23 +79,39 @@ if(!function_exists("cleanSpecialCharacters")) {
 		return $text;
 	}
 	
-	function parseSize($size,$n=0) {
-		$size1=$size;
-		for($i=0;$i<$n;$i++) {
-			$size1=$size1/1024;
-		}
-		if($size1>1024 && $n<=3) {
-			return parseSize($size1,$n+1);
-		} else {
-			$nx=strpos($size1,".");
-			if($nx>0) $size1=substr($size1,0,$nx+3);
-			
-			if($n<=0) return $size1." bytes";
-			else if($n==1) return $size1." kb";
-			else if($n==2) return $size1." mb";
-			else if($n==3) return $size1." Gb";
-			else return $size1." Tb";
-		}
+	function normalize ($buffer) {
+		$buffer = strtolower ( $buffer );
+	
+		$buffer = str_replace ( "à", "a", $buffer );
+		$buffer = str_replace ( "á", "a", $buffer );
+		$buffer = str_replace ( "â", "a", $buffer );
+		$buffer = str_replace ( "ä", "a", $buffer );
+		
+		$buffer = str_replace ( "è", "e", $buffer );
+		$buffer = str_replace ( "é", "e", $buffer );
+		$buffer = str_replace ( "ê", "e", $buffer );
+		$buffer = str_replace ( "ë", "e", $buffer );
+
+		$buffer = str_replace ( "ì", "i", $buffer );
+		$buffer = str_replace ( "í", "i", $buffer );
+		$buffer = str_replace ( "î", "i", $buffer );
+		$buffer = str_replace ( "ï", "i", $buffer );
+
+		$buffer = str_replace ( "ò", "o", $buffer );
+		$buffer = str_replace ( "ó", "o", $buffer );
+		$buffer = str_replace ( "ô", "o", $buffer );
+		$buffer = str_replace ( "ö", "o", $buffer );
+
+		$buffer = str_replace ( "ù", "u", $buffer );
+		$buffer = str_replace ( "ú", "u", $buffer );
+		$buffer = str_replace ( "û", "u", $buffer );
+		$buffer = str_replace ( "ö", "u", $buffer );
+
+		$buffer = str_replace ( "ÿ", "y", $buffer );
+		$buffer = str_replace ( "ç", "c", $buffer );
+		$buffer = str_replace ( "ñ", "n", $buffer );
+
+		return $buffer;
 	}
 }
 ?>

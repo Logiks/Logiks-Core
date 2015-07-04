@@ -22,7 +22,6 @@ $fileSize=-1;
 
 if(!file_exists($destination_path)) {
 	mkdir($destination_path,0777,true);
-	chmod($destination_path,0777);
 }
 if(!file_exists($destination_path)) {
 	//echo "Cache Path Not Found. Can't Send Attachments<br/>";

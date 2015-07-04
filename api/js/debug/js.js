@@ -1,8 +1,8 @@
 $(function() {
-	$("body").append("<style>.debugelement {border:2px solid red;cursor:arrow;}</style>");	
+	$("body").append("<style>.debugElement {border:2px solid red;cursor:arrow;}</style>");	
 });
 function initDebug(divs) {
-	$(divs).hover(function() {$(this).addClass("debugelement");},function() {$(this).removeClass("debugelement");});
+	$(divs).hover(function() {$(this).addClass("debugElement");},function() {$(this).removeClass("debugElement");});
 }
 function cleanDebug() {
 	$("*").unbind('hover');

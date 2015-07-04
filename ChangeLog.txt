@@ -1,12 +1,17 @@
-Changelog for Logiks v3.6.6
-===========================
+Changelog for Logiks v3.6.6 Beta
+================================
 
 Updated the skins for Jquery to support the new Jquery libs.
+Now, core will also have default plugins developed by the Logiks Core Team for easing out installing these common plugins always. Few plugins are now included for the time being, more will be included later.
+Introduced COMMON_PLUGINS_FOLDER for more flexibility in development of core plugins.
+Merged service's image folder with core's media/images folder.
 
-Logiks v3.6.5 was the last one in this series to add new features, from here on we will release when we have any major bug fixes, or events.
+As described earlier v3.6.5 was a stable release and was last of 3.5 series. From now on we are adding features that are mostly in Beta stage for version 4.0.
+Please check our website for the roadmap and more.
+
 We all eagerly working and waiting towards Logiks v4.0.0, follow us on twitter for updates.
 
-Also, we are happy to announce the release of admincp v2.5 and following cms v2.5 in coming weeks for you.
+Also, we are happy to announce the release of admincp v2.5 and following cms v3.0 in coming weeks for you.
 
 Happy Coding.
 
@@ -63,7 +68,7 @@ Additional new functions.
 
 Changelog for Logiks v3.6.1
 ===========================
-	
+
 Modified the themeing system to be more compatible with mobility works
 The head tag now contains less head tags and lesser meta tags
 
