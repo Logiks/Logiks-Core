@@ -1,8 +1,8 @@
 <?php
 /*
- * This file bootstraps the system into a running system by configuring 
+ * This file bootstraps the system into a running system by configuring
  * all the parameters and including the basic required files.
- * 
+ *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Author: Kshyana Prava kshyana23@gmail.com
  * Version: 1.2
@@ -24,7 +24,7 @@ if(!isset($initialized)) {
 
 	clearstatcache ();
 	session_start();
-	$_SESSION['REQUEST_START']=microtime(true);	
+	$_SESSION['REQUEST_START']=microtime(true);
 
 	// platform neurtral url handling
 	if(isset($_SERVER['REQUEST_URI'] ) ) {
@@ -47,7 +47,7 @@ if(!isset($initialized)) {
 	define ('ROOT', dirname(dirname(__FILE__)) . '/');
 
 	require_once ROOT. "api/configurator.php";
-	
+
 	LoadConfigFile(array(
 			ROOT . "config/basic.cfg"=>"",
 			ROOT . "config/php.cfg"=>"",
@@ -59,7 +59,7 @@ if(!isset($initialized)) {
 			ROOT . "config/xtras.cfg"=>"",
 			ROOT . "config/framework.cfg"=>"",
 		));
-	
+
 	LoadConfigFile(array(
 			ROOT . "config/masters_headers.cfg"=>"",
 			ROOT . "config/masters_folders.cfg"=>"",
@@ -93,7 +93,7 @@ if(!isset($initialized)) {
 	include_once ROOT. "config/classpath.php";
 	include_once ROOT. "api/libs/URLTools.php";
 
-	include ROOT."config/errors.php";
+	include ROOT."api/errors.php";
 	include_once ROOT. "api/logdb.php";//For Apps Events
 	include_once ROOT. "api/errorhandler.php";//Error Handling System
 	if(ERROR_HANDLER=="logiks") {
