@@ -1,18 +1,30 @@
-Changelog for Logiks v3.7.0 Beta (On The Track to 4.0)
-======================================================
+*Logiks Changelog*
 
-v3.7.0 is a departure from the older Logiks Framework upto v3.6.x. So old apps and plugins may not work on the newer Logiks
-Framework. The upcoming market and tools are all targeted towards Logiks 4.0 Compatibilty.
+Lots of work since the last commit.
+
+Whole Logiks Framework has been rebased and recreated using all the updates recieved and suggestions till date.
 
 We are also merging all the codes submitted. This and coming commits are geared towards Logiks 4.0.0.
 This marks a complete restructuring and system wide improvement for Logiks Framework.
 
-This release includes:
-	A mojor restructuring of folders including core and non-core.
-	Cleaned up all the deprecated libs, helpers and js scripts.
-	Upgraded all engines and libraries across framework.
-		Service Engine
-		Cache Engine
-	Cleaned up the misc folder
-		misc/pages	:: removed
-		misc/skins	:: removed
+###Important Notes
++ Complete restructuring of framework
++ Complete source re-evaluated and coded if required
++ A mojor restructuring of folders including core and non-core
++ Cleaned up all the deprecated libs, helpers and js scripts
++ Introduced vendor system and new ClassLoaders
++ Upgraded all engines and libraries across framework, while also introducing new
++ Improved the system architecture, diagram will be published very soon on apidocs and github
++ Introduced new engines
++ New Cache engine with features like MetaCache, DataCache with multiple drivers like files (coming memcached and redis)
++ New Log engine using MonoLog
++ New Error And Exception Handler Engines
++ New and improved Template Engine with tighter integration with Smarty (coming Twig and Blade)
++ New New PageLayout and rendering system with LogiksPages and LogiksTheme
++ New App Engine, Router Systema and URL system with SiteMap
++ New capabilities for css and js systems with HTMLAssets
++ New Loaders
++ And Loads of other new libraries and features
+
+###Very Improtant Notes
++ Logiks is stoping the DB Logging feature that has been there from the very begining. LogDB will be additional have to be enabled using vendor/plugin system. (Still debating on this)
