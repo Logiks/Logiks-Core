@@ -1,12 +1,18 @@
 <?php
+/*
+ * The Service Engine is the base for all the Logiks based REST communications and ajax calls.
+ * It provides the basic architecture for all the remote command extecutions.
+ * Logiks Service Engine (LSE) provides multiple developement language support including
+ *				php, py, perl, ruby, js (node) via engines
+ *
+ *
+ *
+ * Service Handler For Logiks 4.0+
+ * Commands : scmd,stype,enc,format
+ * Output Formats : html(table,list,select), json, xml, raw
+ *
+ */
 if(defined('ROOT')) exit('Only Direct Access Is Allowed');
-
-//Service Handler For Logiks 3.0+
-//Commands : scmd,stype,enc,format
-//Formats : html(table,list,select), json, xml, raw
-
-//ini_set("display_errors", "strerr");
-//ini_set("error_reporting", E_ALL);
 
 session_start();
 ob_start();
@@ -20,6 +26,7 @@ if(!defined('ROOT_RELATIVE')) {
 if(!defined('SERVICE_ROOT')) {
 	define('SERVICE_ROOT',dirname(__FILE__) . "/");
 }
+
 require_once (ROOT . 'api/configurator.php');
 
 LoadConfigFile(ROOT . "config/basic.cfg");
@@ -139,11 +146,8 @@ if(count($request)==0) {
 //loadHelpers("urlkit");
 
 function __cleanup() {
-	runHooks("serviceAfterRequest");
-	ob_flush();
-	if(_db(true)!=null && _db(true)->isOpen()) _db(true)->close();
-	if(_db()!=null && _db()->isOpen()) _db()->close();
-	//echo PHP_EOL;
+	include_once ROOT. "api/endRequest.php";
+	closeServiceRequest();
 }
 register_shutdown_function("__cleanup");
 

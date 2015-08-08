@@ -4,6 +4,7 @@
 * bootstrap functions loaded manually.
 *
 * @version v1.0 (03/2012)
+* @version v2.0 (07/2015)
 *
 * Copyright 2011, LGPL License
 *
@@ -21,15 +22,26 @@
 *   jQuery UI v1.8+
 */
 
-var pluginLoader=[];
-
-function registerPluginLoader(func) {
-	pluginLoader.push(func);
-}
-function loadPlugins(id) {
-	$(pluginLoader).each(function(k,func) {
-			if(func==null) return;
-			if(typeof(func)=='function') func(id);
-			else window[func](id);
+var lgksPlugin={
+	pluginLoader:{},
+	init:function() {
+		$(function() {
+			lgksPlugin.loadPlugins("onload");
 		});
+	},
+	registerPluginLoader:function(func,pageState) {
+		if(pageState==null) pageState="onload";
+		if(lgksPlugin.pluginLoader[pageState]==null) lgksPlugin.pluginLoader[pageState]=[];
+		lgksPlugin.pluginLoader[pageState].push(func);
+	},
+	loadPlugins:function(params,pageState) {
+		if(pageState==null) pageState="onload";
+		if(lgksPlugin.pluginLoader[pageState]==null) return false;
+		$(lgksPlugin.pluginLoader[pageState]).each(function(k,func) {
+				if(func==null) return;
+				if(typeof(func)=='function') func(params);
+				else window[func](params);
+			});
+	}
 }
+//lgksPlugin.init()

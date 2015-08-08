@@ -1,7 +1,7 @@
 <?php
 /*
  * This contains all the Commonly Required functions that are used through out the Framework
- * 
+ *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Author: Kshyana Prava kshyana23@gmail.com
  * Version: 1.0
@@ -77,7 +77,7 @@ if (!function_exists('printArray')) {
 		$value=str_replace("%5D","]",$value);
 		return $value;
 	}
-	function Strip($value) {
+	function strip($value) {
 		//if(get_magic_quotes_gpc() != 0)
 		if(is_array($value))  {
 			if (array_is_associative($value) ) {
@@ -103,6 +103,11 @@ if (!function_exists('printArray')) {
 			return !array_key_exists(0, $array);
 		}
 		return false;
+	}
+	function array_implode_associative ($glueWord, $glueMiddle,$array) {
+		array_walk($array, create_function('&$i,$k','$i=" $k'.$glueMiddle.'\"$i\"";'));
+		return implode($glueWord,$array);
+
 	}
 	function split_by_commas($str) {
 		$buffer = '';
@@ -148,70 +153,6 @@ if (!function_exists('printArray')) {
 	}
 	function splitByCaps($string){
 		return preg_replace('/([a-z0-9])?([A-Z])/','$1 $2',$string);
-	}
-	//Called from Template Parsing Engines
-	function replaceFromEnviroment($in,$dataArr=null,$glue="#") {
-		if(is_array($in)) {
-			$in=$in[0];
-		}
-		if(strlen($glue)>0) {
-			$in=substr($in,1,strlen($in)-2);
-		}
-
-		if(strpos($in,"@")>0) {
-			$inArr=explode("@",$in);
-			$in=$inArr[0];
-			if(isset($inArr[1])) $con=strtolower($inArr[1]);
-			else $con="get";
-			if($con=="get" && isset($_GET[$in])) return $_GET[$in];
-			elseif($con=="post" && isset($_POST[$in])) return $_POST[$in];
-			elseif($con=="session" && isset($_SESSION[$in])) return $_SESSION[$in];
-			elseif($con=="server" && isset($_SERVER[$in])) return $_SERVER[$in];
-			elseif($con=="cookie" && isset($_COOKIE[$in])) return $_COOKIE[$in];
-			return "";
-		} elseif(strpos($in,"!")>0) {
-			$inArr=explode("!",$in);
-			$in=$inArr[0];
-			if(isset($inArr[1])) $n=strtolower($inArr[1]);
-			else $n=0;
-			$sr="";
-
-			if(isset($dataArr[$in])) $sr=$dataArr[$in];
-			elseif(isset($_REQUEST[$in])) $sr=$_REQUEST[$in];
-			elseif(isset($_SESSION[$in])) $sr=$_SESSION[$in];
-			elseif(isset($_SERVER[$in])) $sr=$_SERVER[$in];
-			elseif(isset($_COOKIE[$in])) $sr=$_COOKIE[$in];
-			else $sr=getConfig($in);
-
-			if(!is_array($sr)) {
-				$sr=str_replace(",","/",$sr);
-				$sr=explode("/",$sr);
-			}
-			if(isset($sr[$n])) return $sr[$n];
-			elseif(isset($sr[0])) return $sr[0];
-			else return "";
-		} else {
-			if($dataArr==null) {
-				$dataArr=array();
-				$dataArr["date"]=date(getConfig("PHP_DATE_FORMAT"));
-				$dataArr["time"]=date(getConfig("TIME_FORMAT"));
-				$dataArr["datetime"]=date(getConfig("PHP_DATE_FORMAT")." ".getConfig("TIME_FORMAT"));
-
-				$dataArr["site"]=SITENAME;
-				if(isset($_REQUEST["page"])) $dataArr["page"]=$_REQUEST["page"]; else $dataArr["page"]="home";
-
-				if(isset($_SESSION["SESS_USER_ID"])) $dataArr["user"]=$_SESSION["SESS_USER_ID"]; else $dataArr["user"]="Guest";
-				if(isset($_SESSION["SESS_PRIVILEGE_ID"])) $dataArr["privilege"]=$_SESSION["SESS_PRIVILEGE_ID"];  else $dataArr["privilege"]="Guest";
-				if(isset($_SESSION["SESS_USER_NAME"])) $dataArr["username"]=$_SESSION["SESS_USER_NAME"];  else $dataArr["user_name"]="Guest";
-				if(isset($_SESSION["SESS_PRIVILEGE_NAME"])) $dataArr["privilegename"]=$_SESSION["SESS_PRIVILEGE_NAME"];  else $dataArr["privilege_name"]="Guest";
-			}
-			if(isset($dataArr[$in])) return $dataArr[$in];
-			elseif(isset($_REQUEST[$in])) return $_REQUEST[$in];
-			elseif(isset($_SESSION[$in])) return $_SESSION[$in];
-			elseif(isset($_SERVER[$in])) return $_SERVER[$in];
-			elseif(isset($_COOKIE[$in])) return $_COOKIE[$in];
-			return getConfig($in);
-		}
 	}
 	function getHash($txt,$method="md5") {
 		$unique_salt=HASH_SALT;
@@ -286,17 +227,17 @@ if (!function_exists('printArray')) {
 		}
 	}
 	function parseTags($txt) {
-		$breaks = array("<br />","<br>","<br/>");  
-		$abstractText = str_ireplace($breaks, "\r\n", $txt); 
+		$breaks = array("<br />","<br>","<br/>");
+		$abstractText = str_ireplace($breaks, "\r\n", $txt);
 		$abstract=strip_tags($abstractText);
 		$pattern = '/\s*#(.+?)\s/';
 		preg_match_all($pattern, $txt, $matches);
 		$tags=$matches[1];
-		return $tags;	
+		return $tags;
 	}
 	function parseUserid($txt) {
-		$breaks = array("<br />","<br>","<br/>");  
-		$abstractText = str_ireplace($breaks, "\r\n", $txt); 
+		$breaks = array("<br />","<br>","<br/>");
+		$abstractText = str_ireplace($breaks, "\r\n", $txt);
 		$abstract=strip_tags($abstractText);
 		$pattern = '/\s*@(.+?)\s/';
 		preg_match_all($pattern, $txt, $matches);

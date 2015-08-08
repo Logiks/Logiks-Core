@@ -1,64 +1,18 @@
 <?php
+/*
+ * This is default page for any request landing up on the server apart from REST/services requests.
+ *
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 2.0
+ */
+
+error_reporting(-1);
+ini_set('display_errors', 'On');
+
+define ('ROOT', dirname(__FILE__) . '/');
+
+define("MASTER_DEBUG_MODE",true);
 require_once ('api/initialize.php');
-include ('api/router.php');
-$_SESSION['SESS_ACTIVE_SITE']=SITENAME;
 
-if(defined("APPS_THEME")) $css->loadTheme(APPS_THEME);
-else define("APPS_THEME","default");
-
-if(!defined("APPS_NAME")) define("APPS_NAME",getConfig("APPS_NAME"));
-if(!defined("APPS_VERS")) define("APPS_VERS",getConfig("APPS_VERS"));
-$_SESSION["SITELOCATION"]=SiteLocation;
-
-checkBadBot();
-checkDevMode();
-runHooks("startup");
-log_VisitorEvent();
-
-if(getConfig("PAGE_BUFFER_ENCODING")!="plain") startOPBuffer();
-
-$a=isLinkAccessible();
-if(!$a) {
-	trigger_ForbiddenError("Requested Page is Forbidden From Your Access.");
-	exit();
-}
-
-if(!(isset($_GET['lgksHeader']) && $_GET['lgksHeader']=="false")) {
-	printHTMLPageHeader();
-}
-
-$pageLinkPath=getPageToLoad();
-if(strlen($pageLinkPath)>0 && file_exists($pageLinkPath)) {
-	include "api/scripts.php";
-	runHooks("prePage");
-	$cacheFile=RequestCache::getCachePath("pages");
-	switch(getConfig("FULLPAGE_CACHE_ENABLED")) {
-		case "true":
-			$noCache=explode(",",getConfig("FULLPAGE_CACHE_NOCACHE"));
-			$pg=explode("/",$_REQUEST['page']);
-			if(in_array($pg[0],$noCache)) {
-				include $pageLinkPath;
-			} else {
-				$a=RequestCache::checkCache("pages",getConfig("FULLPAGE_CACHE_PERIOD"));
-				if($a) {
-					include_once $cacheFile;
-				} else {
-					ob_start();
-					include $pageLinkPath;
-					$data=ob_get_contents();
-					ob_flush();
-					if(!(isset($_REQUEST['nocache']) && $_REQUEST['nocache']=="true"))
-						file_put_contents($cacheFile,$data);
-				}
-			}
-			break;
-		default:
-			include $pageLinkPath;
-			break;
-	}
-	runHooks("postPage");
-} else {
-	trigger_NotFound("Sorry , Page Not Found. Page::" . $current_page);
-}
-exit();
 ?>

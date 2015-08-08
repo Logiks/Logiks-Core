@@ -40,7 +40,14 @@ class ServiceController {
 				exit();
 			}
 		} else {
-			$ext="php";
+			$exts=explode(".", $query['scmd']);
+			if(count($exts)>1) {
+				$ext=end($exts);
+				array_pop($exts);
+				$query['scmd']=implode(".", $exts);
+			} else {
+				$ext="php";
+			}
 		}
 		$query['stype']=$ext;
 
@@ -92,25 +99,15 @@ class ServiceController {
 	}
 	function executeRequest($request) {
 		$ext=strtolower($request['ext']);
-		if(defined("COMMON_PLUGINS_FOLDER")) {
-			$cmdArr=array(
-				ROOT.APPS_FOLDER.SITENAME."/services/".$ext."/".$request['scmd'].".".$ext,
-				SERVICE_ROOT.$ext."/".$request['scmd'].".".$ext,
-				ROOT.APPS_FOLDER.SITENAME."/".APPS_PLUGINS_FOLDER."modules/".$request['scmd']."/service.$ext",
-				ROOT.COMMON_PLUGINS_FOLDER."modules/".$request['scmd']."/service.$ext",
-				ROOT.PLUGINS_FOLDER."modules/".$request['scmd']."/service.$ext",
-				SERVICE_ROOT.$ext."/".SITENAME."/".$request['scmd'].".".$ext,
-			);
-		} else {
-			$cmdArr=array(
-				ROOT.APPS_FOLDER.SITENAME."/services/".$ext."/".$request['scmd'].".".$ext,
-				SERVICE_ROOT.$ext."/".$request['scmd'].".".$ext,
-				ROOT.APPS_FOLDER.SITENAME."/".APPS_PLUGINS_FOLDER."modules/".$request['scmd']."/service.$ext",
-				ROOT.PLUGINS_FOLDER."modules/".$request['scmd']."/service.$ext",
-				SERVICE_ROOT.$ext."/".SITENAME."/".$request['scmd'].".".$ext,
-			);
+		$cmdArr=array();
+		$cmdArr[]=ROOT.APPS_FOLDER.SITENAME."/services/".$ext."/".$request['scmd'].".".$ext;
+		$cmdArr[]=SERVICE_ROOT.$ext."/".$request['scmd'].".".$ext;
+		$modulesFolder=getPluginFolders("modules");
+		foreach ($modulesFolder as $key => $value) {
+			$cmdArr[]=ROOT.$value.$request['scmd']."/service.$ext";
 		}
-		//printArray($cmdArr);
+		$cmdArr[]=SERVICE_ROOT.$ext."/".SITENAME."/".$request['scmd'].".".$ext;
+		
 		foreach($cmdArr as $fl) {
 			if(file_exists($fl)) {
 				//echo $fl;
@@ -122,18 +119,11 @@ class ServiceController {
 		exit();
 	}
 	function executeFile($file,$ext="php") {
-		if($ext=="php") {
-			include $file;
-		}
-		elseif($ext=="py") {
-			if(function_exists("py_eval")) {
-				$code=file_get_contents($file);
-				py_eval($code);
-			} else {
-				$lastLine=system("python $file", $retval);
-			}
-		}
-		else {
+		$engine=SERVICE_ROOT."engines/{$ext}.php";
+
+		if(file_exists($engine)) {
+			include_once $engine;
+		} else {
 			printErr('NotSupported');
 			exit();
 		}

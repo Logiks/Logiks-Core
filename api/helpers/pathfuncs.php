@@ -1,6 +1,6 @@
 <?php
 /*
- * Some Special System Functions 
+ * Some Special System Functions for generating paths
  * 
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Author: Kshyana Prava kshyana23@gmail.com
@@ -20,10 +20,10 @@ if(!function_exists("getRelativePath")) {
 		return $basepath;
 	}
 	function getWebPath($file) {
-		return WEBROOT.dirname(str_replace(ROOT,"",$file))."/";
+		return WEBROOT.dirname(str_replace(ROOT,"",$file))."/".basename($file);
 	}
 	function getRootPath($file) {
-		return ROOT.dirname(str_replace(ROOT,"",$file))."/";
+		return ROOT.dirname(str_replace(ROOT,"",$file))."/".basename($file);
 	}
 	function getBasePath() {
 		if(isset($_SERVER['PATH_INFO'])) {

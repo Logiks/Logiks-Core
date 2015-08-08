@@ -1,0 +1,3 @@
+Author=Bismay Kumar Mohapatra
+Date=10-07-2015
+About Theme=Regular And Default Theme For Logiks Control Panel (CMS)

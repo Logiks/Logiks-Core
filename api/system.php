@@ -8,73 +8,40 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-loadHelpers("pathfuncs");
-//Some Special System Functions
-if(!function_exists("getSysDBLink")) {
-	function deleteCookies($name) {
+if(!function_exists("getRequestTime")) {
+  loadHelpers("pathfuncs");
+
+  function redirectTo($relink=null,$carryForwardQuery=true) {
+    echo "<h5>Redirecting To Application ...</h5>";
+
+    if(substr($relink, 0,7)=="http://" || substr($relink, 0,8)=="https://") {
+      header("Location:$relink");
+    } else {
+      $relink=getPrettyLink($relink);
+      header("Location:$relink");
+    }
+		exit();
+	}
+
+  //Quick hack to delete the cookies at runtime and impact tthe system as well.
+  function deleteCookies($name) {
 		setcookie($name, "", time()-1000000000);
 		if(isset($_COOKIE[$name])) unset($_COOKIE[$name]);
 	}
+  //Checks is localhost
 	function isLocalhost() {
 		$client=$_SERVER['REMOTE_ADDR'];
 		$server=$_SERVER['SERVER_ADDR'];
 		if($client==$server) return true;
 		else return false;
 	}
-	//$refs :: __FILE__
+	//Used for converting filepath to direct webpath, $refs :: __FILE__
 	function getLocation($refs) {
 		$x=SiteLocation . "/" .str_replace(ROOT,"",$refs);
 		return $x;
 	}
-	function getSysDBLink($toClose=false) {
-		if(getConfig("ALLOW_ROOTDB_ACCESS")=="false") return;
-		global $sysdbLink;
-		if(!$toClose) {
-			if($sysdbLink==null) {
-				$sysdbLink=Database();
-				$sysdbLink->connect();
-			}
-		}
-		return $sysdbLink;
-	}
-	function getAppsDBLink($toClose=false) {
-		global $appdbLink;
-		if(!isset($GLOBALS['DBCONFIG']["DB_USER"]) || strlen($GLOBALS['DBCONFIG']["DB_USER"])<=0) return null;
-		if(!$toClose) {
-			if($appdbLink==null) {
-				$appdbLink=new Database();
-				$appdbLink->connect();
-			}
-		}
-		return $appdbLink;
-	}
-
-	//Initializes The User Names, etc...
-	function initUserCredentials() {
-		if(isset($_SESSION["SESS_USER_ID"])) {
-			$q1="SELECT userid,name,email,mobile,address,access,privilege FROM "._dbtable("users",true)." where userid='".$_SESSION["SESS_USER_ID"]."'";
-			$res1=_dbQuery($q1,true);
-			if($res1) {
-				$data=_db()->fetchData($res1);
-				$_SESSION['SESS_USER_NAME'] = $data['name'];
-				$_SESSION['SESS_USER_EMAIL'] = $data['email'];
-				$_SESSION['SESS_USER_CELL'] = $data['mobile'];
-			}
-		} else {
-			$_SESSION['SESS_USER_ID'] = "Guest";
-			$_SESSION['SESS_PRIVILEGE_ID'] = -1;
-			$_SESSION['SESS_ACCESS_ID'] = -1;
-
-			$_SESSION['SESS_PRIVILEGE_NAME'] = "Guest";
-			$_SESSION['SESS_ACCESS_NAME'] = "Guest";
-			$_SESSION['SESS_ACCESS_SITES'] = array($_SESSION['LGKS_SESS_SITE']);
-
-			$_SESSION['SESS_USER_NAME'] = "Guest";
-			$_SESSION['SESS_USER_EMAIL'] = "";
-			$_SESSION['SESS_USER_CELL'] = "";
-		}
-	}
-	function flushPermissions($site=SITENAME) {
+  //Clears the permission cache
+  function flushPermissions($site=SITENAME) {
 		$f=ROOT.CACHE_PERMISSIONS_FOLDER."{$site}/";
 		if(is_dir($f)) {
 			$fs=scandir($f);
@@ -86,77 +53,48 @@ if(!function_exists("getSysDBLink")) {
 		}
 		return false;
 	}
-	function getPageCacheFile() {
-		$pageCacheDir=ROOT.TMP_FOLDER."fullcache/pages/".SITENAME."/";
-		if(!is_dir($pageCacheDir)) {
-			if(mkdir($pageCacheDir,0777,true)) chmod($pageCacheDir,0777);
-		}
-		$hash=md5($_SERVER['REQUEST_URI']);
-		$hashFile=$pageCacheDir.$hash.".php";
-		return $hashFile;
-	}
-	function getFunctionCaller() {
+  //Used for debugging
+  function getFunctionCaller() {
 		$trace=debug_backtrace();
 		array_shift($trace);//Remove Self
 		//array_shift($trace);//Remove Parent
 		$caller=array_shift($trace);//Caller
 		return $caller;
 	}
-	function getSupportedPages($page) {
-		$arr=array();
-		$arr=array("{$page}.php","{$page}.htm","{$page}.html");
+  //Returns the list of supported pages for Logiks
+  function getSupportedPages($page=null) {
+    if($page==null) $page="page";
+		$arr=array(
+      "pages"=>array(
+        "{$page}.php","{$page}.htm","{$page}.html","{$page}.tpl"
+      ),
+      "config"=>array(
+        "{$page}.cfg","{$page}.json","{$page}.lst"
+      )
+    );
 		return $arr;
 	}
-	function logoutSession($msg=null) {
+	//Logsout the session cleanly
+	//TODO :: DATABASE LEVEL LOGOUT
+  	function logoutSession($msg=null,$relink=null) {
 		session_destroy();
-		$relink=SiteLocation . "login.php";
-		if(defined("SITENAME")) $relink.="?site=".SITENAME;
-		if($msg!=null && strlen($msg)>0) {
-			$_SESSION['SESS_ERROR_MSG']=$msg;
-			$relink.="&errormsg=$msg";
-		}
-		redirectTo($relink,"SESSION Expired. Going To Login Page");
+	    if($relink==null) {
+	      $relink=SiteLocation . "login.php";
+	  		if(defined("SITENAME")) $relink.="?site=".SITENAME;
+	  		if($msg!=null && strlen($msg)>0) {
+	  			$_SESSION['SESS_ERROR_MSG']=$msg;
+	  			$relink.="&errormsg=$msg";
+	  		} else {
+	        $msg="SESSION Expired. Going To Login Page";
+	      }
+	  		redirectTo($relink,$msg);
+	    } else {
+	      redirectTo($relink,$msg);
+	    }
 	}
+	//Just returns the session site, continued from old system.
 	function getSessionSite() {
-		/*if(isset($_SESSION['LGKS_SESS_SITE'])) return $_SESSION['LGKS_SESS_SITE'];
-		elseif(isset($_REQUEST['site'])) {
-			$_SESSION['LGKS_SESS_SITE']=$_REQUEST['site'];
-			return $_REQUEST['site'];
-		}
-		else return DEFAULT_SITE;*/
-
-		$site="";
-		if(isset($_SESSION["LGKS_SESS_SITE"])) {
-			//active session
-			if(isset($_REQUEST['site'])) {
-				if($_REQUEST['site']!=$_SESSION["LGKS_SESS_SITE"]) {
-					if(DOMAIN_CONTROLS_ENABLE=="true") {
-						$dm=new DomainMap($sysdbLink);
-						$site=$dm->checkHost();
-					} else {
-						$site=$_REQUEST['site'];
-					}
-				} else {
-					$site=$_REQUEST['site'];
-				}
-			} else {
-				$site=$_SESSION["LGKS_SESS_SITE"];
-			}
-		} else {
-			//inactive session
-			if(DOMAIN_CONTROLS_ENABLE=="true") {
-				$dm=new DomainMap($sysdbLink);
-				$site=$dm->checkHost();
-			} else {
-				if(isset($_REQUEST['site'])) {
-					$site=$_REQUEST['site'];
-				} else {
-					$site=DEFAULT_SITE;
-				}
-			}
-		}
-		if($site==null || strlen($site)<=0) $site=DEFAULT_SITE;
-		return $site;
+		return SITENAME;
 	}
 	//Gets and lists the Sources/Handlers that can be used for the activity.
 	//It helps when a single handler is to be used where multiple handlers are available.
@@ -176,6 +114,19 @@ if(!function_exists("getSysDBLink")) {
 			return $GLOBALS['DEFAULT_HANDLERS'][$activity]["opts"];
 		} else return array();
 	}
+
+	//This function can execute user functions and methods unviversally for automatic execution from strings.
+	function executeUserParams($func,$obj=null) {
+		if(function_exists($func)) {
+			call_user_func($func,$obj);
+			return true;
+		} elseif($obj!=null && is_object($obj)) {
+			call_user_method($func,$obj);
+			return true;
+		}
+		return false;
+	}
+
 	//Gets the time difference between current time and time of request.
 	function getRequestTime() {
 		return (microtime(true)-$_SESSION['REQUEST_START']);

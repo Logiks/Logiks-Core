@@ -40,16 +40,17 @@ DirectoryIndex index.php index.html index.htm
 
 	RewriteBase /devlogiks/
 
-	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+	#RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-	RewriteCond %{REQUEST_URI} !^/(media|misc/themes|misc/skins|api/js)/
+	#RewriteCond %{REQUEST_URI} !^/(media|misc/themes)/
+	
+	RewriteRule services/.* services/index.php [L]
 
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteCond %{REQUEST_FILENAME} !-l
 
-	RewriteRule .* vpath.php [L]
-	#RewriteRule ^([a-zA-z]+)[/]*([a-zA-z/]*).*$ index.php?site=$1&page=$2&%{QUERY_STRING}
+	RewriteRule .* index.php [L]
 </IfModule>
 
 <IfModule mod_headers.c>

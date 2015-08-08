@@ -1,12 +1,26 @@
 <?php
-$classpath=array(
-	"api/",
-	"api/libs/",
-	"api/helpers/"
+$classPath=array(
+		"api/",
+		"api/libs/",
+		"plugins/modules/",
 	);
 $mediaPaths=array(
-	"userdata/",
-	"media/",
-	"css/"
+		"#APPROOT#userdata/",
+		"#APPROOT#media/",
+		"#APPROOT#css/",
+		"#THEME#/",
+		"media/",
+		"media/#SITENAME#/",
+	);
+$vendorPath=array(
+		"#APPROOT#plugins/",
+		"#ROOT#api/",
+		"#ROOT#plugins/",
+		"#ROOT#pluginsDev/",
+	);
+$pluginPaths=array(
+		"#APPROOT#plugins/",
+		"#ROOT#pluginsDev/",
+		"#ROOT#plugins/",
 	);
 ?>

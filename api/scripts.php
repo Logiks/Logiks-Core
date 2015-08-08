@@ -1,6 +1,7 @@
 <?php
 /*
  * This contains all the basic scripts inserted into loading request.
+ * This is where PHP and js variables cross each other.
  *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Version: 1.0
@@ -13,20 +14,25 @@ SITENAME="<?=SITENAME?>";
 PAGE="<?=$_REQUEST['page']?>";
 UserDevice="<?=strtoupper(getUserDevice())?>";
 UserDeviceType="<?=strtoupper(getUserDeviceType())?>";
+CurrentUser="<?=(isset($_SESSION['SESS_USER_ID']))?$_SESSION['SESS_USER_ID']:"" ?>";
+CurrentRole="<?=(isset($_SESSION['SESS_USER_ID']))?$_SESSION['SESS_PRIVILEGE_NAME']:"" ?>";
 function getServiceCMD(cmd,action,q) {
-	return _service(cmd,action,q);
+	return _service(cmd,action,null,q);
 }
-function _service(cmd,action,q) {
-	sxx="<?=SiteLocation?>services/?site=<?=SITENAME?>";
+function _service(cmd,action,format,q) {
+	if(cmd==null || cmd.length<=0) {
+		return "";
+	}
+	sxx="<?=SiteLocation?>services/"+cmd+"?site=<?=SITENAME?>";
 	<?php
 		if(isset($_REQUEST["forsite"]) && strlen($_REQUEST["forsite"])>0)
 			echo "sxx+='&forsite={$_REQUEST["forsite"]}';";
 	?>
-	if(cmd!=null && cmd.length>0) {
-		sxx+="&scmd="+cmd;
-	}
 	if(action!=null && action.length>0) {
 		sxx+="&action="+action;
+	}
+	if(format!=null && format.length>0) {
+		sxx+="&format="+format;
 	}
 	if(q!=null && q.length>0) {
 		sxx+=q;

@@ -1,132 +1,18 @@
-Changelog for Logiks v3.6.6 Beta
-================================
+Changelog for Logiks v3.7.0 Beta (On The Track to 4.0)
+======================================================
 
-Updated the skins for Jquery to support the new Jquery libs.
-Now, core will also have default plugins developed by the Logiks Core Team for easing out installing these common plugins always. Few plugins are now included for the time being, more will be included later.
-Introduced COMMON_PLUGINS_FOLDER for more flexibility in development of core plugins.
-Merged service's image folder with core's media/images folder.
+v3.7.0 is a departure from the older Logiks Framework upto v3.6.x. So old apps and plugins may not work on the newer Logiks
+Framework. The upcoming market and tools are all targeted towards Logiks 4.0 Compatibilty.
 
-As described earlier v3.6.5 was a stable release and was last of 3.5 series. From now on we are adding features that are mostly in Beta stage for version 4.0.
-Please check our website for the roadmap and more.
+We are also merging all the codes submitted. This and coming commits are geared towards Logiks 4.0.0.
+This marks a complete restructuring and system wide improvement for Logiks Framework.
 
-We all eagerly working and waiting towards Logiks v4.0.0, follow us on twitter for updates.
-
-Also, we are happy to announce the release of admincp v2.5 and following cms v3.0 in coming weeks for you.
-
-Happy Coding.
-
-
-Changelog for Logiks v3.6.5
-===========================
-
-Reinitialized some base components,helpers,services.
-Stabilized the version for production use and tested it on some live projects before commiting.
-Changed and fixed some bugs.
-Introduced new js libs backbone.js for templating, require.js for dynamic module loading.
-Removed a lot of the old js/jquery libs.
-Updated jquery and jquery.ui to there latest additions, though you can still use them using there versions.
-Moved some api to libs.
-SQL schema updated for core and log tables.
-Introduced : COMMON_PLUGINS_FOLDER for better plugin managment with additional folder for plugins, meant for extended installations.
-
-
-Changelog for Logiks v3.6.4
-===========================
-
-Remove DataBus class for all future releases and updated system throughout.
-Improved misc other functions.
-
-Changelog for Logiks v3.6.3
-===========================
-
-Code documenting at file level.
-Minor Performance Improvements.
-Removes some js libs, converted them to modules, for decreasing the base framework size.
-api/libs/ArrayToList.inc
-Service>AutoComplete updated to take orderby
-Cachemanager.inc updated
-
-Changelog for Logiks v3.6.2
-===========================
-
-Introduce php.cfg
-Cleaned up themes and improved login.php
-CDN System inclusion
-Fixed errors in logging because of db structure mismatch.
-Improved the logging system by adding to automatic services for requests and services logging.
-Changed the default error page looks, now mobile friendly.
-Changed the default login page looks, now mobile friendly.
-Improved the login system to store persistent logins as well.
-Persistant Session support.
-Now session continues beyond logins, ie persistent logins will have same session across multiple logins in same setup (browser and os).
-Updated the avatar service to remove a bug and added new methods like avatar using http://avatar.io/.
-Changed the logout link from api/logout.php to logout.php
-Added security paramters for blocking User Agents that are bots and spamwares and spywares.
-Improved Services sytem access controls, now default is hostlock, thus giving more security to the service section.
-Minor fixes.
-Additional new functions.
-
-Changelog for Logiks v3.6.1
-===========================
-
-Modified the themeing system to be more compatible with mobility works
-The head tag now contains less head tags and lesser meta tags
-
-Modified auth system to contain guid now, this would help in more SAAS apps.
-
-Updated the controller and intrduces few system functions like findPage for cleaner and more automatic controller files.
-
-Now Theme folders can have js files as well.
-Template modifications
-
-Minor misc changes.
-
-
-Changelog for Logiks v3.6
-=========================
-
-API Level Changes (api, helpers, libraries)
-	inifuncs.php : to include few new functions to simplify creating cms.php
-	removed docs library and helper.
-	added new security library.
-	added countries,mimes,timezones to helpers,
-	updated:dateops,email, shortfuncs helpers.
-
-Services Level Changed
-	autocomplete,datagrid,formactions,avatar have been improved.
-	auth has been upgraded to be more customizable and is now userid, emails and mobiles can be used to login.
-
-Other Changes
-	Pulled in all changes done across all installations.
-	Altered the configuration system for a more robust system. The next version will contain sigularization and cacheing of the configurations.
-	Permission control management upgraded, next version to contain permission cachinfg system.
-	PageLayout now includes HTML5 tags support.
-	EMail supports Bulk mode.
-	Initialization Of Page Requests has been given new API functions.
-	UIComponents, and many other APIs are better.
-	MISC/pages/SOS system has been removed.
-	Cleaned and remove unwanted systems.
-	Replaced through out system where privilege is to be sorted out (find_in_set('$pridid',privilege) OR privilege='*')
-Database Changes
-	Changed the default collations, charset and engine.
-	Updated the lgks_users : removed q1,a1,notes added geolocation,geoip,last_login,mauth
-
-Physical Changes To Folders, Configurations, Files and Structures
-	hooks-state names changed
-	   afterHead->preHead
-	   afterPage->postPage
-	   beforePage->prePage
-	folders.cfg changed
-	   misc/templates_layouts->misc/uilayouts
-	   config/pcron->misc/pcron
-	   config/features/db.json=>config/security/db.json
-	   config/features/fs.json=>config/security/fs.json
-	Removed misc/pages/sos folder
-
-Depreciated
-	DataBus
-	isLayoutConfig -> isLogiksLayout
-
-Introduction of changelogs
-
-Lots of Bug Fixes, and changes in the path of a major update in next version.
+This release includes:
+	A mojor restructuring of folders including core and non-core.
+	Cleaned up all the deprecated libs, helpers and js scripts.
+	Upgraded all engines and libraries across framework.
+		Service Engine
+		Cache Engine
+	Cleaned up the misc folder
+		misc/pages	:: removed
+		misc/skins	:: removed
