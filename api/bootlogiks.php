@@ -13,15 +13,6 @@ include_once dirname(__FILE__). "/libs/logiksclassloader.inc";
 
 if(!function_exists("__cleanup")) {
 	function __cleanup() {
-		if(MASTER_DEBUG_MODE && !defined("SERVICE_ROOT")) {
-			echo "<div style='position:fixed;right:0px;bottom:0px;padding:5px;background:maroon;color:white;z-index:99999999999999999;'>DT:".
-					(microtime(true)-$_SESSION['REQUEST_START'])." μs</div>";
-		}
-
-		MetaCache::getInstance()->dumpAllCache();
-		DataCache::getInstance()->dumpAllCache();
-		//RequestCache::
-
 		if(isset($_ENV['SOFTHOOKS']['SHUTDOWN'])) {
 			foreach ($_ENV['SOFTHOOKS']['SHUTDOWN'] as $hook) {
 				executeUserParams($hook["FUNC"],$hook["OBJ"]);
@@ -30,17 +21,14 @@ if(!function_exists("__cleanup")) {
 
 		runHooks("shutdown");
 
-		//if(getConfig("PAGE_BUFFER_ENCODING")!="plain") {
-		//	printOPBuffer();
-		//}
-
-		//echo "</html>";
 		// saveSettings();
 		// saveSiteSettings();
-		// ob_flush();
 
-		//if(_db(true)!=null) _db(true)->close();
-		//if(_db()!=null) _db()->close();
+		MetaCache::getInstance()->dumpAllCache();
+		DataCache::getInstance()->dumpAllCache();
+		//RequestCache::getInstance()->dumpAllCache();
+
+		//Database::closeAll();
 	}
 
 	function logiksRequestPreboot() {

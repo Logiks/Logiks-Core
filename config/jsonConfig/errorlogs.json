@@ -1,0 +1,15 @@
+{
+    "handler": {
+        "stream": {
+            "path": "./app.log"
+        }
+    },
+    "logger": {
+        "_default": {
+            "handler": [
+                "stream"
+            ],
+            "level": "WARNING"
+        }
+    }
+}

@@ -13,6 +13,8 @@ ini_set('display_errors', 'On');
 define ('ROOT', dirname(__FILE__) . '/');
 
 define("MASTER_DEBUG_MODE",true);
+
+//Start the flow
 require_once ('api/initialize.php');
 
 ?>

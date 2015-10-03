@@ -1,4 +1,42 @@
 {
     "GLOBALS": {
-    }
+		"core":{
+			"driver":"mysql",
+			"host":"localhost",
+			"port":"",
+			"database":"logiks40_coredb",
+			"user":"root",
+			"pwd":"fthbvg",
+			"prefix":"",
+			"suffix":"",
+			"readonly":false,
+			"block":[]
+		},
+		"log":{
+			"driver":"mysql",
+			"host":"localhost",
+			"port":"",
+			"database":"logiks40_logdb",
+			"user":"root",
+			"pwd":"fthbvg",
+			"prefix":"",
+			"suffix":"",
+			"readonly":false,
+			"block":[]
+		}
+    },
+	"default": {
+		"app":{
+			"driver":"mysql",
+			"host":"localhost",
+			"port":"",
+			"database":"lgks36_apidocs",
+			"user":"root",
+			"pwd":"fthbvg",
+			"prefix":"",
+			"suffix":"",
+			"readonly":false,
+			"block":[]
+		}
+	}
 }

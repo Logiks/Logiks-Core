@@ -8,11 +8,16 @@ around SRTP principle of project development with prime concern being Developer'
 ease of creating projects.
 
 ###Server Requirments
-+ PHP 5.3+
-+ Apache/Web Server with .htaccess capabilities
++ PHP 5.5+
++ Apache/Web Server with .htaccess capabilities and rewrite mod enabled
+
+###Server Requirments (Optional)
++ Memcached	For caching
++ MySQL 5.6+	For database
 
 ###Optional Requirments
 + Curl Libs
++ GD Libs
 
 ###License
 Open Source MIT. Please visit the License Agreement Page Of <http://openlogiks.org/olgks/license/logiks>.
@@ -21,6 +26,7 @@ This project uses some other open source projects, please find their description
 ###Notes
 These are plain source code of/part of the complete working project.
 + For more details visit <http://openlogiks.org>
-+ For a complete working demo visit <http://demo.openlogiks.org>
 + For a complete api documentation  visit <http://openlogiks.org/apidocs/>
 + For a complete working downloadable package please visit <http://openlogiks.org/olgks/downloads/>
++ For a complete working demo visit <http://demo.openlogiks.org>
+

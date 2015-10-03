@@ -49,10 +49,10 @@ class LogiksLogger {
       file_put_contents($this->logPath.".htaccess", "deny for all");
     }
 
-    $this->createLogger("core");
+    $config=ROOT."config/jsonConfig/errorlogs.json";
+    $this->loadLogConfig($config);
 
-    //$config=ROOT."config/security/loggers.json";
-    //$this->loadLogConfig($config);
+    $this->createLogger("core");
   }
 
   public function getLogKeys() {
@@ -139,8 +139,9 @@ class LogiksLogger {
     return $handler;
   }
 
-  public static function log($logKey, $logLevel, $msg, $param=null) {
-    //echo "LOGGING : $logKey > $logLevel > $msg > $param";
+  public static function log($logKey, $logLevel, $msg, $param=array()) {
+    //echo "LOGGING : $logKey > $logLevel > $msg >";//$param
+    //var_dump(LogiksLogger::$instance->logBook);exit();
     if($logKey=="*") {
       foreach ($this->logBook as $a => $logger) {
         $logger->log($logLevel,$msg,$param);
@@ -194,6 +195,18 @@ class LogiksLogger {
     return LogiksLogger::LOG_ERROR;
   }
 
+  protected function loadLogConfig($configFile) {
+    if(file_exists($configFile)) {
+      //$configData=file_get_contents($configFile);
+      //$configData=json_decode($configData,true);
+
+
+
+      //https://github.com/Bigpoint/monolog-creator
+      //var_dump($configData);
+      //exit();
+    }
+  }
   // protected function loadLogConfig($config) {
   //   if(file_exists($config)) {
   //     $configData=file_get_contents($config);

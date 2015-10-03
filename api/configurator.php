@@ -8,8 +8,13 @@ if(!function_exists('loadConfigs')) {
 	}
 
 	//No Compile Yet and loads json configuration on demand.
-	function loadJSONConfig($configName,$key=null) {
-		return LogiksConfig::getInstance()->loadJSONConfig($configName,$key);
+	function loadJSONConfig($configName,$keyName=null,$forceReload=false) {
+		$cfg=LogiksConfig::getInstance()->loadJSONConfig($configName,$forceReload);
+		if($keyName==null) return $cfg;
+		else {
+			if(isset($cfg[$keyName])) return $cfg[$keyName];
+			return false;
+		}
 	}
 
 	//Loads all config (cfg) files in the folder.

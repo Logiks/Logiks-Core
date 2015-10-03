@@ -62,9 +62,6 @@ class PHooksQueue {
 
 		if(defined("APPS_MISC_FOLDER")) {
 			$hooksFolder=APPROOT.APPS_MISC_FOLDER.$pname;
-			if(!is_dir($hooksFolder)) {
-				@mkdir($hooksFolder,0777,true);
-			}
 			$hooksFolder.="{$plugin}/{$state}/";
 			if(is_dir($hooksFolder)) {
 				$arr=scandir($hooksFolder);
@@ -77,9 +74,6 @@ class PHooksQueue {
 		}
 		if(defined("MISC_FOLDER")) {
 			$hooksFolder=ROOT.MISC_FOLDER.$pname;
-			if(!is_dir($hooksFolder)) {
-				@mkdir($hooksFolder,0777,true);
-			}
 			$hooksFolder.="{$plugin}/{$state}/";
 			if(is_dir($hooksFolder)) {
 				$arr=scandir($hooksFolder);

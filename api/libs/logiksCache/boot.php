@@ -48,13 +48,13 @@ if(!function_exists("_cache")) {
 
 if(!function_exists("_metaCache")) {
 	//Introduced in v3.6.6 as a method load, print themes
-	function _metaCache($container,$srcFile) {
+	function _metaCache($group,$srcFile) {
 		$metaCache=MetaCache::getInstance();
-		return $metaCache->getMetaFor($container,$srcFile);
+		return $metaCache->getMetaFor($group,$srcFile);
 	}
-	function _metaCacheUpdate($container,$srcFile,$data) {
+	function _metaCacheUpdate($group,$srcFile,$data) {
 		$metaCache=MetaCache::getInstance();
-		return $metaCache->setMetaFor($container,$srcFile,$data);
+		return $metaCache->setMetaFor($group,$srcFile,$data);
 	}
 }
 

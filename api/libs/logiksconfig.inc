@@ -86,10 +86,10 @@ class LogiksConfig {
 
     $outputData=array();
     if(is_array($pathParam)) {
-			foreach($pathParam as $file) {
-        $cfgData=$this->parseConfigFile($file);
-        $outputData=array_merge($outputData,$cfgData);
-      }
+		foreach($pathParam as $file) {
+	        $cfgData=$this->parseConfigFile($file);
+	        $outputData=array_merge($outputData,$cfgData);
+	    }
     } else if(is_file($pathParam)) {
       $cfgData=$this->parseConfigFile($pathParam);
       $outputData=array_merge($outputData,$cfgData);
@@ -143,37 +143,39 @@ class LogiksConfig {
     return $this->configCompilePath.$compileKey;
   }
 
-  public function loadJSONConfig($configName,$key=null) {
+  //Not compiled,but once per session,
+  //ToDo : compile
+  public function loadJSONConfig($configName,$forceReload=false) {
     $cfgData=array();
-		$f=ROOT.CFG_FOLDER."jsonConfig/{$configName}.json";
+    
+    if($forceReload && isset($_SESSION['JSONCONFIG'][$configName])) unset($_SESSION['JSONCONFIG'][$configName]);
+
+    if(isset($_SESSION['JSONCONFIG'][$configName])) {
+    	$cfgData=$_SESSION['JSONCONFIG'][$configName];
+    } else {
+    	$f=ROOT."config/jsonConfig/{$configName}.json";
 		if(file_exists($f)) {
 			$data=file_get_contents($f);
 			if(strlen($data)>2) {
 				$json=json_decode($data,true);
-				if($key==null) {
-					$fData=array();
-					if(isset($json['GLOBALS'])) {
-						$fData[]=$json['GLOBALS'];
-					}
-					if(defined("SITENAME") && isset($json[SITENAME])) {
-						$fData[]=$json[SITENAME];
-					}
-					for ($i=1; $i <count($fData) ; $i++) {
-						$fData[0]=array_merge($fData[0],$fData[$i]);
-					}
-					$cfgData=$fData[0];
-				} else {
-					if(isset($json[$key])) {
-						$cfgData=$json[$key];
-					} elseif(isset($json["GLOBALS"])) {
-						$cfgData=$json["GLOBALS"];
-					}
+				$fData=array();
+				if(isset($json['GLOBALS'])) {
+					$fData[]=$json['GLOBALS'];
 				}
+				if(defined("SITENAME") && isset($json[SITENAME])) {
+					$fData[]=$json[SITENAME];
+				}
+				for ($i=1; $i <count($fData) ; $i++) {
+					$fData[0]=array_merge($fData[0],$fData[$i]);
+				}
+				$cfgData=$fData[0];
+				$_SESSION['JSONCONFIG'][$configName]=$cfgData;
 			}
 		} else {
-      trigger_error("$configName configuration not found, Error In Installation.", E_USER_ERROR);
+	      trigger_error("$configName configuration not found, Error In Installation.", E_USER_ERROR);
+	    }
     }
-		return $cfgData;
+	return $cfgData;
   }
 
   public static function loadFeature($fname,$forceReload=false,$debug=false) {
@@ -333,7 +335,7 @@ class LogiksConfig {
 							if($s=="[DEFINE]") $mode="DEFINE";
 							else if($s=="[SESSION]") $mode="SESSION";
 							else if($s=="[CONFIG]") $mode="CONFIG";
-							else if($s=="[PHPINI]") $mode="PHPINI";
+								else if($s=="[PHPINI]") $mode="PHPINI";
 							else if($s=="[ENV]") $mode="ENV";
 							else if($s=="[COOKIE]") $mode="COOKIE";
 							else $mode="CONFIG";

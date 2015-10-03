@@ -1,0 +1,20 @@
+{
+    "GLOBALS": {
+        "default": {
+            "driver": "FilesCacheDriver"
+        },
+        "metaCache": {
+            "driver": "MemcachedDriver",
+            "params":{
+                "host": "127.0.0.1", 
+                "port": 11211, 
+                "weight":100,
+                "expires": 1000,
+                "prefix":"logiks"
+            }
+        },
+        "dataCache": {
+            "driver": "FilesCacheDriver"
+        }
+    }
+}

@@ -31,9 +31,9 @@ class LogiksTheme {
 		$this->htmlAssets=new HTMLAssets($this,$site);
 
 		$this->templateDir=array(
+				$this->themeFolder."templates/",
 				ROOT.APPS_FOLDER.$site."/pages/viewpage/",
 				ROOT.APPS_FOLDER.$site."/css/templates/",
-				$this->themeFolder."templates/",
 			);
 	}
 

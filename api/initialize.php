@@ -70,22 +70,26 @@ if(!isset($initialized)) {
 	include_once ROOT. "api/app.php";
 
 	include_once ROOT. "api/libs/logiksUser/boot.php";
-	include_once ROOT. "api/libs/templateEngine/logikstemplate.inc";
+	include_once ROOT. "api/libs/logiksTemplate/boot.php";
 
 	include_once ROOT. "api/libs/logiksPages/boot.php";
+
+	//Optional Data Components
+	//include_once ROOT. "api/libs/logiksDB/boot.php";
+	//include_once ROOT. "api/libs/logiksORM/boot.php";
+	//include_once ROOT. "api/libs/logiksUser/boot.php";
+	//include_once ROOT. "api/libs/uiComponents/boot.php";
 
 	loadHelpers(array("urltools","hooks","mobility","outputbuffer","shortfuncs"));
 
 	$initialized=true;
 	runHooks("postinit");
 
-	//Time To Start Router System
-	require_once ('router.php');
-
 	$_SESSION['SESS_ACTIVE_SITE']=SITENAME;
 	if(!defined("APPS_NAME")) define("APPS_NAME",getConfig("APPS_NAME"));
 	if(!defined("APPS_VERS")) define("APPS_VERS",getConfig("APPS_VERS"));
 
-	runHooks("startup");
+	//Time To Start Router System
+	require_once ('router.php');
 }
 ?>

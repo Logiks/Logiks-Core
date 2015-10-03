@@ -11,10 +11,11 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 class LogiksPage {
 	
 	protected $theme=null;
-	protected $siteMap=null;
 	protected $pageFolder="";
 	protected $device="";
+
 	protected $pageConfig=array();
+	protected $pageType=null;
 
 	public function __construct($theme) {
 		$this->theme=$theme;
@@ -32,13 +33,14 @@ class LogiksPage {
 	}
 
 	public function loadPage($page) {
-		$this->siteMap=new LogiksSiteMap(SITENAME);
-		$pageToLoad=$this->siteMap->findPage(PAGE);
+		$pageToLoad=$this->findPage(PAGE);
 
 		$pageConfig=$this->pageFolder.$pageToLoad.".json";
+		//ToDO : Handle php, tpl, html files directly
 		if(!file_exists($pageConfig)) {
-			trigger_error("Error Finding Pages $page For Device {$this->device}",E_USER_ERROR);
+			trigger_logikserror("Error Finding Pages $page For Device {$this->device}",E_USER_ERROR, 404);
 		}
+		$this->pageType="json";
 		$pageConfig=json_decode(file_get_contents($pageConfig),true);
 
 		if(isset($pageConfig['modules'])) {
@@ -118,6 +120,13 @@ class LogiksPage {
 		return true;
   	}
 
+  	protected function findPage($page) {
+	    $page=explode("/",$page);
+	    $page=current($page);
+
+	    return $page;
+	}
+	
   	protected function setupMeta($logiksTemplate) {
   		$this->pageConfig=$_ENV['PAGECONFIG'];
 

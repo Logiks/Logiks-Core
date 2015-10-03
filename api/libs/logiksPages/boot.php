@@ -13,7 +13,6 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 include_once dirname(__FILE__)."/HTMLAssets.inc";
 include_once dirname(__FILE__)."/LogiksPage.inc";
-include_once dirname(__FILE__)."/LogiksSiteMap.inc";
 include_once dirname(__FILE__)."/LogiksTheme.inc";
 
 if(!function_exists("_css")) {

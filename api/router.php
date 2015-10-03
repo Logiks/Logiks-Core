@@ -9,6 +9,8 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!defined("BASEPATH")) {
+
+  //Load the app.cfg and app Config Folder
   startLogiksApp(SITENAME);
 
   $security=new LogiksSecurity();
@@ -21,17 +23,30 @@ if(!defined("BASEPATH")) {
     trigger_error("Site <b>'".SITENAME."'</b> Does Not Have ROUTER Defined.",E_USER_ERROR);
   }
 
-  $routerDir=ROOT.API_FOLDER."libs/routers/";
+  //$routerDir=ROOT.API_FOLDER."libs/routers/";
+  //$routerFile="{$routerDir}{$routerPage}.php";
 
-  $routerFile="{$routerDir}{$routerPage}.php";
+  $routerFiles=array(
+      APPROOT."{$routerPage}.php",
+      APPROOT."router.php",
+      ROOT.API_FOLDER."libs/routers/{$routerPage}.php"
+    );
 
-  if(file_exists($routerFile)) {
-    include_once $routerFile;
-  } elseif(is_file(APPROOT.$routerPage)) {
-    include_once APPROOT.$routerPage;
-  } elseif(is_file(ROOT.$routerPage)) {
-    include_once ROOT.$routerPage;
-  } else {
+  $routerLoaded=false;
+  foreach ($routerFiles as $rfile) {
+    if(file_exists($rfile)) {
+      $routerLoaded=true;
+
+      runHooks("startup");
+
+      loadModule("core",true);
+      loadModule(SITENAME,true);
+
+      include_once $rfile;
+      break;
+    }
+  }
+  if(!$routerLoaded) {
     trigger_error("Site <b>'".SITENAME."'</b> Does Not Have ROUTER Defined.",E_USER_ERROR);
   }
 }

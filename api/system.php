@@ -121,7 +121,8 @@ if(!function_exists("getRequestTime")) {
 			call_user_func($func,$obj);
 			return true;
 		} elseif($obj!=null && is_object($obj)) {
-			call_user_method($func,$obj);
+			//call_user_method($func,$obj);
+			call_user_func(array($obj,$func));
 			return true;
 		}
 		return false;
