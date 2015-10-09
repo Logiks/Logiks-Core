@@ -1,15 +1,79 @@
 {
-    "handler": {
-        "stream": {
-            "path": "./app.log"
-        }
-    },
-    "logger": {
-        "_default": {
-            "handler": [
-                "stream"
-            ],
-            "level": "WARNING"
+    "GLOBALS": {
+        "handler": {
+            "one": {
+                "Monolog\\Handler\\RotatingFileHandler":{
+                    "params1":"#logFilePath#/app.log",
+                    "params2":30,
+                    "level":"NOTICE",
+                    "formatter":{
+                        "class":"Monolog\\Formatter\\LineFormatter",
+                        "params1":"#LOG_FORMAT#\n",
+                        "params2":"#LOG_DATE# #LOG_TIME#"
+                    }
+                }
+            },
+            "two":{
+                "Monolog\\Handler\\BrowserConsoleHandler":{
+                    "params1":null,
+                    "params2":null,
+                    "level":"NOTICE"
+                }
+            },
+            "login": {
+                "Monolog\\Handler\\RotatingFileHandler":{
+                    "params1":"#logFilePath#/app.log",
+                    "params2":30,
+                    "level":"NOTICE",
+                    "formatter":{
+                        "class":"Monolog\\Formatter\\LineFormatter",
+                        "params1":"#LOG_FORMAT#\n",
+                        "params2":"#LOG_DATE# #LOG_TIME#"
+                    }
+                }
+            },
+            "pcron": {
+                "Monolog\\Handler\\RotatingFileHandler":{
+                    "params1":"#logFilePath#/app.log",
+                    "params2":30,
+                    "level":"NOTICE",
+                    "formatter":{
+                        "class":"Monolog\\Formatter\\LineFormatter",
+                        "params1":"#LOG_FORMAT#\n",
+                        "params2":"#LOG_DATE# #LOG_TIME#"
+                    }
+                }
+            },
+            "blackhole":{
+                "Monolog\\Handler\\NullHandler":{
+                }
+            }
+        },
+        "logger": {
+            "error": {
+                "handler": ["one"]
+            },
+            "console":{
+                "handler": "two"
+            },
+            "system":{
+                "handler": ["one","two"]
+            },
+            "login":{
+                "handler": "login"
+            },
+            "activity":{
+                "handler": "blackhole"
+            },
+            "pcron":{
+                "handler": "pcron"
+            },
+            "requests":{
+                "handler": "blackhole"
+            },
+            "services":{
+                "handler": "blackhole"
+            }
         }
     }
 }

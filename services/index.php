@@ -17,6 +17,10 @@ if(defined('ROOT')) exit('Only Direct Access Is Allowed');
 session_start();
 ob_start();
 
+error_reporting(-1);
+ini_set('display_errors', 'On');
+
+
 if(!defined('ROOT')) {
 	define('ROOT',dirname(dirname(__FILE__)) . '/');
 }
@@ -29,12 +33,15 @@ if(!defined('SERVICE_ROOT')) {
 
 require_once (ROOT . 'api/configurator.php');
 
-LoadConfigFile(ROOT . "config/basic.cfg");
-LoadConfigFile(ROOT . "config/services.cfg");
-LoadConfigFile(ROOT . "config/security.cfg");
-LoadConfigFile(ROOT . "config/sysops.cfg");
-LoadConfigFile(ROOT . "config/folders.cfg");
-//LoadConfigFile(ROOT . "config/framework.cfg");
+loadConfigs([
+			ROOT . "config/basic.cfg",
+			ROOT . "config/services.cfg",
+			ROOT . "config/security.cfg",
+			ROOT . "config/sysops.cfg",
+			ROOT . "config/folders.cfg",
+
+			//ROOT . "config/framework.cfg",
+		]);
 
 header("X-Powered-By: Logiks [http://openlogiks.org]",false);
 header("SESSION-KEY:".session_id(),false);

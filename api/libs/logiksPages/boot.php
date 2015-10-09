@@ -43,8 +43,7 @@ if(!function_exists("_css")) {
 			echo " />\n";
 		}
 	}
-}
-if(!function_exists("_js")) {
+
 	function _jsLink($jsLnk,$themeName=null) {
 		if(is_array($jsLnk) && count($jsLnk)<=0) return false;
 		elseif(is_array($jsLnk) && count($jsLnk)==1 && strlen($jsLnk[0])==0) return false;
@@ -68,8 +67,12 @@ if(!function_exists("_js")) {
 			echo "<script src='$lx' type='text/javascript' language='javascript'></script>\n";
 		}
 	}
-}
-if(!function_exists("getPageConfig")) {
+
+	function _slug() {
+		if(isset($_ENV['PAGESLUG'])) return $_ENV['PAGESLUG'];
+		return array();
+	}
+
 	function getPageConfig($key) {
   		if(isset($_ENV['PAGECONFIG']) && isset($_ENV['PAGECONFIG'][$key])) {
   			return $_ENV['PAGECONFIG'][$key];

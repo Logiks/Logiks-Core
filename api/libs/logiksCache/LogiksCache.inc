@@ -43,9 +43,9 @@ class LogiksCache {
 	}
 
 	private function configureInstance($srcTag) {
-		$cacheConfig=loadJSONConfig("cache",$srcTag,true);
+		$cacheConfig=loadJSONConfig("cache",$srcTag);
 		if(!$cacheConfig) {
-			$cacheConfig=loadJSONConfig("cache","default",true);
+			$cacheConfig=loadJSONConfig("cache","default");
 		}
 		if(!$cacheConfig) {
 			$cacheConfig=array(

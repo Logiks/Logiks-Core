@@ -156,15 +156,20 @@ class LogiksError {
         ];
 
     $errCFG=$this->getErrorTemplate($errData['code']);
-    $errorTemplate=$errCFG['template'];
 
-    foreach ($errCFG['css'] as $css) {
-			$errTmplData['cssLinks'].="<link href='$css' rel='stylesheet' />\n";
-		}
-    foreach ($errCFG['js'] as $js) {
-			$errTmplData['jsLinks'].="<script src='$js'></script>\n";
-		}
+    if(is_object($errCFG)) {
+      
+    } else {
+      $errorTemplate=$errCFG['template'];
 
+      foreach ($errCFG['css'] as $css) {
+        $errTmplData['cssLinks'].="<link href='$css' rel='stylesheet' />\n";
+      }
+      foreach ($errCFG['js'] as $js) {
+        $errTmplData['jsLinks'].="<script src='$js'></script>\n";
+      }
+    }
+    
     if(MASTER_DEBUG_MODE) {
       //Source Snaptshot
       $errTmplData['source_startIndex']=$errData['line']-$this->snapshotInset;
@@ -222,26 +227,23 @@ class LogiksError {
       $errTmplData['stackTrace-Table']=array_reverse($errTmplData['stackTrace-Table']);
       $errTmplData['stackTrace-Table']=implode("", $errTmplData['stackTrace-Table']);
     }
-		$html=file_get_contents($errorTemplate);
+    if(is_object($errCFG)) {
+      $html=$errCFG->getPageContent();
+      if(!$html) $html="";
+    } else {
+      $html=file_get_contents($errorTemplate);
+    }
+    $lr=new LogiksReplace();
+    $lr->addData($errData);
+    $lr->addData($errTmplData);
 
-		$lr=new LogiksReplace();
-		$lr->addData($errData);
-		$lr->addData($errTmplData);
-
-		echo $lr->replace($html);
+    echo $lr->replace($html);
+    exit();
   }
   private function log($errLogMsg,$errData,$errLevel=null) {
     if($errLevel==null) $errLevel=LogiksLogger::LOG_ERROR;
 
-    if(defined("SITENAME")) {
-      $logKeys=LogiksLogger::getInstance()->getLogKeys();
-      if(!in_array(SITENAME, $logKeys)) {
-        LogiksLogger::getInstance()->createLogger(SITENAME);
-      }
-      LogiksLogger::log(SITENAME,$errLevel,$errLogMsg,$errData);
-    } else {
-      LogiksLogger::log("core",$errLevel,$errLogMsg,$errData);
-    }
+    LogiksLogger::log("error",$errLevel,$errLogMsg,$errData);
   }
   
   protected function getCodeSnapshot($srcFile, $start, $end) {//, $lineNo
@@ -260,20 +262,19 @@ class LogiksError {
 
     return implode("", $codeData);
   }
-  protected function getErrorTemplate($errorCode) {
-    if(defined("SITENAME")) {
-
-    }
-
+  protected function getDefaultTemplate($errorCode=500) {
     $errorTemplate=ROOT."misc/themes/default/templates/error.tpl";
     if(MASTER_DEBUG_MODE) {
       $errorTemplate=ROOT."misc/themes/default/templates/error-debug.tpl";
+      if(!file_exists($errorTemplate)) {
+        $errorTemplate=ROOT."misc/themes/default/templates/error.tpl";
+      }
     }
     $errorCSS=[
-			ROOTURL."misc/themes/default/error.css",
-			ROOTURL."misc/themes/default/errorPrint.css",
+      ROOTURL."misc/themes/default/error.css",
+      ROOTURL."misc/themes/default/errorPrint.css",
       // ROOTURL."plugins/vendors/SyntaxHighlighter/styles/SyntaxHighlighter.css",
-		];
+    ];
     $errorJS=[
       ROOTURL."api/js/jquery/jquery.js",
       // ROOTURL."plugins/vendors/SyntaxHighlighter/scripts/shCore.js",
@@ -283,6 +284,20 @@ class LogiksError {
       ROOTURL."api/js/prettify.js",
     ];
     return array("template"=>$errorTemplate,"css"=>$errorCSS,"js"=>$errorJS);
+  }
+  protected function getErrorTemplate($errorCode) {
+    if(defined("SITENAME")) {
+      $lt=new LogiksTheme(APPS_THEME,SITENAME);
+
+      $lp=new LogiksPage($lt);
+      $pg=$lp->loadPage("error");
+      if($pg) {
+        return $lp;
+      } else {
+        return $this->getDefaultTemplate();
+      }
+    }
+    return $this->getDefaultTemplate();
   }
 }
 ?>

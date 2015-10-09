@@ -49,7 +49,11 @@ class DomainMap {
             }, array_values($dx), array_keys($dx));
             $query = implode(' ', $query);
 
-            $uri=ROOTURL.PAGE."?".$query;
+            if(strlen($query)>0) {
+              $uri=ROOTURL.PAGE."?".$query;
+            } else {
+              $uri=ROOTURL.PAGE;
+            }
             header("Location:{$uri}");
           }
         } else {

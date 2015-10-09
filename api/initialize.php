@@ -67,6 +67,7 @@ if(!isset($initialized)) {
 	include_once ROOT. "api/libs/logiksCache/boot.php";
 	include_once ROOT. "api/libs/loaders/boot.php";
 	include_once ROOT. "api/system.php";
+	include_once ROOT. "api/security.php";
 	include_once ROOT. "api/app.php";
 
 	include_once ROOT. "api/libs/logiksUser/boot.php";

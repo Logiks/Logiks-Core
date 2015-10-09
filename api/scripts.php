@@ -11,11 +11,11 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 <script language='javascript'>
 SiteLocation="<?=SiteLocation?>";
 SITENAME="<?=SITENAME?>";
-PAGE="<?=$_REQUEST['page']?>";
+PAGE="<?=PAGE?>";
 UserDevice="<?=strtoupper(getUserDevice())?>";
 UserDeviceType="<?=strtoupper(getUserDeviceType())?>";
 CurrentUser="<?=(isset($_SESSION['SESS_USER_ID']))?$_SESSION['SESS_USER_ID']:"" ?>";
-CurrentRole="<?=(isset($_SESSION['SESS_USER_ID']))?$_SESSION['SESS_PRIVILEGE_NAME']:"" ?>";
+CurrentRole="<?=(isset($_SESSION['SESS_PRIVILEGE_NAME']))?$_SESSION['SESS_PRIVILEGE_NAME']:"" ?>";
 function getServiceCMD(cmd,action,q) {
 	return _service(cmd,action,null,q);
 }
@@ -46,15 +46,7 @@ function _link(href) {
 	} else if(href.indexOf("/")===0) {
 		href="<?=SiteLocation?>"+href.substr(1);
 	} else {
-		<?php if(getConfig("GENERATED_PERMALINK_STYLE")=="default") { ?>
-		if(href.indexOf("page=")>=0) {
-			href="<?=SiteLocation."?site=".SITENAME?>&"+href;
-		} else {
-			href="<?=SiteLocation."?site=".SITENAME?>&page="+href;
-		}
-		<?php } else { ?>
-		href="<?=SiteLocation.SITENAME."/"?>"+href;
-		<?php } ?>
+		href="<?=SiteLocation?>"+href;
 	}
 	return href;
 }

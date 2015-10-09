@@ -70,6 +70,8 @@ if(!function_exists("__cleanup")) {
 			define("PAGE",$page);
 			$_SESSION['QUERY']=$_GET;
 
+			$_SERVER['REQUEST_PATH']=SiteProtocol."://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+
 			$dm=new DomainMap();
 			$dm->detect();
 

@@ -2,15 +2,21 @@
 /*
  * LogiksLogger is meant to support various kinds of logging facility using
  * Monolog vendor library.
+ * When you register or add a logger to system, it stores that under the same site or core.
  *
  * Usage:
  *  Create New Logger
  *    LogiksLogger::getInstance()->createLogger("console",new Monolog\Handler\BrowserConsoleHandler());
  *  Add New Handler to existing
  *    LogiksLogger::getInstance()->addHandler("core",new Monolog\Handler\BrowserConsoleHandler());
- *  Attach New Handler
+ *  Log data
  *    LogiksLogger::log("core",LogiksLogger::LOG_WARN,"Hello World",array("A"=>123));
  *
+ * PARAMS
+ *    logKey
+ * 
+ * 
+ * 
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Version: 1.0
  */
@@ -35,6 +41,8 @@ class LogiksLogger {
   const LOG_ALERT=Logger::ALERT;//550
   const LOG_EMERGENCY=Logger::EMERGENCY;//600
 
+  private $logHandlers=array();
+
   public static function getInstance() {
     if(LogiksLogger::$instance==null) {
       LogiksLogger::$instance=new LogiksLogger();
@@ -51,35 +59,37 @@ class LogiksLogger {
 
     $config=ROOT."config/jsonConfig/errorlogs.json";
     $this->loadLogConfig($config);
-
-    $this->createLogger("core");
   }
 
   public function getLogKeys() {
-    return array_keys($this->logBook);
+    $siteKey="core";
+    if(defined("SITENAME")) $siteKey=SITENAME;
+
+    return array_keys($this->logBook[$siteKey]);
   }
   public function getLogger($logKey) {
-    if(isset($this->logBook[$logKey])) {
-      return $this->logBook[$logKey];
+    $siteKey="core";
+    if(defined("SITENAME")) $siteKey=SITENAME;
+
+    if(isset($this->logBook[$siteKey][$logKey])) {
+      return $this->logBook[$siteKey][$logKey];
     }
     return false;
   }
-  public function register($logKey,$logHandler,$allowSimilarClass=false) {
+
+  //Registers new handler for the given Sitename and logkey as logger
+  public function registerHandler($logKey,$logHandler,$allowSimilarClass=false) {
     $clz=get_class($logHandler);
-    if($logKey=="*") {
-      foreach ($this->logBook as $a => $logger) {
-        if(!$allowSimilarClass) {
-          foreach ($logger->getHandlers() as $key => $value) {
-            if(get_class($value)==$clz) {
-              return false;
-            }
-          }
-        }
-        $this->logBook[$a]->pushHandler($logHandler);
-      }
-      return true;
-    } elseif(isset($this->logBook[$logKey])) {
-      $logger=$this->logBook[$logKey];
+    
+    $siteKey="core";
+    if(defined("SITENAME")) $siteKey=SITENAME;
+
+    if(!isset($this->logBook[$siteKey])) {
+      $this->logBook[$siteKey]=array();
+    }
+
+    if(isset($this->logBook[$siteKey][$logKey])) {
+      $logger=$this->logBook[$siteKey][$logKey];
 
       if(!$allowSimilarClass) {
         foreach ($logger->getHandlers() as $key => $value) {
@@ -92,8 +102,7 @@ class LogiksLogger {
       $logger->pushHandler($logHandler);
       return true;
     } else {
-      $this->createLogger($logKey, $logHandler);
-      return true;
+      return $this->createLogger($logKey, $logHandler);
     }
   }
 
@@ -101,15 +110,25 @@ class LogiksLogger {
     $logger = new Logger($loggerName);
 
     if($handler==null) {
-      $handler=$this->getDefaultHandler($loggerName);
+      $handler=$this->createDefaultHandler($loggerName);
     }
-    $logger->pushHandler($handler);
+    if(is_array($handler)) {
+      foreach ($handler as $h) {
+        $logger->pushHandler($h);
+      }
+    } else {
+      $logger->pushHandler($handler);
+    }
 
     return $this->addLogger($loggerName, $logger);
   }
 
   public function addLogger($key, $logger) {
     if($logger==null) return false;
+
+    $siteKey="core";
+    if(defined("SITENAME")) $siteKey=SITENAME;
+
     $logger->pushProcessor(function ($record) {
           //$record['extra']['user'] = Auth::user() ? Auth::user()->username : 'anonymous';
           $record['extra']['ip'] = $_SERVER['REMOTE_ADDR'];
@@ -121,12 +140,12 @@ class LogiksLogger {
           return $record;
       });
 
-    $this->logBook[$key] = $logger;
-    return $this->logBook[$key];
+    $this->logBook[$siteKey][$key] = $logger;
+    return $this->logBook[$siteKey][$key];
   }
 
-  private function getDefaultHandler($loggerName) {
-    $logFile= $this->logPath.$loggerName."/a.log";
+  protected function createDefaultHandler($loggerName) {
+    $logFile= $this->logPath.SITENAME."/".$loggerName."/a.log";
     if(!is_dir(dirname($logFile))) mkdir(dirname($logFile),0755,true);
 
     $dateFormat = LOG_DATE." ".LOG_TIME;
@@ -137,22 +156,6 @@ class LogiksLogger {
     $handler->setFormatter($formatter);
 
     return $handler;
-  }
-
-  public static function log($logKey, $logLevel, $msg, $param=array()) {
-    //echo "LOGGING : $logKey > $logLevel > $msg >";//$param
-    //var_dump(LogiksLogger::$instance->logBook);exit();
-    if($logKey=="*") {
-      foreach ($this->logBook as $a => $logger) {
-        $logger->log($logLevel,$msg,$param);
-      }
-      return true;
-    } elseif(isset(LogiksLogger::$instance->logBook[$logKey])) {
-      $logger=LogiksLogger::$instance->logBook[$logKey];
-      $logger->log($logLevel,$msg,$param);
-      return true;
-    }
-    return false;
   }
 
   public static function severityToLevel($severity) {
@@ -196,38 +199,125 @@ class LogiksLogger {
   }
 
   protected function loadLogConfig($configFile) {
-    if(file_exists($configFile)) {
-      //$configData=file_get_contents($configFile);
-      //$configData=json_decode($configData,true);
+    $cfgHandler=loadJSONConfig("errorlogs","handler",true);
+    $cfgLogger=loadJSONConfig("errorlogs","logger",true);
+
+    $siteKey="core";
+    if(defined("SITENAME")) $siteKey=SITENAME;
+    $lr=new LogiksReplace();
+
+    //Create all handlers
+    foreach ($cfgHandler as $key => $cfg) {
+        foreach ($cfg as $clz => $param) {
+          if(isset($param['formatter'])) {
+            if(isset($param['formatter']['params1'])) {
+              $params1=$lr->_replace($param['formatter']['params1']);
+            } else $params1=null;
+            if(isset($param['formatter']['params2'])) {
+              $params2=$lr->_replace($param['formatter']['params2']);
+            } else $params2=null;
+
+            include_once ROOT."api/vendors/Monolog/".str_replace("\\", "/", $param['formatter']['class']).".php";
 
 
+            $formatter = new $param['formatter']['class']($params1, $params2);
+          } else {
+            $formatter=null;
+          }
 
-      //https://github.com/Bigpoint/monolog-creator
-      //var_dump($configData);
-      //exit();
+          $_SESSION['logFilePath']=$this->logPath.$siteKey."/".$key;
+
+          if(!is_dir($_SESSION['logFilePath']) && strpos(strtolower($clz), "null")<=0) {
+            mkdir($_SESSION['logFilePath'],0755,true);
+          }
+
+          if(isset($param['params1'])) {
+            $params1=$lr->_replace($param['params1']);
+          } else $params1=null;
+          if(isset($param['params2'])) {
+            $params2=$lr->_replace($param['params2']);
+          } else $params2=null;
+
+          if(isset($param['level'])) {
+            $level=$param['level'];
+          } else $level=LOG_DEFAULT_LEVEL;
+
+          include_once ROOT."api/vendors/Monolog/".str_replace("\\", "/", $clz).".php";
+
+          if($params1==null) {
+            $handler = new $clz();
+          } elseif($params2==null) {
+            $handler = new $clz($params1);
+          } else {
+            $handler = new $clz($params1, $params2);
+          }
+          
+          if(method_exists($handler, "setLevel")) {
+            $handler->setLevel($level);
+          }
+
+          if($formatter!=null) {
+            $handler->setFormatter($formatter);
+          }
+
+          //unset($cfgHandler[$key][$clz]);
+          $cfgHandler[$key]=$handler;
+        }
+    }
+    $this->logHandlers=$cfgHandler;
+    //Create all loggers
+    foreach ($cfgLogger as $loggerName => $cfg) {
+        $handlers=$cfg['handler'];
+
+        if(is_string($handlers)) {
+          if(isset($this->logHandlers[$handlers])) {
+            $handlers=$this->logHandlers[$handlers];
+          }
+        } else {
+          $keys=array_keys($handlers);
+          $temp=array();
+          foreach ($handlers as $h) {
+            if(isset($this->logHandlers[$h])) {
+              $temp[]=$this->logHandlers[$h];
+            }
+          }
+          $handlers=$temp;
+        }
+
+        $this->createLogger($loggerName,$handlers);
     }
   }
-  // protected function loadLogConfig($config) {
-  //   if(file_exists($config)) {
-  //     $configData=file_get_contents($config);
-  //     $configData=json_decode($configData,true);
-  //
-  //     foreach ($configData as $loggerName => $logbus) {
-  //       $logger = new Logger($loggerName);
-  //       foreach ($logbus['handlers'] as $handler) {
-  //         if(!isset($handler['level'])) $handler['level']="ERROR";
-  //
-  //         print_r($handler);
-  //
-  //         //echo $handler['class'];
-  //         //use
-  //         //print_r($handler);echo "<br/><br/>";
-  //       }
-  //     }
-  //   }
-  //
-  //   //$logger=new Logger('default');
-  //   //$this->register("core", $logger)
-  // }
+
+  public function loadSiteConfig() {
+    $config=ROOT."config/jsonConfig/errorlogs.json";
+    $this->loadLogConfig($config);
+  }
+
+
+  //Finally log the data into the logger
+  public static function log($logKey, $logLevel, $msg, $param=array()) {
+    //echo "LOGGING : $logKey > $logLevel > $msg >";//$parame
+    $logBook=null;
+    if(defined("SITENAME")) {
+      if(!isset(LogiksLogger::$instance->logBook[SITENAME])) {
+        LogiksLogger::$instance->loadSiteConfig();
+      }
+      $logBook=LogiksLogger::$instance->logBook[SITENAME];
+    } else {
+      $logBook=LogiksLogger::$instance->logBook["core"];
+    } 
+
+    //var_dump($logBook[$logKey]);exit();
+    if($logKey=="*") {
+      foreach ($logBook as $a => $logger) {
+          $logger->log($logLevel,$msg,$param);
+      }
+    } elseif(isset($logBook[$logKey])) {
+      $logBook[$logKey]->log($logLevel,$msg,$param);
+    } else {
+      $logBook["error"]->log($logLevel,$msg,$param);
+    }
+    return false;
+  }
 }
 ?>

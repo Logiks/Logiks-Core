@@ -16,6 +16,7 @@ class LogiksPage {
 
 	protected $pageConfig=array();
 	protected $pageType=null;
+	protected $pagePath=null;
 
 	public function __construct($theme) {
 		$this->theme=$theme;
@@ -33,98 +34,291 @@ class LogiksPage {
 	}
 
 	public function loadPage($page) {
-		$pageToLoad=$this->findPage(PAGE);
+		$pageToLoad=$this->findPage($page);
 
-		$pageConfig=$this->pageFolder.$pageToLoad.".json";
-		//ToDO : Handle php, tpl, html files directly
-		if(!file_exists($pageConfig)) {
-			trigger_logikserror("Error Finding Pages $page For Device {$this->device}",E_USER_ERROR, 404);
+		$ext=explode(".", $pageToLoad);
+		$ext=strtolower(end($ext));
+
+		$this->pageType=$ext;
+		$this->pagePath=$pageToLoad;
+		
+		$pageConfig=array();
+		switch ($this->pageType) {
+			case 'json':
+				$pageConfig=$pageToLoad;
+				if(!file_exists($pageConfig)) {
+					$this->pageConfig=false;
+					return false;
+				}
+				$pageConfig=json_decode(file_get_contents($pageConfig),true);
+
+				if(isset($pageConfig['modules'])) {
+					$pageConfig['modules_preload']=$pageConfig['modules'];
+					unset($pageConfig['modules']);
+				}
+				$pageConfig['modules_preload']=explode(",", trim($pageConfig['modules_preload']));
+				$pageConfig['modules_postload']=explode(",", trim($pageConfig['modules_postload']));
+
+				$pageConfig['class']=str_replace("/"," ",$page);
+			break;
+			
+			case 'php':
+				
+			break;
+
+			case 'htm':
+				
+			break;
+
+			case 'tpl':
+				
+			break;
+
+			default:
+				$this->pageConfig=false;
+				return false;
 		}
-		$this->pageType="json";
-		$pageConfig=json_decode(file_get_contents($pageConfig),true);
 
-		if(isset($pageConfig['modules'])) {
-			$pageConfig['modules_preload']=$pageConfig['modules'];
-			unset($pageConfig['modules']);
-		}
-		$pageConfig['modules_preload']=explode(",", trim($pageConfig['modules_preload']));
-		$pageConfig['modules_postload']=explode(",", trim($pageConfig['modules_postload']));
-
+		if(!isset($pageConfig['enabled'])) $pageConfig['enabled']=true;
+		
 		$pageConfig['theme']=APPS_THEME;
-		$pageConfig['class']=str_replace("/"," ",$pageConfig['url']);
+		$pageConfig['page']=$page;
+		$pageConfig['pagepath']=$this->pagePath;
+
+
+		$fx=explode("/", $this->pagePath);
+		$fx=end($fx);
+		$fx=explode(".", $fx);
+		unset($fx[count($fx)-1]);
+		$fx=implode(".", $fx);
+		$fx=str_replace("-", "/", $fx);
+
+		$pageConfig['pageuri']=$fx;
 
 		$this->pageConfig=$pageConfig;
-		if(!$this->isAccessible()) {
-			trigger_logikserror('Sorry, page '.PAGE.' is not accessible to you. Needs Credentials',E_LOGIKS_ERROR,401);
-		}
+
+		//printArray($this->pageConfig);
 
 		return $this->pageConfig;
 	}
+	public function getPageContent() {
+		$pageConfig=$this->pageConfig;
+		$page=$pageConfig['page'];
+		//printArray($pageConfig);exit();
+
+		if(!$pageConfig) return false;
+		if(!$pageConfig['enabled'])  return false;
+		if(!$this->isAccessible()) return false;
+
+		$_ENV['PAGECONFIG']=$this->pageConfig;
+
+		switch ($this->pageType) {
+			case 'json':
+				$ext=explode(".", $pageConfig['template']);
+				if(count($ext)>1) {
+					$ext=$ext[count($ext)-1];
+					$ext=".{$ext}";
+					$engine=LogiksTemplate::getEngineForExtension($ext);
+				} else {
+					$ext=LogiksTemplate::getExtensionForEngine(APPS_TEMPLATEENGINE);
+					$engine=APPS_TEMPLATEENGINE;
+					$pageConfig['template'].=$ext;
+				}
+				if(!$engine || !$ext) {
+					return false;
+				}
+
+				$tmpl=$this->theme->findTemplate($pageConfig['template']);
+
+				if($tmpl) {
+					$lt=new LogiksTemplate($engine);
+					$this->setupMeta($lt);
+					
+					ob_start();
+					if(MASTER_DEBUG_MODE)
+						$lt->printTemplate($tmpl,null,true);
+					else
+						$lt->printTemplate($tmpl,null);
+
+					$html=ob_get_contents();
+					ob_clean();
+
+					return $html;
+				}
+			break;
+			
+			case 'php':
+				ob_start();
+
+				require_once $this->pagePath;
+
+				$html=ob_get_contents();
+				ob_clean();
+
+				return $html;
+			break;
+
+			case 'htm':
+				ob_start();
+
+				readfile($this->pagePath);
+
+				$html=ob_get_contents();
+				ob_clean();
+
+				return $html;
+			break;
+
+			default:
+				return false;
+		}
+	}
 	public function printPage() {
 		$pageConfig=$this->pageConfig;
-		//printArray($pageConfig);
+		$page=$pageConfig['page'];
+		//printArray($pageConfig);exit();
 
 		if(!$pageConfig) {
-			trigger_logikserror('Sorry, page '.PAGE.' is not available or accessible to you.',E_LOGIKS_ERROR,404);
+			trigger_logikserror("Sorry, page $page is not available or accessible to you.",E_LOGIKS_ERROR,404);
 		}
 		if(!$pageConfig['enabled']) {
-			trigger_logikserror('Sorry, page '.PAGE.' is not available',E_LOGIKS_ERROR,403);
+			trigger_logikserror("Sorry, page $page is not available",E_LOGIKS_ERROR,403);
+		}
+
+		if(!$this->isAccessible()) {
+			trigger_logikserror("Sorry, page $page is not accessible to you. Needs Credentials",E_LOGIKS_ERROR,401);
 		}
 
 		//include ROOT."api/scripts.php";
-		//
-		//$cacheFile=
-		//include $pageLinkPath;
-		//runHooks("postPage");
+		
+		$_ENV['PAGECONFIG']=$this->pageConfig;
+		$this->generateSLUG();
 
-		$ext=explode(".", $pageConfig['template']);
-		if(count($ext)>1) {
-			$ext=$ext[count($ext)-1];
-			$ext=".{$ext}";
-			$engine=LogiksTemplate::getEngineForExtension($ext);
-		} else {
-			$ext=LogiksTemplate::getExtensionForEngine(APPS_TEMPLATEENGINE);
-			$engine=APPS_TEMPLATEENGINE;
-			$pageConfig['template'].=$ext;
-		}
-		if(!$engine || !$ext) {
-			trigger_logikserror("Template Engine Not Yet Supported",E_LOGIKS_ERROR);
-		}
+		switch ($this->pageType) {
+			case 'json':
+				$ext=explode(".", $pageConfig['template']);
+				if(count($ext)>1) {
+					$ext=$ext[count($ext)-1];
+					$ext=".{$ext}";
+					$engine=LogiksTemplate::getEngineForExtension($ext);
+				} else {
+					$ext=LogiksTemplate::getExtensionForEngine(APPS_TEMPLATEENGINE);
+					$engine=APPS_TEMPLATEENGINE;
+					$pageConfig['template'].=$ext;
+				}
+				if(!$engine || !$ext) {
+					trigger_logikserror("Template Engine Not Yet Supported",E_LOGIKS_ERROR);
+				}
 
-		$tmpl=$this->theme->findTemplate($pageConfig['template']);
+				$tmpl=$this->theme->findTemplate($pageConfig['template']);
 
-		if($tmpl) {
-			$_ENV['PAGECONFIG']=$this->pageConfig;
+				if($tmpl) {
+					runHooks("prePage");
 
-			runHooks("prePage");
+					$lt=new LogiksTemplate($engine);
+					$this->setupMeta($lt);
+					
+					if(count($pageConfig['modules_preload'])>0) loadModule($pageConfig['modules_preload']);
 
-			$lt=new LogiksTemplate($engine);
-			$this->setupMeta($lt);
+					if(MASTER_DEBUG_MODE)
+						$lt->printTemplate($tmpl,null,true);
+					else
+						$lt->printTemplate($tmpl,null);
+
+					if(count($pageConfig['modules_postload'])>0) loadModule($pageConfig['modules_postload']);
+
+					runHooks("postPage");
+				} else {
+					trigger_logikserror("Template {$pageConfig['template']} Not Found",E_LOGIKS_ERROR,404);
+				}		
+			break;
 			
-			if(count($pageConfig['modules_preload'])>0) loadModule($pageConfig['modules_preload']);
+			case 'php':
+				if(file_exists($this->pagePath)) {
+					runHooks("prePage");
+					include_once $this->pagePath;
+					runHooks("postPage");
+				} else {
+					trigger_logikserror("Template {$pageConfig['page']} Not Found",E_LOGIKS_ERROR,404);
+				}
+			break;
 
-			if(MASTER_DEBUG_MODE)
-				$lt->printTemplate($tmpl,null,true);
-			else
-				$lt->printTemplate($tmpl,null);
+			case 'htm':
+				if(file_exists($this->pagePath)) {
+					runHooks("prePage");
+					readfile($this->pagePath);
+					runHooks("postPage");
+				} else {
+					trigger_logikserror("Template {$pageConfig['page']} Not Found",E_LOGIKS_ERROR,404);
+				}
+			break;
 
-			if(count($pageConfig['modules_postload'])>0) loadModule($pageConfig['modules_postload']);
-
-			runHooks("postPage");
-		} else {
-			trigger_logikserror("Template {$pageConfig['template']} Not Found",E_LOGIKS_ERROR,404);
+			default:
+				return false;
 		}
 	}
 
 	protected function isAccessible() {
-		return true;
+		if(function_exists("checkUserRoles")) {
+			return checkUserRoles("PAGES",$this->pageConfig['pageuri'],"PAGES");
+		} else {
+			if($this->pageType=="json") {
+				if(isset($this->pageConfig['access'])) {
+					$access=$this->pageConfig['access'];
+
+					if(is_string($access)) $access=explode(",", $access);
+
+					if(strlen($access[0])==0 || $access[0]=="public") {
+						return true;
+					} elseif($access[0]=="private") {
+						return session_check(false,false);
+					} else {
+						if(session_check(false,false)) {
+							if(in_array($_SESSION['SESS_USER_ID'], $access)) return true;
+							elseif(in_array(md5($_SESSION['SESS_PRIVILEGE_NAME'].$_SESSION['SESS_PRIVILEGE_ID']), $access)) return true;
+							else return false;
+						} else {
+							return false;
+						}
+					}
+				} else {
+					return true;
+				}
+			}
+			return true;
+		}
   	}
 
-  	protected function findPage($page) {
-	    $page=explode("/",$page);
-	    $page=current($page);
+  	protected function findPage($pagePath) {
+  		$pageFile=_metaCache("PAGES",$pagePath);
 
-	    return $page;
+  		if($pageFile && file_exists($pageFile)) {
+  			return $pageFile;
+  		}
+
+	    $page=explode("/",$pagePath);
+	    foreach ($page as $key => $value) {
+	    	if($key>0) {
+	    		$page[$key]=$page[$key-1]."-".$value;
+	    	}
+	    }
+	    $page=array_reverse($page);
+
+	    $pageArr=array(
+				"json"=>$this->pageFolder,
+				"php"=>dirname($this->pageFolder)."/",
+				"htm"=>dirname($this->pageFolder)."/",
+			);
+	    foreach ($page as $pgx) {
+	    	foreach ($pageArr as $ext => $path) {
+	    		$f="{$path}{$pgx}.{$ext}";
+	    		if(file_exists($f)) {
+	    			_metaCacheUpdate("PAGES",$pagePath,$f);
+	    			return $f;
+	    		}
+	    	}
+	    }
+	    return false;
 	}
 	
   	protected function setupMeta($logiksTemplate) {
@@ -145,6 +339,10 @@ class LogiksPage {
   		if(isset($this->pageConfig['css']) && strlen($this->pageConfig['css'])>0) $page['CSS']=$this->pageConfig['css'];
   		if(isset($this->pageConfig['js_preload']) && strlen($this->pageConfig['js_preload'])>0) $page['JS_PRELOAD']=$this->pageConfig['js_preload'];
   		if(isset($this->pageConfig['js_postload']) && strlen($this->pageConfig['js_postload'])>0) $page['JS_POSTLOAD']=$this->pageConfig['js_postload'];
+
+		$page['PAGE_CSS']=$page['CSS'];
+		$page['PAGE_JS_PRELOAD']=$page['JS_PRELOAD'];
+		$page['PAGE_JS_POSTLOAD']=$page['JS_POSTLOAD'];
 
   		$device=strtoupper(getUserDeviceType());
 		if($device=="PC") {
@@ -210,6 +408,45 @@ class LogiksPage {
 			$page['JS_POSTLOAD']="<script src='"._jsLink(explode(",", trim($page['JS_POSTLOAD'])))."' type='text/javascript' language='javascript'></script>";
 
 		$logiksTemplate->addVar("PAGE",$page);
+  	}
+
+  	protected function generateSLUG() {
+  		$arrSlug=array();
+
+  		$fx=$this->pageConfig['pageuri'];
+
+	
+		$page=$this->pageConfig['page'];
+		$pageSlug=str_replace("#{$fx}", "", "#{$page}");
+		if(substr($pageSlug, 0,1)=="/") $pageSlug=substr($pageSlug, 1);
+		if(substr($pageSlug, -1,1)=="/") $pageSlug=substr($pageSlug, 0,-1);
+
+		$pageSlug=explode("/", $pageSlug);
+
+		switch ($this->pageType) {
+			case 'json':
+				$slugX=array();
+				if(isset($this->pageConfig['slug'])) $slugX=explode("/", $this->pageConfig['slug']);
+				$slugX=array_flip($slugX);
+
+				foreach ($slugX as $key => $value) {
+					if(isset($pageSlug[$value])) $slugX[$key]=$pageSlug[$value];
+					else $slugX[$key]="";
+				}
+				$_ENV['PAGESLUG']=$slugX;
+				$arrSlug=$_ENV['PAGESLUG'];
+			break;
+			
+			case 'php':
+			case 'htm':
+				$_ENV['PAGESLUG']=$pageSlug;
+				$arrSlug=$_ENV['PAGESLUG'];
+			break;
+
+			default:
+				return false;
+		}
+  		return $arrSlug;
   	}
 }
 ?>

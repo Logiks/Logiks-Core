@@ -47,3 +47,4 @@ This marks a complete restructuring and system wide improvement for Logiks Frame
 
 ###Very Improtant Notes
 + Logiks is stoping the DB Logging feature that has been there from the very begining. LogDB will be additional have to be enabled using vendor/plugin system. (Still debating on this)
+

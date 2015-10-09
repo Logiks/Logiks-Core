@@ -45,7 +45,6 @@ if(!function_exists("errorHandler")) {
     } else {
       LogiksError::handle($severity, $errMsg, $file, $line, 500);
     }
-
   }
 
 	//ERROR Handler For Fatal Errors
@@ -103,6 +102,21 @@ if(!function_exists("errorHandler")) {
         echo "<div class='logiksException'>{$errData['msg']} <citie>({$errData['severity']})</citie></div>";
       }
     }
+  }
+
+  /*
+  * Logs the given message in appropiate logger for the current site.
+  * 
+  * $logMsg       The message that needs to be logged
+  * $logKey       The logger on to which the log has to be done eg. acivity, error, console, system, requests, etc.
+  * $logLevel     The logging level of information
+  * $logData      An array of extra parameters that needs to be logged like userids, etc
+  */
+  function _log($logMsg, $logkey="activity", $logLevel=null, $logData=array()) {
+    if($logLevel==null) {
+      $logLevel=LogiksLogger::LOG_WARNING;
+    }
+    LogiksLogger::log($logkey,$logLevel,$logMsg,$logData);
   }
 
 	//Start the LogiksLogger Instance for logging everything

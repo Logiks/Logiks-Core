@@ -52,8 +52,8 @@ class LogiksTemplate {
   //BYPASS printTemplate to driver
   public function printTemplate($tmpl,$data=array(),$recreateCache=false) {
     if(!file_exists($tmpl)) {
-		trigger_error("Template ".basename($tmpl)." Not Found",E_USER_ERROR);
-	}
+  		trigger_error("Template ".basename($tmpl)." Not Found",E_USER_ERROR);
+  	}
     return $this->engine->printTemplate($tmpl,$data,$recreateCache);
   }
 
