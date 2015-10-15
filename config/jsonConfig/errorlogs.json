@@ -13,7 +13,7 @@
                     }
                 }
             },
-            "two":{
+            "console":{
                 "Monolog\\Handler\\BrowserConsoleHandler":{
                     "params1":null,
                     "params2":null,
@@ -54,10 +54,10 @@
                 "handler": ["one"]
             },
             "console":{
-                "handler": "two"
+                "handler": "console"
             },
             "system":{
-                "handler": ["one","two"]
+                "handler": ["one","console"]
             },
             "login":{
                 "handler": "login"

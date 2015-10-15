@@ -17,7 +17,13 @@ if(!function_exists("errorHandler")) {
   include_once dirname(__FILE__)."/logikserror.inc";
 
   //Logiks ERROR Trigger Function
-  function trigger_logikserror($message, $severity=E_USER_NOTICE, $errorCode=500) {
+  function trigger_logikserror($message, $severity=E_USER_NOTICE, $errorCode=null) {
+    if(is_numeric($message)) {
+      $errorCode=$message;
+      $message=getErrorTitle($errorCode);
+    }
+    if($errorCode==null) $errorCode=500;
+
     $caller=debug_backtrace();
     $caller = current($caller);
 
@@ -116,6 +122,8 @@ if(!function_exists("errorHandler")) {
     if($logLevel==null) {
       $logLevel=LogiksLogger::LOG_WARNING;
     }
+    $logData['time']=(microtime(true)-$_SESSION['REQUEST_START']);
+
     LogiksLogger::log($logkey,$logLevel,$logMsg,$logData);
   }
 

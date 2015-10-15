@@ -19,8 +19,33 @@ if(!function_exists("printFormattedArray")) {
 		$format=strtolower($format);
 		//HTML Format
 		if($format=="select") {
-			foreach($arr as $a=>$b) {
-				echo "<option rel='$a' value='$b'>".ucwords($a)."</option>";
+			if(!array_is_associative($arr)) {
+				foreach($arr as $a=>$b) {
+					if($autoTitle) {
+						echo "<option title='$b' value='$b'>".toTitle(_ling($b))."</option>\n";
+					} else {
+						echo "<option title='$b' value='$b'>"._ling($b)."</option>\n";
+					}
+				}
+			} else {
+				foreach($arr as $a=>$b) {
+					$xs="";
+					if(is_array($b)) {
+						$xx=array();
+						foreach ($b as $x => $y) {
+							$xx[]="$x='$y'";
+						}
+						$xs=implode(" ", $xx);
+
+						if(isset($b['value'])) $b=$b['value'];
+						else $b=$a;
+					}
+					if($autoTitle) {
+						echo "<option title='$a' value='$b' $xs>".toTitle(_ling($a))."</option>\n";
+					} else {
+						echo "<option title='$a' value='$b' $xs>"._ling($a)."</option>\n";
+					}
+				}
 			}
 		} elseif($format=="table") {
 			foreach($arr as $a=>$b) {
@@ -28,14 +53,18 @@ if(!function_exists("printFormattedArray")) {
 				if(is_array($b)) {
 					foreach($b as $x=>$y) {
 						if(is_numeric($y)) {
-							$s.="<td name='$x' rel='$y' align=center>".ucwords($y)."</td>";
+							$s.="<td name='$x' rel='$y' align=center>".toTitle(_ling($y))."</td>";
 						} elseif(is_array($y)) {
-							$r=array("name"=>"$x","rel"=>"","text"=>"","align"=>"left","title"=>"");
-							foreach($y as $t=>$y) {
-								$r[$t]=$y;
+							$xs="";
+							foreach ($y as $u => $v) {
+								$xx[]="$u='$v'";
 							}
-							$r['text']=ucwords($r['text']);
-							$s.="<td name='{$r['name']}' rel='{$r['rel']}' title='{$r['title']}' align='{$r['align']}' >{$r['text']}</td>";
+							$xs=implode(" ", $xx);
+
+							if(isset($y['value'])) $y=$y['value'];
+							else $y=$x;
+
+							$s.="<td name='$x' rel='$y' $xs>".toTitle(_ling($y))."</td>";
 						} elseif(is_bool($y) || $y=="true" || $y=="false") {
 							if($y=="true" || $y==1)
 								$s.="<td name='$x' rel='$y' align=center><input name=$x type=checkbox checked /></td>";
@@ -48,24 +77,57 @@ if(!function_exists("printFormattedArray")) {
 								$y=substr($y,1);
 								$s.="<td name='$x' rel='$x'>$y</td>";
 							} else {
-								$s.="<td name='$x' rel='$y'>".ucwords($y)."</td>";
+								$s.="<td name='$x' rel='$y'>".toTitle(_ling($y))."</td>";
 							}
 						}
 					}
 				} else {
-					$s.="<td name='$a' rel='$b'>".ucwords($b)."</td>";
+					$s.="<td name='$a' rel='$b'>".toTitle(_ling($b))."</td>";
 				}
-				$s.="</tr>";
+				$s.="</tr>\n";
 				echo $s;
 			}
 		} elseif($format=="list") {
-			foreach($arr as $a=>$b) {
-				if(is_array($b)) {
-					echo "<ul>";
-					printFormattedArray($b);
-					echo "</ul>";
-				} else {
-					echo "<li rel='$a' value='$b'>".ucwords($a)."</li>";
+			if(!array_is_associative($arr)) {
+				foreach($arr as $a=>$b) {
+					if(is_array($b)) {
+						echo "<ul>\n";
+						printFormattedArray($b,$autoTitle,$format);
+						echo "</ul>\n";
+					} else {
+						if($autoTitle) {
+							echo "<li title='$b' value='$b'>".toTitle(_ling($b))."</li>\n";
+						} else {
+							echo "<li title='$b' value='$b'>"._ling($b)."</li>\n";
+						}
+					}
+				}
+			} else {
+				foreach($arr as $a=>$b) {
+					if(is_array($b)) {
+						$xs="";
+						if(is_array($b)) {
+							$xx=array();
+							foreach ($b as $x => $y) {
+								$xx[]="$x='$y'";
+							}
+							$xs=implode(" ", $xx);
+						}
+						if($autoTitle) {
+							echo "<li title='$a' $xs>".toTitle(_ling($a))."</li>\n";
+						} else {
+							echo "<li title='$a' $xs>"._ling($a)."</li>\n";
+						}
+						// echo "<ul>\n";
+						// printFormattedArray($b,$autoTitle,$format);
+						// echo "</ul>\n";
+					} else {
+						if($autoTitle) {
+							echo "<li title='$a' value='$b'>".toTitle(_ling($a))."</li>\n";
+						} else {
+							echo "<li title='$a' value='$b'>"._ling($a)."</li>\n";
+						}
+					}
 				}
 			}
 		}
@@ -73,7 +135,7 @@ if(!function_exists("printFormattedArray")) {
 		elseif($format=="text") {
 			foreach($arr as $a=>$b) {
 				if(is_array($b)) {
-					printFormattedArray($b);
+					printFormattedArray($b,$autoTitle,$format);
 				} else {
 					$sx=strip_tags("$a=$b");
 					echo "$sx\n";
@@ -88,6 +150,7 @@ if(!function_exists("printFormattedArray")) {
 		elseif($format=="xml") {
 			$arr=array_flip($arr);
 			$xml = new SimpleXMLElement('<service/>');
+			//arrayToXML($arrData,$xml);
 			array_walk_recursive($arr, array ($xml, 'addChild'));
 			echo $xml->asXML();
 		}
@@ -103,7 +166,7 @@ if(!function_exists("getMsgEnvelop")) {
 		$format="";
 		if(isset($_REQUEST["format"])) $format=$_REQUEST["format"];
 		if($format=="select") {$envelop["start"]="<option>"; $envelop["end"]="</option>";}
-		elseif($format=="table" || $format=="html") {$envelop["start"]="<tr a><td colspan=100 align=center>"; $envelop["end"]="</td></tr>";}
+		elseif($format=="table" || $format=="html") {$envelop["start"]="<tr><td colspan=100 align=center>"; $envelop["end"]="</td></tr>";}
 		elseif($format=="list") {$envelop["start"]="<li>"; $envelop["end"]="</li>";}
 		elseif($format=="json") {$envelop["start"]="{"; $envelop["end"]="}";}
 

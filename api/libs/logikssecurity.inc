@@ -14,22 +14,81 @@
    }
    public function checkPageRequest() {
      $this->checkSiteMode();
-     $this->isBlacklisted();
+     $this->checkDevMode();
+     $this->checkUserSiteAccess();
+     $this->isBlacklisted(PAGE,SITENAME);
+     $this->isLinkRedirected(PAGE);
      $this->checkBadBot(true);
    }
 
    public function checkServiceRequest() {
-     $this->checkSiteMode();
-     $this->isBlacklisted();
+     //$this->checkSiteMode();
+     $this->isBlacklisted("SCMD-".$_REQUEST['scmd'],SITENAME);
      $this->checkBadBot(true);
+
    }
 
-   public function isBlacklisted() {
+   public function checkUserSiteAccess() {
+      if(session_check()) {
+        if(isset($_SESSION["SESS_ACCESS_ID"]) && $_SESSION["SESS_ACCESS_ID"]=="1") {
+          return true;
+        }
+        if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]=="1") {
+          return true;
+        }
+        if(in_array(SITENAME, $_SESSION["SESS_ACCESS_SITES"])) return true;
+        trigger_logikserror(403.1);
+      } else {
+        if(defined("ACCESS")) {
+          if((strtolower(ACCESS)=="public")) return true;
+          trigger_logikserror(403.1);
+        } else {
+          trigger_logikserror("Logiks Site Is Misconfigured",null,800);
+        }
+      }
+   }
 
+   function isLinkRedirected($page=null,$site=SITENAME) {
+      if($page==null) $page=PAGE;
+      //TODO : After DB
+      //301,307
+      return false;
+   }
+
+   public function isBlacklisted($page,$site=SITENAME) {
+      //TODO : After DB
+      //$client=$_SERVER["REMOTE_ADDR"];
+      //802/806
    }
 
    public function checkSiteMode() {
+      if(!defined("PUBLISH_MODE")) return false;
 
+      switch (strtolower(PUBLISH_MODE)) {
+        case 'blocked':
+          trigger_logikserror(807);
+          exit();
+          break;
+        case 'restricted':
+          trigger_logikserror(806);
+          exit();
+          break;
+
+        case 'whitelist':
+          trigger_logikserror(806.1);
+          exit();
+          break;
+
+        case 'maintainance':
+          trigger_logikserror(804);
+          exit();
+          break;
+
+        case 'underconstruction':
+          trigger_logikserror(805);
+          exit();
+          break;
+      }
    }
    public function checkDevMode($site=null) {
 		if($site==null) $site=SITENAME;
@@ -54,11 +113,5 @@
 		}
 		return false;
 	}
-  public function generateMAuthKey() {
-   if(!isset($_REQUEST['deviceuuid'])) $_REQUEST['deviceuuid']="";
-   $key=md5(base64_encode($_REQUEST['site'].$_SERVER['HTTP_USER_AGENT'].SiteID.$_REQUEST['deviceuuid'].$_SESSION['SESS_USER_ID']));
-   unset($_REQUEST['deviceuuid']);
-   return $key;
-  }
- }
+}
 ?>

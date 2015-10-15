@@ -114,6 +114,7 @@ class LogiksReplace {
 			elseif(isset($_SESSION[$in])) return $_SESSION[$in];
 			elseif(isset($_SERVER[$in])) return $_SERVER[$in];
 			elseif(isset($_COOKIE[$in])) return $_COOKIE[$in];
+      elseif(defined($in)) return constant($in);
 			return getConfig($in);
 		}
 	}

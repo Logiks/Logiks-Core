@@ -30,7 +30,8 @@ if(!function_exists("phpErrorLevelNames")) {
         400 => 'Bad Request',
         401 => 'Unauthorized',
         402 => 'Payment Required',
-        403 => 'Forbidden',
+        403 => 'Page <b>#page#</b> Is Forbidden For Access',
+        403.1 => 'Site <b>#site#</b> Is Forbidden For Access',
         404 => 'Not Found',
         405 => 'Method Not Allowed',
         406 => 'Not Acceptable',
@@ -64,18 +65,31 @@ if(!function_exists("phpErrorLevelNames")) {
 				801 => 'Data Not Found',
 				802 => 'You have been blacklisted by/on server',
 				803 => 'Error At Source Or Parsing Script',
+				804 => 'Site <b>#site#</b>Is Down For Maintenance',
+				805 => 'Site <b>#site#</b> Is Under-Construction',
+				806 => 'Site <b>#site#</b> Is Currently In Restrictive Only Mode',
+				806.1 => 'Site <b>#site#</b> Is Currently In Whitelist Only Mode',
+				807	=> 'Site <b>#site#</b> Is Currently Blocked',
+				808	=> 'Site <b>#site#</b>/<b>#page#</b> Is In Restrictive Development Mode',
 			//LOGIKS SERVICE ERRORS
 				900 => 'Internal Logiks Service Error',
 				901 => 'Illegal Service Command Format',
 				902 => 'Service Format Not Supported',
 				903 => 'Service Type Not Found',
-				904 => 'Service Not Found',
+				904 => 'Service Command Not Found',
 				905 => 'CrossSite Request With Out Key Not Allowed',
+				906 => 'Service Command Missing',
     );
 	}
 	function getErrorTitle($code) {
 		$err=getErrorList();
-		if(isset($err[$code])) return $err[$code];
+		if(isset($err[$code])) {
+			if(function_exists("_replace")) return _replace($err[$code]);
+			else {
+				$lr=new LogiksReplace();
+				return $lr->_replace($err[$code]);
+			}
+		}
 		else return "Unknown Error Code";
 	}
 	function phpErrorLevelNames($errLevel) {

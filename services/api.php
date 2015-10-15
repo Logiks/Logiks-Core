@@ -2,223 +2,194 @@
 if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 //All functions and resources to be used by service system
 
-//All System Functions
-function getRelativePathToROOT($file) {
-	$basepath="";
-
-	$s=str_replace(ROOT,"",dirname($file) . "/");
-	$s=str_replace("//","/",$s);
-	for($j=0;$j<substr_count($s,"/");$j++) {
-		$basepath.="../";
+//All System Functions for service system
+if(!function_exists("getServiceCMD")) {
+	function getServiceCMD() {
+		$scmd=$_REQUEST['scmd'];
+		return $scmd;
 	}
 
-	return $basepath;
-}
-function getRequestPath() {
-	return 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
-}
-function parseHTTPReferer() {
-	$arr=array();
-	$arr["SERVER_PROTOCOL"]="";
-	$arr["HTTP_HOST"]="";
-	$arr["REQUEST_URI"]="";
-	$arr["SCRIPT_NAME"]="";
-	$arr["QUERY_STRING"]="";
+	//All Error Printing Funcs
+	function passErrorMsg($msg) {
+		if(is_array($msg)) {
+			$msg=json_encode($msg);
 
-	$arr["SITE"]="";
-	$arr["PAGE"]="";
-	$arr["MODULE"]="";
+			echo "<script language='javascript' type='text/javascript'>
+				console.error('$msg');
+			</script><h3>$msg</h3>";
+		} else {
+			echo "<script language='javascript' type='text/javascript'>
+				if(typeof logiksAlert=='undefined') alert('ERROR : $msg');
+				else logiksAlert('ERROR : $msg');
+				console.error('$msg');
+			</script><h3>$msg</h3>";
+		}
+	}
 
-	//printArray($_SERVER);
-	if(isset($_SERVER["HTTP_REFERER"]) && strlen($_SERVER["HTTP_REFERER"])>0) {
-		$s=$_SERVER["HTTP_REFERER"];
-		$a1=substr($s,0,strpos($s,"://"));
-		$s=substr($s,strpos($s,"://")+3);
-		$a2=substr($s,0,strpos($s,"/"));
-		$s=substr($s,strpos($s,"/")+1);
-		$a3=$s;
-		$a4=substr($s,0,strpos($s,"?"));
-		$s=substr($s,strpos($s,"?")+1);
-		$a5=$s;
+	//All Error Printing Funcs
+	function passWarnMsg($msg) {
+		if(is_array($msg)) {
+			$msg=json_encode($msg);
 
-		$n1=strpos($s,"site=");
-		if($n1!==false) {
-			$w="";
-			if($n1>=0) {
-				$n2=strpos($s,"&",$n1+5);
-				$w=substr($s,$n1+5,$n2-$n1-5);
+			echo "<script language='javascript' type='text/javascript'>
+				console.warn('$msg');
+			</script><h3>$msg</h3>";
+		} else {
+			echo "<script language='javascript' type='text/javascript'>
+				if(typeof logiksAlert=='undefined') alert('WARNING : $msg');
+				else logiksAlert('WARNING : $msg');
+				console.warn('$msg');
+			</script><h3>$msg</h3>";
+		}
+	}
+
+	function printServiceErrorMsg($errCode,$errMsg=null,$errorImg="") {
+		if($errCode==null) $errCode=500;
+		if(is_numeric($errCode)) {
+		  $errorMessage=getErrorTitle($errCode);
+	    }
+	    if($errMsg==null) {
+	    	$errMsg=$errorMessage;
+	    }
+		if($errorImg!=null && strlen($errorImg)>0) {
+			$errorImg=loadMedia($errorImg);
+		} else {
+			$errorImg=loadMedia("images/errors/msg_default.png");
+		}
+
+		$arr=array();
+		$arr['ErrorCode']=$errCode;
+		$arr['Data']=$errMsg;
+		$arr['ErrorDescs']=_replace($errorMessage);
+		$arr['ErrorIcon']=$errorImg;
+
+		printServiceData($arr,null,$errCode);
+	}
+
+	function printServiceMsg($msgData,$msgCode=200,$msgImage="") {
+		// if($msgImage!=null && strlen($msgImage)>0) {
+		// 	$msgImage=loadMedia($msgImage);
+		// }
+
+		$arr=array();
+		$arr['MessageCode']=$msgCode;
+		$arr['Data']=$msgData;
+		//$arr['MessageIcon']=$msgImage;
+
+		printServiceData($arr,null,$msgCode);
+	}
+
+	function printServiceData($arrData,$format=null,$statusCode=200) {
+		if($statusCode==null || !is_numeric($statusCode)) $statusCode=200;
+		$envelop=getMsgEnvelop();
+
+		if($format==null) $format=$_REQUEST['format'];
+
+		if(getConfig("SERVICE_SHOW_REQUEST")) {
+			$arrData['Request']['uri']=SiteLocation.$_SERVER['REQUEST_URI'];
+			$arrData['Request']['site']=$_REQUEST['site'];
+			$arrData['Request']['scmd']=$_REQUEST['scmd'];
+			$arrData['Request']['format']=$format;
+
+			$arrData['Request']['slug']=array();
+			foreach ($_REQUEST['slug'] as $key => $value) {
+				$arrData['Request']['slug']["SLUG_{$key}"]=$value;
+			}
+		}
+		$htmlFormats=array("list","select","table");
+		if(in_array($format, $htmlFormats)) {
+			if(isset($_REQUEST['debug']) && $_REQUEST['debug']=="true") {
+				header("Content-Type:text/text");
 			} else {
-				$w=$_REQUEST['site'];
+				header("Content-Type:text/html");
 			}
 		} else {
-			$w=$_REQUEST['site'];
+			header("Content-Type:text/{$format}");
+		}
+		
+		if(getConfig("SERVICE_SHOW_ERROR_CODE")) {
+			header("Status: $statusCode");
+			//header(':', true, $statusCode);
+			header("HTTP/1.1 $statusCode");
 		}
 
-		$n1=strpos($s,"page=");
-		$p="";
-		if($n1!==false) {
-			if($n1>=0) {
-				$n2=strpos($s,"&",$n1+5);
-				$p=substr($s,$n1+5,$n2-$n1-5);
-			}
-		}
+		$msgData=$arrData['Data'];
+		// $msgData=array(
+		// 		// "a"=>"m",
+		// 		// "c"=>"n",
+				
+		// 		// "a","b",
 
-		$n1=strpos($s,"mod=");
-		$m="";
-		if($n1!==false) {
-			if($n1>=0) {
-				$n2=strpos($s,"&",$n1+5);
-				$m=substr($s,$n1+4,$n2-$n1-4);
-			}
-		}
+		// 		// "a"=>array("x"=>array("m"=>"n"),"z"=>"w"),
+		// 		// "b"=>array("m"=>"n","o"=>"p"),
 
-		$arr["SERVER_PROTOCOL"]=strtoupper($a1);
-		$arr["HTTP_HOST"]=$a2;
-		$arr["REQUEST_URI"]=$a3;
-		$arr["SCRIPT_NAME"]=$a4;
-		$arr["QUERY_STRING"]=$a5;
-		$arr["SITE"]=$w;
-		$arr["PAGE"]=$p;
-		$arr["MODULE"]=$m;
-	}
-	if(strlen($arr["SITE"])==0 && isset($_REQUEST['site'])) {
-		$arr["SITE"]=$_REQUEST['site'];
-	}
-	return $arr;
-}
-function getServiceCMD() {
-	$scmd=$_REQUEST['scmd'];
-	return $scmd;
-}
+		// 		// array("x"=>array("m"=>"n"),"z"=>"w"),
+		// 		// array("m"=>"n","o"=>"p"),
+		// 	);
+		switch ($format) {
+			case 'table':
+				if(is_array($msgData)) {
+					if(isset($_REQUEST['autoformat']) && $_REQUEST['autoformat']=="false") {
+						printFormattedArray($msgData,false,"table");
+					} else {
+						printFormattedArray($msgData,true,"table");
+					}
+				} else {
+					echo "<tr><td>$msgData</td></tr>";
+				}
+				break;
 
-function printServiceErrorMsg($errCode,$errMsg,$errorImg="") {
-	$envelop=getMsgEnvelop();
+			case 'list':
+				if(is_array($msgData)) {
+					if(isset($_REQUEST['autoformat']) && $_REQUEST['autoformat']=="false") {
+						printFormattedArray($msgData,false,"list");
+					} else {
+						printFormattedArray($msgData,true,"list");
+					}
+				} else {
+					echo "<li>$msgData</li>";
+				}
+				break;
+			
+			case 'select':
+				if(is_array($msgData)) {
+					if(isset($_REQUEST['autoformat']) && $_REQUEST['autoformat']=="false") {
+						printFormattedArray($msgData,false,"select");
+					} else {
+						printFormattedArray($msgData,true,"select");
+					}
+				} else {
+					echo "<option>$msgData</option>";
+				}
+				break;
 
-	if($errorImg!=null && strlen($errorImg)>0) {
-		$errorImg=SiteLocation.$errorImg;
-	}
-	$arr=array();
-	$arr['ErrorCode']=$errCode;
-	$arr['ErrorMessage']=$errMsg;
-	$arr['ErrorIcon']=$errorImg;
-	$arr['RequestedCommand']=$_REQUEST['scmd'];
-	$arr['RequestedSite']=$_REQUEST['site'];
+			case 'xml':
+				$xml=new SimpleXMLElement("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><service></service>");
+				arrayToXML($arrData,$xml);
+				//array_walk_recursive($arrData, array ($xml, 'addChild'));
+				echo $xml->asXML();
+				break;
 
-	$errArr=getErrorMsg($errCode);
+			case 'json':
+				echo json_encode($arrData);
+				break;
 
-	$errBaseMsg=$errArr['msg'];
-	$err_code=$errArr['code'];
-
-	if(getConfig("SERVICE_ERROR_HEADER")=="true") {
-		header("HTTP/1.1 $err_code $errBaseMsg");
-	} elseif(!isset($_SERVER["HTTP_HOST"])) {
-		header("HTTP/1.1 $err_code $errBaseMsg");
-	}
-
-	header("Content-Type:text/{$_REQUEST['format']}");
-	//header("Status: $err_code");
-	header(':', true, $err_code);
-
-	if($_REQUEST['format']=="html") {
-		if($errorImg!=null && strlen($errorImg)>0) {
-			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>
-				<img src='{$errorImg}'  width=48 height=48><p style='color:#AA0000;font:20px Arial;'>" .
-				$errBaseMsg . "</p>$errMsg</td></tr></table>{$envelop['end']}";
-		} else {
-			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'><h3 style='color:#AA0000;font:20px Arial;'>" .
-				$errBaseMsg . "</h3>$errMsg</td></tr></table>{$envelop['end']}";
-		}
-	} elseif($_REQUEST['format']=="select") {
-		echo "<option>$errCode :: $errMsg :: ".$errBaseMsg."</option>";
-	} elseif($_REQUEST['format']=="xml") {
-		$xml=new SimpleXMLElement("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><service></service>");
-		$arr=arrayToXML($arr,$xml);
-		echo $xml->asXML();
-	} elseif($_REQUEST['format']=="json") {
-		echo json_encode($arr);
-	} elseif($_REQUEST['format']=="text") {
-		$s="";
-		foreach($arr as $a=>$b) {
-			$s.="$a=$b\n";
-		}
-		echo $s;
-	} else {
-		//html
-		if($errorImg!=null && strlen($errorImg)>0) {
-			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'>
-				<img src='{$errorImg}'  width=48 height=48><p style='color:#AA0000;font:20px Arial;'>" .
-				$errBaseMsg . "</p>$errMsg</td></tr></table>{$envelop['end']}";
-		} else {
-			echo "{$envelop['start']}<table width=100% height=100% style='border:0px;'><tr><td width=100% align=center valign=center style='border:0px;'><h3 style='color:#AA0000;font:20px Arial;'>" .
-				$errBaseMsg . "</h3>$errMsg</td></tr></table>{$envelop['end']}";
+			case 'txt':
+				if(is_array($msgData)) {
+					trigger_logikserror(900, E_USER_ERROR);
+				} else {
+					$msgData=strip_tags($msgData);
+					echo $msgData;
+				}
+			default://Anything else (raw,css,js)
+				if(is_array($msgData)) {
+					printFormattedArray($msgData);
+				} else {
+					$msgData=strip_tags($msgData);
+					echo $msgData;
+				}
+				break;
 		}
 	}
-}
-
-function printServiceMsg($msgData,$msgCode=200,$msgImage="") {
-	$envelop=getMsgEnvelop();
-
-	if($msgImage!=null && strlen($msgImage)>0) {
-		$msgImage=SiteLocation.$msgImage;
-	}
-
-	$arr=array();
-	$arr['MessageCode']=$msgCode;
-	$arr['Data']="";
-	$arr['MessageIcon']=$msgImage;
-	$arr['RequestedCommand']=$_REQUEST['scmd'];
-	$arr['RequestedSite']=$_REQUEST['site'];
-
-	header("Content-Type:text/{$_REQUEST['format']}");
-
-	if($_REQUEST['format']=="html" || $_REQUEST['format']=="table") {
-		if(is_array($msgData)) {
-			printFormattedArray($msgData,true,"table");
-		} else {
-			$out=getMsgEnvelop();
-			echo $out['start'];
-			echo $msgData;
-			echo $out['end'];
-		}
-	} elseif($_REQUEST['format']=="select") {
-		if(is_array($msgData)) {
-			printFormattedArray($msgData,false,"select");
-		} else {
-			echo "<option>$msgCode :: $msgData </option>";
-		}
-	} elseif($_REQUEST['format']=="xml") {
-		$arr['Data']=$msgData;
-
-		foreach($arr as $a=>$b) {
-			if($b==null) $arr[$a]="";
-		}
-		$xml=new SimpleXMLElement("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><service></service>");
-		$arr=arrayToXML($arr,$xml);
-		echo $xml->asXML();
-	} elseif($_REQUEST['format']=="json") {
-		//array_walk_recursive($msgData, create_function('&$item, &$key','$item=urlencode($item);'));
-		$arr['Data']=$msgData;
-		echo json_encode($arr);
-	} elseif($_REQUEST['format']=="text") {
-		if(is_array($msgData)) {
-			printFormattedArray($msgData);
-		} else {
-			$msgData=strip_tags($msgData);
-			echo $msgData;
-		}
-	} else {
-		if(is_array($msgData)) {
-			printFormattedArray($msgData);
-		} else {
-			$out=getMsgEnvelop();
-			echo $out['start'];
-			echo $msgData;
-			echo $out['end'];
-		}
-	}
-}
-function printContentHeader($format='*') {
-	include_once ROOT."config/mimes.php";
-	printMimeHeader($format);
 }
 ?>

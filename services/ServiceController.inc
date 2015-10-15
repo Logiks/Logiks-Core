@@ -2,137 +2,140 @@
 /*
  * ServiceController handles the way the requested command (scmd) is executed
  * based on the command type (stype) for all sync/async requests.
- *
+ * It also handles the command preprocessing and all.
+ * 
+ * 
  * @author : Bismay Kumar Mohapatra
+ * @version : 2.0
  */
 if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 //Encoding Supported : base64
-include_once ROOT."api/rolemodel.php";
+
+include_once SERVICE_ROOT. "ServiceAPI.inc";
 
 class ServiceController {
-	private $serviceCmds=array("scmd","stype","format","enc","site","cached");
+	private $serviceCmds=null;
 
-	function checkQuery() {
-		if(!isset($_REQUEST['scmd'])) {
-			printErr('WrongFormat');
-			exit();
-		}
+	private $params=array();
+
+	private $defaultCtrl=null;
+
+	public function __construct() {
+		$this->serviceCmds=explode(",", SUPPORTED_COMMAND_ENGINES);
+
+		$this->defaultCtrl=array(
+				"format"=>null,
+				"privilege_model"=>array(),
+				"access_control"=>getConfig("DEFAULT_CTRL_ACCESS"),
+				"cache"=>getConfig("DEFAULT_CTRL_CACHE"),
+			);
 	}
-	function preProcessQuery() {
-		global $cmdFormat;
-		$query=array();
-		if(isset($_REQUEST['scmd'])) {
-			$scmd=$_REQUEST['scmd'];
-			if(strlen($scmd)<=0) {
-				printErr('WrongFormat');
-				exit();
-			}
-			$query['scmd']=$scmd;
-		} else {
-			printErr('WrongFormat');
-			exit();
-		}
 
-		if(isset($_REQUEST['stype'])) {
-			$ext=strtolower($_REQUEST['stype']);
-			if(!in_array($ext,$cmdFormat)) {
-				printErr('MethodNotAllowed',"Requested Command Method Is No Enabled/Found In Service Engine.");
-				exit();
-			}
-		} else {
-			$exts=explode(".", $query['scmd']);
-			if(count($exts)>1) {
-				$ext=end($exts);
-				array_pop($exts);
-				$query['scmd']=implode(".", $exts);
+	public function setupRequest($params) {
+		$serviceCtrlDb=loadJSONConfig("services",$params['scmd'],MASTER_DEBUG_MODE);
+		if($serviceCtrlDb) {
+			$params=array_merge($params,$serviceCtrlDb);
+		}
+		$params=array_merge($this->defaultCtrl,$params);
+
+		$this->params=$params;
+
+		if($this->params['cache']=="false") $this->params['cache']=0;
+		elseif($this->params['cache']=="true") $this->params['cache']=1;
+
+		return true;
+	}
+
+	public function checkRequest() {
+		$api=new ServiceAPI();
+		$access=explode(",", $this->params['access_control']);
+
+		if($api->isRemoteCall()) {
+			if(in_array("public", $access)) {
+				return true;
+			} elseif(in_array("apikey", $access)) {
+				if($api->checkRemoteClient()) {
+					if(in_array("private", $access)) {
+						if(session_check()) {
+							//Check Privilege Model
+							if(in_array(md5($_SESSION['SESS_PRIVILEGE_NAME'].$_SESSION['SESS_PRIVILEGE_ID']),$this->params['privilege_model']))
+								return true;
+							elseif(in_array(md5($_SESSION['SESS_USERID']),$this->params['privilege_model'])) 
+								return true;
+							else
+								return false;
+						}
+						return false;
+					} else {
+						return true;
+					}
+				}
+				return false;
 			} else {
-				$ext="php";
+				return false;
 			}
-		}
-		$query['stype']=$ext;
-
-		foreach(array_keys($_REQUEST) as $a) {
-			if(!array_key_exists($a,$query)) {
-				$query[$a]=$_REQUEST[$a];
-			}
-		}
-
-		$ext=$query['stype'];
-		unset($query['stype']);
-		$query['ext']=$ext;
-
-		return $query;
-	}
-	function cleanRequest($query) {
-		$scmd=$query['scmd'];
-		if(isset($query['enc'])) {
-			$encoded=($query['enc']=='true' || $query['enc']=='base64')?'base64':'none';
-		} else $encoded='none';
-
-		$scmd=$this->processEncoded($scmd, $encoded);
-
-		$scmd=str_replace('/',' ',$scmd);
-		$scmd=strip_tags($scmd);
-		$scmd=stripslashes($scmd);
-
-		if(substr_count($scmd," ")>0) {
-			printErr('WrongFormat');
-			exit();
-		}
-
-		$sarr=explode(".",$scmd);
-
-		$scmd=str_replace('.','/',$scmd);
-
-		$query['scmd']=$scmd;
-		if(PRECLEAN_SERVICE_REQUEST=="true") {
-			foreach($_GET as $a=>$b) {
-				if(is_array($b)) continue;
-				$b=strip_tags($b);
-				$b=stripslashes($b);
-				$b=mysql_real_escape_string($b);
-				$_GET[$a]=$b;
-				$_REQUEST[$a]=$b;
-			}
-		}
-		return $query;
-	}
-	function executeRequest($request) {
-		$ext=strtolower($request['ext']);
-		$cmdArr=array();
-		$cmdArr[]=ROOT.APPS_FOLDER.SITENAME."/services/".$ext."/".$request['scmd'].".".$ext;
-		$cmdArr[]=SERVICE_ROOT.$ext."/".$request['scmd'].".".$ext;
-		$modulesFolder=getPluginFolders("modules");
-		foreach ($modulesFolder as $key => $value) {
-			$cmdArr[]=ROOT.$value.$request['scmd']."/service.$ext";
-		}
-		$cmdArr[]=SERVICE_ROOT.$ext."/".SITENAME."/".$request['scmd'].".".$ext;
-		
-		foreach($cmdArr as $fl) {
-			if(file_exists($fl)) {
-				//echo $fl;
-				$this->executeFile($fl,$ext);
-				return;
-			}
-		}
-		printErr('NotFound');
-		exit();
-	}
-	function executeFile($file,$ext="php") {
-		$engine=SERVICE_ROOT."engines/{$ext}.php";
-
-		if(file_exists($engine)) {
-			include_once $engine;
 		} else {
-			printErr('NotSupported');
+			if(in_array("public", $access)) {
+				return true;
+			} elseif(in_array("private", $access)) {
+				if(session_check()) {
+					//Check Privilege Model
+					if(in_array(md5($_SESSION['SESS_PRIVILEGE_NAME'].$_SESSION['SESS_PRIVILEGE_ID']),$this->params['privilege_model']))
+						return true;
+					elseif(in_array(md5($_SESSION['SESS_USERID']),$this->params['privilege_model'])) 
+						return true;
+					else
+						return false;
+				}
+				return false;
+			} elseif(in_array("development", $access)) {
+				if(session_check()) {
+					//Check Privilege Model for developer
+					return (in_array(md5($_SESSION['SESS_USERID']),$this->params['privilege_model']) &&
+							$_SESSION['SESS_PRIVILEGE_ID']<=3);
+				}
+				return false;
+			} 
+		}
+		return false;
+	}
+
+	public function executeRequest() {
+		$this->params['file']=$this->findServiceFile();
+		
+		if($this->params['file']) {
+			if(file_exists($this->params['file']['src'])) {
+				if($this->params['cache']) {
+					echo _cache($this->params['file']['src']);
+					return true;
+				} else {
+					return $this->executeFile($this->params['file']['src'],$this->params['file']['ext']);
+				}
+			} else {
+				trigger_logikserror(906, E_USER_ERROR);
+				exit();
+			}
+		} else {
+			trigger_logikserror(904, E_USER_ERROR);
 			exit();
 		}
+		return false;
 	}
-	function processEncoded($cmd,$enc='base64') {
-		if($enc=='base64') {
-			$cmd=base64_decode($cmd);
+	protected function executeFile($file, $engine) {
+		$engineFile=SERVICE_ROOT."engines/{$engine}.php";
+
+		if(file_exists($engineFile)) {
+			_log("Service Executed : {$this->params['scmd']}","services",LogiksLogger::LOG_NOTICE,$this->params);
+			include_once $engineFile;
+			return true;
+		} else {
+			trigger_logikserror(901, E_USER_ERROR);
 		}
-		return $cmd;
+		return false;
+	}
+	public function findServiceFile() {
+		$scmd=$this->params['scmd'];
+		return checkService($scmd,$this->serviceCmds);
 	}
 }
 ?>

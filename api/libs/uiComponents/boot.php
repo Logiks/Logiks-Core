@@ -7,15 +7,9 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-if(!function_exists("explodeTagData")) {
-	include_once dirname(__FILE__)."/commons.php";
-
-	
-/*
+include_once dirname(__FILE__)."/commons.php";
 include_once dirname(__FILE__)."/basic.php";
 include_once dirname(__FILE__)."/xml.php";
 include_once dirname(__FILE__)."/sql.php";
 include_once dirname(__FILE__)."/lst.php";
-*/	
-}
 ?>

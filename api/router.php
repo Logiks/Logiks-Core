@@ -11,7 +11,8 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!defined("BASEPATH")) {
 
   //Load the app.cfg and app Config Folder
-  startLogiksApp(SITENAME);
+  loadLogiksApp(SITENAME);
+  loadLogiksBootEngines();
 
   $security=new LogiksSecurity();
   $security->checkPageRequest();
@@ -38,9 +39,6 @@ if(!defined("BASEPATH")) {
       $routerLoaded=true;
 
       runHooks("startup");
-
-      loadModule("core",true);
-      loadModule(SITENAME,true);
 
       include_once $rfile;
       break;

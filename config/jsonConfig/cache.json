@@ -16,5 +16,10 @@
         "dataCache": {
             "driver": "FilesCacheDriver"
         }
-    }
+    },
+    "default":{
+	"metaCache": {
+            "driver": "FilesCacheDriver"
+        }
+    }    
 }

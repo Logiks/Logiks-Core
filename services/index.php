@@ -8,211 +8,57 @@
  *
  *
  * Service Handler For Logiks 4.0+
- * Commands : scmd,stype,enc,format
- * Output Formats : html(table,list,select), json, xml, raw
- *
+ * Commands : scmd, action, format
+ * Output Formats : table,list,select, json, xml, raw, txt, css,js
+ * Special Parameters
+ * 	autoformat 		Use toTitle/UCWORDS or not
+ *	debug 			Enable debug mode or not
+ *	cache 			To use cache or not
+ *	stype 			Type of command (py, php, etc.)
  */
 if(defined('ROOT')) exit('Only Direct Access Is Allowed');
 
-session_start();
-ob_start();
-
-error_reporting(-1);
-ini_set('display_errors', 'On');
-
-
-if(!defined('ROOT')) {
-	define('ROOT',dirname(dirname(__FILE__)) . '/');
-}
-if(!defined('ROOT_RELATIVE')) {
-	define('ROOT_RELATIVE',"../");
-}
-if(!defined('SERVICE_ROOT')) {
-	define('SERVICE_ROOT',dirname(__FILE__) . "/");
-}
-
-require_once (ROOT . 'api/configurator.php');
-
-loadConfigs([
-			ROOT . "config/basic.cfg",
-			ROOT . "config/services.cfg",
-			ROOT . "config/security.cfg",
-			ROOT . "config/sysops.cfg",
-			ROOT . "config/folders.cfg",
-
-			//ROOT . "config/framework.cfg",
-		]);
-
-header("X-Powered-By: Logiks [http://openlogiks.org]",false);
-header("SESSION-KEY:".session_id(),false);
-header("Access-Control-Allow-Origin:*");
-
-//Origin
-//Access-Control-Allow-Methods:OPTIONS,GET,POST,PUT,DELETE
-//Access-Control-Allow-Headers:Content-Type, Authorization, X-Requested-With
-//header("Access-Control-Allow-Headers", "access-control-allow-origin, accept, access-control-allow-methods, access-control-allow-headers, x-random-shit");
-//header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
-//print_r($_SERVER);exit();
-
-$_SERVER['SERVICE']=true;
-
-$defSite=DEFAULT_SITE;
-$predefinedSite=true;
-
-if(DOMAIN_CONTROLS_ENABLE=="true") {
-	include_once ROOT."api/domainmap.inc";
-	$dm=new DomainMap();
-	$GLOBALS["CURRENT_SITE"]=$dm->checkServiceHost();
+/*
+ * Enable Debug mode
+ */
+$isDebug = array_key_exists('debug', $_REQUEST);
+if($isDebug) {
+    ini_set('display_errors', 1);
+    error_reporting(1);
+    define("MASTER_DEBUG_MODE",true);
 } else {
-	if(isset($_REQUEST['site'])) {
-		$GLOBALS["CURRENT_SITE"]=$_REQUEST['site'];
-	} elseif(isset($_SESSION['LGKS_SESS_SITE'])) {
-		$GLOBALS["CURRENT_SITE"]=$_SESSION['LGKS_SESS_SITE'];
-	} elseif(isset($_SERVER["HTTP_REFERER"])) {
-		$pos1=strpos($_SERVER["HTTP_REFERER"],"site=");
-		if($pos1>0) {
-			$d1=substr($_SERVER["HTTP_REFERER"],$pos1);
-			$pos2=strpos($d1,"&");
-			if($pos2>0) {
-				$d1=substr($d1,0,$pos2);
-			}
-			$pos3=strpos($d1,"=")+1;
-			$d1=substr($d1,$pos3);
-			$GLOBALS["CURRENT_SITE"]=$d1;
-		} else {
-			$predefinedSite=false;
-			$GLOBALS["CURRENT_SITE"]=$defSite;
-		}
-	} else {
-		$predefinedSite=false;
-		$GLOBALS["CURRENT_SITE"]=$defSite;
-	}
-}
-//Until Now $GLOBALS["CURRENT_SITE"] is available for all
-
-if(!isset($_SERVER["HTTP_REFERER"])) $_SERVER["HTTP_REFERER"]="";
-
-$_REQUEST['site']=$GLOBALS["CURRENT_SITE"];
-$_SESSION['SESS_LOGIN_SITE']=$GLOBALS["CURRENT_SITE"];
-
-if(!defined('SERVICE_HOST')) {
-	$sa=dirname(__FILE__);
-	$sa=str_replace($_SERVER['DOCUMENT_ROOT'],"",$sa);
-	if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=="on")
-		define('SERVICE_HOST', "https://".$_SERVER['HTTP_HOST'] . "$sa/?");
-	else
-		define('SERVICE_HOST', "http://".$_SERVER['HTTP_HOST'] . "$sa/?");
-	unset($sa);
+    ini_set('display_errors', 0);
+    error_reporting(0);
 }
 
-include_once "config.php";
-include_once "api.php";
-include_once "ServiceSecurity.inc";
-include_once "ServiceController.inc";
+define('ROOT',dirname(dirname(__FILE__)) . '/');
+
+require_once (ROOT . 'services/initialize.php');
 
 if(!isset($_REQUEST['scmd'])) {
-	$_REQUEST['scmd']="";
-	if(!isset($_REQUEST['site'])) $_REQUEST['site']=$GLOBALS["CURRENT_SITE"];
-	printErr("AccessDenial","Access to the Requested Command Failed Due To Security Reasons.");
+	trigger_logikserror(901, E_USER_ERROR);
 	exit();
 }
 
-$sysdbLink=new Database();
-$sysdbLink->connect();
-$appdbLink=null;
+loadAppServices(SITENAME);
+loadLogiksBootEngines();
 
-define("SITENAME",$GLOBALS["CURRENT_SITE"]);
-define("APPROOT",ROOT . APPS_FOLDER . SITENAME . "/");
-define("WEBAPPROOT",SiteLocation . "apps/" . SITENAME . "/");
-define("BASEPATH",APPS_FOLDER . SITENAME . "/");
-if(strlen($_SERVER["HTTP_REFERER"])>0)
-	define("REVERTLINK",$_SERVER["HTTP_REFERER"]);
-else
-	define("REVERTLINK",_link());
+//Check blacklists, bots, and others
+$security=new LogiksSecurity();
+$security->checkServiceRequest();
 
-runSysHooks("servicePreProcess");
+runHooks("serviceStart");
 
 $ctrl=new ServiceController();
-$secure=new ServiceSecurity();
-
-$secure->isBlacklisted(true);
-
-$ctrl->checkQuery();
-$request=$ctrl->preProcessQuery();
-$request=$ctrl->cleanRequest($request);
-
-$secure->cleanSecurityConfigs();
-
-loadAppConfigs();
-
-$request=$secure->checkSecurity($request);
-if(count($request)==0) {
-	printErr('MethodNotAllowed',"Requested Command/Method Is Not Enabled/Found In Service Engine.");
-	exit();
-}
-//loadHelpers("urlkit");
-
-function __cleanup() {
-	include_once ROOT. "api/endRequest.php";
-	closeServiceRequest();
-}
-register_shutdown_function("__cleanup");
-
-log_ServiceRequest();
-
-loadModule("core");loadModule(SITENAME);
-
-runHooks("serviceOnRequest");
-
-$cacheFile=RequestCache::getCachePath("services");
-if(isset($_POST) && count($_POST)>0) {
-	$ctrl->executeRequest($request);
+//loads the parameters into the service controller
+$ctrl->setupRequest($_REQUEST);
+//access_control, privilege_model, APIKEY check
+if($ctrl->checkRequest()) {
+	//checks cache and if required executes the scmd and prints the output
+	$ctrl->executeRequest();
 } else {
-	if(isset($_REQUEST['forcecache']) && $_REQUEST['forcecache']=="true") {
-		if(!isset($_REQUEST['autocache'])) $_REQUEST['autocache']="true";
-
-		$a=RequestCache::checkCache("services",SERVICE_CACHE_PERIOD);
-		if($a) {
-			printContentHeader($cacheFile);
-			include_once $cacheFile;
-		} else {
-			ob_start();
-			$ctrl->executeRequest($request);
-			$data=ob_get_contents();
-			ob_flush();
-			if(!(isset($_REQUEST['nocache']) && $_REQUEST['nocache']=="true"))
-				file_put_contents($cacheFile,$data);
-		}
-	} else {
-		switch(getConfig("SERVICE_CACHE_ENABLED")) {
-			case "true":
-				$noCache=explode(",",SERVICE_CACHE_NOCACHE);
-				$noCacheAppSite=explode(",",SERVICE_CACHE_NOCACHE_FOR_APPSITE);
-				if(in_array(SITENAME,$noCacheAppSite)) {
-					$ctrl->executeRequest($request);
-				} elseif(in_array($_REQUEST['scmd'],$noCache)) {
-					$ctrl->executeRequest($request);
-				} else {
-					$a=RequestCache::checkCache("services",SERVICE_CACHE_PERIOD);
-					if($a) {
-						printContentHeader($cacheFile);
-						include_once $cacheFile;
-					} else {
-						ob_start();
-						$ctrl->executeRequest($request);
-						$data=ob_get_contents();
-						ob_flush();
-						if(!(isset($_REQUEST['nocache']) && $_REQUEST['nocache']=="true"))
-							file_put_contents($cacheFile,$data);
-					}
-				}
-				break;
-			default:
-				$ctrl->executeRequest($request);
-				break;
-		}
-	}
+	trigger_logikserror(905, E_USER_ERROR);
 }
 
-exit();
+runHooks("serviceStop");
 ?>

@@ -48,21 +48,27 @@ class MemcachedDriver extends AbstractCacheDriver {
 	
 	//Reads Cache from Local/Remote Sources
 	public function cache_get($group,$key) {
-		return $this->memcache->get(md5($this->prefix.$group.$key));
+		$siteKey="core";
+		if(defined("SITENAME")) $siteKey=SITENAME;
+		return $this->memcache->get(md5($this->prefix.$siteKey.$group.$key));
 	}
 
 	//Writes Cache to Local/Remote Sources
 	public function cache_set($group,$key,$data) {
-		if($this->memcache->add(md5($this->prefix.$group.$key),$data,$this->expires)) {
+		$siteKey="core";
+		if(defined("SITENAME")) $siteKey=SITENAME;
+		if($this->memcache->add(md5($this->prefix.$siteKey.$group.$key),$data,$this->expires)) {
 			return true;
 		} else {
-			return $this->memcache->replace(md5($this->prefix.$group.$key),$data,$this->expires);
+			return $this->memcache->replace(md5($this->prefix.$siteKey.$group.$key),$data,$this->expires);
 		}
 	}
 
 	//Deletes Cache from/to Local/Remote Sources
 	public function cache_delete($group,$key) {
-		return $this->memcache->delete(md5($this->prefix.$group.$key));
+		$siteKey="core";
+		if(defined("SITENAME")) $siteKey=SITENAME;
+		return $this->memcache->delete(md5($this->prefix.$siteKey.$group.$key));
 	}
 
 	//Immediately invalidates all existing items.
@@ -72,7 +78,9 @@ class MemcachedDriver extends AbstractCacheDriver {
 
 	//Is Cache Exists
 	public function cache_exists($group,$key) {
-		//$this->memcache->get(md5($this->prefix.$group.$key));
+		// $siteKey="core";
+		// if(defined("SITENAME")) $siteKey=SITENAME;
+		//$this->memcache->get(md5($this->prefix.$siteKey.$group.$key));
 		//return (Memcached::RES_NOTFOUND !=== $this->memcache->getResultCode());
 	}
 

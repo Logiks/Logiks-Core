@@ -1,19 +1,21 @@
 Who uses Cache in Logiks System
 
+Drivers
+File based		Done
+MemCached		Done
+Redis
+APC
 
-Component						What
 
-Configuration					NA	SESSION
-Loaders							MetaCache
+Components Using Cache				What		Remarks
+========================================================================
+Configuration					NA		SESSION
+Loaders						MetaCache
 DataBase						
 LogiksPages						
-	HTMLAssets					
-	PAGE
-	SiteMap
-	Theme
-Templates						NA	SELF
-UIComponents					
+	HTMLAssets				DataCache	
+Templates					NA		SELF
 LogiksUser
-	UserPermissions				
-Router/Request					
-App Information					
+	UserPermissions				DataCache	*
+
+

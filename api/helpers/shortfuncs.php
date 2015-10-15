@@ -10,6 +10,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 /*URL Oriented Functions*/
 if(!function_exists("_link")) {
+	//default url generator for logiks
 	function _link($page="", $query="", $site=SITENAME) {
 		$ssr1=stristr($page,"http://");
 		$ssr2=stristr($page,"https://");
@@ -20,31 +21,30 @@ if(!function_exists("_link")) {
 	}
 }
 if(!function_exists("_service")) {
+	//Gets the service cmd link
 	function _service($scmd, $action="", $format="json", $params=array(), $site=SITENAME) {
-		$s=SiteLocation."services/$scmd?site={$site}";
-		if(strlen($action)>0) $s.="&action={$action}";
+		//$s=SiteLocation."services/{$scmd}?site={$site}";
+		$s=SiteLocation."services/{$scmd}/{$action}?site={$site}";
+		//if(strlen($action)>0) $s.="&action={$action}";
 		if(strlen($format)>0) $s.="&format={$format}";
 		if(is_array($params)) foreach($params as $a=>$b) $s.="&{$a}={$b}";
 		return $s;
 	}
 }
 if(!function_exists("_site")) {
-	function _site($site=SITENAME) {
-		return getPrettyLink("", $site);
+	//Gets the site link
+	function _site($site=SITENAME,$page="") {
+		return getPrettyLink($page, $site);
 	}
 }
 if(!function_exists("_url")) {
-	function _url($params="") {
+	//Gets current url in proper format
+	function _url() {
 		$url="{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}";
 		$url=str_replace("//","/",$url);
 		$url=str_replace("//","/",$url);
 		if(isset($_SERVER["HTTPS"]) && strlen($_SERVER["HTTPS"])>0) $url="https://$url";
 		elseif($_SERVER["SERVER_PROTOCOL"]=="HTTP/1.1")	$url="http://$url";
-		if(strpos($url,"?")>2) {
-			$url.=$params;
-		} elseif(strlen($params)>0) {
-			$url.="?$params";
-		}
 		return $url;
 	}
 }

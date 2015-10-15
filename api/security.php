@@ -10,8 +10,7 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("session_check")) {
-	//include_once ROOT. "api/libs/logikssecurity.php";
-
+	//User Is Logged In and Site Being Accessed Is Correct
 	function session_check($redirect=false,$showErrorMsg=false) {
 		$valid=false;
 		
@@ -35,13 +34,13 @@ if(!function_exists("session_check")) {
 			return true;
 		} else {
 			if($redirect) {
-				$relink=SiteLocation . "login.php?site=".SITENAME;
+				$relink=SiteLocation."login";
 				redirectTo($relink,"SESSION Expired. Going To Login Page");
-				sessionExpired();
+				session_destroy();
 				exit();
 			} else {
 				if($showErrorMsg) {
-					trigger_ForbiddenError("Accessing Forbidden Page");
+					trigger_logikserror("Accessing Forbidden Page",E_USER_ERROR,401);
 				}
 				return false;
 			}
@@ -49,5 +48,105 @@ if(!function_exists("session_check")) {
 	}
 	//function session_login_check() {}
 	
+	function isAdminSite($site=SITENAME) {
+		$adminSites=explode(",", DOMAIN_CONTROLS_ADMINAPP);
+		if(in_array($site, $adminSites)) return true;
+		return false;
+	}
+
+	function user_admin_check() {
+		$a=session_check(false);
+		if($a && isAdminSite()) {
+			$acp=$_SESSION['SESS_ACCESS_SITES'];
+			if(in_array(SITENAME,$acp)) {
+				return true;
+			}
+			return false;
+		} else {
+			return false;
+		}
+	}
+
+    function parseHTTPReferer() {
+		$arr=array();
+		$arr["SERVER_PROTOCOL"]="";
+		$arr["HTTP_HOST"]="";
+		$arr["REQUEST_URI"]="";
+		$arr["SCRIPT_NAME"]="";
+		$arr["QUERY_STRING"]="";
+
+		$arr["SITE"]="";
+		$arr["PAGE"]="";
+		$arr["MODULE"]="";
+
+		//printArray($_SERVER);
+		if(isset($_SERVER["HTTP_REFERER"]) && strlen($_SERVER["HTTP_REFERER"])>0) {
+			$s=$_SERVER["HTTP_REFERER"];
+			$a1=substr($s,0,strpos($s,"://"));
+			$s=substr($s,strpos($s,"://")+3);
+			$a2=substr($s,0,strpos($s,"/"));
+			$s=substr($s,strpos($s,"/")+1);
+			$a3=$s;
+			$a4=substr($s,0,strpos($s,"?"));
+			$s=substr($s,strpos($s,"?")+1);
+			$a5=$s;
+
+			$n1=strpos($s,"site=");
+			if($n1!==false) {
+				$w="";
+				if($n1>=0) {
+					$n2=strpos($s,"&",$n1+5);
+					$w=substr($s,$n1+5,$n2-$n1-5);
+				} else {
+					$w=$_REQUEST['site'];
+				}
+			} else {
+				$w=$_REQUEST['site'];
+			}
+
+			$n1=strpos($s,"page=");
+			$p="";
+			if($n1!==false) {
+				if($n1>=0) {
+					$n2=strpos($s,"&",$n1+5);
+					$p=substr($s,$n1+5,$n2-$n1-5);
+				}
+			}
+
+			$n1=strpos($s,"mod=");
+			$m="";
+			if($n1!==false) {
+				if($n1>=0) {
+					$n2=strpos($s,"&",$n1+5);
+					$m=substr($s,$n1+4,$n2-$n1-4);
+				}
+			}
+
+			$arr["SERVER_PROTOCOL"]=strtoupper($a1);
+			$arr["HTTP_HOST"]=$a2;
+			$arr["REQUEST_URI"]=$a3;
+			$arr["SCRIPT_NAME"]=$a4;
+			$arr["QUERY_STRING"]=$a5;
+			$arr["SITE"]=$w;
+			$arr["PAGE"]=$p;
+			$arr["MODULE"]=$m;
+		}
+		if(strlen($arr["SITE"])==0 && isset($_REQUEST['site'])) {
+			$arr["SITE"]=$_REQUEST['site'];
+		}
+		return $arr;
+	}
+
+	//Generates the auth key required for logging into system remotely and via mobility
+	function generateMAuthKey() {
+		if(!isset($_REQUEST['deviceuuid'])) $_REQUEST['deviceuuid']="LOGIKS007";
+		$str=$_REQUEST['site'].$_SERVER['HTTP_USER_AGENT'].SiteID.$_REQUEST['deviceuuid'];
+		if(isset($_SESSION['SESS_USER_ID'])) $str.=$_SESSION['SESS_USER_ID'];
+
+		$key=md5(base64_encode($str));
+
+		unset($_REQUEST['deviceuuid']);
+		return $key;
+	}
 }
 ?>

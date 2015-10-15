@@ -122,20 +122,21 @@ class LogiksError {
   }
 
   private function printJSON($errData) {
-    $trace=debug_backtrace();
-
     if(MASTER_DEBUG_MODE) {
+      $trace=debug_backtrace();
       $out=array(
           "error"=>$errData,
           "trace"=>$trace,
         );
+      header('Content-Type: text/html');
+      printArray($out);
     } else {
       $out=array(
           "error"=>$errData,
         );
+      header('Content-Type: application/json');
+      echo json_encode($out);
     }
-    header('Content-Type: application/json');
-    echo json_encode($out);
   }
   private function printPage($errData) {
     if(!isset($errData['code'])) $errData['code']=500;
@@ -271,26 +272,28 @@ class LogiksError {
       }
     }
     $errorCSS=[
-      ROOTURL."misc/themes/default/error.css",
-      ROOTURL."misc/themes/default/errorPrint.css",
-      // ROOTURL."plugins/vendors/SyntaxHighlighter/styles/SyntaxHighlighter.css",
+      WEBROOT."misc/themes/default/error.css",
+      WEBROOT."misc/themes/default/errorPrint.css",
+      // WEBROOT."plugins/vendors/SyntaxHighlighter/styles/SyntaxHighlighter.css",
     ];
     $errorJS=[
-      ROOTURL."api/js/jquery/jquery.js",
-      // ROOTURL."plugins/vendors/SyntaxHighlighter/scripts/shCore.js",
-      // ROOTURL."plugins/vendors/SyntaxHighlighter/scripts/shBrushPhp.js",
-      // ROOTURL."plugins/vendors/SyntaxHighlighter/scripts/shBrushJScript.js",
-      // ROOTURL."plugins/vendors/SyntaxHighlighter/scripts/shBrushXml.js",
-      ROOTURL."api/js/prettify.js",
+      WEBROOT."api/js/jquery/jquery.js",
+      // WEBROOT."plugins/vendors/SyntaxHighlighter/scripts/shCore.js",
+      // WEBROOT."plugins/vendors/SyntaxHighlighter/scripts/shBrushPhp.js",
+      // WEBROOT."plugins/vendors/SyntaxHighlighter/scripts/shBrushJScript.js",
+      // WEBROOT."plugins/vendors/SyntaxHighlighter/scripts/shBrushXml.js",
+      WEBROOT."api/js/prettify.js",
     ];
     return array("template"=>$errorTemplate,"css"=>$errorCSS,"js"=>$errorJS);
   }
-  protected function getErrorTemplate($errorCode) {
+  protected function getErrorTemplate($errorCode="error") {
     if(defined("SITENAME")) {
+      $errorCode="error";
+
       $lt=new LogiksTheme(APPS_THEME,SITENAME);
 
       $lp=new LogiksPage($lt);
-      $pg=$lp->loadPage("error");
+      $pg=$lp->loadPage($errorCode);
       if($pg) {
         return $lp;
       } else {

@@ -22,7 +22,7 @@ class LogiksTheme {
 	public function __construct($theme,$site=null) {
 		$this->theme=$theme;
 		$this->themeFolder=ROOT.THEME_FOLDER.$theme."/";
-		$this->themeURL=ROOTURL.THEME_FOLDER.$theme."/";
+		$this->themeURL=WEBROOT.THEME_FOLDER.$theme."/";
 
 		if(!is_dir($this->themeFolder)) {
 			trigger_error("Required Theme $theme Not Found",E_USER_ERROR);

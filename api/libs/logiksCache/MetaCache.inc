@@ -27,21 +27,15 @@ class MetaCache extends LogiksCache {
 	}
 
 	public function getMetaFor($group,$key) {
-		$siteKey="core";
-		if(defined("SITENAME")) $siteKey=SITENAME;
-		return parent::getCache($key,$siteKey.$group);
+		return parent::getCache($key,$group);
 	}
 
 	public function setMetaFor($group,$key,$data) {
-		$siteKey="core";
-		if(defined("SITENAME")) $siteKey=SITENAME;
-		return parent::setCache($key,$data,$siteKey.$group);
+		return parent::setCache($key,$data,$group);
 	}
 
 	public function removeMetaFor($group,$key) {
-		$siteKey="core";
-		if(defined("SITENAME")) $siteKey=SITENAME;
-		return parent::deleteCache($key,$siteKey.$group);
+		return parent::deleteCache($key,$group);
 	}
 }
 ?>

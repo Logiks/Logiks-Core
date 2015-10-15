@@ -56,6 +56,10 @@ if(!function_exists('loadModule')) {
 		return false;
 	}
 
+	function getPluginFolders() {
+		return getLoaderFolders('pluginPaths',"modules");
+	}
+
 	function checkModule($module) {
 		if(strlen($module)<=0) return false;
 
@@ -81,28 +85,6 @@ if(!function_exists('loadModule')) {
 		} else {
 			return $cachePath;
 		}
-	}
-
-	function checkService($scmd,$ext="php",$path=false) {
-		$cmdArr=array();
-		if(!defined("SERVICE_ROOT")) {
-			define("SERVICE_ROOT",ROOT.SERVICES_FOLDER);
-		}
-		$cmdArr=array(
-					SERVICE_ROOT.$ext."/".$scmd.".".$ext,
-					ROOT.APPS_FOLDER.SITENAME."/services/".$ext."/".$scmd.".".$ext,
-					ROOT.APPS_FOLDER.SITENAME."/".APPS_PLUGINS_FOLDER."modules/".$scmd."/service.php",
-					ROOT.PLUGINS_FOLDER."modules/".$scmd."/service.php",
-					SERVICE_ROOT.$ext."/".SITENAME."/".$scmd.".".$ext,
-				);
-		foreach($cmdArr as $fl) {
-			if(file_exists($fl)) {
-				if($path) return $f1;
-				else return true;
-			}
-		}
-		if($path) return "";
-		else return false;
 	}
 }
 ?>

@@ -8,7 +8,8 @@ if(!function_exists('loadConfigs')) {
 	}
 
 	//No Compile Yet and loads json configuration on demand.
-	function loadJSONConfig($configName,$keyName=null,$forceReload=false) {
+	function loadJSONConfig($configName,$keyName=null,$forceReload=null) {
+		if($forceReload==null) $forceReload=MASTER_DEBUG_MODE;
 		$cfg=LogiksConfig::getInstance()->loadJSONConfig($configName,$forceReload);
 		if($keyName==null) return $cfg;
 		else {

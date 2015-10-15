@@ -50,9 +50,9 @@ class DomainMap {
             $query = implode(' ', $query);
 
             if(strlen($query)>0) {
-              $uri=ROOTURL.PAGE."?".$query;
+              $uri=WEBROOT.PAGE."?".$query;
             } else {
-              $uri=ROOTURL.PAGE;
+              $uri=WEBROOT.PAGE;
             }
             header("Location:{$uri}");
           }

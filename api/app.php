@@ -7,9 +7,9 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-if(!function_exists("startLogiksApp")) {
+if(!function_exists("loadLogiksApp")) {
 
-  function startLogiksApp($appName=SITENAME) {
+  function loadLogiksApp($appName=SITENAME) {
     if(defined("BASEPATH")) {
       trigger_error("App <b>'".$appName."'</b> has already been activated",E_USER_ERROR);
     }
@@ -51,6 +51,43 @@ if(!function_exists("startLogiksApp")) {
 
     if(!defined("APPS_THEME")) define("APPS_THEME",getConfig("APPS_THEME"));
     if(!defined("APPS_TEMPLATEENGINE")) define("APPS_TEMPLATEENGINE",getConfig("APPS_TEMPLATEENGINE"));
+
+    if(!defined("APPNAME")) define("APPNAME",SITENAME);
+
+    return true;
+  }
+
+  function loadAppServices($appName=SITENAME) {
+    if(defined("BASEPATH")) {
+      trigger_error("App <b>'".$appName."'</b> has already been activated",E_USER_ERROR);
+    }
+
+    define("BASEPATH",APPS_FOLDER . $appName . "/");
+    define("APPROOT", ROOT . BASEPATH);
+    define("WEBAPPROOT",SiteLocation . BASEPATH);
+
+    if(!file_exists(APPROOT)) {
+      trigger_error("Site Not Found <b>'".$appName."'</b>",E_USER_ERROR);
+    }
+
+    $apps_cfg=APPROOT."apps.cfg";
+    if(!file_exists($apps_cfg)) {
+      trigger_error("Site <b>'".$appName."'</b> Has Not Yet Been Activated (missing apps.cfg).",E_USER_ERROR);
+    }
+    loadConfigs($apps_cfg);
+
+    loadConfigDir(APPROOT."config/");
+
+    if(!defined("APPS_CONFIG_FOLDER")) {
+      loadConfigs(ROOT."config/masters/folders.cfg");
+    }
+
+    if(defined("LINGUALIZER_DICTIONARIES")) Lingulizer::getInstance()->loadLocaleFile(LINGUALIZER_DICTIONARIES);
+
+    if(!defined("APPS_THEME")) define("APPS_THEME",getConfig("APPS_THEME"));
+    if(!defined("APPS_TEMPLATEENGINE")) define("APPS_TEMPLATEENGINE",getConfig("APPS_TEMPLATEENGINE"));
+
+    if(!defined("APPNAME")) define("APPNAME",SITENAME);
 
     return true;
   }

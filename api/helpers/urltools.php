@@ -40,16 +40,19 @@ if(!function_exists("getQueryParams")) {
 	function getPrettyLink($page=PAGE, $site=SITENAME,$query=null) {
 		$url=SiteLocation.$page;
 
-		if($query==null && !is_array($query)) {
-			$query=$_SESSION['QUERY'];
-		} elseif(is_string($query)) {
-			trigger_error('$query expected array got string');
-		}
+		// if($query==null && !is_array($query)) {
+		// 	$query=$_SESSION['QUERY'];
+		// } elseif(is_string($query)) {
+		// 	trigger_error('$query expected array got string');
+		// }
+		
 		if(isset($query['site'])) unset($query['site']);
 		if($site!=null && $site!=SITENAME) {
 			$query['site']=$site;
 		}
-		if(count($query)>0) $url.="?".http_build_query($query);
+		if($query!=null && ((is_array($query) && count($query)>0) || (is_string($query) && strlen($query)>0))) {
+			$url.="?".http_build_query($query);
+		}
 		return $url;
 	}
 
@@ -62,6 +65,22 @@ if(!function_exists("getQueryParams")) {
 		$enc=new LogiksEncryption();
 		$url=$enc->decode($url);
 		return $url;
+	}
+
+	function getRelativePathToROOT($file) {
+		$basepath="";
+
+		$s=str_replace(ROOT,"",dirname($file) . "/");
+		$s=str_replace("//","/",$s);
+		for($j=0;$j<substr_count($s,"/");$j++) {
+			$basepath.="../";
+		}
+
+		return $basepath;
+	}
+
+	function getRequestPath() {
+		return dirname('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']).'/';
 	}
 }
 ?>

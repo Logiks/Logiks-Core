@@ -9,8 +9,6 @@
  *           This in turn reduces the amount of time taken by various system wide search.
  *           This is a container based cache mechanisim where resource belongs to a container and at times container
  *           may be updated at parts or full.
- * RequestCache : RequestCache handles the way the requested command (scmd) is executed based on the command type (stype)
- *           for all sync/async requests.
  *
  *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
@@ -22,7 +20,6 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 include_once dirname(__FILE__)."/LogiksCache.inc";
 include_once dirname(__FILE__)."/DataCache.inc";
 include_once dirname(__FILE__)."/MetaCache.inc";
-include_once dirname(__FILE__)."/RequestCache.inc";
 
 /*Cache And Template Oriented Functions*/
 if(!function_exists("_cache")) {

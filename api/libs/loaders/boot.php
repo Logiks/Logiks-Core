@@ -38,5 +38,47 @@ if(!function_exists('getLoaderFolders')) {
 		}
 		return $_ENV[$src];
 	}
+
+	function checkService($scmd,$supportedEngines=array("php")) {
+		if(strlen($scmd)<=0) {
+			return false;
+		}
+
+		$cachePath=_metaCache("SERVICES",$scmd);
+		if(!$cachePath || !file_exists($cachePath)) {
+			$modulesFolder=getPluginFolders("modules");
+
+			$cmdArr=array();
+			$cmdArr[]=ROOT.APPS_FOLDER.SITENAME."/services/".$scmd;
+			$cmdArr[]=ROOT.APPS_FOLDER.SITENAME."/".APPS_PLUGINS_FOLDER."modules/".$scmd."/service";
+			$cmdArr[]=SERVICE_ROOT."cmds/".$scmd;
+
+			foreach ($modulesFolder as $path) {
+				$cmdArr[]=ROOT.$path.$scmd."/service";
+			}
+			$cmdArr=array_unique($cmdArr);
+			
+			foreach($cmdArr as $fl) {
+				foreach ($supportedEngines as $ext) {
+					$fpath="{$fl}.{$ext}";
+					if(file_exists($fpath)) {
+						_metaCacheUpdate("SERVICES",$scmd,$fpath);
+						return array(
+								"src"=>$fpath,
+								"ext"=>$ext,
+							);
+					}
+				}
+			}
+		} else {
+			$ext=explode(".", $cachePath);
+			$ext=end($ext);
+			return array(
+						"src"=>$cachePath,
+						"ext"=>$ext,
+					);
+		}
+		return false;
+	}
 }
 ?>

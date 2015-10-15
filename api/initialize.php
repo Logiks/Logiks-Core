@@ -28,8 +28,7 @@ if(!isset($initialized)) {
 	session_start();
 	$_SESSION['REQUEST_START']=microtime(true);
 
-	define ('ROOTURL', 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}".dirname($_SERVER['SCRIPT_NAME'])."/");
-	define ('WEBROOT', ROOTURL);
+	define ('WEBROOT', 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}".dirname($_SERVER['SCRIPT_NAME'])."/");
 
 	include_once ROOT. "config/classpath.php";
 
@@ -75,18 +74,13 @@ if(!isset($initialized)) {
 
 	include_once ROOT. "api/libs/logiksPages/boot.php";
 
-	//Optional Data Components
-	//include_once ROOT. "api/libs/logiksDB/boot.php";
-	//include_once ROOT. "api/libs/logiksORM/boot.php";
-	//include_once ROOT. "api/libs/logiksUser/boot.php";
-	//include_once ROOT. "api/libs/uiComponents/boot.php";
-
 	loadHelpers(array("urltools","hooks","mobility","outputbuffer","shortfuncs"));
 
 	$initialized=true;
 	runHooks("postinit");
 
 	$_SESSION['SESS_ACTIVE_SITE']=SITENAME;
+	
 	if(!defined("APPS_NAME")) define("APPS_NAME",getConfig("APPS_NAME"));
 	if(!defined("APPS_VERS")) define("APPS_VERS",getConfig("APPS_VERS"));
 
