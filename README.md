@@ -1,6 +1,8 @@
 Logiks-Core :: Framework
 ------------------------
 
+[![Github Releases](https://img.shields.io/github/downloads/atom/atom/latest/total.svg)](https://github.com/Logiks/Logiks-Core/archive/master.zip)
+
 Logiks Framework is an open source high-performance web application building
 platform. It applies RAD principles along with agile concepts for building and
 deploying web based PHP projects basically AppSites. Logiks is basically built
