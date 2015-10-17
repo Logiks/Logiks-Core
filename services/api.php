@@ -2,7 +2,6 @@
 if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 //All functions and resources to be used by service system
 
-//All System Functions for service system
 if(!function_exists("getServiceCMD")) {
 	function getServiceCMD() {
 		$scmd=$_REQUEST['scmd'];
@@ -90,6 +89,11 @@ if(!function_exists("getServiceCMD")) {
 			$arrData['Request']['site']=$_REQUEST['site'];
 			$arrData['Request']['scmd']=$_REQUEST['scmd'];
 			$arrData['Request']['format']=$format;
+			if(isset($_SERVER["REQUEST_TIME_FLOAT"])) {
+				$arrData['Request']['latency']=(microtime(true)-$_SERVER["REQUEST_TIME_FLOAT"]);
+			} else {
+				$arrData['Request']['latency']=(microtime(true)-$_SERVER["REQUEST_SERVICE_START"]);
+			}
 
 			$arrData['Request']['slug']=array();
 			foreach ($_REQUEST['slug'] as $key => $value) {

@@ -26,7 +26,7 @@ if(!isset($initialized)) {
 	ob_start();
 	//clearstatcache();
 	session_start();
-	$_SESSION['REQUEST_START']=microtime(true);
+	$_SERVER['REQUEST_PAGE_START']=microtime(true);
 
 	define ('WEBROOT', 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}".dirname($_SERVER['SCRIPT_NAME'])."/");
 

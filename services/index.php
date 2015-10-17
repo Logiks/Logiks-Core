@@ -18,22 +18,11 @@
  */
 if(defined('ROOT')) exit('Only Direct Access Is Allowed');
 
-/*
- * Enable Debug mode
- */
-$isDebug = array_key_exists('debug', $_REQUEST);
-if($isDebug) {
-    ini_set('display_errors', 1);
-    error_reporting(1);
-    define("MASTER_DEBUG_MODE",true);
-} else {
-    ini_set('display_errors', 0);
-    error_reporting(0);
-}
-
 define('ROOT',dirname(dirname(__FILE__)) . '/');
 
 require_once (ROOT . 'services/initialize.php');
+
+
 
 if(!isset($_REQUEST['scmd'])) {
 	trigger_logikserror(901, E_USER_ERROR);

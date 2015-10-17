@@ -14,7 +14,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 session_start();
 ob_start();
 
-$_SESSION['REQUEST_START']=microtime(true);
+$_SERVER['REQUEST_SERVICE_START']=microtime(true);
 
 define('ROOT_RELATIVE',"../");
 define('SERVICE_ROOT',dirname(__FILE__) . "/");
@@ -24,6 +24,19 @@ define ('SERVICE_HOST', 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' .
 define ('WEBROOT', 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}".dirname($_SERVER['SCRIPT_NAME'])."/");
 
 if(!isset($_SERVER["HTTP_REFERER"])) $_SERVER["HTTP_REFERER"]="";
+
+/*
+ * Enable Debug mode
+ */
+$isDebug = array_key_exists('debug', $_REQUEST);
+if($isDebug) {
+    ini_set('display_errors', 1);
+    error_reporting(1);
+    define("MASTER_DEBUG_MODE",true);
+} else {
+    ini_set('display_errors', 0);
+    error_reporting(0);
+}
 
 include_once ROOT. "config/classpath.php";
 include_once ROOT. "api/bootlogiks.php";

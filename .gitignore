@@ -1,8 +1,8 @@
 /apps/
 /tmp/
+/tests
 /pluginsDev/
 /misc/themes/admincp/
 /misc/themes/cms/
 /todo.txt
 /test.php
-/tests.php
