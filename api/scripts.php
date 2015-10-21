@@ -40,7 +40,7 @@ function _service(cmd,action,format,q) {
 	return sxx;	
 }
 function _link(href) {
-	if(href==null) href="<?=SiteLocation.$_SERVER['REQUEST_PATH']?>";
+	if(href==null) href="<?=SiteLocation.$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PATH']?>";
 	if(href.indexOf("http")>=0) {
 	} else if(href.indexOf("ftp")>=0) {
 	} else if(href.indexOf("/")===0) {

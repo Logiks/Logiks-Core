@@ -47,7 +47,7 @@ if (!function_exists('startsWith')) {
 			$filename.="." . $extension;
 		}
 		
-		if (strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== FALSE) {
+		if (strpos($GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'], "MSIE") !== FALSE) {
 			header('Content-Type: "'.$mime.'"');
 			header('Content-Disposition: attachment; filename="'.$filename.'"');
 			header('Expires: 0');

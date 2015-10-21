@@ -11,12 +11,12 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!function_exists("__testDevMode")) {
 	function __testDevMode($addr,$msg="OOPs, Down For Maintaince/Updates. Back In A Bit.") {
 		if(is_array($addr)) {
-			if(!in_array($_SERVER["REMOTE_ADDR"],$addr)) {
+			if(!in_array($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"],$addr)) {
 				trigger_logikserror(808,E_USER_WARNING);
 				exit();
 			}
 		} else {
-			if($_SERVER["REMOTE_ADDR"]!=$addr) {
+			if($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"]!=$addr) {
 				trigger_logikserror(808,E_USER_WARNING);
 				exit();
 			}

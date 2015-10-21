@@ -114,7 +114,7 @@ function printHeader($filename,$type) {
 		header("Content-Disposition: filename=$filename");
 		//header('Content-length: '.sizeOf($imgcode));
 	} elseif($type=="download") {
-		if(strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== FALSE) {
+		if(strpos($GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'], "MSIE") !== FALSE) {
 			header("Content-type: $mime");
 			header("Content-Disposition: attachment; filename=$filename");
 			header("Expires: 0");

@@ -80,7 +80,7 @@ if(!function_exists("getQueryParams")) {
 	}
 
 	function getRequestPath() {
-		return dirname('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']).'/';
+		return dirname('http://' . $GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST'] . $GLOBALS['LOGIKS']["_SERVER"]['PHP_SELF']).'/';
 	}
 }
 ?>

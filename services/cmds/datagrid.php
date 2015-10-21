@@ -140,9 +140,9 @@ if($_REQUEST['action']=="load") {
 	$params["records"]=$count;
 	
 	if(isset($_REQUEST['src']) && $_REQUEST['src']=="reports") {
-		printSQLResult($result, $_REQUEST['datatype'],$params,"",true);//$SQL,$_SERVER['QUERY_STRING']
+		printSQLResult($result, $_REQUEST['datatype'],$params,"",true);//$SQL,$GLOBALS['LOGIKS']["_SERVER"]['QUERY_STRING']
 	} else {
-		printSQLResult($result, $_REQUEST['datatype'],$params,"",false);//$SQL,$_SERVER['QUERY_STRING']
+		printSQLResult($result, $_REQUEST['datatype'],$params,"",false);//$SQL,$GLOBALS['LOGIKS']["_SERVER"]['QUERY_STRING']
 	}
 	_db()->freeResult($result);
 } elseif($_REQUEST['action']=="edit") {

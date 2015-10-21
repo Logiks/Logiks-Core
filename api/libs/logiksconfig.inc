@@ -364,8 +364,8 @@ class LogiksConfig {
 			$s1=$matches[0][$i];
 			$s2=str_replace('$_SERVER[\'','',$s1);
 			$s2=str_replace('\']','',$s2);
-			//echo $s2 . " " . $_SERVER[$s2];
-			$str=str_replace($s1,$_SERVER[$s2],$str);
+			//echo $s2 . " " . $GLOBALS['LOGIKS']["_SERVER"][$s2];
+			$str=str_replace($s1,$GLOBALS['LOGIKS']["_SERVER"][$s2],$str);
 		}
 		$pattern = '/\$_SESSION\[\'[a-zA-Z0-9_-]+\'\]/';
 		$cnt=preg_match_all($pattern, $str, $matches,0);

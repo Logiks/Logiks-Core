@@ -14,16 +14,18 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 session_start();
 ob_start();
 
-$_SERVER['REQUEST_SERVICE_START']=microtime(true);
+$GLOBALS['LOGIKS']["_SERVER"]=$_SERVER;
+
+$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START']=microtime(true);
 
 define('ROOT_RELATIVE',"../");
 define('SERVICE_ROOT',dirname(__FILE__) . "/");
-define('SERVICE_PATH',dirname($_SERVER['SCRIPT_NAME'])."/");
+define('SERVICE_PATH',dirname($GLOBALS['LOGIKS']["_SERVER"]['SCRIPT_NAME'])."/");
 
-define ('SERVICE_HOST', 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}".dirname($_SERVER['SCRIPT_NAME'])."/");
-define ('WEBROOT', 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}".dirname($_SERVER['SCRIPT_NAME'])."/");
+define ('SERVICE_HOST', 'http' . (isset($GLOBALS['LOGIKS']["_SERVER"]['HTTPS']) ? 's' : '') . '://' . "{$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST']}".dirname($GLOBALS['LOGIKS']["_SERVER"]['SCRIPT_NAME'])."/");
+define ('WEBROOT', 'http' . (isset($GLOBALS['LOGIKS']["_SERVER"]['HTTPS']) ? 's' : '') . '://' . "{$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST']}".dirname($GLOBALS['LOGIKS']["_SERVER"]['SCRIPT_NAME'])."/");
 
-if(!isset($_SERVER["HTTP_REFERER"])) $_SERVER["HTTP_REFERER"]="";
+if(!isset($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"])) $GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"]="";
 
 /*
  * Enable Debug mode
@@ -62,7 +64,7 @@ loadConfigs([
 		]);
 LogiksConfig::fixPHPINIConfigs();
 
-define ('SiteLocation', 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}/".InstallFolder);
+define ('SiteLocation', 'http' . (isset($GLOBALS['LOGIKS']["_SERVER"]['HTTPS']) ? 's' : '') . '://' . "{$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST']}/".InstallFolder);
 require_once ROOT. "api/libs/errorLogs/boot.php";
 
 logiksServiceBoot();
@@ -76,7 +78,7 @@ header("Access-Control-Allow-Origin:*");
 //Access-Control-Allow-Headers:Content-Type, Authorization, X-Requested-With
 //header("Access-Control-Allow-Headers", "access-control-allow-origin, accept, access-control-allow-methods, access-control-allow-headers, x-random-shit");
 //header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
-//print_r($_SERVER);exit();
+//print_r($GLOBALS['LOGIKS']["_SERVER"]);exit();
 
 include_once ROOT. "api/libs/logiksCache/boot.php";
 include_once ROOT. "api/libs/loaders/boot.php";
@@ -89,7 +91,7 @@ include_once ROOT. "api/libs/logiksTemplate/boot.php";
 
 include_once SERVICE_ROOT. "ServiceController.inc";
 
-$_SERVER['SERVICE']=true;
+$GLOBALS['LOGIKS']["_SERVER"]['SERVICE']=true;
 $_SESSION['SESS_ACTIVE_SITE']=SITENAME;
 
 ini_set("error_reporting",getConfig("SERVICE_ERROR_REPORTING"));

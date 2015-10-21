@@ -22,7 +22,7 @@ class ServiceAPI {
 	public function isRemoteCall() {
 		$httpRef=parseHTTPReferer();
 		if(isLocalhost()) return false;
-		elseif(isset($httpRef["HTTP_HOST"]) && strlen($httpRef["HTTP_HOST"])>0 && $httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) return false;
+		elseif(isset($httpRef["HTTP_HOST"]) && strlen($httpRef["HTTP_HOST"])>0 && $httpRef["HTTP_HOST"]==$GLOBALS['LOGIKS']["_SERVER"]["HTTP_HOST"]) return false;
 		return true;
 	}
 	public function checkRemoteClient() {
@@ -50,9 +50,9 @@ class ServiceAPI {
 		$apiKey=$_REQUEST['APIKEY'];
 		$site=SITENAME;
 		$a=false;
-		if(isset($_SERVER["HTTP_REFERER"]) && strlen($_SERVER["HTTP_REFERER"])!=0) {
+		if(isset($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"]) && strlen($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"])!=0) {
 			$httpRef=parseHTTPReferer();
-			if($httpRef["HTTP_HOST"]==$_SERVER["HTTP_HOST"]) {
+			if($httpRef["HTTP_HOST"]==$GLOBALS['LOGIKS']["_SERVER"]["HTTP_HOST"]) {
 				$a=true;
 			} else {
 				if(isset($_REQUEST['APIKEY']) && getConfig("API_KEY")==$_REQUEST['APIKEY']) {

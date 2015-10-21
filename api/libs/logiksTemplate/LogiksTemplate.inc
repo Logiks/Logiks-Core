@@ -103,7 +103,7 @@ class LogiksTemplate {
 		if(isset($_REQUEST[$in])) return $_REQUEST[$in];
 		elseif(isset($_SESSION[$in])) return $_SESSION[$in];
 		//elseif(isset($GLOBALS[$in])) return $GLOBALS[$in];
-		elseif(isset($_SERVER[$in])) return $_SERVER[$in];
+		elseif(isset($GLOBALS['LOGIKS']["_SERVER"][$in])) return $GLOBALS['LOGIKS']["_SERVER"][$in];
 		return "";
 	}
 

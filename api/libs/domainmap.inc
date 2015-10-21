@@ -70,7 +70,7 @@ class DomainMap {
     return $this->setupAppSite($site);
   }
   protected function detectDomainApp() {
-    $server=strtoupper($_SERVER["HTTP_HOST"]);
+    $server=strtoupper($GLOBALS['LOGIKS']["_SERVER"]["HTTP_HOST"]);
 		$server=str_replace("WWW.","",$server);
 
     if(array_key_exists($server,$this->domainList)) {

@@ -83,9 +83,9 @@ class PCronQueue {
 		}
 		if($method=="POST" || $method=="GET") {
 			if(file_exists(ROOT.PCRON_FOLDER."{$script}.php")) {
-				$script="http://".PCRON_DIR_USERNAME.":".PCRON_DIR_PASSWORD."@{$_SERVER['HTTP_HOST']}".str_replace($_SERVER['DOCUMENT_ROOT'],"",ROOT).PCRON_FOLDER."{$script}.php";
+				$script="http://".PCRON_DIR_USERNAME.":".PCRON_DIR_PASSWORD."@{$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST']}".str_replace($GLOBALS['LOGIKS']["_SERVER"]['DOCUMENT_ROOT'],"",ROOT).PCRON_FOLDER."{$script}.php";
 			} elseif(file_exists(ROOT."{$script}.php")) {
-				$script="http://".PCRON_DIR_USERNAME.":".PCRON_DIR_PASSWORD."@{$_SERVER['HTTP_HOST']}".str_replace($_SERVER['DOCUMENT_ROOT'],"",ROOT)."{$script}.php";
+				$script="http://".PCRON_DIR_USERNAME.":".PCRON_DIR_PASSWORD."@{$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST']}".str_replace($GLOBALS['LOGIKS']["_SERVER"]['DOCUMENT_ROOT'],"",ROOT)."{$script}.php";
 			}
 		} else {
 			if(file_exists(ROOT.PCRON_FOLDER."{$script}.php")) {

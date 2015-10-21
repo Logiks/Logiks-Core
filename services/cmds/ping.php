@@ -5,11 +5,11 @@ $arr=array();
 
 $arr["TIMESTAMP"]=_timestamp(false);
 $arr["SITE"]=SITENAME;
-$arr["SERVER"]=$_SERVER["HTTP_HOST"];
-$arr["SERVER SOFTWARE"]=$_SERVER["SERVER_SOFTWARE"];
+$arr["SERVER"]=$GLOBALS['LOGIKS']["_SERVER"]["HTTP_HOST"];
+$arr["SERVER SOFTWARE"]=$GLOBALS['LOGIKS']["_SERVER"]["SERVER_SOFTWARE"];
 
-//$arr["HTTPS"]=$_SERVER["HTTPS"];
-//printArray($_SERVER);
+//$arr["HTTPS"]=$GLOBALS['LOGIKS']["_SERVER"]["HTTPS"];
+//printArray($GLOBALS['LOGIKS']["_SERVER"]);
 
 printServiceMsg($arr);
 ?>

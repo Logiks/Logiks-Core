@@ -37,7 +37,7 @@ if(!function_exists("transferFileHTTPToLocal")) {
 			return false;
 		} else {
 			//Use CURL
-			$site=SiteLocation.$_SERVER["SCRIPT_NAME"];
+			$site=SiteLocation.$GLOBALS['LOGIKS']["_SERVER"]["SCRIPT_NAME"];
 			$site=str_replace("http://","h1",$site);
 			$site=str_replace("https://","h2",$site);
 			$site=str_replace("//","/",$site);

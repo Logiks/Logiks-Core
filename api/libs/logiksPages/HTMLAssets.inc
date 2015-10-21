@@ -48,7 +48,7 @@ class HTMLAssets {
 			} else {
 				$searchPath=$this->assetBuffer["{$assetType}-{$theme}"];
 			}
-			printArray($searchPath);
+			//printArray($searchPath);
 
 			$finalPath="";
 			switch ($assetType) {
@@ -68,7 +68,8 @@ class HTMLAssets {
 					}
 				break;
 				case 'js':
-					$searchPath[]=API_FOLDER."js/";
+					// $searchPath[]=API_FOLDER."js/";
+					$searchPath[]=THEME_FOLDER."default/js/";
 					$assetDir=explode(".", $assetName);
 					if(count($assetDir)>1) $assetDir=$assetDir[0];
 					else $assetDir=$assetName;

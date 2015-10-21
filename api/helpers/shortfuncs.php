@@ -40,11 +40,11 @@ if(!function_exists("_site")) {
 if(!function_exists("_url")) {
 	//Gets current url in proper format
 	function _url() {
-		$url="{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}";
+		$url="{$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST']}/{$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_URI']}";
 		$url=str_replace("//","/",$url);
 		$url=str_replace("//","/",$url);
-		if(isset($_SERVER["HTTPS"]) && strlen($_SERVER["HTTPS"])>0) $url="https://$url";
-		elseif($_SERVER["SERVER_PROTOCOL"]=="HTTP/1.1")	$url="http://$url";
+		if(isset($GLOBALS['LOGIKS']["_SERVER"]["HTTPS"]) && strlen($GLOBALS['LOGIKS']["_SERVER"]["HTTPS"])>0) $url="https://$url";
+		elseif($GLOBALS['LOGIKS']["_SERVER"]["SERVER_PROTOCOL"]=="HTTP/1.1")	$url="http://$url";
 		return $url;
 	}
 }
@@ -194,7 +194,7 @@ if(!function_exists("_timestamp")) {
 /*Xtra Functions*/
 if(!function_exists("_randomid")) {
 	function _randomid($d="",$hash=true) {
-		$s=SITENAME."_".date("Y-m-d-G:i:s")."_".$_SERVER['REMOTE_ADDR']."_".rand(1000,9999999);
+		$s=SITENAME."_".date("Y-m-d-G:i:s")."_".$GLOBALS['LOGIKS']["_SERVER"]['REMOTE_ADDR']."_".rand(1000,9999999);
 		if(isset($_SESSION['SESS_USER_ID'])) $s.="_".$_SESSION['SESS_USER_ID'];
 		if($hash) return $d.md5($s);
 		else return $d.$s;

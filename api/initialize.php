@@ -25,10 +25,12 @@ if(!file_exists("$bpath/config/basic.cfg")) {
 if(!isset($initialized)) {
 	ob_start();
 	//clearstatcache();
-	session_start();
-	$_SERVER['REQUEST_PAGE_START']=microtime(true);
+	@session_start();
+	
+	$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START']=microtime(true);
 
-	define ('WEBROOT', 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}".dirname($_SERVER['SCRIPT_NAME'])."/");
+	define ('WEBROOT', 'http' . (isset($GLOBALS['LOGIKS']["_SERVER"]['HTTPS']) ? 's' : '') . '://' . 
+			$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST'].dirname($GLOBALS['LOGIKS']["_SERVER"]['SCRIPT_NAME'])."/");
 
 	include_once ROOT. "config/classpath.php";
 
@@ -53,7 +55,7 @@ if(!isset($initialized)) {
 			ROOT . "config/appPage.cfg",
 		]);
 
-	define ('SiteLocation', 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}/".InstallFolder);
+	define ('SiteLocation', 'http' . (isset($GLOBALS['LOGIKS']["_SERVER"]['HTTPS']) ? 's' : '') . '://' . "{$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST']}/".InstallFolder);
 
 	if(PRINT_PHP_HEADERS) header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
 
@@ -83,8 +85,5 @@ if(!isset($initialized)) {
 	
 	if(!defined("APPS_NAME")) define("APPS_NAME",getConfig("APPS_NAME"));
 	if(!defined("APPS_VERS")) define("APPS_VERS",getConfig("APPS_VERS"));
-
-	//Time To Start Router System
-	require_once ('router.php');
 }
 ?>

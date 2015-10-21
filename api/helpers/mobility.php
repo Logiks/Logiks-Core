@@ -102,14 +102,14 @@ class DeviceDetection {
 	);
 	
 	public function __construct() {
-		if(!isset($_SERVER['HTTP_USER_AGENT'])) $_SERVER['HTTP_USER_AGENT']="Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.168 Safari/535.19";
-		$this->userAgent = $_SERVER['HTTP_USER_AGENT'];
+		if(!isset($GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'])) $GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT']="Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.168 Safari/535.19";
+		$this->userAgent = $GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'];
 		//$this->userAgent = "(iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML  like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5,CGI/1.1,HTTP/1.0,GET,219.91.184.34";	
 		
-		if(isset($_SERVER['HTTP_ACCEPT'])) $this->accept = $_SERVER['HTTP_ACCEPT'];
+		if(isset($GLOBALS['LOGIKS']["_SERVER"]['HTTP_ACCEPT'])) $this->accept = $GLOBALS['LOGIKS']["_SERVER"]['HTTP_ACCEPT'];
 		else $this->accept="text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 		
-		if (isset($_SERVER['HTTP_X_WAP_PROFILE']) || isset($_SERVER['HTTP_PROFILE'])) {
+		if (isset($GLOBALS['LOGIKS']["_SERVER"]['HTTP_X_WAP_PROFILE']) || isset($GLOBALS['LOGIKS']["_SERVER"]['HTTP_PROFILE'])) {
 			$this->isMobile = true;
 		} elseif (strpos($this->accept, 'text/vnd.wap.wml') > 0 || strpos($this->accept, 'application/vnd.wap.xhtml+xml') > 0) {
 			$this->isMobile = true;

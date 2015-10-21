@@ -85,14 +85,14 @@ if(!function_exists("getServiceCMD")) {
 		if($format==null) $format=$_REQUEST['format'];
 
 		if(getConfig("SERVICE_SHOW_REQUEST")) {
-			$arrData['Request']['uri']=SiteLocation.$_SERVER['REQUEST_URI'];
+			$arrData['Request']['uri']=SiteLocation.$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_URI'];
 			$arrData['Request']['site']=$_REQUEST['site'];
 			$arrData['Request']['scmd']=$_REQUEST['scmd'];
 			$arrData['Request']['format']=$format;
-			if(isset($_SERVER["REQUEST_TIME_FLOAT"])) {
-				$arrData['Request']['latency']=(microtime(true)-$_SERVER["REQUEST_TIME_FLOAT"]);
+			if(isset($GLOBALS['LOGIKS']["_SERVER"]["REQUEST_TIME_FLOAT"])) {
+				$arrData['Request']['latency']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]["REQUEST_TIME_FLOAT"]);
 			} else {
-				$arrData['Request']['latency']=(microtime(true)-$_SERVER["REQUEST_SERVICE_START"]);
+				$arrData['Request']['latency']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]["REQUEST_SERVICE_START"]);
 			}
 
 			$arrData['Request']['slug']=array();

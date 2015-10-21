@@ -1,8 +1,13 @@
 /apps/
 /tmp/
-/tests
+/testKit
 /pluginsDev/
 /misc/themes/admincp/
 /misc/themes/cms/
 /todo.txt
 /test.php
+.scrutinizer.yml
+.travis.yml
+composer.json
+phpcs.xml
+phpdoc.xml

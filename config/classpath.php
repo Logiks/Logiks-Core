@@ -1,10 +1,12 @@
 <?php
-$classPath=array(
+if(!defined('ROOT')) exit('No direct script access allowed');
+
+$GLOBALS['classPath']=array(
 		"api/",
 		"api/libs/",
 		"plugins/modules/",
 	);
-$mediaPaths=array(
+$GLOBALS['mediaPaths']=array(
 		"#APPROOT#userdata/",
 		"#APPROOT#media/",
 		"#APPROOT#css/",
@@ -12,13 +14,13 @@ $mediaPaths=array(
 		"media/",
 		"media/#SITENAME#/",
 	);
-$vendorPath=array(
+$GLOBALS['vendorPath']=array(
 		"#APPROOT#plugins/",
 		"#ROOT#api/",
 		"#ROOT#plugins/",
 		"#ROOT#pluginsDev/",
 	);
-$pluginPaths=array(
+$GLOBALS['pluginPaths']=array(
 		"#APPROOT#plugins/",
 		"#ROOT#pluginsDev/",
 		"#ROOT#plugins/",

@@ -32,8 +32,8 @@ if(!function_exists("getRequestTime")) {
 	function isLocalhost() {
 		if(MASTER_DEBUG_MODE) return false;
 
-		$client=$_SERVER['REMOTE_ADDR'];
-		$server=$_SERVER['SERVER_ADDR'];
+		$client=$GLOBALS['LOGIKS']["_SERVER"]['REMOTE_ADDR'];
+		$server=$GLOBALS['LOGIKS']["_SERVER"]['SERVER_ADDR'];
 		if($client==$server) return true;
 		elseif($server=="localhost" || $server=="127.0.0.1") return true;
 		else return false;
@@ -101,12 +101,12 @@ if(!function_exists("getRequestTime")) {
 		// 		"last_updated"=>date("Y-m-d H:i:s"),
 		// 		"session_data"=>session_encode(),
 		// 		"global_data"=>json_encode($GLOBALS),
-		// 		"user_agent"=>$_SERVER['HTTP_USER_AGENT'],
+		// 		"user_agent"=>$GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'],
 		// 		"device"=>$_COOKIE['USER_DEVICE'],
 		// 	),array(
 		// 		"sessionid"=>$_SESSION['SESS_TOKEN'],
 		// 		"user"=>$_SESSION['SESS_USER_ID'],
-		// 		"client"=>$_SERVER['REMOTE_ADDR'],
+		// 		"client"=>$GLOBALS['LOGIKS']["_SERVER"]['REMOTE_ADDR'],
 		// 	));
 		// $dbLogLink=LogDB::singleton()->getLogDBCon();
 		// $dbLogLink->executeQuery($q1);	

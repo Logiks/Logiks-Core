@@ -43,8 +43,10 @@ class LogiksClassLoader {
 
 				if($cp) {
 					include $cp;
+					return true;
 				} else {
-					echo "<div class='logiksClassNotFound'>CLASS NOT FOUND :: $class (LogiksClassLoader:47)</div>";
+					return false;
+					//echo "<div class='logiksClassNotFound'>CLASS NOT FOUND :: $class (LogiksClassLoader:47)</div>";
 				}
 		});
 
@@ -57,6 +59,8 @@ class LogiksClassLoader {
 
 	protected function findClassUniversal($class) {
 		$cls=strtolower($class);
+
+		if(!isset($GLOBALS['classPath'])) return false;
 
 		$classpath=$GLOBALS['classPath'];
 		foreach($classpath as $p) {

@@ -26,8 +26,8 @@ if(!function_exists("getRelativePath")) {
 		return ROOT.dirname(str_replace(ROOT,"",$file))."/".basename($file);
 	}
 	function getBasePath() {
-		if(isset($_SERVER['PATH_INFO'])) {
-			$file=$_SERVER['PATH_INFO'];
+		if(isset($GLOBALS['LOGIKS']["_SERVER"]['PATH_INFO'])) {
+			$file=$GLOBALS['LOGIKS']["_SERVER"]['PATH_INFO'];
 			return getRelativePath($file);
 		} else return "";
 	}
