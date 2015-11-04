@@ -10,4 +10,4 @@ install:
 - php api/libs/LogiksTestCase.php
 
 script:
-- phpunit --configuration .phpunit.xml tests/test_*
+- phpunit -v --configuration .phpunit.xml tests/test_*

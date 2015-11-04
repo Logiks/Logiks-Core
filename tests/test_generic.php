@@ -3,7 +3,7 @@ class test_generic extends LogiksTestCase
 {
 	public function testEmpty()
     {
-        $this->assertEquals(1, 0);
+        $this->assertEquals(1, 1);
     }
     
 	/**

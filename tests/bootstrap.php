@@ -24,6 +24,10 @@ if(isset($_SERVER) && count($_SERVER)>0) {
 	$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PATH']='http://localhost:82/devlogiks/';
 }
 
+if(!class_exists("PHPUnit_Framework_TestCase")) {
+	require_once('PHPUnit/Autoload.php');
+}
+
 include_once dirname(__DIR__)."/api/libs/LogiksTestCase.php";
 
 ?>
