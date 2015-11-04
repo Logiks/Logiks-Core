@@ -1,5 +1,5 @@
 <?php
-class ArrayDiffTest1 extends PHPUnit_Framework_TestCase
+class test_generic extends PHPUnit_Framework_TestCase
 {
 	public function testEmpty()
     {

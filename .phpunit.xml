@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-     backupStaticAttributes="false"
+        colors="false"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        stopOnFailure="true"
 
-     cacheTokens="false"
-     colors="false"
-
-     strict="false"
-     verbose="false"
+        strict="false"
+        verbose="false"
     >
 
-    <filter>
+<!--     <filter>
         <blacklist>
                 <directory>api/libs/vendor</directory>
                 <directory>apps</directory>
@@ -19,8 +20,14 @@
                 <directory>misc</directory>
                 <directory>tmp</directory>
         </blacklist>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory>tests/</directory>
+        <whitelist>
+            
         </whitelist>
-    </filter>
+    </filter> -->
+
+    <testsuites>
+        <testsuite name="Unit Tests">
+          <directory>tests/*.php</directory>
+        </testsuite>
+    </testsuites>
 </phpunit>
