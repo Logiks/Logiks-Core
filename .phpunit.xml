@@ -10,7 +10,7 @@
         verbose="false"
     >
 
-<!--     <filter>
+    <filter>
         <blacklist>
                 <directory>api/libs/vendor</directory>
                 <directory>apps</directory>
@@ -23,7 +23,7 @@
         <whitelist>
             
         </whitelist>
-    </filter> -->
+    </filter>
 
     <testsuites>
         <testsuite name="Unit Tests">
