@@ -1,7 +1,7 @@
 {
     "GLOBALS": {
 		"core":{
-			"driver":"mysql",
+			"driver":"mysqli",
 			"host":"localhost",
 			"port":"",
 			"database":"logiks40_coredb",
@@ -13,7 +13,7 @@
 			"block":[]
 		},
 		"log":{
-			"driver":"mysql",
+			"driver":"mysqli",
 			"host":"localhost",
 			"port":"",
 			"database":"logiks40_logdb",
@@ -27,7 +27,19 @@
     },
 	"default": {
 		"app":{
-			"driver":"mysql",
+			"driver":"sqlite3",
+			"host":"localhost",
+			"port":"",
+			"database":"testdata",
+			"user":"root",
+			"pwd":"fthbvg",
+			"prefix":"",
+			"suffix":"",
+			"readonly":false,
+			"block":[]
+		},
+		"test":{
+			"driver":"mysqli",
 			"host":"localhost",
 			"port":"",
 			"database":"lgks36_apidocs",

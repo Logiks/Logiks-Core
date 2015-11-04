@@ -28,7 +28,7 @@ if(!function_exists("__cleanup")) {
 		MetaCache::getInstance()->dumpAllCache();
 		DataCache::getInstance()->dumpAllCache();
 
-		//Database::closeAll();
+		Database::closeAll();
 
 
 	 // $error = error_get_last();
@@ -55,7 +55,7 @@ if(!function_exists("__cleanup")) {
 		MetaCache::getInstance()->dumpAllCache();
 		DataCache::getInstance()->dumpAllCache();
 
-		//Database::closeAll();	
+		Database::closeAll();	
 	}
 
 	function logiksRequestPreboot() {
@@ -191,12 +191,12 @@ if(!function_exists("__cleanup")) {
 
 	function loadLogiksBootEngines() {
 		if(function_exists("runHooks")) runHooks("enginesStart");
+		
 		//Optional Data Components
-		//include_once ROOT. "api/libs/logiksDB/boot.php";
-		//include_once ROOT. "api/libs/logiksUser/boot.php";
+		include_once ROOT. "api/libs/logiksDB/boot.php";
+		include_once ROOT. "api/libs/logiksUser/boot.php";
 
 		//initiate the database connection for core database
-
 		//include_once ROOT. "api/libs/logiksORM/boot.php";	//Optional
 		//include_once ROOT. "api/libs/uiComponents/boot.php";	//Optional
 

@@ -5,7 +5,7 @@
 /misc/themes/admincp/
 /misc/themes/cms/
 /todo.txt
-/test.php
+/data/sqlite/testdata.db
 .scrutinizer.yml
 .travis.yml
 composer.json

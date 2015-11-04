@@ -22,8 +22,6 @@ define('ROOT',dirname(dirname(__FILE__)) . '/');
 
 require_once (ROOT . 'services/initialize.php');
 
-
-
 if(!isset($_REQUEST['scmd'])) {
 	trigger_logikserror(901, E_USER_ERROR);
 	exit();

@@ -44,9 +44,15 @@ class LogiksError {
         "file"=>$file,
         "line"=>$line,
         "msg"=>$errMsg,
-        "timesnap"=>(microtime(true)-$_SESSION['REQUEST_START']),
+        "timesnap"=>0,
       ];
 
+    if(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START'])) {
+      $errData['timesnap']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START']);
+    } elseif(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START'])) {
+      $errData['timesnap']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START']);
+    }
+    
     //Try Logging the error first
     if(ERROR_LOGGING & $severity) {
       $lr->log($errLogMsg,$errData,LogiksLogger::severityToLevel($severity));
