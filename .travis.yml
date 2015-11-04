@@ -6,8 +6,6 @@ php:
 - 5.5
 
 install:
-- php api/initialize.php
-- php api/libs/LogiksTestCase.php
 
 script:
 - phpunit -v --configuration .phpunit.xml tests/test_*

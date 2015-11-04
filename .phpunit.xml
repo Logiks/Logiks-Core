@@ -12,7 +12,7 @@
         stopOnIncomplete="false"
         stopOnSkipped="false"
 
-        bootstrap="tests/bootstrap.php"
+        bootstrap="tests/boot_test.php"
 
         verbose="false"
     >
