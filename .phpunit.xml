@@ -6,11 +6,10 @@
         convertWarningsToExceptions="true"
         stopOnFailure="true"
 
-        strict="false"
         verbose="false"
     >
 
-    <filter>
+<!--     <filter>
         <blacklist>
                 <directory>api/libs/vendor</directory>
                 <directory>apps</directory>
@@ -29,5 +28,5 @@
         <testsuite name="Unit Tests">
           <directory>tests/*.php</directory>
         </testsuite>
-    </testsuites>
+    </testsuites> -->
 </phpunit>
