@@ -9,3 +9,7 @@ install: true
 
 script:
 - phpunit -v --configuration .phpunit.xml tests/test_*
+
+notifications:
+  email:
+    - admin@openlogiks.org
