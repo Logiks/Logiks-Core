@@ -2,8 +2,8 @@
 /**
  * Smarty plugin
  *
- * @package    Smarty
- * @subpackage PluginsFunction
+ * @package    	Smarty
+ * @subpackage 	PluginsFunction
  * @author		Bismay Kumar Mohaptra
  */
 

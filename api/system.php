@@ -149,7 +149,11 @@ if(!function_exists("getRequestTime")) {
 
 	//Gets the time difference between current time and time of request.
 	function getRequestTime() {
-		return (microtime(true)-$_SESSION['REQUEST_START']);
+		if(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START'])) {
+	      return (microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START']);
+	    } elseif(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START'])) {
+	      return  (microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START']);
+	    }
 	}
 
 	//Prints the content format header and content if available.

@@ -6,8 +6,3 @@
 /misc/themes/cms/
 /todo.txt
 /data/sqlite/testdata.db
-.scrutinizer.yml
-.travis.yml
-composer.json
-phpcs.xml
-phpdoc.xml

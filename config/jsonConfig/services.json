@@ -1,15 +1,21 @@
 {
 	"GLOBALS":{
+		"ping":{
+			"access_control":"public"
+		},
 		"auth":{
 			"access_control":"public"
 		},
-		"ping":{
-			"privilege_model":{},
-			"access_control":"apikey"
+		"resources":{
+			"access_control":"public"
 		},
 		"avatar":{
 			"format":"raw",
 			"access_control":"public"
+		},
+		"rss":{
+			"privilege_model":{},
+			"access_control":"apikey"
 		}
 	}
 }

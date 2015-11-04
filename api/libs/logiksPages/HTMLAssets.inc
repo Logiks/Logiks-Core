@@ -48,6 +48,7 @@ class HTMLAssets {
 			} else {
 				$searchPath=$this->assetBuffer["{$assetType}-{$theme}"];
 			}
+			$searchPath[]=THEME_FOLDER."default/";
 			//printArray($searchPath);
 
 			$finalPath="";
@@ -144,17 +145,27 @@ class HTMLAssets {
 	public function printAsset($assetName,$assetType="css",$params=array()) {
 		if($assetType==null || strlen($assetType)<=0) return  false;
 
+		$path=$this->getAssetPath($assetName,$assetType,$params);
 
+		if(substr($path, 0,7)=="http://" || substr($path, 0,8)=="https://" || substr($path, 0,6)=="ftp://") {
+			echo "/*************Start***$assetName****************/\n";
+			echo _cachePrint($path);
+			echo "\n/*************END***$assetName****************/\n\n";
+		} else {
+			echo "/*************Start***$assetName****************/\n";
+			readfile($path);
+			echo "\n/*************END***$assetName****************/\n\n";
+		}	
 	}
 	public function printAssetTag($assetName,$assetType="css",$params=array()) {
 		if($assetType==null || strlen($assetType)<=0) return  false;
 
-
+		//TODO
 	}
 	public function printAssetCompressed($assetName,$assetType="css",$params=array()) {
 		if($assetType==null || strlen($assetType)<=0) return  false;
 
-
+		//TODO
 	}
 
 	//CDN Function

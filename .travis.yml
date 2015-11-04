@@ -1,0 +1,10 @@
+---
+language: php
+os:
+- linux
+php:
+- 5.5
+
+install:
+- php api/initialize.php
+- php api/libs/LogiksTestCase.php

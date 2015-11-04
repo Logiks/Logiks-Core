@@ -2,6 +2,8 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(isset($_REQUEST['src'])) {
+	include_once ROOT. "api/libs/logiksPages/boot.php";
+
 	if(isset($_REQUEST['encoded']) && $_REQUEST['encoded']=="true") {
 		$_REQUEST['src']=base64_decode($_REQUEST['src']);
 	}
@@ -28,8 +30,8 @@ if(isset($_REQUEST['src'])) {
 			else $theme="default";
 		}
 
-		_theme($theme);
-		$htmlAsset=HTMLAssets::singleton();
+		$themeEngine=new LogiksTheme($theme);
+		$htmlAsset=new HTMLAssets($themeEngine);
 
 		switch ($_REQUEST['type']) {
 			case 'css':
@@ -56,18 +58,7 @@ if(isset($_REQUEST['src'])) {
 				$fname=$file;
 			}
 
-			$path=$htmlAsset->getAssetPath($fname,$type,array("theme"=>$theme));
-			//printArray($path);continue;
-
-			if($path["FILE"]=="CDN") {
-				echo "/*************$file****************/\n";
-				echo _cachePrint($path["LINK"]);
-				echo "\n\n";
-			} elseif(file_exists($path["FILE"])) {
-				echo "/*************$file****************/\n";
-				readfile($path["FILE"]);
-				echo "\n\n";
-			}
+			$htmlAsset->printAsset($fname,$type,array("theme"=>$theme));
 		}
 	}
 }
