@@ -10,7 +10,7 @@ class test_generic extends PHPUnit_Framework_TestCase
      * @depends testEmpty
      */
     public function testEquality() {
-        $this->assertTrue(true);
+        $this->assertTrue(false);
     }
 }
 ?>
