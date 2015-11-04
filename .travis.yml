@@ -8,3 +8,6 @@ php:
 install:
 - php api/initialize.php
 - php api/libs/LogiksTestCase.php
+
+script:
+phpunit --configuration .phpunit.xml
