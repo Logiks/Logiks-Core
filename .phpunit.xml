@@ -4,12 +4,20 @@
         convertErrorsToExceptions="true"
         convertNoticesToExceptions="true"
         convertWarningsToExceptions="true"
-        stopOnFailure="true"
+        forceCoversAnnotation="false"
+        mapTestClassNameToCoveredClassName="false"
+
+        stopOnError="false"
+        stopOnFailure="false"
+        stopOnIncomplete="false"
+        stopOnSkipped="false"
+
+        bootstrap="tests/bootstrap.php"
 
         verbose="false"
     >
 
-<!--     <filter>
+    <filter>
         <blacklist>
                 <directory>api/libs/vendor</directory>
                 <directory>apps</directory>
@@ -24,9 +32,9 @@
         </whitelist>
     </filter>
 
-    <testsuites>
+    <!-- <testsuites>
         <testsuite name="Unit Tests">
-          <directory>tests/*.php</directory>
+          <directory>tests/tests_</directory>
         </testsuite>
     </testsuites> -->
 </phpunit>

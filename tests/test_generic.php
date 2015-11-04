@@ -1,5 +1,5 @@
 <?php
-class test_generic extends PHPUnit_Framework_TestCase
+class test_generic extends LogiksTestCase
 {
 	public function testEmpty()
     {
