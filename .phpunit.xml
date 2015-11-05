@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit
+<phpunit backupGlobals="false"
+        backupStaticAttributes="false"
+
+        bootstrap="tests/boot_test.php"
+
         colors="false"
         convertErrorsToExceptions="true"
         convertNoticesToExceptions="true"
         convertWarningsToExceptions="true"
         forceCoversAnnotation="false"
+        
         mapTestClassNameToCoveredClassName="false"
 
         stopOnError="false"
@@ -12,8 +17,7 @@
         stopOnIncomplete="false"
         stopOnSkipped="false"
 
-        bootstrap="tests/boot_test.php"
-
+        syntaxCheck="false"
         verbose="false"
     >
 
@@ -32,9 +36,9 @@
         </whitelist>
     </filter>
 
-    <!-- <testsuites>
-        <testsuite name="Unit Tests">
-          <directory>tests/tests_</directory>
+    <testsuites>
+        <testsuite name="Logiks Test Suite">
+            <directory>tests/tests_</directory>
         </testsuite>
-    </testsuites> -->
+    </testsuites>
 </phpunit>

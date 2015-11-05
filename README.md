@@ -18,6 +18,7 @@ Added the continuous testing and integration framework from Travis. Find the sta
 + MySQL 5.6+	For database
 
 ###Optional Requirments
++ SQLite3 Libs
 + Curl Libs
 + GD Libs
 
@@ -31,4 +32,3 @@ These are plain source code of/part of the complete working project.
 + For a complete api documentation  visit <http://apidocs.openlogiks.org/>
 + For a complete working downloadable package please visit <http://openlogiks.org/olgks/downloads/>
 + For a complete working demo visit <http://demo.openlogiks.org>
-

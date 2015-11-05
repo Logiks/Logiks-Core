@@ -140,7 +140,7 @@ class LogiksError {
   }
 
   private function printJSON($errData) {
-    if(MASTER_DEBUG_MODE) {
+    if(MASTER_DEBUG_MODE && getConfig("SERVICE_DEBUG_TRACE")) {
       $trace=debug_backtrace();
       $out=array(
           "error"=>$errData,
