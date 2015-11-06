@@ -155,18 +155,14 @@ class HTMLAssets {
 			echo "/*************Start***$assetName****************/\n";
 			readfile($path);
 			echo "\n/*************END***$assetName****************/\n\n";
-		}	
+		}
 	}
-	public function printAssetTag($assetName,$assetType="css",$params=array()) {
-		if($assetType==null || strlen($assetType)<=0) return  false;
-
-		//TODO
-	}
-	public function printAssetCompressed($assetName,$assetType="css",$params=array()) {
-		if($assetType==null || strlen($assetType)<=0) return  false;
-
-		//TODO
-	}
+	// public function printAssetTag($assetName,$assetType="css",$params=array()) {
+	// 	if($assetType==null || strlen($assetType)<=0) return  false;
+	// }
+	// public function printAssetCompressed($assetName,$assetType="css",$params=array()) {
+	// 	if($assetType==null || strlen($assetType)<=0) return  false;
+	// }
 
 	//CDN Function
 	public function getCDNResource($resource,$type) {

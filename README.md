@@ -13,6 +13,12 @@ Added the continuous testing and integration framework from Travis. Find the sta
 + PHP 5.5+
 + Apache/Web Server with .htaccess capabilities and rewrite mod enabled
 
+###Apache Mods Required
++ mod_rewrite
++ mod_headers
++ mod_expires	(optional)
++ mod_deflate	(optional)
+
 ###Server Requirments (Optional)
 + Memcached		For caching
 + MySQL 5.6+	For database

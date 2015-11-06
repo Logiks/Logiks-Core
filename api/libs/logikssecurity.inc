@@ -17,7 +17,7 @@
      $this->checkDevMode();
      $this->checkUserSiteAccess();
      $this->isBlacklisted(PAGE,SITENAME);
-     $this->isLinkRedirected(PAGE);
+     // $this->isLinkRedirected(PAGE);
      $this->checkBadBot(true);
    }
 
@@ -59,6 +59,8 @@
       //TODO : After DB
       //$client=$GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"];
       //802/806
+
+      echo "XXX";
    }
 
    public function checkSiteMode() {
