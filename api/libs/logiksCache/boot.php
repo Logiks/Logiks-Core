@@ -21,20 +21,18 @@ include_once dirname(__FILE__)."/LogiksCache.inc";
 include_once dirname(__FILE__)."/DataCache.inc";
 include_once dirname(__FILE__)."/MetaCache.inc";
 
-/*Cache And Template Oriented Functions*/
+//Dcoument caching Capabilities, can cache remote objects
 if(!function_exists("_cache")) {
 	//This function checks if cache exists, yes returns cached data, no creates and returns cached data
 	function _cache($source,$cacheID=null,$reCache=false) {
 		$cache=DataCache::getInstance();
 		return $cache->getCache($source,$cacheID,$reCache);
 	}
-	//Introduced in v3.6.6 as a method load, print themes
 	//This function checks if cache exists, yes returns cache ID, no creates and returns cache ID
 	function _cacheID($source,$reCache=false) {
 		$cache=DataCache::getInstance();
 		return $cache->getCacheID($source,$reCache);
 	}
-	//Introduced in v3.6.6 as a method load, print themes
 	//Sometimes we just need to print the Cache From CachedID with out caring about source
 	//Usefull while transfering command of the cache from one object to another
 	function _cachePrint($cacheID) {
@@ -43,8 +41,8 @@ if(!function_exists("_cache")) {
 	}
 }
 
+//Key value pair cache system, meant to store oneliner outputs, etc.
 if(!function_exists("_metaCache")) {
-	//Introduced in v3.6.6 as a method load, print themes
 	function _metaCache($group,$srcFile) {
 		$metaCache=MetaCache::getInstance();
 		return $metaCache->getMetaFor($group,$srcFile);

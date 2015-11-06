@@ -16,7 +16,7 @@ if(!function_exists('loadAllMedia')) {
 
 		$cachePath=_metaCache("MEDIA:ALL",$media);
 		if(!$cachePath) {
-			$mediaPaths=$GLOBALS['mediaPaths'];
+			$paths=getLoaderFolders('mediaPaths',"");
 
 			foreach($linkedApps as $app) {
 				$appDir=str_replace("#APPROOT#", APPROOT, $app)."/";
@@ -72,7 +72,7 @@ if(!function_exists('loadAllMedia')) {
 	}
 	function loadMediaList($mediaPath,$relativeOnly=false) {
 		if(strlen($mediaPath)<=0) return "";
-    $paths=getLoaderFolders('mediaPaths',"");
+    	$paths=getLoaderFolders('mediaPaths',"");
 
 		foreach($paths as $a) {
 			$fa=$a.$mediaPath;
@@ -80,7 +80,7 @@ if(!function_exists('loadAllMedia')) {
 				$out=array();
 				$arr=scandir(ROOT.$fa);
 				unset($arr[0]);unset($arr[1]);
-        if(!$relativeOnly) {
+        		if(!$relativeOnly) {
 					foreach($arr as $m=>$n) {
 						$fs=$fa."/".$n;
 						$fs=str_replace("//","/",$fs);

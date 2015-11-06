@@ -77,6 +77,9 @@ if (!function_exists('printArray')) {
 		$value=str_replace("%5D","]",$value);
 		return $value;
 	}
+	function rstrstr($haystack,$needle) {
+        return substr($haystack, 0,strpos($haystack, $needle));
+    }
 	function strip($value) {
 		//if(get_magic_quotes_gpc() != 0)
 		if(is_array($value))  {
@@ -243,6 +246,25 @@ if (!function_exists('printArray')) {
 		preg_match_all($pattern, $txt, $matches);
 		$tags=implode(",",$matches[1]);
 		return $tags;
+	}
+	function logiks_replace($subject) {
+		if(function_exists("_replace")) {
+			return _replace($subject);
+		} elseif(class_exists("LogiksReplace")) {
+			$lr=new LogiksReplace();
+			return $lr->_replace($subject);
+		} else {
+			$subject=str_replace("#ROOT#", ROOT, $subject);
+			if(defined("SITENAME")) {
+				$subject=str_replace("#SITENAME#", SITENAME, $subject);
+				if(defined("APPS_FOLDER")) $subject=str_replace("#APPROOT#", APPS_FOLDER.$site."/", $subject);
+			}
+			if(defined("THEME_FOLDER")) {
+				if(defined("APPS_THEME")) $subject=str_replace("#THEME#", THEME_FOLDER.APPS_THEME, $subject);
+				else $subject=str_replace("#THEME#", THEME_FOLDER."default/", $subject);
+			}
+		}
+		return $subject;
 	}
 }
 ?>

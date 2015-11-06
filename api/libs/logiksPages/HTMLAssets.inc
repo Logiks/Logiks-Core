@@ -171,26 +171,14 @@ class HTMLAssets {
 	//CDN Function
 	public function getCDNResource($resource,$type) {
 		if(getConfig("CDN_DISABLE")) {
-			unset($_SESSION['CDN-RESOURCES']);
+			//unset($_SESSION['CDN-RESOURCES']);
 			return false;
 		}
-		if(!isset($_SESSION['CDN-RESOURCES'])) {
-			$cdnF="";
-			if(file_exists(APPROOT.JSONDB_FOLDER."cdn.json")) {
-				$cdnF=APPROOT.JSONDB_FOLDER."cdn.json";
-			} elseif(file_exists(ROOT.JSONDB_FOLDER."cdn.json")) {
-				$cdnF=ROOT.JSONDB_FOLDER."cdn.json";
-			} else {
-				return false;
-			}
-			$data=file_get_contents($cdnF);
-			$cdnSrc=json_decode($data,true);
-			$_SESSION['CDN-RESOURCES']=$cdnSrc;
-		}
-		$cdnSrc=$_SESSION['CDN-RESOURCES'];
-		if(isset($cdnSrc[$type][$resource])) {
-			//return _cacheID($cdnSrc[$type][$resource]);
-			return $cdnSrc[$type][$resource];
+		$jsondb=SimpleJSONDB::getInstance();
+		$cdnSrc=$jsondb->getItem("cdn",$type);
+
+		if(is_array($cdnSrc) && isset($cdnSrc[$resource])) {
+			return $cdnSrc[$resource];
 		}
 		return false;
 	}

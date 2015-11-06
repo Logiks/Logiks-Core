@@ -21,7 +21,7 @@ session_destroy();
 session_start();
 */
 $dbLink=getSysDBLink();
-$dbLogLink=LogDB::singleton()->getLogDBCon();
+$dbLogLink=null;//LogDB::getInstance()->getLogDBCon();
 
 if(!$dbLink->isOpen()) {
 	relink("Database Connection Error",$domain);

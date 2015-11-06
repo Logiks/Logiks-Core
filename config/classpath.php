@@ -15,10 +15,10 @@ $GLOBALS['mediaPaths']=array(
 		"media/#SITENAME#/",
 	);
 $GLOBALS['vendorPath']=array(
-		"#APPROOT#plugins/",
-		"#ROOT#api/",
-		"#ROOT#plugins/",
-		"#ROOT#pluginsDev/",
+		"#APPROOT#plugins/vendors/",
+		"#ROOT#api/vendors/",
+		"#ROOT#plugins/vendors/",
+		"#ROOT#pluginsDev/vendors/",
 	);
 $GLOBALS['pluginPaths']=array(
 		"#APPROOT#plugins/",

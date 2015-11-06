@@ -202,7 +202,7 @@ if(!function_exists("_randomid")) {
 }
 if(!function_exists("_ling")) {
 	function _ling($data,$forceWord=false) {
-		$ling=Lingulizer::singleton();
+		$ling=Lingulizer::getInstance();
 		if(is_array($data)) {
 			foreach($data as $a=>$b) {
 				$data[$a]=$ling->toLing($b);

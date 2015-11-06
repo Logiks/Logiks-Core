@@ -10,6 +10,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 //include_once dirname(__FILE__)."/User.inc";
 //include_once dirname(__FILE__)."/RoleModel.inc";
+//include_once dirname(__FILE__)."/Settings.inc";
 
 //UserSettings
 //SiteSettings

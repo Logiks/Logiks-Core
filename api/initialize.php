@@ -21,6 +21,10 @@ if(!file_exists("$bpath/config/basic.cfg")) {
 	}
 	exit();
 }
+if(!is_writable("$bpath/tmp")) {
+	echo "<h1 align=center style='color:#BF2E11'>Error In Logiks TMP Directory, its not writable.</h1>";
+	exit();
+}
 
 if(!isset($initialized)) {
 	ob_start();

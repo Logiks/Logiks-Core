@@ -11,6 +11,7 @@
  *
  * USAGE
  *	$jsondb=new SimpleJSONDB(dirname(__FILE__)."/data/");
+ *  $jsondb=SimpleJSONDB::getInstance();//Access the universal Object of Logiks System
  *
  *	$jsondb->load("test");
  *	//$jsondb->add("test",array("W"=>"m","U"=>"Hypo"));
@@ -25,10 +26,20 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 class SimpleJSONDB {
 
+	private static $instance=null;
+
 	private $dataDir=null;
 	private $error="";
 
 	private $jsonList=array();
+
+	public static function getInstance() {
+		if(!isset(self::$instance)) {
+			$c=__CLASS__;
+			self::$instance=new $c;
+		}
+		return self::$instance;
+	}
 
 	public function __construct($dataDir=null) {
 		if($dataDir!=null) {

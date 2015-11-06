@@ -64,7 +64,7 @@ if(!function_exists("__cleanup")) {
 		} else {
 			register_shutdown_function("__cleanup");
 		}
-
+		
 		// platform neurtral url handling
 		if(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_URI'] ) ) {
 			$request_uri = $GLOBALS['LOGIKS']["_SERVER"]['REQUEST_URI'];

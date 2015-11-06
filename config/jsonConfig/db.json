@@ -12,6 +12,18 @@
 			"readonly":false,
 			"block":[]
 		},
+		"security":{
+			"driver":"sqlite3",
+			"host":"localhost",
+			"port":"",
+			"database":"security",
+			"user":"root",
+			"pwd":"fthbvg",
+			"prefix":"",
+			"suffix":"",
+			"readonly":true,
+			"block":[]
+		},
 		"log":{
 			"driver":"mysqli",
 			"host":"localhost",

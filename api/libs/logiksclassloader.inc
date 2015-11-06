@@ -58,28 +58,31 @@ class LogiksClassLoader {
 	}
 
 	protected function findClassUniversal($class) {
-		$cls=strtolower($class);
+		// work around for PHP 5.3.0 - 5.3.2
+		if ('\\' == $class[0]) {
+            $class = substr($class, 1);
+        }
+        $class=str_replace("\\", "/", $class);
+        $cls=strtolower($class);
 
-		if(!isset($GLOBALS['classPath'])) return false;
+		if(!isset($GLOBALS['classPath'])) $GLOBALS['classPath']=array();
+		if(!isset($GLOBALS['vendorPath'])) $GLOBALS['vendorPath']=array();
 
 		$classpath=$GLOBALS['classPath'];
 		foreach($classpath as $p) {
-			if(file_exists(ROOT."{$p}{$cls}.inc")) {
-				$ff=ROOT."{$p}{$cls}.inc";
-				$this->addToCache($cls, $ff);
-				return $ff;
-			} elseif(file_exists(ROOT."{$p}{$class}.inc")) {
-				$ff=ROOT."{$p}{$class}.inc";
-				$this->addToCache($class, $ff);
-				return $ff;
-			} elseif(file_exists(ROOT."{$p}{$cls}.php")) {
-				$ff=ROOT."{$p}{$cls}.php";
-				$this->addToCache($cls, $ff);
-				return $ff;
-			} elseif(file_exists(ROOT."{$p}{$class}.php")) {
-				$ff=ROOT."{$p}{$class}.php";
-				$this->addToCache($class, $ff);
-				return $ff;
+			$pths=array(
+					ROOT."{$p}{$cls}.inc",
+					ROOT."{$p}{$class}.inc",
+					ROOT."{$p}{$cls}.php",
+					ROOT."{$p}{$class}.php",
+					// ROOT."{$p}{$prefix}/{$class}.inc",
+					// ROOT."{$p}{$prefix}/{$class}.php",
+				);
+			foreach ($pths as $f) {
+				if(file_exists($f)) {
+					$this->addToCache($cls, $f);
+					return $f;
+				}
 			}
 		}
 
@@ -96,14 +99,16 @@ class LogiksClassLoader {
 
 		$vendorpath=$GLOBALS['vendorPath'];
 		foreach($vendorpath as $p) {
-			$ff=ROOT.$p.$fileName . '.php';
-			$ff1=ROOT.$p.$fileName . '.inc';
-			if(file_exists($ff)) {
-				$this->addToCache($cls, $ff);
-				return $ff;
-			} elseif(file_exists($ff1)) {
-				$this->addToCache($cls, $ff1);
-				return $ff1;
+			$p=logiks_replace($p);
+			$pths=array(
+					$p.$fileName . '.php',
+					$p.$fileName . '.inc',
+				);
+			foreach ($pths as $f) {
+				if(file_exists($f)) {
+					$this->addToCache($cls, $f);
+					return $f;
+				}
 			}
 		}
 		return false;

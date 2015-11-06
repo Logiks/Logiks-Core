@@ -108,7 +108,7 @@ if(!function_exists("getRequestTime")) {
 		// 		"user"=>$_SESSION['SESS_USER_ID'],
 		// 		"client"=>$GLOBALS['LOGIKS']["_SERVER"]['REMOTE_ADDR'],
 		// 	));
-		// $dbLogLink=LogDB::singleton()->getLogDBCon();
+		// $dbLogLink=LogDB::getInstance()->getLogDBCon();
 		// $dbLogLink->executeQuery($q1);	
 	}
 	//Just returns the session site, continued from old system.
@@ -119,18 +119,14 @@ if(!function_exists("getRequestTime")) {
 	//It helps when a single handler is to be used where multiple handlers are available.
 	//Can be accessed using handler# at various places.
 	//eg. editors :: multiple are available, single to be used.
-	function get_handlers($activity,$forceReload=false) {
+	function get_handlers($activity) {
 		if($activity==null || strlen($activity)<=0) return array();
-		if(!isset($GLOBALS['DEFAULT_HANDLERS']) || $forceReload) {
-			$jsondb=new SimpleJSONDB(ROOT.MISC_FOLDER."jsondb/");
-			$dmArr=$jsondb->getAll("default_handlers");
-			if(!$dmArr) {
-				$dmArr=array();
-			}
-			$GLOBALS['DEFAULT_HANDLERS']=$dmArr;
-		}
-		if(isset($GLOBALS['DEFAULT_HANDLERS'][$activity]) && $GLOBALS['DEFAULT_HANDLERS'][$activity]["enabled"]) {
-			return $GLOBALS['DEFAULT_HANDLERS'][$activity]["opts"];
+		
+		$jsondb=SimpleJSONDB::getInstance();
+		$dmArr=$jsondb->getItem("default_handlers",$activity);
+
+		if(is_array($dmArr) && $dmArr["enabled"]) {
+			return $dmArr["opts"];
 		} else return array();
 	}
 

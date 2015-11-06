@@ -28,7 +28,7 @@ class Lingulizer {
 		}
 	}
 
-	public static function singleton() {
+	public static function getInstance() {
 		if(!isset(self::$instance)) {
 			$c=__CLASS__;
 			self::$instance=new $c;
@@ -37,8 +37,8 @@ class Lingulizer {
 		return self::$instance;
 	}
 	public static function reloadInstance() {
-		Lingulizer::singleton()->loadLocaleFile(getConfig("DEFAULT_LOCALE"));
-		if(defined("LINGUALIZER_DICTIONARIES")) Lingulizer::singleton()->loadLocaleFile(LINGUALIZER_DICTIONARIES);
+		Lingulizer::getInstance()->loadLocaleFile(getConfig("DEFAULT_LOCALE"));
+		if(defined("LINGUALIZER_DICTIONARIES")) Lingulizer::getInstance()->loadLocaleFile(LINGUALIZER_DICTIONARIES);
 	}
 	public function loadLocaleFile($locale) {
 		if(strlen($locale)<=0) return false;
