@@ -9,9 +9,6 @@
 
  class LogiksSecurity {
 
-   public function __construct() {
-
-   }
    public function checkPageRequest() {
      $this->checkSiteMode();
      $this->checkDevMode();
@@ -25,7 +22,6 @@
      //$this->checkSiteMode();
      $this->isBlacklisted("SCMD-".$_REQUEST['scmd'],SITENAME);
      $this->checkBadBot(true);
-
    }
 
    public function checkUserSiteAccess() {
@@ -48,18 +44,12 @@
       }
    }
 
-   function isLinkRedirected($page=null,$site=SITENAME) {
-      if($page==null) $page=PAGE;
-      //TODO : After DB
-      //301,307
-      return false;
-   }
-
    public function isBlacklisted($page,$site=SITENAME) {
       //TODO : After DB
-      //$client=$GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"];
+      $client=$GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"];
       //802/806
-
+      
+      
       echo "XXX";
    }
 

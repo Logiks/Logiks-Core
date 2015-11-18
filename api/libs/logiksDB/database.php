@@ -30,6 +30,10 @@ class Database {
 		
 		$db=new Database($key,$params);
 		
+		//Setup Cache
+
+		//Setup Logging
+		
 		return $db;
 	}
 	//Checks if the particular named db connection is alive

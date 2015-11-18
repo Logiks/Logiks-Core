@@ -146,6 +146,6 @@ if(!function_exists("errorHandler")) {
 	set_exception_handler("exceptionHandler");
 
 	//Switching php display error off
-	ini_set('display_errors', 'Off');
+	ini_set('display_errors', 'On');
 }
 ?>

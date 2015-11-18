@@ -28,6 +28,6 @@ if(!class_exists("PHPUnit_Framework_TestCase")) {
 	require_once('PHPUnit/Autoload.php');
 }
 
-include_once dirname(__DIR__)."/api/libs/LogiksTestCase.php";
+include_once dirname(__DIR__)."/api/libs/logikstestcase.php";
 
 ?>

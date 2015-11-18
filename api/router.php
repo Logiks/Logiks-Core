@@ -29,7 +29,7 @@ if(!defined("BASEPATH")) {
 
   $routerFiles=array(
       APPROOT."{$routerPage}.php",
-      APPROOT."router.php",
+      //APPROOT."router.php",
       ROOT.API_FOLDER."libs/routers/{$routerPage}.php"
     );
 

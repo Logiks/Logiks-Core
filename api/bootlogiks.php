@@ -23,12 +23,14 @@ if(!function_exists("__cleanup")) {
 
 		// saveSettings();
 		// saveSiteSettings();
-		saveSession();
+		if(function_exists("saveSession")) saveSession();
 
-		MetaCache::getInstance()->dumpAllCache();
-		DataCache::getInstance()->dumpAllCache();
+		if(class_exists("LogiksCache"))  {
+			MetaCache::getInstance()->dumpAllCache();
+			DataCache::getInstance()->dumpAllCache();
+		}
 
-		Database::closeAll();
+		if(class_exists("Database")) Database::closeAll();
 
 
 	 // $error = error_get_last();
@@ -50,12 +52,14 @@ if(!function_exists("__cleanup")) {
 
 		// saveSettings();
 		// saveSiteSettings();
-		saveSession();
+		if(function_exists("saveSession")) saveSession();
 
-		MetaCache::getInstance()->dumpAllCache();
-		DataCache::getInstance()->dumpAllCache();
+		if(class_exists("LogiksCache"))  {
+			MetaCache::getInstance()->dumpAllCache();
+			DataCache::getInstance()->dumpAllCache();
+		}
 
-		Database::closeAll();	
+		if(class_exists("Database")) Database::closeAll();
 	}
 
 	function logiksRequestPreboot() {

@@ -13,17 +13,6 @@ include_once dirname(__FILE__)."/AbstractDBDriver.php";
 include_once dirname(__FILE__)."/AbstractQueryBuilder.php";
 include_once dirname(__FILE__)."/QueryBuilder.php";
 
-if(!function_exists("bootDatabase")) {
-	function bootDatabase($configFile,$forceReload=false) {
-		$cfg=loadJSONConfig($configFile,$forceReload);
-		
-		//Setup Cache
-
-		//Setup Logging
-		
-	}
-}
-
 if(!function_exists("_db")) {
 	function _db($dbKey="app") {
 		if($dbKey===true) $dbKey="core";

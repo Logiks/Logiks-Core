@@ -308,12 +308,16 @@ class LogiksError {
     if(defined("SITENAME")) {
       $errorCode="error";
 
-      $lt=new LogiksTheme(APPS_THEME,SITENAME);
+      if(defined("APPS_THEME")) {
+        $lt=new LogiksTheme(APPS_THEME,SITENAME);
 
-      $lp=new LogiksPage($lt);
-      $pg=$lp->loadPage($errorCode);
-      if($pg) {
-        return $lp;
+        $lp=new LogiksPage($lt);
+        $pg=$lp->loadPage($errorCode);
+        if($pg) {
+          return $lp;
+        } else {
+          return $this->getDefaultTemplate();
+        }
       } else {
         return $this->getDefaultTemplate();
       }
