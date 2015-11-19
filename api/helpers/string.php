@@ -83,28 +83,27 @@ if (!function_exists('singular')) {
 		return ucwords(preg_replace('/[_]+/', ' ', strtolower(trim($str))));
 	}
 
+   /*
+	* @author Arun [arun@smartinfologiks.com]
+	*/
 	function byte_format($num, $precision = 1) {
-		$CI =& get_instance();
-		$CI->lang->load('number');
-
 		if ($num >= 1000000000000){
-			$num = round($num / 1099511627776, $precision);
-			$unit = $CI->lang->line('terabyte_abbr');
-		} elseif ($num >= 1000000000){
-			$num = round($num / 1073741824, $precision);
-			$unit = $CI->lang->line('gigabyte_abbr');
-		} elseif ($num >= 1000000){
-			$num = round($num / 1048576, $precision);
-			$unit = $CI->lang->line('megabyte_abbr');
-		} elseif ($num >= 1000){
-			$num = round($num / 1024, $precision);
-			$unit = $CI->lang->line('kilobyte_abbr');
-		} else {
-			$unit = $CI->lang->line('bytes');
-			return number_format($num).' '.$unit;
-		}
-
-		return number_format($num, $precision).' '.$unit;
+	        $num = round($num / 1099511627776, $precision);
+	        $unit = _ling('TB');
+	    } elseif ($num >= 1000000000){
+	        $num = round($num / 1073741824, $precision);
+	        $unit = _ling('GB');
+	    } elseif ($num >= 1000000){
+	        $num = round($num / 1048576, $precision);
+	        $unit = _ling('MB');
+	    } elseif ($num >= 1000){
+	        $num = round($num / 1024, $precision);
+	        $unit = _ling('KB');
+	    } else {
+	        $unit = _ling('Bytes');
+	        return number_format($num).' '.$unit;
+	    }
+	    return number_format($num, $precision).' '.$unit;
 	}
 	
 	function wordLimiter($str, $limit = 100, $end_char = '&#8230;') {

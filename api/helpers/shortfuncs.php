@@ -138,8 +138,8 @@ if(!function_exists("_date")) {
 		$outFormat=str_replace("yy","Y",$outFormat);
 		$inFormat=str_replace("yy","Y",$inFormat);
 
-		$dateArr=preg_split("/[\s,:\/]+/",$date);
-		$inFormatArr=preg_split("/[\s,:\/]+/",$inFormat);
+		$dateArr=preg_split("/[\s,\-:\/]+/",$date);
+		$inFormatArr=preg_split("/[\s,\-:\/]+/",$inFormat);
 		$dateStore=array();
 		if(count($inFormatArr)!=count($dateArr)) {
 			return false;
@@ -147,6 +147,7 @@ if(!function_exists("_date")) {
 		foreach($inFormatArr as $key => $value) {
 			$dateStore[$value]=$dateArr[$key];
 		}
+		
 		$dateStore["n"]=intval($dateStore["m"]);
 		$dateStore["j"]=intval($dateStore["d"]);
 		//$dateStore["D"]=$days[floor($dateStore["j"]%7)];
@@ -174,11 +175,19 @@ if(!function_exists("_pDate")) {
 		$date=explode(" ", $date);
 		if(!isset($date[1])) $date[1]="";
 		if($outFormat==null) {
-			return trim(_date($date[0],"Y/m/d",getConfig("DATE_FORMAT"))." "._time($date[1],"H:i:s",getConfig("TIME_FORMAT")));
+			if(strlen($date[1])>0) {
+				return trim(_date($date[0],"Y/m/d",getConfig("DATE_FORMAT"))." "._time($date[1],"H:i:s",getConfig("TIME_FORMAT")));
+			} else {
+				return trim(_date($date[0],"Y/m/d",getConfig("DATE_FORMAT")));
+			}
 		} else {
 			$outFormat=explode(" ", $outFormat);
 			if(!isset($outFormat[1])) $outFormat[1]="";
-			return trim(_date($date[0],"Y/m/d",$outFormat[0])." "._time($date[1],"H:i:s",$outFormat[1]));
+			if(strlen($date[1])>0) {
+				return trim(_date($date[0],"Y/m/d",$outFormat[0])." "._time($date[1],"H:i:s",$outFormat[1]));
+			} else {
+				return trim(_date($date[0],"Y/m/d",$outFormat[0]));
+			}
 		}
 
 	}

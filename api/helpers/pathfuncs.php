@@ -10,8 +10,8 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 //Some Special System Functions
 if(!function_exists("getRelativePath")) {
-	function getRelativePath($file) {
-		$s=str_replace(SiteRoot,"",dirname($file) . "/");
+	function getRelativePath($file,$fullPath=true) {
+		$s=str_replace(ROOT,"/",dirname($file) . "/");
 		$basepath="";
 		$s=str_replace("//","/",$s);
 		for($j=0;$j<substr_count($s,"/");$j++) {
