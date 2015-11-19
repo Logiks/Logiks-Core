@@ -45,6 +45,7 @@ include_once ROOT. "api/bootlogiks.php";
 
 logiksRequestPreboot();
 
+include_once SERVICE_ROOT. "ServiceAuthEngine.inc";
 include_once SERVICE_ROOT. "api.php";
 include_once ROOT. "api/commons.php";
 include_once ROOT. "api/configurator.php";

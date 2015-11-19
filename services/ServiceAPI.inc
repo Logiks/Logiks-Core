@@ -28,26 +28,21 @@ class ServiceAPI {
 	public function checkRemoteClient() {
 		if(!$this->isRemoteCall()) return true;
 
-		if(!$this->processAPIKey()) return false;
-
 		if(!$this->checkAPIKey()) return false;
 
-		if(!$this->checkAccessRules()) return false;
+		if(!$this->processAPIKey()) return false;
 
 		return true;
 	}
 	protected function processAPIKey() {
 		//TODO : authorization system with apikey
-		//Session restorin using apikey
-		//This function is never called for localhosts, or in session calls, but only called for remote api calls.
+		//Session restoring using apikey
 		//$apiKey=$_REQUEST['APIKEY'];
 		//$site=SITENAME;
 
 		return true;
 	}
 	public function checkAPIKey() {
-		return true;
-		$apiKey=$_REQUEST['APIKEY'];
 		$site=SITENAME;
 		$a=false;
 		if(isset($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"]) && strlen($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"])!=0) {
@@ -55,27 +50,41 @@ class ServiceAPI {
 			if($httpRef["HTTP_HOST"]==$GLOBALS['LOGIKS']["_SERVER"]["HTTP_HOST"]) {
 				$a=true;
 			} else {
-				if(isset($_REQUEST['APIKEY']) && getConfig("API_KEY")==$_REQUEST['APIKEY']) {
-					$a=true;
-				} else {
-					$a=false;
-				}
+				$a=$this->checkKeyWithEngine();
 			}
 		} else {
-			if(strlen(getConfig("API_KEY"))>0) {
-				if(isset($apiKey) && getConfig("API_KEY")==$apiKey) {
-					$a=true;
-				}
-			} else {
-				$a=true;
-			}
+			$a=$this->checkKeyWithEngine();
 		}
 		return $a;
 	}
-	
-	//Blocks frequent visitors, and abnormal calls
-	protected function checkAccessRules() {
-		return true;
+
+	protected function checkKeyWithEngine() {
+		if(!isset($_REQUEST['APIKEY'])) {
+			return false;
+		}
+		$apiKey=$_REQUEST['APIKEY'];
+		$a=false;
+
+		switch ($this->API_ENGINE) {
+			case 'none':
+				return true;
+				break;
+			case 'static':
+				if(strlen(getConfig("APIKEY_STATIC"))>0 && getConfig("APIKEY_STATIC")==$apiKey) {
+					return true;
+				}
+				break;
+			default:
+				$engine=$this->API_ENGINE;
+				if(class_exists($engine)) {
+					$obj=new $engine();
+					if(is_a($obj,"ServiceAuthEngine")) {
+						return $obj->testAPIKey($apiKey);
+					}
+				}
+				break;
+		}
+		return $a;
 	}
 }
 ?>

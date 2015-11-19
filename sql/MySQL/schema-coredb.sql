@@ -137,3 +137,17 @@ CREATE TABLE `security_bots` (
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE `rules` (
+   `id` int(10) unsigned not null auto_increment,
+   `rule_key` varchar(255) not null,
+   `rule_type`   varchar(55) not null,
+   `rule_schema`  longblob,
+   `rule_precaller`  varchar(255) not null default '',
+   `rule_postcaller`  varchar(255) not null default '',
+   `blocked` enum('true','false') default 'false',
+   `creator` varchar(150) not null,
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
