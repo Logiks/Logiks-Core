@@ -30,8 +30,6 @@ if(!function_exists("getRequestTime")) {
 	}
     //Checks is localhost
 	function isLocalhost() {
-		if(MASTER_DEBUG_MODE) return false;
-
 		$client=$GLOBALS['LOGIKS']["_SERVER"]['REMOTE_ADDR'];
 		$server=$GLOBALS['LOGIKS']["_SERVER"]['SERVER_ADDR'];
 		if($client==$server) return true;

@@ -22,6 +22,7 @@ class ServiceAPI {
 	public function isRemoteCall() {
 		$httpRef=parseHTTPReferer();
 		if(isLocalhost()) return false;
+		elseif(isAjax()) return false;
 		elseif(isset($httpRef["HTTP_HOST"]) && strlen($httpRef["HTTP_HOST"])>0 && $httpRef["HTTP_HOST"]==$GLOBALS['LOGIKS']["_SERVER"]["HTTP_HOST"]) return false;
 		return true;
 	}

@@ -4,43 +4,164 @@
 
 CREATE TABLE `access` (
    `id` int(10) unsigned not null auto_increment,
-   `name` varchar(255) not null,
-   `sites` varchar(500) not null,
+   `name` varchar(255),
+   `sites` varchar(500),
    `blocked` enum('true','false') default 'false',
-   `creator` varchar(150) not null,
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
 
 CREATE TABLE `privileges` (
    `id` int(10) unsigned not null auto_increment,
-   `hash` varchar(80) not null,
-   `site` varchar(150) not null,
+   `hash` varchar(80),
+   `site` varchar(150),
    `name` varchar(35),
    `blocked` enum('true','false') default 'false',
    `remarks` varchar(255),
-   `creator` varchar(150) not null,
+   `userid` varchar(150),
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
+
 CREATE TABLE `rolemodel` (
    `id` int(10) unsigned not null auto_increment,
-   `site` varchar(150) not null,
+   `site` varchar(150),
    `category` varchar(100) not null default 'SYSTEM',
    `module` varchar(100) not null,
    `activity` varchar(255) not null,
    `privilegehash` varchar(80) not null,
-   `remarks` varchar(200) not null,
+   `remarks` varchar(200),
    `allow` enum('true','false') default 'true',
    `role_type` varchar(55) not null default 'auto',
+   `userid` varchar(150),
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+
+CREATE TABLE `rules` (
+   `id` int(10) unsigned not null auto_increment,
+   `rule_key` varchar(255) not null,
+   `rule_type` varchar(55) not null,
+   `rule_schema` longblob,
+   `rule_precaller` varchar(255) not null,
+   `rule_postcaller` varchar(255) not null,
+   `blocked` enum('true','false') default 'false',
    `creator` varchar(150) not null,
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+
+CREATE TABLE `security_apikeys` (
+   `id` int(10) unsigned not null auto_increment,
+   `apikey` varchar(100) not null,
+   `site` varchar(155) not null,
+   `userid` varchar(155) not null,
+   `guid` varchar(155) not null,
+   `privilegeid` int(11) not null default '7',
+   `accessid` int(11) not null default '1',
+   `expires` datetime,
+   `remarks` varchar(200),
+   `active` enum('true','false') default 'true',
+   `creator` varchar(155) not null,
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+
+CREATE TABLE `security_bots` (
+   `id` int(10) unsigned not null auto_increment,
+   `botkey` varchar(30) not null,
+   `allow_type` enum('blacklist','whitelist') default 'blacklist',
+   `active` enum('true','false') default 'true',
+   `creator` varchar(155) not null,
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+
+CREATE TABLE `security_iplist` (
+   `id` int(10) unsigned not null auto_increment,
+   `ipaddress` varchar(30) not null,
+   `allow_type` enum('blacklist','whitelist') default 'blacklist',
+   `site` varchar(150) not null default '*',
+   `active` enum('true','false') default 'true',
+   `creator` varchar(155) not null,
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+
+CREATE TABLE `security_userkeys` (
+   `id` int(10) unsigned not null auto_increment,
+   `userid` varchar(155) not null,
+   `devicetype` varchar(100) not null,
+   `userkey` varchar(100) not null,
+   `devicekey` varchar(100) not null,
+   `session` longblob,
+   `creator` varchar(150) not null,
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+
+CREATE TABLE `settings` (
+   `id` int(10) unsigned not null auto_increment,
+   `site` varchar(150) default '*',
+   `userid` varchar(155) not null,
+   `name` varchar(155) not null,
+   `settings` longblob,
+   `scope` varchar(15) not null default 'general',
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+
+CREATE TABLE `system_bucket` (
+   `id` int(10) unsigned not null auto_increment,
+   `bucket_key` varchar(255) not null,
+   `bucket_data` longblob,
+   `share` text,
+   `published` enum('true','false') default 'true',
+   `creator` varchar(150) not null,
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+
+CREATE TABLE `system_cronjobs` (
+   `id` int(11) not null auto_increment,
+   `site` varchar(150) not null,
+   `title` varchar(100) not null,
+   `scriptpath` varchar(255) not null,
+   `description` varchar(255),
+   `script_params` text not null,
+   `method` enum('POST','GET','LOCAL') default 'POST',
+   `schedule` int(11) default '0',
+   `last_completed` datetime,
+   `run_only_once` enum('true','false') default 'false',
+   `task_md5_hash` varchar(32) not null,
+   `retired` enum('true','false') default 'false',
+   `blocked` enum('true','false') default 'false',
+   `creator` varchar(155) not null,
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
 
 CREATE TABLE `users` (
    `id` int(11) not null auto_increment,
@@ -65,7 +186,7 @@ CREATE TABLE `users` (
    `privacy` enum('private','public','protected') default 'protected',
    `blocked` enum('true','false') default 'false',
    `expires` date,
-   `registerd_site` varchar(150) not null ,
+   `registerd_site` varchar(150),
    `remarks` varchar(250),
    `vcode` varchar(65),
    `mauth` varchar(65),
@@ -76,78 +197,4 @@ CREATE TABLE `users` (
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`),
    UNIQUE KEY (`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-
-CREATE TABLE `settings_users` (
-   `id` int(10) unsigned not null auto_increment,
-   `site` varchar(150) not null default '*',
-   `userid` varchar(155) not null,
-   `name` varchar(155) not null,
-   `settings` longblob,
-   `scope` varchar(15) not null default 'general',
-   `creator` varchar(155) not null,
-   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
-   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-
-
-CREATE TABLE `system_cronjobs` (
-   `id` int(11) not null auto_increment,
-   `site` varchar(150) not null,
-   `title` varchar(100) not null,
-   `scriptpath` varchar(255) not null,
-   `description` varchar(255),
-   `script_params` text not null,
-   `method` enum('POST','GET','LOCAL') default 'POST',
-   `schedule` int(11) default '0',
-   `last_completed` datetime,
-   `run_only_once` enum('true','false') default 'false',
-   `task_md5_hash` varchar(32) not null,
-   `retired` enum('true','false') default 'false',
-   `blocked` enum('true','false') default 'false',
-   `creator` varchar(155) not null,
-   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
-   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-
-CREATE TABLE `security_iplist` (
-   `id` int(10) unsigned not null auto_increment,
-   `ipaddress` varchar(30) not null,
-   `allow_type` enum('blacklist','whitelist') default 'blacklist',
-   `site` varchar(150) not null default '*',
-   `active` enum('true','false') default 'true',
-   `creator` varchar(155) not null,
-   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
-   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-CREATE TABLE `security_bots` (
-   `id` int(10) unsigned not null auto_increment,
-   `botkey` varchar(30) not null,
-   `allow_type` enum('blacklist','whitelist') default 'blacklist',
-   `active` enum('true','false') default 'true',
-   `creator` varchar(155) not null,
-   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
-   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-CREATE TABLE `rules` (
-   `id` int(10) unsigned not null auto_increment,
-   `rule_key` varchar(255) not null,
-   `rule_type`   varchar(55) not null,
-   `rule_schema`  longblob,
-   `rule_precaller`  varchar(255) not null default '',
-   `rule_postcaller`  varchar(255) not null default '',
-   `blocked` enum('true','false') default 'false',
-   `creator` varchar(150) not null,
-   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
-   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;

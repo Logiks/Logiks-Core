@@ -8,6 +8,15 @@ if(!function_exists("getServiceCMD")) {
 		return $scmd;
 	}
 
+	function isAjax() {
+		$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND
+				strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+		if(!$isAjax) {
+			return false;
+		}
+		return true;
+	}
+
 	//All Error Printing Funcs
 	function passErrorMsg($msg) {
 		if(is_array($msg)) {

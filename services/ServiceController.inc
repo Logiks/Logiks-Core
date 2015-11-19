@@ -95,7 +95,9 @@ class ServiceController {
 							$_SESSION['SESS_PRIVILEGE_ID']<=3);
 				}
 				return false;
-			} 
+			} elseif(in_array("session", $access)) {
+				return isAjax();
+			}
 		}
 		return false;
 	}
