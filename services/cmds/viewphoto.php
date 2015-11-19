@@ -1,6 +1,5 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
-checkServiceSession();
 
 //http://localhost/projects/logiks3/services/?scmd=viewphoto&type=view&loc=local&image=images/good_code2.png
 //http://localhost/projects/logiks3/services/?scmd=viewphoto&type=view&loc=db&dbtbl=crew_photos&image=1

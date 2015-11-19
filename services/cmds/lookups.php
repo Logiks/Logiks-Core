@@ -36,7 +36,6 @@ if(isset($_REQUEST["src"])) {
 		}
 	}
 }
-exit();
 function dispatchData($data) {	
 	$format="json";
 	if(isset($_REQUEST['format'])) {
@@ -74,8 +73,6 @@ function dispatchData($data) {
 				}
 			}
 		}
-	} else {
-		
 	}
 }
 ?>

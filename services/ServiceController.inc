@@ -97,6 +97,8 @@ class ServiceController {
 				return false;
 			} elseif(in_array("session", $access)) {
 				return isAjax();
+			} elseif(in_array("postlogin", $access)) {
+				return (isAjax() && session_check());
 			}
 		}
 		return false;
