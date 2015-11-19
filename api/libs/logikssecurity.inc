@@ -13,15 +13,19 @@
      $this->checkSiteMode();
      $this->checkDevMode();
      $this->checkUserSiteAccess();
-     $this->isBlacklisted(PAGE,SITENAME);
+     if(REQUEST_CHECK_BLACKLIST) $this->isBlacklisted(PAGE,SITENAME);
+     if(REQUEST_CHECK_BADBOT) $this->checkBadBot(true);
      // $this->isLinkRedirected(PAGE);
-     $this->checkBadBot(true);
+
+     runHooks("requestSecurityChecks");
    }
 
    public function checkServiceRequest() {
      //$this->checkSiteMode();
-     $this->isBlacklisted("SCMD-".$_REQUEST['scmd'],SITENAME);
-     $this->checkBadBot(true);
+     if(REQUEST_CHECK_BLACKLIST) $this->isBlacklisted("SCMD-".$_REQUEST['scmd'],SITENAME);
+     if(REQUEST_CHECK_BADBOT) $this->checkBadBot(true);
+
+     runHooks("serviceSecurityChecks");
    }
 
    public function checkUserSiteAccess() {
@@ -45,12 +49,19 @@
    }
 
    public function isBlacklisted($page,$site=SITENAME) {
-      //TODO : After DB
       $client=$GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"];
-      //802/806
       
-      
-      echo "XXX";
+      $tbl=_dbTable("security_iplist",true);
+      $sql=_db(true)->_selectQ($tbl,"count(*) as max")
+            ->_where(array("ipaddress"=>$client,"allow_type"=>"blacklist","active"=>"true"));
+
+      $r=_dbQuery($sql,true);
+      $dt=_dbFetch($r,true);
+      _dbFree($r);
+
+      if($dt['max']>0) {
+        trigger_logikserror("Your IP has been blacklisted",E_USER_ERROR);
+      }
    }
 
    public function checkSiteMode() {
@@ -83,8 +94,7 @@
       }
    }
    public function checkDevMode($site=null) {
-		if($site==null) $site=SITENAME;
-    if(defined("DEV_MODE_IP") && strlen(DEV_MODE_IP)>0) {
+    if(defined("DEV_MODE_ENABLED") && DEV_MODE_ENABLED && defined("DEV_MODE_IP") && strlen(DEV_MODE_IP)>0) {
     	$ips=explode(",",DEV_MODE_IP);
     	if(count($ips)>0) {
     		loadHelpers("devmode");
@@ -92,6 +102,7 @@
     	}
     }
 	 }
+
    protected function checkBadBot($autoBlock=true) {
 		if(!getConfig("STOP_BAD_BOTS")) return false;
 		$uAgent=$GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'];

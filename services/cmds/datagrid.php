@@ -83,7 +83,7 @@ if($_REQUEST['action']=="load") {
 	if(!$result) {
 		$arr=array();
 		if(MASTER_DEBUG_MODE=="true")
-			$arr["MSG"]="Error $q1<br/>"._db()->getError();
+			$arr["MSG"]="Error $q1<br/>"._db()->get_error();
 		else
 			$arr["MSG"]="Error Generating Report Query (1).";
 		header("Content-type: application/json");
@@ -127,7 +127,7 @@ if($_REQUEST['action']=="load") {
 	if(!$result) {
 		$arr=array();
 		if(MASTER_DEBUG_MODE=="true")
-			$arr["MSG"]="Error $q1<br/>"._db()->getError();
+			$arr["MSG"]="Error $q1<br/>"._db()->get_error();
 		else
 			$arr["MSG"]="Error Generating Report Query (2).";
 		header("Content-type: application/json");

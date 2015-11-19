@@ -7,10 +7,11 @@
 			"database":"devlogiks400_coredb",
 			"user":"devlogiks",
 			"pwd":"logiks@2015",
-			"prefix":"",
+			"prefix":"lgks",
 			"suffix":"",
-			"readonly":false,
-			"block":[]
+			"readonly":true,
+			"block":[],
+			"allowSQL":true
 		},
 		"security":{
 			"driver":"sqlite3",

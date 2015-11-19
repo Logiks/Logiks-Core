@@ -27,7 +27,7 @@ if(!function_exists("_db")) {
 		if(Database::isOpen($dbKey)) {
 			return Database::dbConnection($dbKey)->executeQuery($query);
 		} else {
-			return false;
+			return Database::connect($dbKey)->executeQuery($query);
 		}
 	}
 	function _dbFetch($result,$dbKey="app",$format="assoc") {
@@ -59,7 +59,7 @@ if(!function_exists("_db")) {
 		if(Database::isOpen($dbKey)) {
 			return Database::dbConnection($dbKey)->get_Table($tblName);
 		} else {
-			return false;
+			return Database::connect($dbKey)->get_Table($tblName);
 		}
 	}
 }

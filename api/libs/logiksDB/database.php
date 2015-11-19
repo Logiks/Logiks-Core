@@ -134,6 +134,11 @@ class Database {
 	
 	//All Query Functions
 	public function executeQuery($sql) {
+		if(!$this->objDriver->isAllowedSQL()) {
+			if(!is_a($sql,"AbstractQueryBuilder")) {
+				trigger_error("Database ERROR, Direct SQL Queries are not allowed for this database.");
+			}
+		}
 		return $this->objDriver->runQuery($sql);
 	}
 	public function executeCommandQuery($sql) {

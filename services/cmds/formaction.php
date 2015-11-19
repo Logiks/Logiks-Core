@@ -356,9 +356,9 @@ function saveToDB() {
 				if(strlen($onFailure)>0) {
 					echo $onFailure;
 				} else {
-					echo "Error:: "._db($sysDb)->getError()."<br/>";
+					echo "Error:: "._db($sysDb)->get_error()."<br/>";
 				}
-				if(MASTER_DEBUG_MODE=='true') echo _db($sysDb)->getError();
+				if(MASTER_DEBUG_MODE=='true') echo _db($sysDb)->get_error();
 				if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM Submit Failed ::$sForm/$sTable","User",4,"forms",_dbtable("forms"));
 			}
 		}
@@ -368,7 +368,7 @@ function saveToDB() {
 		} else {
 			echo "Error:: "._db($sysDb)->getErrorNo()."<br/>";
 		}
-		if(MASTER_DEBUG_MODE=='true') echo _db($sysDb)->getError();
+		if(MASTER_DEBUG_MODE=='true') echo _db($sysDb)->get_error();
 		if(function_exists("log_ActivityEvent")) log_ActivityEvent("FORM SQL Creation Error ::$sForm/$sTable","User",4,"forms",_dbtable("forms"));
 	}
 }
@@ -438,7 +438,7 @@ function deleteForm() {
 			} else {
 				echo "Error:: "._db($sysDb)->getErrorNo()."<br/>";
 			}
-			if(MASTER_DEBUG_MODE=='true') echo _db($sysDb)->getError();
+			if(MASTER_DEBUG_MODE=='true') echo _db($sysDb)->get_error();
 		}
 	} else {
 		if(strlen($onFailure)>0) {
@@ -446,7 +446,7 @@ function deleteForm() {
 		} else {
 			echo "Error:: "._db($sysDb)->getErrorNo()."<br/>";
 		}
-		if(MASTER_DEBUG_MODE=='true') echo _db($sysDb)->getError();
+		if(MASTER_DEBUG_MODE=='true') echo _db($sysDb)->get_error();
 	}
 	if(function_exists("log_ActivityEvent")) {
 		if(isset($_POST["delete_id"])) log_ActivityEvent("Record Form Deleted From Table $sTable, For ID::$id","User",4,"forms",_dbtable("forms"));

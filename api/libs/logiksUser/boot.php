@@ -8,14 +8,18 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-//include_once dirname(__FILE__)."/User.inc";
-//include_once dirname(__FILE__)."/RoleModel.inc";
-//include_once dirname(__FILE__)."/Settings.inc";
+include_once dirname(__FILE__)."/User.php";
+include_once dirname(__FILE__)."/RoleModel.inc";
+include_once dirname(__FILE__)."/Settings.php";
 
 //UserSettings
 //SiteSettings
 
-if(!function_exists("getUserInfo")) {
-  
+if(!function_exists("checkUserRoles")) {
+	function checkUserRoles($module,$activity,$category="Block") {
+		return RoleModel::checkRole($module,$activity,$category);
+	}
 }
+
+
 ?>

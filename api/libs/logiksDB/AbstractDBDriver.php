@@ -16,6 +16,7 @@
 	
 	protected $blockedStmnts=array();
  	protected $readOnly=false;
+ 	protected $allowSQL=true;
 	 
  	public $qCount=0;
 
@@ -27,10 +28,11 @@
 		if(is_array($params['block'])) $this->blockedStmnts=$params['block'];
 		else $this->blockedStmnts=explode(",", $params['block']); 
  		
- 		$this->readOnly=$params['readonly'];
+ 		if(isset($params['readOnly'])) $this->readOnly=$params['readonly'];
+ 		if(isset($params['allowSQL'])) $this->allowSQL=$params['allowSQL'];
 
  		unset($params['block']); unset($params['readonly']);
- 		unset($params['instance']);
+ 		unset($params['instance']); unset($params['allowSQL']);
 
  		$this->dbParams=$params;
 		
@@ -49,7 +51,10 @@
 	}
 	public function close() {return true;}
 	public function isOpen() {return !($this->link==null);}
-	
+
+	public function isReadonly() {return $this->readOnly;}
+	public function isAllowedSQL() {return $this->allowSQL;}
+
 	public function get_dbHost() {
 		if(isset($this->dbParams['PORT'])) 
 			return $this->dbParams['HOST'].":".$this->dbParams['PORT'];
@@ -166,7 +171,7 @@
 	}
 
 	//All DBTable Name functions
-	protected function get_table($tblName) {
+	public function get_table($tblName) {
 		$px=$this->dbParams['prefix'];
 		$sx=$this->dbParams['suffix'];
 		if(strlen($px)>0) $tblName="{$px}_{$tblName}";

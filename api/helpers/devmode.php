@@ -22,5 +22,43 @@ if(!function_exists("__testDevMode")) {
 			}
 		}
 	}
+
+	function __initDevMode() {
+	    if(defined("DEV_MODE_IP") && strlen(DEV_MODE_IP)>0) {
+	      $addr=explode(",",DEV_MODE_IP);
+	      if(count($addr)>0) {
+	        if(is_array($addr)) {
+				if(!in_array($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"],$addr)) {
+					ob_start();
+				}
+			} else {
+				if($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"]!=$addr) {
+					ob_start();
+				}
+			}
+	      }
+	    }
+   }
+
+   	function __closeDevMode() {
+	    if(defined("DEV_MODE_IP") && strlen(DEV_MODE_IP)>0) {
+	      $addr=explode(",",DEV_MODE_IP);
+	      if(count($addr)>0) {
+	        	if(is_array($addr)) {
+					if(!in_array($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"],$addr)) {
+						ob_end_clean();
+					} else {
+						ob_end_flush();
+					}
+				} else {
+					if($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"]!=$addr) {
+						ob_end_clean();
+					} else {
+						ob_end_flush();
+					}
+				}
+	      }
+	    }
+   }
 }
 ?>

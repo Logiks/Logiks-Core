@@ -51,6 +51,12 @@
 	public function _insert_batchQ($table, $arr) {return $this;}
 	public function _updateQ($table, $values, $where, $orderby = array(), $limit = false) {return $this;}
 	public function _deleteQ($table, $where = array(), $limit = false) {return $this;}
+
+	public function _raw($sql) {
+		if($this->sql==null) $this->sql="";
+		$this->sql.=$sql; 
+		return $this;
+	}
 	
 	
 	//WHERE Functions
@@ -129,9 +135,14 @@
 	}
 	//Limit BY Function
 	public function _limit($limit=null,$offset=null) {
-		if(is_array($limit) && isset($limit['offset'])) {
-			$offset=$limit["offset"];
-			$limit=$limit["limit"];
+		if(is_array($limit)) {
+			if(isset($limit['offset'])) {
+				$offset=$limit["offset"];
+				$limit=$limit["limit"];
+			} else {
+				$offset=$limit[0];
+				$limit=$limit[1];
+			}
 		}
 		if(is_numeric($limit) && $limit>0) {
 			if($offset==null || !is_numeric($offset)) $offset=0;
@@ -235,6 +246,11 @@
 	//@$sql	params	SQL Query to be set into QueryBuilder
 	public function _SQL($sql=null) {
 		return $this->sql;
+	}
+	//GETS/SETS the sql data into a queryBuilder object
+	//@$sql	params	SQL Query to be set into QueryBuilder
+	public function _array() {
+		return $this->obj;
 	}
 	//GETS/SETS the json based sql data source into a queryBuilder object
 	//@$json params	SQL JSON Query to be set into QueryBuilder
@@ -367,7 +383,7 @@
 			break;
 			
 			case "ne":case ":ne:":
-			case "neq":
+			case "neq":case ":neq:":
 			case "<>":
 				$arr[0]=$this->sqlData($arr[0]);
 				$s="{$col}<>{$arr[0]}";
