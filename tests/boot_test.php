@@ -35,8 +35,11 @@ if(!defined("LOGIKS_ROOT")) {
 		define ('ROOT', dirname(__DIR__) . '/');
 	}
 
+	if(!defined("SITENAME")) {
+		define ('SITENAME', "default");
+	}
 	//Start the flow
-	require_once ROOT."api/initialize.php";
+	require_once ROOT."api/inittest.php";
 
 	//Switching php display error off
 	ini_set('display_errors', 'On');

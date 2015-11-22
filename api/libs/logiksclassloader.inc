@@ -99,7 +99,9 @@ class LogiksClassLoader {
 
 		$vendorpath=$GLOBALS['vendorPath'];
 		foreach($vendorpath as $p) {
-			$p=logiks_replace($p);
+			if(function_exists("logiks_replace")) {
+				$p=logiks_replace($p);
+			}
 			$pths=array(
 					$p.$fileName . '.php',
 					$p.$fileName . '.inc',

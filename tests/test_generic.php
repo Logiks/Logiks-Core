@@ -5,5 +5,9 @@ class test_generic extends LogiksTestCase
     {
         $this->assertTrue(defined("ROOT"));
     }
+
+    public function testFunc() {
+    	$this->assertTrue(function_exists("loadHelpers"));
+    }
 }
 ?>

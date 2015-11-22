@@ -9,7 +9,7 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-if(!function_exists("errorHandler")) {
+if(!function_exists("trigger_logikserror")) {
 
   include_once dirname(__FILE__)."/definations.php";
   include_once dirname(__FILE__)."/logikslogger.inc";
