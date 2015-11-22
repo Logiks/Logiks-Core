@@ -8,7 +8,7 @@ php:
 install: true
 
 script:
-- phpunit -v --configuration .phpunit.xml tests/test_*
+- phpunit -v --configuration .phpunit.xml
 
 notifications:
   email:
