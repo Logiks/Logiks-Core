@@ -1,6 +1,7 @@
 /apps/
 /tmp/
-/testKit
+/testKit/
+/tests/temp/
 /pluginsDev/
 /misc/themes/admincp/
 /misc/themes/cms/

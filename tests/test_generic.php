@@ -1,16 +1,9 @@
 <?php
 class test_generic extends LogiksTestCase
 {
-	public function testEmpty()
+	public function testROOT()
     {
-        $this->assertEquals(1, 1);
-    }
-    
-	/**
-     * @depends testEmpty
-     */
-    public function testEquality() {
-        $this->assertTrue(true);
+        $this->assertTrue(defined("ROOT"));
     }
 }
 ?>

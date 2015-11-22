@@ -32,7 +32,7 @@ if(!function_exists("getRelativePath")) {
 		} else return "";
 	}
 	function getConfigPath($local=true) {
-		if($local) {
+		if($local && defined("APPROOT")) {
 			return APPROOT.APPS_CONFIG_FOLDER;
 		} else {
 			return ROOT.CFG_FOLDER;
