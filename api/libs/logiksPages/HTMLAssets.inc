@@ -167,7 +167,7 @@ class HTMLAssets {
 	//CDN Function
 	public function getCDNResource($resource,$type) {
 		if(getConfig("CDN_DISABLE")) {
-			//unset($_SESSION['CDN-RESOURCES']);
+			//unset(['CDN-RESOURCES']);
 			return false;
 		}
 		$jsondb=SimpleJSONDB::getInstance();

@@ -258,8 +258,8 @@ if(!function_exists("deleteAttachments")) {
 			$defData['datestamp']=date('Y-m-d H:i:s');
 			$defData['username']=$usr['SESS_USER_NAME'];
 			$defData['userid']=$usr['SESS_USER_ID'];
-			$defData['privilegeid']=$_SESSION['SESS_PRIVILEGE_ID'];
-			$defData['scanBy']=$_SESSION['SESS_USER_ID'];
+			$defData['privilegeid']=_session('SESS_PRIVILEGE_ID');
+			$defData['scanBy']=_session('SESS_USER_ID');
 			$defData['site']=SITENAME;
 			
 			$fileName=$file['name'];

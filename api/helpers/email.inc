@@ -21,8 +21,8 @@ if(!function_exists('isValidEmail')) {
 	}
 	function sendMail($to,$subject,$body,$from="",$cc="",$bcc="",$replyTo="") {
 		if($from==null || $from=="") {
-			if(isset($_SESSION["SESS_USER_EMAIL"]) && strlen($_SESSION["SESS_USER_EMAIL"])>0) {
-				$from=$_SESSION["SESS_USER_EMAIL"];
+			if(_session("SESS_USER_EMAIL") && strlen(_session("SESS_USER_EMAIL"))>0) {
+				$from=_session("SESS_USER_EMAIL");
 			} else {
 				$fx1=getConfig("default_from");
 				$fx2=getConfig("smtp_username");
@@ -106,8 +106,8 @@ class EMail {
 		}
 
 		$from=$this->smtpinfo["username"];
-		if(isset($_SESSION["SESS_USER_EMAIL"]) && strlen($_SESSION["SESS_USER_EMAIL"])>0) {
-			$from=$_SESSION["SESS_USER_EMAIL"];
+		if(_session("SESS_USER_EMAIL") && strlen(_session("SESS_USER_EMAIL"))>0) {
+			$from=_session("SESS_USER_EMAIL");
 		}
 
 		$headers["From"]    = $from;
@@ -142,7 +142,7 @@ class EMail {
 			$this->smtpinfo=$this->createDefaultSMTPInfo();
 		}
 		
-		$userMail=$_SESSION['SESS_USER_EMAIL'];
+		$userMail=_session('SESS_USER_EMAIL');
 		if(strlen($userMail)<=1) $userMail=$this->smtpinfo["username"];
 		$hdrs = array(
 				  'From'    => $userMail,
@@ -239,9 +239,9 @@ class EMail {
 	private function createFrom() {
 		if(isset($_POST["from_email"]) && strlen($_POST["from_email"])>0 && strpos($_POST["from_email"],"@")>1) {
 			return $_POST["from_email"];
-		} elseif(isset($_SESSION["SESS_USER_EMAIL"]) && strlen($_SESSION["SESS_USER_EMAIL"])>0 && strpos($_SESSION["SESS_USER_EMAIL"],"@")>1) {
-			//return "From: ".$_SESSION["SESS_USER_NAME"]." ".$_SESSION["SESS_USER_EMAIL"]; 
-			return $_SESSION["SESS_USER_EMAIL"];
+		} elseif(_session("SESS_USER_EMAIL") && strlen(_session("SESS_USER_EMAIL"))>0 && strpos(_session("SESS_USER_EMAIL"),"@")>1) {
+			//return "From: "._session("SESS_USER_NAME")." "._session("SESS_USER_EMAIL"); 
+			return _session("SESS_USER_EMAIL");
 		} else {
 			return "";
 		}
