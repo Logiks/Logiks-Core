@@ -30,19 +30,24 @@ if(!isset($initialized)) {
 	ob_start();
 	//clearstatcache();
 	@session_start();
+
+	include_once ('commons.php');
 	
-	$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START']=microtime(true);
+	_envData("SESSION",'REQUEST_PAGE_START',microtime(true));
 
-	define ('WEBROOT', 'http' . (isset($GLOBALS['LOGIKS']["_SERVER"]['HTTPS']) ? 's' : '') . '://' . 
-			$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST'].dirname($GLOBALS['LOGIKS']["_SERVER"]['SCRIPT_NAME'])."/");
+	if(!defined("InstallFolder")) define('InstallFolder',basename(dirname(__DIR__))."/");
 
+	if(!defined("WEBROOT")) define ('WEBROOT', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
+			_server('HTTP_HOST').dirname(_server('SCRIPT_NAME'))."/");
+	if(!defined("SiteLocation")) define ('SiteLocation', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
+			_server('HTTP_HOST')."/".InstallFolder);
+	
 	include_once ROOT. "config/classpath.php";
 
 	require_once ('bootlogiks.php');
 
 	logiksRequestPreboot();
 
-	include_once ('commons.php');
 	require_once ('configurator.php');
 
 	loadConfigs([
@@ -58,8 +63,6 @@ if(!isset($initialized)) {
 			ROOT . "config/framework.cfg",
 			ROOT . "config/appPage.cfg",
 		]);
-
-	define ('SiteLocation', 'http' . (isset($GLOBALS['LOGIKS']["_SERVER"]['HTTPS']) ? 's' : '') . '://' . "{$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST']}/".InstallFolder);
 
 	if(PRINT_PHP_HEADERS) header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
 
@@ -85,7 +88,7 @@ if(!isset($initialized)) {
 	$initialized=true;
 	runHooks("postinit");
 
-	$_SESSION['SESS_ACTIVE_SITE']=SITENAME;
+	_envData("SESSION",'SESS_ACTIVE_SITE',SITENAME);
 	
 	if(!defined("APPS_NAME")) define("APPS_NAME",getConfig("APPS_NAME"));
 	if(!defined("APPS_VERS")) define("APPS_VERS",getConfig("APPS_VERS"));

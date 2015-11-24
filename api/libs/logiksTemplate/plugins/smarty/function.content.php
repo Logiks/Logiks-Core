@@ -8,10 +8,6 @@
  */
 
 function smarty_function_content($params) {
-	$f=APPROOT.APPS_PAGES_FOLDER."contents/{$params['src']}.htm";
-	if(file_exists($f)) {
-		return file_get_contents($f);
-	}
-	return "";
+	loadComponent($params['src']);
 }
 ?>

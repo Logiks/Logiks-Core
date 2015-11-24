@@ -49,7 +49,7 @@
    }
 
    public function isBlacklisted($page,$site=SITENAME) {
-      $client=$GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"];
+      $client=_server("REMOTE_ADDR");
       
       $tbl=_dbTable("security_iplist",true);
       $sql=_db(true)->_selectQ($tbl,"count(*) as max")
@@ -105,7 +105,7 @@
 
    protected function checkBadBot($autoBlock=true) {
 		if(!getConfig("STOP_BAD_BOTS")) return false;
-		$uAgent=$GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'];
+		$uAgent=_server('HTTP_USER_AGENT');
 		$blockedAgents=getConfig("BAD_BOTS");
 		$regex="/\b({$blockedAgents})\b/i";
 		if(preg_match($regex,$uAgent)>0) {

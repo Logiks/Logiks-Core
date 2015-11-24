@@ -256,7 +256,7 @@ if(!function_exists("getDirTree")) {
              @ini_set('zlib.output_compression', 'Off');
 		@ini_set('error_reporting', E_ERROR);
 
-		if(strstr($GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'], "MSIE")) {
+		if(strstr(_server('HTTP_USER_AGENT'), "MSIE")) {
 				header('Content-Type: '.$mime);
 				header('Content-Disposition: attachment; filename="'.$filename.'"');
 				header('Expires: 0');

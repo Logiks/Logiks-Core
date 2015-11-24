@@ -84,7 +84,7 @@ if(!function_exists('printSQLResult')) {
 			header("Content-type: application/json");
 			echo json_encode($responce);
 		} elseif($dataType=="xml") {
-			if ( stristr($GLOBALS['LOGIKS']["_SERVER"]["HTTP_ACCEPT"],"application/xhtml+xml") ) {
+			if ( stristr(_server("HTTP_ACCEPT"),"application/xhtml+xml") ) {
 				header("Content-type: application/xhtml+xml;charset=utf-8");
 			} else {
 				header("Content-type: text/xml;charset=utf-8");

@@ -14,8 +14,8 @@ if(!function_exists("startBuffer")) {
 			$phpver 	= phpversion();
 			$useragent 	= '';
 			$canZip 	= '';
-			if(isset($GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'])) $useragent=$GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'];
-			if(isset($GLOBALS['LOGIKS']["_SERVER"]['HTTP_ACCEPT_ENCODING'])) $canZip=$GLOBALS['LOGIKS']["_SERVER"]['HTTP_ACCEPT_ENCODING'];
+			if(_server('HTTP_USER_AGENT')) $useragent=_server('HTTP_USER_AGENT');
+			if(_server('HTTP_ACCEPT_ENCODING')) $canZip=_server('HTTP_ACCEPT_ENCODING');
 			
 			$gzip_check 	= 0;
 			$zlib_check 	= 0;
@@ -31,7 +31,7 @@ if(!function_exists("startBuffer")) {
 			
 			if($phpver >= '4.0.4pl1' && ( strpos($useragent,'compatible') !== false || strpos($useragent,'Gecko')	!== false ) ) {
 				// Check for gzip header or northon internet securities or session.use_trans_sid
-				if ( ( $gzip_check || isset( $GLOBALS['LOGIKS']["_SERVER"]['---------------']) ) && $zlib_check && $gz_check && !$zlibO_check && !$sid_check ) {
+				if ($gzip_check && $zlib_check && $gz_check && !$zlibO_check && !$sid_check ) {
 					// You cannot specify additional output handlers if zlib.output_compression is activated here
 					ob_start( 'ob_gzhandler' );
 					return;

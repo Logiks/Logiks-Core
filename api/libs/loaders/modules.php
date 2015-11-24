@@ -49,13 +49,29 @@ if(!function_exists('loadModule')) {
 		if(strlen($f)>0) {
 			$f=dirname($f)."/{$file}.php";
 			if(file_exists($f)) {
-				include $f;
+				@include $f;
 				return true;
 			}
 		}
 		return false;
 	}
-
+	function loadModuleComponent($component,$module) {
+		$f=checkModule($module);
+		if(strlen($f)>0) {
+			$ff=[
+					dirname($f)."/api.php"=>false,
+					dirname($f)."/comps/{$component}.php"=>false
+				];
+			foreach ($ff as $fx) {
+				if(file_exists($fx)) {
+					@include $fx;
+					$ff[$fx]=true;
+				}
+			}
+			return $ff;
+		}
+		return false;
+	}
 	function getPluginFolders() {
 		return getLoaderFolders('pluginPaths',"modules");
 	}

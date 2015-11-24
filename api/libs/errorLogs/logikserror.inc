@@ -47,10 +47,10 @@ class LogiksError {
         "timesnap"=>0,
       ];
 
-    if(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START'])) {
-      $errData['timesnap']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START']);
-    } elseif(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START'])) {
-      $errData['timesnap']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START']);
+    if(_server('REQUEST_PAGE_START')) {
+      $errData['timesnap']=(microtime(true)-_server('REQUEST_PAGE_START'));
+    } elseif(_server('REQUEST_SERVICE_START')) {
+      $errData['timesnap']=(microtime(true)-_server('REQUEST_SERVICE_START'));
     }
     
     //Try Logging the error first
@@ -91,10 +91,10 @@ class LogiksError {
         "timesnap"=>0,
       ];
 
-    if(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START'])) {
-      $errData['timesnap']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START']);
-    } elseif(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START'])) {
-      $errData['timesnap']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START']);
+    if(_server('REQUEST_PAGE_START')) {
+      $errData['timesnap']=(microtime(true)-_server('REQUEST_PAGE_START'));
+    } elseif(_server('REQUEST_SERVICE_START')) {
+      $errData['timesnap']=(microtime(true)-_server('REQUEST_SERVICE_START'));
     }
 
     //Try Logging the error first
@@ -129,10 +129,10 @@ class LogiksError {
           "timesnap"=>0,
         ];
 
-      if(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START'])) {
-        $errData['timesnap']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START']);
-      } elseif(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START'])) {
-        $errData['timesnap']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START']);
+      if(_server('REQUEST_PAGE_START')) {
+        $errData['timesnap']=(microtime(true)-_server('REQUEST_PAGE_START'));
+      } elseif(_server('REQUEST_SERVICE_START')) {
+        $errData['timesnap']=(microtime(true)-_server('REQUEST_SERVICE_START'));
       }
 
       $lr->log($errLogMsg,$errData,LogiksLogger::severityToLevel($severity));

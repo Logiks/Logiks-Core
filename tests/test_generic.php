@@ -1,12 +1,10 @@
 <?php
-class test_generic extends LogiksTestCase
-{
-	public function testROOT()
-    {
+class test_generic extends LogiksTestCase {
+	public function testROOT() {
         $this->assertTrue(defined("ROOT"));
     }
 
-    public function testFunc() {
+    public function testFuncLoading() {
     	$this->assertTrue(function_exists("loadHelpers"));
     }
 }

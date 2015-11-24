@@ -1,6 +1,12 @@
 <?php
 
 if(!isset($initialized)) {
+
+	define('InstallFolder',basename(dirname(__DIR__))."/");
+
+	define ('WEBROOT', 'http://localhost/'.InstallFolder);
+	define ('SiteLocation', 'http://localhost/'.InstallFolder);
+
 	include_once ROOT. "config/classpath.php";
 	require_once ('bootlogiks.php');
 
@@ -23,7 +29,7 @@ if(!isset($initialized)) {
 			ROOT . "config/appPage.cfg",
 		]);
 
-	define ('SiteLocation', 'http://localhost/'.InstallFolder);
+	
 
 	require_once ROOT. "api/libs/errorLogs/tests.php";
 
@@ -44,7 +50,7 @@ if(!isset($initialized)) {
 
 	loadHelpers(array("urltools","hooks","mobility","outputbuffer","shortfuncs"));
 
-	$_SESSION['SESS_ACTIVE_SITE']=SITENAME;
+	_envData("SESSION",'SESS_ACTIVE_SITE',SITENAME);
 	
 	if(!defined("APPS_NAME")) define("APPS_NAME",getConfig("APPS_NAME"));
 	if(!defined("APPS_VERS")) define("APPS_VERS",getConfig("APPS_VERS"));

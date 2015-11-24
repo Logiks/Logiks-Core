@@ -8,6 +8,8 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
+include_once __DIR__."/libs/logikssession.php";
+
 if (!function_exists('printArray')) {
 	function printArray($arr,$noPrint=false) {
 		if($arr==null) return;

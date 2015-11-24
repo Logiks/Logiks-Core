@@ -32,7 +32,7 @@ if(!function_exists("getQueryParams")) {
 			$params['slug']=$slug;
 		}
 
-		$params['query']=$_SESSION['QUERY'];
+		$params['query']=_session('QUERY');
 
 		return $params;
 	}
@@ -41,7 +41,7 @@ if(!function_exists("getQueryParams")) {
 		$url=SiteLocation.$page;
 
 		// if($query==null && !is_array($query)) {
-		// 	$query=$_SESSION['QUERY'];
+		// 	$query=_session('QUERY');
 		// } elseif(is_string($query)) {
 		// 	trigger_error('$query expected array got string');
 		// }
@@ -80,7 +80,7 @@ if(!function_exists("getQueryParams")) {
 	}
 
 	function getRequestPath() {
-		return dirname('http://' . $GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST'] . $GLOBALS['LOGIKS']["_SERVER"]['PHP_SELF']).'/';
+		return dirname('http://' . _server('HTTP_HOST') . _server('PHP_SELF')).'/';
 	}
 }
 ?>

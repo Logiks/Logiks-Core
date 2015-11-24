@@ -11,12 +11,12 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!function_exists("__testDevMode")) {
 	function __testDevMode($addr,$msg="OOPs, Down For Maintaince/Updates. Back In A Bit.") {
 		if(is_array($addr)) {
-			if(!in_array($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"],$addr)) {
+			if(!in_array(_server("REMOTE_ADDR"),$addr)) {
 				trigger_logikserror(808,E_USER_WARNING);
 				exit();
 			}
 		} else {
-			if($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"]!=$addr) {
+			if(_server("REMOTE_ADDR")!=$addr) {
 				trigger_logikserror(808,E_USER_WARNING);
 				exit();
 			}
@@ -28,11 +28,11 @@ if(!function_exists("__testDevMode")) {
 	      $addr=explode(",",DEV_MODE_IP);
 	      if(count($addr)>0) {
 	        if(is_array($addr)) {
-				if(!in_array($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"],$addr)) {
+				if(!in_array(_server("REMOTE_ADDR"),$addr)) {
 					ob_start();
 				}
 			} else {
-				if($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"]!=$addr) {
+				if(_server("REMOTE_ADDR")!=$addr) {
 					ob_start();
 				}
 			}
@@ -45,13 +45,13 @@ if(!function_exists("__testDevMode")) {
 	      $addr=explode(",",DEV_MODE_IP);
 	      if(count($addr)>0) {
 	        	if(is_array($addr)) {
-					if(!in_array($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"],$addr)) {
+					if(!in_array(_server("REMOTE_ADDR"),$addr)) {
 						ob_end_clean();
 					} else {
 						ob_end_flush();
 					}
 				} else {
-					if($GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"]!=$addr) {
+					if(_server("REMOTE_ADDR")!=$addr) {
 						ob_end_clean();
 					} else {
 						ob_end_flush();

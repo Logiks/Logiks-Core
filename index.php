@@ -29,8 +29,6 @@ error_reporting(-1);
 
 define ('ROOT', dirname(__FILE__) . '/');
 
-$GLOBALS['LOGIKS']["_SERVER"]=$_SERVER;
-
 //Start the flow
 require_once ('api/initialize.php');
 

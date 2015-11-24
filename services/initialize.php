@@ -14,18 +14,16 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 session_start();
 ob_start();
 
-$GLOBALS['LOGIKS']["_SERVER"]=$_SERVER;
-
-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START']=microtime(true);
+_envData("SESSION",'REQUEST_SERVICE_START',microtime(true));
 
 define('ROOT_RELATIVE',"../");
 define('SERVICE_ROOT',dirname(__FILE__) . "/");
-define('SERVICE_PATH',dirname($GLOBALS['LOGIKS']["_SERVER"]['SCRIPT_NAME'])."/");
+define('SERVICE_PATH',dirname(_server('SCRIPT_NAME'))."/");
 
-define ('SERVICE_HOST', 'http' . (isset($GLOBALS['LOGIKS']["_SERVER"]['HTTPS']) ? 's' : '') . '://' . "{$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST']}".dirname($GLOBALS['LOGIKS']["_SERVER"]['SCRIPT_NAME'])."/");
-define ('WEBROOT', 'http' . (isset($GLOBALS['LOGIKS']["_SERVER"]['HTTPS']) ? 's' : '') . '://' . "{$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST']}".dirname($GLOBALS['LOGIKS']["_SERVER"]['SCRIPT_NAME'])."/");
+define ('SERVICE_HOST', 'http' . (_server('HTTPS') ? 's' : '') . '://' . "{_server('HTTP_HOST')}".dirname(_server('SCRIPT_NAME'))."/");
+define ('WEBROOT', 'http' . (_server('HTTPS') ? 's' : '') . '://' . "{_server('HTTP_HOST')}".dirname(_server('SCRIPT_NAME'))."/");
 
-if(!isset($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"])) $GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"]="";
+if(!_server("HTTP_REFERER")) _server("HTTP_REFERER")="";
 
 /*
  * Enable Debug mode
@@ -41,13 +39,13 @@ if($isDebug) {
 }
 
 include_once ROOT. "config/classpath.php";
+
 include_once ROOT. "api/bootlogiks.php";
 
 logiksRequestPreboot();
 
 include_once SERVICE_ROOT. "ServiceAuthEngine.inc";
 include_once SERVICE_ROOT. "api.php";
-include_once ROOT. "api/commons.php";
 include_once ROOT. "api/configurator.php";
 
 loadConfigs([
@@ -65,7 +63,7 @@ loadConfigs([
 		]);
 LogiksConfig::fixPHPINIConfigs();
 
-define ('SiteLocation', 'http' . (isset($GLOBALS['LOGIKS']["_SERVER"]['HTTPS']) ? 's' : '') . '://' . "{$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST']}/".InstallFolder);
+define ('SiteLocation', 'http' . (_server('HTTPS') ? 's' : '') . '://' . "{_server('HTTP_HOST')}/".InstallFolder);
 require_once ROOT. "api/libs/errorLogs/boot.php";
 
 logiksServiceBoot();
@@ -92,8 +90,9 @@ include_once ROOT. "api/libs/logiksTemplate/boot.php";
 
 include_once SERVICE_ROOT. "ServiceController.inc";
 
-$GLOBALS['LOGIKS']["_SERVER"]['SERVICE']=true;
-$_SESSION['SESS_ACTIVE_SITE']=SITENAME;
+_server('SERVICE')=true;
+
+_envData("SESSION",'SESS_ACTIVE_SITE',SITENAME);
 
 ini_set("error_reporting",getConfig("SERVICE_ERROR_REPORTING"));
 

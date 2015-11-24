@@ -84,7 +84,7 @@ class LogiksReplace {
 			if($con=="get" && isset($_GET[$in])) return $_GET[$in];
 			elseif($con=="post" && isset($_POST[$in])) return $_POST[$in];
 			elseif($con=="session" && isset($_SESSION[$in])) return $_SESSION[$in];
-			elseif($con=="server" && isset($GLOBALS['LOGIKS']["_SERVER"][$in])) return $GLOBALS['LOGIKS']["_SERVER"][$in];
+			elseif($con=="server" && _server($in)) return _server($in);
 			elseif($con=="cookie" && isset($_COOKIE[$in])) return $_COOKIE[$in];
 			return "";
 		// } elseif(strpos($in,"!")>0) {
@@ -97,7 +97,7 @@ class LogiksReplace {
 		// 	if(isset($dataArr[$in])) $sr=$dataArr[$in];
 		// 	elseif(isset($_REQUEST[$in])) $sr=$_REQUEST[$in];
 		// 	elseif(isset($_SESSION[$in])) $sr=$_SESSION[$in];
-		// 	elseif(isset($GLOBALS['LOGIKS']["_SERVER"][$in])) $sr=$GLOBALS['LOGIKS']["_SERVER"][$in];
+		// 	elseif(_server($in)) $sr=_server($in);
 		// 	elseif(isset($_COOKIE[$in])) $sr=$_COOKIE[$in];
 		// 	else $sr=getConfig($in);
     //
@@ -112,7 +112,7 @@ class LogiksReplace {
 			if(isset($this->dataArr[$in])) return $this->dataArr[$in];
 			elseif(isset($_REQUEST[$in])) return $_REQUEST[$in];
 			elseif(isset($_SESSION[$in])) return $_SESSION[$in];
-			elseif(isset($GLOBALS['LOGIKS']["_SERVER"][$in])) return $GLOBALS['LOGIKS']["_SERVER"][$in];
+			elseif(_server($in)) return _server($in);
 			elseif(isset($_COOKIE[$in])) return $_COOKIE[$in];
       elseif(defined($in)) return constant($in);
 			return getConfig($in);

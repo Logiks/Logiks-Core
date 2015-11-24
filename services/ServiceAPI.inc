@@ -23,7 +23,7 @@ class ServiceAPI {
 		$httpRef=parseHTTPReferer();
 		if(isLocalhost()) return false;
 		elseif(isAjax()) return false;
-		elseif(isset($httpRef["HTTP_HOST"]) && strlen($httpRef["HTTP_HOST"])>0 && $httpRef["HTTP_HOST"]==$GLOBALS['LOGIKS']["_SERVER"]["HTTP_HOST"]) return false;
+		elseif(isset($httpRef["HTTP_HOST"]) && strlen($httpRef["HTTP_HOST"])>0 && $httpRef["HTTP_HOST"]==_server("HTTP_HOST")) return false;
 		return true;
 	}
 	public function checkRemoteClient() {
@@ -46,9 +46,9 @@ class ServiceAPI {
 	public function checkAPIKey() {
 		$site=SITENAME;
 		$a=false;
-		if(isset($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"]) && strlen($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"])!=0) {
+		if(_server("HTTP_REFERER") && strlen(_server("HTTP_REFERER"))!=0) {
 			$httpRef=parseHTTPReferer();
-			if($httpRef["HTTP_HOST"]==$GLOBALS['LOGIKS']["_SERVER"]["HTTP_HOST"]) {
+			if($httpRef["HTTP_HOST"]==_server("HTTP_HOST")) {
 				$a=true;
 			} else {
 				$a=$this->checkKeyWithEngine();

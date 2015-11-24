@@ -20,6 +20,7 @@ if(defined('ROOT')) exit('Only Direct Access Is Allowed');
 
 define('ROOT',dirname(dirname(__FILE__)) . '/');
 
+require_once (ROOT. "api/commons.php");
 require_once (ROOT . 'services/initialize.php');
 
 if(!isset($_REQUEST['scmd'])) {

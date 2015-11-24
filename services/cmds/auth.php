@@ -117,7 +117,7 @@ $_ENV['AUTH-DATA']=array_merge($_ENV['AUTH-DATA'],$d2);
 
 loadHelpers("mobility");
 $_ENV['AUTH-DATA']['device']=getUserDeviceType();
-$_ENV['AUTH-DATA']['client']=$GLOBALS['LOGIKS']["_SERVER"]["REMOTE_ADDR"];
+$_ENV['AUTH-DATA']['client']=_server("REMOTE_ADDR");
 if(isset($_POST['persistant']) && $_POST['persistant']=="true") {
 	$_ENV['AUTH-DATA']['persistant']="true";
 } else {
@@ -242,6 +242,7 @@ function startNewSession($userid, $domain, $dbLink, $params=array()) {
 
 	$_SESSION['SESS_LOGIN_SITE'] = $domain;
 	$_SESSION['SESS_ACTIVE_SITE'] = $domain;
+	_envData("SESSION",'SESS_ACTIVE_SITE',$domain);
 	$_SESSION['SESS_TOKEN'] = session_id();
 	$_SESSION['SESS_SITEID'] = SiteID;
 	$_SESSION['SESS_LOGIN_TIME'] =time();
@@ -267,14 +268,14 @@ function startNewSession($userid, $domain, $dbLink, $params=array()) {
 			"site"=>$domain,
 			"login_time"=>date('H:i:s'),
 			//"logout_time"=>,
-			"sys_spec"=>$GLOBALS['LOGIKS']["_SERVER"]['REMOTE_ADDR'],
+			"sys_spec"=>_server('REMOTE_ADDR'),
 			"token"=>$_SESSION['SESS_TOKEN'],
 			"mauth_key"=>$_SESSION['MAUTH_KEY'],
 			"status"=>'LOGGED IN',
 			"msg"=>'',
 			"persistant"=>$data['persistant'],
-			"client"=>$GLOBALS['LOGIKS']["_SERVER"]['REMOTE_ADDR'],
-			"user_agent"=>$GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'],
+			"client"=>_server('REMOTE_ADDR'),
+			"user_agent"=>_server('HTTP_USER_AGENT'),
 			"device"=>$data['device'],
 		));
 	$dbLink->executeQuery($q1);
@@ -293,8 +294,8 @@ function startNewSession($userid, $domain, $dbLink, $params=array()) {
 				"site"=>$domain,
 				"session_data"=>json_encode($_SESSION),
 				"global_data"=>json_encode($GLOBALS),
-				"client"=>$GLOBALS['LOGIKS']["_SERVER"]['REMOTE_ADDR'],
-				"user_agent"=>$GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'],
+				"client"=>_server('REMOTE_ADDR'),
+				"user_agent"=>_server('HTTP_USER_AGENT'),
 				"device"=>$data['device'],
 			));
 		$dbLink->executeQuery($q1);	
@@ -316,8 +317,8 @@ function restoreOldSession($sessionData, $userid, $domain, $dbLink, $params=arra
 						array(
 							"sessionid"=>$sessionID,
 							"user"=>$userid,
-							"client"=>$GLOBALS['LOGIKS']["_SERVER"]['REMOTE_ADDR'],
-							"user_agent"=>$GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'])
+							"client"=>_server('REMOTE_ADDR'),
+							"user_agent"=>_server('HTTP_USER_AGENT'))
 					);
 	$result=$dbLink->executeQuery($q1);
 	if($result) {
@@ -369,7 +370,7 @@ function gotoSuccessLink() {
 					"date"=>date("Y-m-d"),
 					"time"=>date("H:i:s"),
 					"site"=>$domain,
-					"client"=>$GLOBALS['LOGIKS']["_SERVER"]['REMOTE_ADDR'],
+					"client"=>_server('REMOTE_ADDR'),
 					"token"=>$_SESSION['SESS_TOKEN'],
 				);
 			header("Content-Type:text/json");

@@ -1,4 +1,4 @@
-<?php if(!isset($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"]) || strlen($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"])<=0) { ?>	
+<?php if(!isset(_server("HTTP_REFERER")) || strlen(_server("HTTP_REFERER"))<=0) { ?>	
 <script language='javascript'>
 $(function() {
 	if(location.hash.slice(1).length>0) {

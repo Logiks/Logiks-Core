@@ -11,7 +11,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("checkBrowser")) {
 	function checkBrowser() {
-			if(!isset($GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'])) {
+			if(!_server('HTTP_USER_AGENT')) {
 				return array(
 				"browser" => "",
 				"version" => "",
@@ -22,7 +22,7 @@ if(!function_exists("checkBrowser")) {
 			$browsers.= "konqueror safari netscape navigator ";
 			$browsers.= "opera mosaic lynx amaya omniweb chrome";
 			$browsers = explode(" ", $browsers);
-			$userAgent = strtolower($GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT']);
+			$userAgent = strtolower(_server('HTTP_USER_AGENT'));
 			$l = count($browsers);
 			for ($i=0; $i<$l; $i++) {
 				$browser = $browsers[$i];

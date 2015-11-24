@@ -79,9 +79,8 @@ if(!function_exists("session_check")) {
 		$arr["PAGE"]="";
 		$arr["MODULE"]="";
 
-		//printArray($GLOBALS['LOGIKS']["_SERVER"]);
-		if(isset($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"]) && strlen($GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"])>0) {
-			$s=$GLOBALS['LOGIKS']["_SERVER"]["HTTP_REFERER"];
+		if(_server("HTTP_REFERER") && strlen(_server("HTTP_REFERER"))>0) {
+			$s=_server("HTTP_REFERER");
 			$a1=substr($s,0,strpos($s,"://"));
 			$s=substr($s,strpos($s,"://")+3);
 			$a2=substr($s,0,strpos($s,"/"));
@@ -140,7 +139,7 @@ if(!function_exists("session_check")) {
 	//Generates the auth key required for logging into system remotely and via mobility
 	function generateMAuthKey() {
 		if(!isset($_REQUEST['deviceuuid'])) $_REQUEST['deviceuuid']="LOGIKS007";
-		$str=$_REQUEST['site'].$GLOBALS['LOGIKS']["_SERVER"]['HTTP_USER_AGENT'].SiteID.$_REQUEST['deviceuuid'];
+		$str=$_REQUEST['site']._server('HTTP_USER_AGENT').SiteID.$_REQUEST['deviceuuid'];
 		if(isset($_SESSION['SESS_USER_ID'])) $str.=$_SESSION['SESS_USER_ID'];
 
 		$key=md5(base64_encode($str));

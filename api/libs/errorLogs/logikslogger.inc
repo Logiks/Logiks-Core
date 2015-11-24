@@ -131,7 +131,7 @@ class LogiksLogger {
 
     $logger->pushProcessor(function ($record) {
           //$record['extra']['user'] = Auth::user() ? Auth::user()->username : 'anonymous';
-          $record['extra']['ip'] = $GLOBALS['LOGIKS']["_SERVER"]['REMOTE_ADDR'];
+          $record['extra']['ip'] = _server('REMOTE_ADDR');
           $params=explode(",", LOG_PARAMS);
           foreach ($params as $px) {
             if(isset($_SESSION[$px])) $record['extra'][$px] = $_SESSION[$px];

@@ -122,12 +122,12 @@ if(!function_exists("trigger_logikserror")) {
     if($logLevel==null) {
       $logLevel=LogiksLogger::LOG_WARNING;
     }
-    if(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_TIME_FLOAT'])) {
-      $logData['time']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_TIME_FLOAT']);
-    } elseif(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START'])) {
-      $logData['time']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PAGE_START']);
-    } elseif(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START'])) {
-      $logData['time']=(microtime(true)-$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_SERVICE_START']);
+    if(_server('REQUEST_TIME_FLOAT')) {
+      $logData['time']=(microtime(true)-_server('REQUEST_TIME_FLOAT'));
+    } elseif(_server('REQUEST_PAGE_START')) {
+      $logData['time']=(microtime(true)-_server('REQUEST_PAGE_START'));
+    } elseif(_server('REQUEST_SERVICE_START')) {
+      $logData['time']=(microtime(true)-_server('REQUEST_SERVICE_START'));
     }
 
     LogiksLogger::log($logkey,$logLevel,$logMsg,$logData);

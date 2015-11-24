@@ -70,25 +70,25 @@ if(!function_exists("__cleanup")) {
 		}
 		
 		// platform neurtral url handling
-		if(isset($GLOBALS['LOGIKS']["_SERVER"]['REQUEST_URI'] ) ) {
-			$request_uri = $GLOBALS['LOGIKS']["_SERVER"]['REQUEST_URI'];
+		if(_server('REQUEST_URI')) {
+			$request_uri = _server('REQUEST_URI');
 		} else {
-			$request_uri = $GLOBALS['LOGIKS']["_SERVER"]['SCRIPT_NAME'];
+			$request_uri = _server('SCRIPT_NAME');
 			// Append the query string if it exists and isn't null
-			if(isset( $GLOBALS['LOGIKS']["_SERVER"]['QUERY_STRING'] ) && !empty( $GLOBALS['LOGIKS']["_SERVER"]['QUERY_STRING'] ) ) {
-				$request_uri .= '?' . $GLOBALS['LOGIKS']["_SERVER"]['QUERY_STRING'];
+			if(_server('QUERY_STRING') && strlen(_server('QUERY_STRING'))>0 ) {
+				$request_uri .= '?' . _server('QUERY_STRING');
 			}
-			$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_URI'] = $request_uri;
+			_envData("SERVER",'REQUEST_URI',$request_uri);
 		}
-		if(!isset($GLOBALS['LOGIKS']["_SERVER"]['ACTUAL_URI'])) {
-			$GLOBALS['LOGIKS']["_SERVER"]['ACTUAL_URI']=$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_URI'];
+		if(!_server('ACTUAL_URI')) {
+			_envData("SERVER",'ACTUAL_URI',_server('REQUEST_URI'));
 		}
-		if(empty( $GLOBALS['LOGIKS']["_SERVER"]['PHP_SELF'])) {
-			$GLOBALS['LOGIKS']["_SERVER"]['PHP_SELF'] = $GLOBALS['LOGIKS']["_SERVER"]['SCRIPT_NAME'];
+		if(empty( _server('PHP_SELF'))) {
+			_envData("SERVER",'PHP_SELF',_server('SCRIPT_NAME'));
 		}
 
 		$hostProtocol="http://";
-		if(isset($GLOBALS['LOGIKS']["_SERVER"]['HTTPS'])) {
+		if(_server('HTTPS')) {
 			$hostProtocol="https://";
 		}
 		define('SiteProtocol',str_replace("://","",$hostProtocol));
@@ -96,16 +96,17 @@ if(!function_exists("__cleanup")) {
 
 	function logiksRequestBoot() {
 		if(LogiksSingleton::funcCheckout("logiksRequestBoot")) {
-			$page=str_replace("?".$GLOBALS['LOGIKS']["_SERVER"]['QUERY_STRING'],"",$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_URI']);
+			$page=str_replace("?"._server('QUERY_STRING'),"",_server('REQUEST_URI'));
 			$page=str_replace(InstallFolder, "", $page);
 			if(substr($page, 0,1)=="/") $page=substr($page, 1);
 			if($page==null || strlen($page)<=0) {
 				$page="home";
 			}
 			define("PAGE",$page);
-			$_SESSION['QUERY']=$_GET;
 
-			$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_PATH']=SiteProtocol."://".$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST'].$GLOBALS['LOGIKS']["_SERVER"]['REQUEST_URI'];
+			_envData("SESSION",'QUERY',$_GET);
+
+			_envData("SERVER",'REQUEST_PATH',SiteProtocol."://"._server('HTTP_HOST')._server('REQUEST_URI'));
 
 			$dm=new DomainMap();
 			$dm->detect();
@@ -129,7 +130,7 @@ if(!function_exists("__cleanup")) {
 			}
 
 			if(!isset($_REQUEST['scmd'])) {
-				$rURI=explode("?", $GLOBALS['LOGIKS']["_SERVER"]['REQUEST_URI']);
+				$rURI=explode("?", _server('REQUEST_URI'));
 				$rURI=explode(".", $rURI[0]);
 				if(isset($rURI[1])) {
 					$_REQUEST['format']=$rURI[1];
@@ -176,7 +177,7 @@ if(!function_exists("__cleanup")) {
 						$_REQUEST[$qs]=$qv;
 					}
 				}
-				$GLOBALS['LOGIKS']["_SERVER"]['QUERY_STRING'].="&{$queryo}";
+				_envData("SERVER",'QUERY_STRING',"&{$queryo}");
 			}
 
 			$cmdFormat=explode(",",SUPPORTED_OUTPUT_FORMATS);

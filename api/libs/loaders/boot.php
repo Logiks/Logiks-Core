@@ -13,6 +13,7 @@ include_once dirname(__FILE__)."/helpers.php";
 include_once dirname(__FILE__)."/vendors.php";
 include_once dirname(__FILE__)."/modules.php";
 include_once dirname(__FILE__)."/widgets.php";
+include_once dirname(__FILE__)."/apps.php";
 
 if(!function_exists('getLoaderFolders')) {
 	function getLoaderFolders($loaderType,$addPath="",$site=null) {
