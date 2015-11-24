@@ -205,6 +205,29 @@ if(!function_exists("__cleanup")) {
 		//include_once ROOT. "api/libs/logiksORM/boot.php";	//Optional
 		//include_once ROOT. "api/libs/uiComponents/boot.php";	//Optional
 
+		$status=getConfig("APPS_STATUS");
+
+		switch ($status) {
+			case 'development':
+				/*
+				 * Enable Debug mode
+				 */
+				if(isset($_GET['debug']) && $_GET['debug']=="true") {
+				    ini_set('display_errors', 1);
+				    error_reporting(1);
+				    if(!defined("MASTER_DEBUG_MODE")) {
+				    	define("MASTER_DEBUG_MODE",true);
+				    }
+				}
+			break;
+			case 'staging':
+
+			break;
+			case 'production':
+
+			break;
+		}
+
 		loadModule("core",true);
 		loadModule(SITENAME,true);
 

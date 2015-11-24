@@ -185,7 +185,6 @@ class LogiksPage {
 		if(!$pageConfig['enabled']) {
 			trigger_logikserror("Sorry, page $page is not available",E_LOGIKS_ERROR,403);
 		}
-
 		if(!$this->isAccessible()) {
 			trigger_logikserror("Sorry, page $page is not accessible to you. Needs Credentials",E_LOGIKS_ERROR,401);
 		}
@@ -260,34 +259,32 @@ class LogiksPage {
 	}
 
 	protected function isAccessible() {
-		if(function_exists("checkUserRoles")) {
-			return checkUserRoles("PAGES",$this->pageConfig['pageuri'],"PAGES");
-		} else {
-			if($this->pageType=="json") {
-				if(isset($this->pageConfig['access'])) {
-					$access=$this->pageConfig['access'];
+		if($this->pageType=="json") {
+			if(isset($this->pageConfig['access'])) {
+				$access=$this->pageConfig['access'];
 
-					if(is_string($access)) $access=explode(",", $access);
+				if(is_string($access)) $access=explode(",", $access);
 
-					if(strlen($access[0])==0 || $access[0]=="public") {
-						return true;
-					} elseif($access[0]=="private") {
-						return session_check(false,false);
-					} else {
-						if(session_check(false,false)) {
-							if(in_array($_SESSION['SESS_USER_ID'], $access)) return true;
-							elseif(in_array(md5($_SESSION['SESS_PRIVILEGE_NAME'].$_SESSION['SESS_PRIVILEGE_ID']), $access)) return true;
-							else return false;
-						} else {
-							return false;
-						}
-					}
-				} else {
+				if(strlen($access[0])==0 || $access[0]=="public") {
 					return true;
+				} elseif(function_exists("checkUserRoles")) {
+					return checkUserRoles("PAGES",$this->pageConfig['pageuri'],"PAGES");
+				} else {
+					if(session_check(false,false)) {
+						if(in_array($_SESSION['SESS_USER_ID'], $access)) return true;
+						elseif(in_array(md5($_SESSION['SESS_PRIVILEGE_NAME'].$_SESSION['SESS_PRIVILEGE_ID']), $access)) return true;
+						else return false;
+					} else {
+						return false;
+					}
 				}
+			} else {
+				return true;
 			}
-			return true;
+		} else {
+			
 		}
+		return true;
   	}
 
   	protected function findPage($pagePath) {

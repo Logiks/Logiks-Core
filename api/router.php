@@ -43,8 +43,6 @@ if(!defined("BASEPATH")) {
       include_once $rfile;
       
       break;
-    } else {
-      trigger_logikserror("Page Not Found",E_USER_ERROR,404);
     }
   }
   if(!$routerLoaded) {
