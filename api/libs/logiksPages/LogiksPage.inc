@@ -27,10 +27,11 @@ class LogiksPage {
 		if(!is_dir($pageFolder)) {
 			$pageFolder=APPROOT.APPS_PAGES_FOLDER."layouts/";
 		}
-		if(!is_dir($pageFolder)) {
-			trigger_logikserror("Error Finding Pages Layouts Folder For Device {$this->device}",E_LOGIKS_ERROR);
+		if(is_dir($pageFolder)) {
+			$this->pageFolder=$pageFolder;
+			return $this;
 		}
-		$this->pageFolder=$pageFolder;
+		return false;
 	}
 
 	public function loadPage($page) {
