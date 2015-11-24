@@ -20,7 +20,7 @@ if(!function_exists("getQueryParams")) {
 		} else {
 			$params['basepage']=$params['page'];
 		}
-
+		array_shift($slug);
 		if(is_array($map) && count($map)>0) {
 			$params['slug']=array();
 			array_unshift($map, "");

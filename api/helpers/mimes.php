@@ -885,7 +885,7 @@ if(!function_exists("getFileMimes")) {
 				"png"=>"PNG Graphics",
 				"jpg,jpeg"=>"JPEG Graphics",
 				"gif"=>"GIF Graphics",
-				"BMP"=>"BMP Graphics",
+				"bmp"=>"BMP Graphics",
 				"png,gif,jpeg,jpg,bmp,psd"=>"All Graphics",
 				
 				"mp3"=>"MP3 Music",

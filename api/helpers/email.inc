@@ -13,237 +13,111 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 //$headers["Return-path"] = "returnpath@address.com"; 
 
 if(!function_exists('isValidEmail')) {
-	include "Mail.php";
-	@include "Mail/mime.php";
-
+	if(is_dir(ROOT.VENDORS_FOLDER."PHPMailer/")) {
+		$fs=[
+				ROOT.VENDORS_FOLDER."PHPMailer/PHPMailer/phpmailer.inc",
+				ROOT.VENDORS_FOLDER."PHPMailer/PHPMailer/smtp.inc",
+				ROOT.VENDORS_FOLDER."PHPMailer/PHPMailer/pop3.inc",
+			];
+		foreach ($fs as $f) {
+			if(file_exists($f)) include $f;
+		}
+	}
 	function isValidEmail($address) {
 		return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
 	}
-	function sendMail($to,$subject,$body,$from="",$cc="",$bcc="",$replyTo="") {
-		if($from==null || $from=="") {
-			if(_session("SESS_USER_EMAIL") && strlen(_session("SESS_USER_EMAIL"))>0) {
-				$from=_session("SESS_USER_EMAIL");
-			} else {
-				$fx1=getConfig("default_from");
-				$fx2=getConfig("smtp_username");
+	
+	function sendMail($to,$subject,$body,$params=array(),$appKey="app") {
+		$mailConfig=loadJSONConfig("mail",$appKey);
 
-				if(strlen($fx1)>0) $from=$fx1;
-				elseif(strlen($fx2)>0) $from=$fx2;	
-				else {
-					return "From Is Not Defined ...";
-				}
-			}
+		$defaultParams=array(
+				"from"=>"",
+				"cc"=>"",
+				"bcc"=>"",
+				"replyto"=>"",
+				"attachments"=>array(),
+				"msg_plain"=>strip_tags($msgBody),
+			);
+		if(_session("SESS_USER_EMAIL") && strlen(_session("SESS_USER_EMAIL"))>0) {
+			$defaultParams['from']=_session("SESS_USER_EMAIL");
+		} else {
+			$defaultParams['from']=$mailConfig["default_from"];
 		}
-		if($replyTo==null || $replyTo=="") {
-			$replyTo=$from;
+		$defaultParams['replyto']=$defaultParams['from'];
+
+		if(is_array($params)) {
+			$params=array_merge($defaultParams,$params);
 		}
+		
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
 		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 		//$headers .= "To: $to" . "\r\n";
-		if(strlen($from)>0) $headers .= "From: $from" . "\r\n";
-		if(strlen($replyTo)>0) $headers .= "Reply-To: $replyTo" . "\r\n";
-		if(strlen($cc)>0) $headers .= "Cc: $cc" . "\r\n";
-		if(strlen($bcc)>0) $headers .= "Bcc: $bcc" . "\r\n";
+		if(strlen($params['from'])>0) $headers .= "From: {$params['from']}" . "\r\n";
+		if(strlen($params['replyto'])>0) $headers .= "Reply-To: {$params['replyto']}" . "\r\n";
+		if(strlen($params['cc'])>0) $headers .= "Cc: {$params['cc']}" . "\r\n";
+		if(strlen($params['bcc'])>0) $headers .= "Bcc: {$params['bcc']}" . "\r\n";
 		
 		return mail($to,$subject,$body,$headers);
 	}
-}
-class EMail {
-	
-	protected static $keywords= array("mailto","subject","from","cc","bcc","title","footer","body","attach");
-	protected $smtpinfo=null;
-	
-	public function __construct() {
-		$this->smtpinfo=$this->createDefaultSMTPInfo();		
-	}
-	
-	protected function createDefaultSMTPInfo() {
-		$smtp=array();
-		
-		$host="";
-		if(strlen(getConfig("smtp_encryption"))>0) {
-			$host=strtolower(getConfig("smtp_encryption"))."://";
-		}
-		$host.=getConfig("smtp_host");
-		
-		$smtp["host"] = $host;
-		$smtp["port"] = getConfig("smtp_port");
-		$smtp["auth"] = (boolean)getConfig("smtp_auth");
-		$smtp["username"] = getConfig("smtp_username");
-		$smtp["password"] = getConfig("smtp_password");
-		$smtp["cc"] = getConfig("default_cc");
-		$smtp["bcc"] = getConfig("default_bcc");
 
-		return $smtp;
-	}
-	
-	public function getSMTPInfo() {
-		return $this->smtpinfo;
-	}
-	
-	public function updateSMTPInfo($smtpData) {
-		if(is_array($smtpData)) {
-			foreach(array_keys($smtpData) as $a) {
-				$this->smtpinfo[$a]=$smtpData[$a];
-			}
-		}
-	}
-	protected function addKeyword($a) {
-		if(!in_array($a)) {
-			$this->keywords[sizeof($this->keywords)]=$a;
-		}
-	}
-	
-	protected function removeKeyword($a) {
-		if(in_array($a)) {
-			unset($this->keywords[$a]);
-		}
-	}
-	
-	function sendPlainMessage($recipients, $subject, $cc, $bcc, $msgBody) {		
-		if($this->smtpinfo==null) {
-			$this->smtpinfo=$this->createDefaultSMTPInfo();
-		}
+	function sendMailSMTP($to,$subject,$msgBody,$params=array(),$appKey="app") {
+		$mailConfig=loadJSONConfig("mail",$appKey);
 
-		$from=$this->smtpinfo["username"];
+		$defaultParams=array(
+				"from"=>"",
+				"cc"=>"",
+				"bcc"=>"",
+				"replyto"=>"",
+				"attachments"=>array(),
+				"msg_plain"=>strip_tags($msgBody),
+			);
 		if(_session("SESS_USER_EMAIL") && strlen(_session("SESS_USER_EMAIL"))>0) {
-			$from=_session("SESS_USER_EMAIL");
-		}
-
-		$headers["From"]    = $from;
-		$headers["To"]      = $recipients;
-		$headers["Subject"] = $subject;
-		$headers["cc"] = $this->smtpinfo["cc"].",".$cc;
-		$headers["bcc"] = $this->smtpinfo["bcc"].",".$bcc;
-		
-		$from=$this->createFrom();
-		if(strlen($from)>0) $headers["From"]=$from;
-		
-		$mail_object =@Mail::factory("smtp", $this->smtpinfo);
-		$mail_object->send($recipients, $headers, $msgBody);
-
-		if (PEAR::isError($mail_object)) {
-		   echo("<p>" . $mail_object->getMessage() . "</p>");
-		   return false;
+			$defaultParams['from']=_session("SESS_USER_EMAIL");
 		} else {
-		   return true;
+			$defaultParams['from']=$mailConfig["default_from"];
 		}
-	}
-	function sendHTMLMessage($recipients, $subject, $cc, $bcc, $msgBody, $allowPlain=true) {
-		return $this->sendMimeMessageAdvanced($recipients, $subject, $cc, $bcc, $msgBody, null,$allowPlain);
-	}
-	
-	function sendMimeMessage($recipients, $subject, $msgBody, $file,$allowPlain=true) {
-		return $this->sendMimeMessageAdvanced($recipients, $subject, "", "", $msgBody, $file,$allowPlain);
-	}
-	
-	function sendMimeMessageAdvanced($recipients, $subject, $cc, $bcc, $msgBody, $file, $allowPlain=true) {
-		if($this->smtpinfo==null) {
-			$this->smtpinfo=$this->createDefaultSMTPInfo();
-		}
-		
-		$userMail=_session('SESS_USER_EMAIL');
-		if(strlen($userMail)<=1) $userMail=$this->smtpinfo["username"];
-		$hdrs = array(
-				  'From'    => $userMail,
-				  'To'    => $recipients,
-				  'Reply-To' => $userMail,
-				  'Return-path' => $userMail,
-				  'Subject' => $subject,
-				  'Cc' => $this->smtpinfo["cc"].",".$cc,
-				  'Bcc' => $this->smtpinfo["bcc"].",".$bcc,
-				  );
-		
-		$from=$this->createFrom();
-		if(strlen($from)>0) $hdrs["From"]=$from;
-		
-		$mime = new Mail_Mime("\n");
-		
-		$mime->setHTMLBody($msgBody);
-		if($allowPlain) $mime->setTXTBody($this->processHTMLToText($body));
+		$defaultParams['replyto']=$defaultParams['from'];
 
-		if($file!=null) {
-			loadHelpers("mimes");
-			if(is_array($file)) {
-				for($i=0;$i<sizeof($file);$i++) {
-					$mime->addAttachment($file[$i], getMimeTypeForFile($file[$i]));
-				}
-			} else {
-				$mime->addAttachment($file, getMimeTypeForFile($file[$i]));
-			}
+		if(is_array($params)) {
+			$params=array_merge($defaultParams,$params);
 		}
 
-		$body = $mime->get();
-		$hdrs = $mime->headers($hdrs);
-		
-		$mail_object =@Mail::factory("smtp", $this->smtpinfo);
-		$mail_object->send($recipients, $hdrs, $body);
-		
-		if (PEAR::isError($mail_object)) {
-		   //echo("<p>" . $mail_object->getMessage() . "</p>");
-		   return false;
+		$mail = new PHPMailer();
+		$mail->isSMTP();
+		//$mail->SMTPDebug = 3;                               // Enable verbose debug output
+		//$mail->Debugoutput = 'html';
+
+		//$mailConfig['engine']=="smtp"
+
+		//Set the hostname of the mail server
+		$mail->Host = $mailConfig['smtp_host'];
+		//Set the SMTP port number - 587 for authenticated TLS, a.k.a. RFC4409 SMTP submission
+		$mail->Port = $mailConfig['smtp_port'];
+		//Set the encryption system to use - ssl (deprecated) or tls
+		$mail->SMTPSecure = $mailConfig['smtp_secure'];
+		//Whether to use SMTP authentication
+		$mail->SMTPAuth = $mailConfig['smtp_auth'];
+		//Username to use for SMTP authentication - use full email address for gmail
+		$mail->Username = $mailConfig['smtp_username'];
+		//Password to use for SMTP authentication
+		$mail->Password = $mailConfig['smtp_password'];
+
+		if(strlen($params['from'])>0) $mail->setFrom($params['from']);
+
+		if(is_array($to)) {
+			foreach($to as $t) $mail->addAddress($t);
 		} else {
-		   //echo("<div width=100% align=center><p>Message successfully sent!</p></div>");
-		   return true;
+			$mail->addAddress($to);
 		}
-	}
-	
-	public static function createMailBodyForArray($data,$title='',$footer='') {
-		$body="";
-		$allfields=array_keys($data);
-		$footer='';
-		$body.="<div class=mailcontainer>";
-		$body.="<table class=mailform align='center' width='750px' border='0' cellpadding='2' cellspacing='0'>";
-		$body.="<caption>$title</caption>";
-		for($i=0;$i<sizeof($allfields);$i++) {
-			if(!in_array($allfields[$i],EMail::$keywords)){
-				if($i%2==0)
-					$body .= "<tr class='columnName even'><td width=200px align=right>";
-				else
-					$body .= "<tr class='columnName odd'><td align=right>";
 
-				$body .="<b>" . ucwords($allfields[$i])."</b></td><td width=5px class=columnEqual align=center>".":"."</td><td class='columnInput'>".$_POST[$allfields[$i]]."</td></tr>";
-			}
-		}
-		$body.="</table>";
-		$body.="<p class='footer'>$footer</p></div></div>";
-		$body.="</div>";
-		return $body;
-	}
-	public function processHTMLToText($document) {
-	// $document should contain an HTML document.  This will remove HTML tags, javascript sections
-	// and white space. It will also convert some common HTML entities to their text equivalent.
+		$mail->Subject = $subject;
+		$mail->msgHTML($msgBody);
+		$mail->AltBody = $params['msg_plain'];
 
-		$search = array ("'<script[^>]*?>.*?</script>'si",  // Strip out javascript
-						 "'<[/!]*?[^<>]*?>'si",          // Strip out HTML tags
-						 "'([rn])[s]+'",                // Strip out white space
-						 "'&(quot|#34);'i",                // Replace HTML entities
-						 "'&(amp|#38);'i",
-						 "'&(lt|#60);'i",
-						 "'&(gt|#62);'i",
-						 "'&(nbsp|#160);'i",
-						 "'&(iexcl|#161);'i",
-						 "'&(cent|#162);'i",
-						 "'&(pound|#163);'i",
-						 "'&(copy|#169);'i",
-						 "'&#(d+);'e");                    // evaluate as php
-
-		$replace = array ("", "", "\1", "\"", "&", "<", ">", " ", chr(161), chr(162),
-						 chr(163), chr(169), "chr(\1)");
-
-		$document = preg_replace("<br/>", "\n", $document);
-		$document = preg_replace("&nbsp;", " ", $document);
-		$text = preg_replace($search, $replace, $document);
-		return $text;
-	}
-	private function createFrom() {
-		if(isset($_POST["from_email"]) && strlen($_POST["from_email"])>0 && strpos($_POST["from_email"],"@")>1) {
-			return $_POST["from_email"];
-		} elseif(_session("SESS_USER_EMAIL") && strlen(_session("SESS_USER_EMAIL"))>0 && strpos(_session("SESS_USER_EMAIL"),"@")>1) {
-			//return "From: "._session("SESS_USER_NAME")." "._session("SESS_USER_EMAIL"); 
-			return _session("SESS_USER_EMAIL");
+		if (!$mail->send()) {
+		    return array("error"=>true,"msg"=>$mail->ErrorInfo,"type"=>"smtp");
 		} else {
-			return "";
+		    return true;
 		}
 	}
 }

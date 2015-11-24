@@ -15,14 +15,13 @@ class test_helpers_pathfuncs extends LogiksTestCase{
 	
 	public function test_getWebPath(){
 		$result=getWebPath(__FILE__);
-		$expected = 'http://192.168.10.210:81/testkit/?comp=testcase&src=/srcspace/www/devlogiks/tests/helpers/tests/helpers/test_helpers_pathfuncs.php';
+		$expected = SiteLocation.str_replace(ROOT, "", dirname(__FILE__)."/".basename(__FILE__));
 		$this->assertEquals($expected,$result);
 	}
 	
 	public function test_getRootPath(){
 		$result=getRootPath(__FILE__);
-		$expected = '/srcspace/www/devlogiks/tests/helpers/test_helpers_pathfuncs.php';
-		$this->assertEquals($expected,$result);
+		$this->assertEquals($result,__FILE__);
 	}
 	
 	/*

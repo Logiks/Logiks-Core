@@ -7,46 +7,56 @@
  */
 class test_helpers_urltools extends LogiksTestCase {
 	
-	public function setUp() {
-		parent::setUp();
+	public static function setUpBeforeClass() {
+		define("PAGE","test1/test2");
+
 		loadHelpers("urltools");
 	}
 	
 	public function test_getQueryParams() {
-		$actual=array ( 'site' => 'dummy', 'page' => 'testkit/', 'basepage' => 'testkit', 'slug' => array ( 0 => 'testkit', 1 => '', ), 'query' => array ( 'comp' => 'testcase', 'src' => '/srcspace/www/devlogiks/tests/helpers/test_helpers_urltools.php', 'category' => '22ffa003527fc7b4cfddb491cbfb1804', ), );
+		//$actual=array ( 'site' => 'dummy', 'page' => 'testkit/', 'basepage' => 'testkit', 'slug' => array ( 0 => 'testkit', 1 => '', ), 'query' => array ( 'comp' => 'testcase', 'src' => '/srcspace/www/devlogiks/tests/helpers/test_helpers_urltools.php', 'category' => '22ffa003527fc7b4cfddb491cbfb1804', ), );
 		$result = getQueryParams();
-		
+		$actual = [
+				'site'=>SITENAME,
+				'page'=>PAGE,
+				'basepage'=>'test1',
+				'slug'=>[
+					'test2'
+				],
+				'query'=>false
+			];
 		$this->assertEquals($actual,$result);
 	}
 	public function test_getPrettyLink() {
-		$actual= "http://192.168.10.210:81/devlogiks/testkit/";
+		$actual= SiteLocation.PAGE;
 		$result = getPrettyLink();
-	//	echo $result;
 		$this->assertEquals($actual,$result);
 	}
 	public function test_cryptURL() {
-		$actual="aHR0cDovLzE5Mi4xNjguMTAuMjEwOjgxL2RldmxvZ2lrcy90ZXN0a2l0Lw";
 		$url = getPrettyLink();
+		$enc=new LogiksEncryption();
+		$actual=$enc->encode($url);
+
 	  	$result=cryptURL($url);
-		//	echo $result;
+		
 		$this->assertEquals($actual,$result);
 	}
 	public function test_decryptURL() {
-		$actual="http://192.168.10.210:81/devlogiks/testkit/";
 		$url = getPrettyLink();
-		$url=cryptURL($url);
-	  	$result=decryptURL($url);
-		//	echo $result;
-		$this->assertEquals($actual,$result);
+		$enc=new LogiksEncryption();
+		$cx=$enc->encode($url);
+
+	  	$result=decryptURL($cx);
+		
+		$this->assertEquals($url,$result);
 	}
 	public function test_getRelativePathToROOT() {
 		$actual="../";
 	  	$result=getRelativePathToROOT('test_helpers_string.php');
-		echo $result;
 		$this->assertEquals($actual,$result);
 	}
 	public function test_getRequestPath() {
-		$actual="http://192.168.10.210:81/testkit/";
+		$actual="http://".$GLOBALS['LOGIKS']["_SERVER"]['HTTP_HOST'].dirname($GLOBALS['LOGIKS']["_SERVER"]['PHP_SELF'])."/";
 	  	$result=getRequestPath();
 		$this->assertEquals($actual,$result);
 	}

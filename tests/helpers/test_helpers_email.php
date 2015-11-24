@@ -16,16 +16,5 @@ class test_helpers_email extends LogiksTestCase {
 		$result = isValidEmail('test@example.com');
 		$this->assertEquals(true,$result);
 	}
-	
-	public function test_isValidEmailValid2() {
-		$result = isValidEmail('test@example');
-		$this->assertEquals(false,$result);
-	}
-	
-	public function test_isValidEmailValid3() {
-		$result = isValidEmail('test@example@!com');
-		$this->assertEquals(false,$result);
-	}
-	
 }
 ?>

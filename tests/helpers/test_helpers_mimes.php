@@ -30,11 +30,12 @@ class test_helpers_mimes extends LogiksTestCase {
 	
 	public function test_getMimeGroups() {
 		$tx = getMimeGroups();
+		$this->assertContains(array(
+					"pdf"=>"PDF Documents",
+					"mm"=>"Mindmaps",
+					"txt"=>"Text Documents",
+				),$tx);
 		
-		$actual = $tx['pdf'];
-		$expected = 'PDF Documents';
-		
-		$this->assertEquals($expected,$actual);
 	}
 }
 ?>

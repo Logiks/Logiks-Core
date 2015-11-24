@@ -17,9 +17,23 @@ class LogiksSession {
 		//var_dump($_SERVER);
 		//$GLOBALS['LOGIKS']["_SERVER"]
 		
-		$this->DATA['SERVER']=$_SERVER;
-		$this->DATA['SESSION']=$_SESSION;
-		$this->DATA['ENV']=$_ENV;
+		if(isset($GLOBALS['LOGIKS']["_SERVER"])) {
+			$this->DATA['SERVER']=$GLOBALS['LOGIKS']["_SERVER"];
+		} elseif(isset($_SERVER)) {
+			$this->DATA['SERVER']=$_SERVER;
+		}
+
+		if(isset($GLOBALS['LOGIKS']["_SESSION"])) {
+			$this->DATA['SESSION']=$GLOBALS['LOGIKS']["_SESSION"];
+		} elseif(isset($_SESSION)) {
+			$this->DATA['SESSION']=$_SESSION;
+		}
+
+		if(isset($GLOBALS['LOGIKS']["_ENV"])) {
+			$this->DATA['ENV']=$GLOBALS['LOGIKS']["_ENV"];
+		} elseif(isset($_ENV)) {
+			$this->DATA['ENV']=$_ENV;
+		}
 	}
 	public static function getInstance() {
 	    if(LogiksSession::$instance==null) {
