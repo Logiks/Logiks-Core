@@ -34,8 +34,9 @@ class LogiksTheme {
 
 		$this->templateDir=array(
 				$this->themeFolder."templates/",
-				ROOT.APPS_FOLDER.$site."/pages/viewpage/",
+				//ROOT.APPS_FOLDER.$site."/pages/viewpage/",
 				ROOT.APPS_FOLDER.$site."/css/templates/",
+				ROOT.THEME_FOLDER."default/templates/",
 			);
 		return $this;
 	}
