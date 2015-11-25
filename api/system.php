@@ -30,8 +30,8 @@ if(!function_exists("getRequestTime")) {
 	}
     //Checks is localhost
 	function isLocalhost() {
-		$client_server('REMOTE_ADDR');
-		$server_server('SERVER_ADDR');
+		$client=_server('REMOTE_ADDR');
+		$server=_server('SERVER_ADDR');
 		if($client==$server) return true;
 		elseif($server=="localhost" || $server=="127.0.0.1") return true;
 		else return false;

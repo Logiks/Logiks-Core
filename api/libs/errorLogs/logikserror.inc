@@ -13,7 +13,6 @@ class LogiksError {
 
   public static function handle($severity, $errMsg, $file, $line, $errorCode=500) {
     //This error code is not included in error_reporting
-    if(!(error_reporting() & $severity)) { return true; }     //Test PHP settings allows printing error (will be removed in future)
     if(!(ERROR_REPORTING & $severity)) { return true; }       //Test Logiks settings allows printing error
 
     $dontCatch=explode(",",MASTER_DEBUG_DONT_CATCH);

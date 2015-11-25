@@ -36,7 +36,9 @@ class LogiksPage {
 
 	public function loadPage($page) {
 		$pageToLoad=$this->findPage($page);
-
+		if(!$pageToLoad) {
+			return false;
+		}
 		$ext=explode(".", $pageToLoad);
 		$ext=strtolower(end($ext));
 

@@ -13,5 +13,9 @@ $lt=new LogiksTheme(APPS_THEME,SITENAME);
 
 $lp=new LogiksPage($lt);
 $pg=$lp->loadPage(PAGE);
-$lp->printPage();
+if($pg) {
+	$lp->printPage();
+} else {
+	trigger_logikserror("Sorry, page not found",E_LOGIKS_ERROR,404);
+}
 ?>

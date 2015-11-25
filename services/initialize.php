@@ -23,7 +23,7 @@ define('SERVICE_PATH',dirname(_server('SCRIPT_NAME'))."/");
 define ('SERVICE_HOST', 'http' . (_server('HTTPS') ? 's' : '') . '://' . "{_server('HTTP_HOST')}".dirname(_server('SCRIPT_NAME'))."/");
 define ('WEBROOT', 'http' . (_server('HTTPS') ? 's' : '') . '://' . "{_server('HTTP_HOST')}".dirname(_server('SCRIPT_NAME'))."/");
 
-if(!_server("HTTP_REFERER")) _server("HTTP_REFERER")="";
+if(!_server("HTTP_REFERER")) _envData("SERVER","HTTP_REFERER","");
 
 /*
  * Enable Debug mode
@@ -90,8 +90,7 @@ include_once ROOT. "api/libs/logiksTemplate/boot.php";
 
 include_once SERVICE_ROOT. "ServiceController.inc";
 
-_server('SERVICE')=true;
-
+_envData("SESSION",'SERVICE',true);
 _envData("SESSION",'SESS_ACTIVE_SITE',SITENAME);
 
 ini_set("error_reporting",getConfig("SERVICE_ERROR_REPORTING"));
