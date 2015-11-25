@@ -25,7 +25,9 @@ class LogiksTheme {
 		$this->themeURL=WEBROOT.THEME_FOLDER.$theme."/";
 
 		if(!is_dir($this->themeFolder)) {
-			trigger_error("Required Theme $theme Not Found",E_USER_ERROR);
+			$this->theme="default";
+			$this->themeFolder=ROOT.THEME_FOLDER.$theme."/";
+			$this->themeURL=WEBROOT.THEME_FOLDER.$theme."/";
 		}
 
 		$this->htmlAssets=new HTMLAssets($this,$site);
@@ -35,6 +37,7 @@ class LogiksTheme {
 				ROOT.APPS_FOLDER.$site."/pages/viewpage/",
 				ROOT.APPS_FOLDER.$site."/css/templates/",
 			);
+		return $this;
 	}
 
 	public function getAssetHandler() {

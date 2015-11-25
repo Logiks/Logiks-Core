@@ -28,20 +28,23 @@ if(!function_exists("_css")) {
 		return $lx;
 	}
 	function _css($cssLnk,$themeName=null,$browser="",$media="") {
-		$lx=_cssLink($cssLnk, $themeName);
+		//$lx=_cssLink($cssLnk, $themeName);
+		$lx=LogiksSession::getInstance()->htmlAssets()->getAssetURL($cssLnk,'css');
 		if(strlen($lx)<=0) return false;
 
+		$html="";
 		if($browser!=null && strlen($browser)>0) {
-			echo "<!--[if $browser]>\n";
-			echo "<link href='$lx' rel='stylesheet' type='text/css'";
-			if($media!=null && strlen($media)>0) echo " media='$media'";
-			echo " />\n";
-			echo "<![endif]-->\n";
+			$html.="<!--[if $browser]>\n";
+			$html.="<link href='$lx' rel='stylesheet' type='text/css'";
+			if($media!=null && strlen($media)>0) $html.=" media='$media'";
+			$html.=" />\n";
+			$html.="<![endif]-->\n";
 		} else {
-			echo "<link href='$lx' rel='stylesheet' type='text/css'";
-			if($media!=null && strlen($media)>0) echo " media='$media'";
-			echo " />\n";
+			$html.="<link href='$lx' rel='stylesheet' type='text/css'";
+			if($media!=null && strlen($media)>0) $html.=" media='$media'";
+			$html.=" />\n";
 		}
+		return $html;
 	}
 
 	function _jsLink($jsLnk,$themeName=null) {
@@ -56,16 +59,19 @@ if(!function_exists("_css")) {
 		return $lx;
 	}
 	function _js($jsLnk,$themeName=null,$browser="") {
-		$lx=_jsLink($jsLnk, $themeName);
+		//$lx=_jsLink($jsLnk, $themeName);
+		$lx=LogiksSession::getInstance()->htmlAssets()->getAssetURL($jsLnk,'js');
 		if(strlen($lx)<=0) return false;
 
+		$html="";
 		if($browser!=null && strlen($browser)>0) {
-			echo "<!--[if $browser]>\n";
-			echo "<script src='$lx' type='text/javascript' language='javascript'></script>\n";
-			echo "<![endif]-->\n";
+			$html.="<!--[if $browser]>\n";
+			$html.="<script src='$lx' type='text/javascript' language='javascript'></script>\n";
+			$html.="<![endif]-->\n";
 		} else {
-			echo "<script src='$lx' type='text/javascript' language='javascript'></script>\n";
+			$html.="<script src='$lx' type='text/javascript' language='javascript'></script>\n";
 		}
+		return $html;
 	}
 
 	function _slug() {
@@ -73,11 +79,15 @@ if(!function_exists("_css")) {
 		return array();
 	}
 
-	function getPageConfig($key) {
-  		if(isset($_ENV['PAGECONFIG']) && isset($_ENV['PAGECONFIG'][$key])) {
-  			return $_ENV['PAGECONFIG'][$key];
-  		}
-  		return false;
-  	}
+  	//used only for printing pages
+	function _templatePage($file,$dataArr=null) {
+		if($dataArr==null) $dataArr=[];
+		if(isset($_ENV['PAGEVAR']) && is_array($_ENV['PAGEVAR'])) {
+			foreach ($_ENV['PAGEVAR'] as $key => $value) {
+				$dataArr['PAGE'][$key]=$value;
+			}
+		}
+		return _template($file,$dataArr);
+	}
 }
 ?>

@@ -141,6 +141,9 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
 
     //var_dump($this->smartyEngine);
 
+    $this->addVar("ROOT",ROOT);
+    $this->addVar("WEBROOT",WEBROOT);
+
     $this->smartyEngine->display($tmpl);
   }
 }

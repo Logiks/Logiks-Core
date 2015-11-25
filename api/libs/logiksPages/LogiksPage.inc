@@ -357,7 +357,7 @@ class LogiksPage {
 
 		$page['CSS']=explode(",", str_replace(" ",",",trim($page['CSS'])));
 		$page['CSS']=array_unique($page['CSS']);
-		$page['CSS']=implode(",", $page['CSS']);
+		//$page['CSS']=implode(",", $page['CSS']);
 		
 		$page['JS_PRELOAD']=explode(",", str_replace(" ",",",trim($page['JS_PRELOAD'])));
 		$page['JS_PRELOAD']=array_unique($page['JS_PRELOAD']);
@@ -398,8 +398,13 @@ class LogiksPage {
 		if(getConfig("PAGE_LOCK_SELECTION")) $page['BODY_ATTRIBUTES'].=" onselectstart='return false'";
 		if(getConfig("PAGE_LOCK_MOUSEDRAG")) $page['BODY_ATTRIBUTES'].=" ondragstart='return false' draggable='false'";
 
-		if(strlen(trim($page['CSS']))>0) 
-			$page['CSS']="<link href='"._cssLink(explode(",", trim($page['CSS'])))."' rel='stylesheet' type='text/css' />";
+		// if(strlen(trim($page['CSS']))>0) 
+		// 	$page['CSS']="<link href='"._cssLink(explode(",", trim($page['CSS'])))."' rel='stylesheet' type='text/css' />";
+		$html="";
+		foreach ($page['CSS'] as $f) {
+			$html.=_css($f);
+		}
+		$page['CSS']=$html;
 
 		if(strlen(trim($page['JS_PRELOAD']))>0) 
 			$page['JS_PRELOAD']="<script src='"._jsLink(explode(",", trim($page['JS_PRELOAD'])))."' type='text/javascript' language='javascript'></script>";

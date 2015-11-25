@@ -7,7 +7,7 @@
  * @author		Bismay Kumar Mohaptra
  */
 
-function smarty_function_viewpage($params) {
+function smarty_function_viewpage($params, Smarty_Internal_Template $template) {
 	if(isset($_ENV['PAGECONFIG']['viewpage']) && strlen($_ENV['PAGECONFIG']['viewpage'])>0) {
 		$viewpage=$_ENV['PAGECONFIG']['viewpage'];
 	} else {
@@ -15,16 +15,31 @@ function smarty_function_viewpage($params) {
 	}
 	$page=explode("/",$viewpage);
 	if(strlen($page[0])<=0) return;
-	$f1=APPROOT.APPS_PAGES_FOLDER."viewpage/{$page[0]}.php";
-	$f2=APPROOT.APPS_PAGES_FOLDER."viewpage/{$page[0]}.tpl";
-	$f3=APPROOT.APPS_PAGES_FOLDER."viewpage/{$page[0]}.htm";
-	
-	if(file_exists($f1)) {
-		include $f1;
-	} elseif(file_exists($f2)) {
-		_template($f2);
-	} elseif(file_exists($f3)) {
-		readfile($f3);
+	$fs=array(
+			APPROOT.APPS_PAGES_FOLDER."viewpage/{$page[0]}.php"=>"php",
+			APPROOT.APPS_PAGES_FOLDER."viewpage/{$page[0]}.tpl"=>"tpl",
+			APPROOT.APPS_PAGES_FOLDER."viewpage/{$page[0]}.htm"=>"htm",
+		);
+
+	foreach ($fs as $f=>$ext) {
+		if(file_exists($f)) {
+			switch ($ext) {
+				case 'php':
+					include $f;
+				break;
+				case 'tpl':
+					$vx=$template->tpl_vars;
+					$dx=[];
+					foreach ($vx as $key => $value) {
+						$dx[$key]=$value->value;
+					}
+					_templatePage($f,$dx);
+				break;
+				case 'htm':
+					readfile($f);
+				break;
+			}
+		}
 	}
 }
 ?>

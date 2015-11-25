@@ -251,4 +251,24 @@ if(!function_exists("_replace")) {
 		return $str;
 	}
 }
+
+if(!function_exists("_pageConfig")) {
+	function _pageConfig($key) {
+  		if(isset($_ENV['PAGECONFIG']) && isset($_ENV['PAGECONFIG'][$key])) {
+  			return $_ENV['PAGECONFIG'][$key];
+  		}
+  		return false;
+  	}
+  	function _pageParams($params) {
+  		if(is_array($params)) {
+  			foreach ($params as $key => $value) {
+  				_pageVar($key,$value);
+  			}
+  		}
+  	}
+  	function _pageVar($key,$value) {
+  		$_ENV['PAGEVAR'][$key]=$value;
+  		return $value;
+  	}
+}
 ?>

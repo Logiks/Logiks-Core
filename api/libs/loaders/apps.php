@@ -15,7 +15,7 @@ if(!function_exists('loadComponent')) {
 		if(file_exists($f1)) {
 			include $f1;
 		} elseif(file_exists($f2)) {
-			_template($f2);
+			_templatePage($f2);
 		} elseif(file_exists($f3)) {
 			readfile($f3);
 		}

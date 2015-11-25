@@ -13,6 +13,8 @@ class LogiksSession {
 
 	protected $DATA=[];
 
+	private $assets=[];
+
 	protected function __construct() {
 		//var_dump($_SERVER);
 		//$GLOBALS['LOGIKS']["_SERVER"]
@@ -49,6 +51,17 @@ class LogiksSession {
 	public function set($key,$name,$val) {
 		$this->DATA[$key][$name]=$val;
 		return $val;
+	}
+
+	public function htmlAssets() {
+		if(isset($this->assets["htmlAsset"])) {
+			return $this->assets["htmlAsset"];
+		} else {
+			$lt=new LogiksTheme(APPS_THEME,SITENAME);
+			$this->assets["htmlAsset"]=new HTMLAssets($lt);
+
+			return $this->assets["htmlAsset"];;
+		}
 	}
 }
 LogiksSession::getInstance();

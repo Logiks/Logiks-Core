@@ -8,7 +8,7 @@
  */
 
 function smarty_function_pageseometa($params) {
-	$pageConfig=getPageConfig('meta');
+	$pageConfig=_pageConfig('meta');
 	if($pageConfig) {
 		$html="";
 		foreach($pageConfig as $meta) {

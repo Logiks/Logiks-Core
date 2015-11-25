@@ -17,7 +17,7 @@ require_once ('api/initialize.php');
 // }
 // ini_set('display_errors', 1);
 // error_reporting(-1);
-//ini_set('display_errors', 'On');
+ini_set('display_errors', 'On');
 
 
 //Time To Start Router System
