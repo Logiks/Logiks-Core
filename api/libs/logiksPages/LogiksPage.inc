@@ -345,16 +345,10 @@ class LogiksPage {
 		$page['PAGE_JS_POSTLOAD']=$page['JS_POSTLOAD'];
 
   		$device=strtoupper(getUserDeviceType());
-		if($device=="PC") {
-			$page['CSS']=getConfig("{$device}_CSS_TO_LOAD")." ".getConfig("DEFAULT_CSS_TO_LOAD")." ".$page['CSS'];
-			$page['JS_PRELOAD']=getConfig("{$device}_JS_TO_PRELOAD")." ".getConfig("DEFAULT_JS_TO_PRELOAD")." ".$page['JS_PRELOAD'];
-			$page['JS_POSTLOAD']=getConfig("{$device}_JS_TO_POSTLOAD")." ".getConfig("DEFAULT_JS_TO_POSTLOAD")." ".$page['JS_POSTLOAD'];
-		} else {
-			$page['CSS']=getConfig("{$device}_CSS_TO_LOAD")." ".$page['CSS'];
-			$page['JS_PRELOAD']=getConfig("{$device}_JS_TO_PRELOAD")." ".$page['JS_PRELOAD'];
-			$page['JS_POSTLOAD']=getConfig("{$device}_JS_TO_POSTLOAD")." ".$page['JS_POSTLOAD'];
-		}
-
+		$page['CSS']=getConfig("{$device}_CSS_TO_LOAD").",".getConfig("DEFAULT_CSS_TO_LOAD").",".$page['CSS'];
+		$page['JS_PRELOAD']=getConfig("{$device}_JS_TO_PRELOAD").",".getConfig("DEFAULT_JS_TO_PRELOAD").",".$page['JS_PRELOAD'];
+		$page['JS_POSTLOAD']=getConfig("{$device}_JS_TO_POSTLOAD").",".getConfig("DEFAULT_JS_TO_POSTLOAD").",".$page['JS_POSTLOAD'];
+		
 		$page['CSS']=explode(",", str_replace(" ",",",trim($page['CSS'])));
 		$page['CSS']=array_unique($page['CSS']);
 		//$page['CSS']=implode(",", $page['CSS']);
