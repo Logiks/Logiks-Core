@@ -95,7 +95,8 @@ class sqlite3Driver extends AbstractDBDriver {
 	//Result based functions
 	public function fetchData($result,$format="assoc") {
 		if($this->link->lastErrorCode() ) return false;
-
+		
+		$result=parent::fetchData($result);
 		$format=strtolower($format);
 		if($format=="array") {
 			return $result->fetchArray(SQLITE3_NUM);

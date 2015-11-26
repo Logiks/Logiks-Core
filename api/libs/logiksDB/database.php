@@ -36,6 +36,16 @@ class Database {
 		
 		return $db;
 	}
+	//Get the instance name of the Query
+	public static function getKeyForQuery($query) {
+		if(is_a($query,"AbstractQueryBuilder")) {
+			return $query->getInstanceName();
+		} elseif(is_a($query,"QueryResult")) {
+			return $query->getInstanceName();
+		} else {
+			return "app";
+		}
+	}
 	//Checks if the particular named db connection is alive
 	public static function isOpen($key) {
 		if(isset(Database::$connections[$key])) {
@@ -133,19 +143,33 @@ class Database {
 	}
 	
 	//All Query Functions
-	public function executeQuery($sql) {
+	public function executeQuery($sql,$keyName=null) {
 		if(!$this->objDriver->isAllowedSQL()) {
 			if(!is_a($sql,"AbstractQueryBuilder")) {
 				trigger_error("Database ERROR, Direct SQL Queries are not allowed for this database.");
 			}
 		}
-		return $this->objDriver->runQuery($sql);
+		if($keyName==null && is_a($sql,"AbstractQueryBuilder")) {
+			$keyName=$sql->getInstanceName();
+		}
+		$result=$this->objDriver->runQuery($sql);
+		return new QueryResult($keyName,$result);
 	}
 	public function executeCommandQuery($sql) {
 		return $this->objDriver->runCommandQuery($sql);
 	}
 	public function free($result) {
-		return $this->objDriver->freeResult($result);
+		if(is_a($result,"QueryResult")) {
+			$rs=$result->getResult();
+			if($this->objDriver->freeResult($rs)) {
+				$result->purge();
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return $this->objDriver->freeResult($result);
+		}
 	}
 	
 	public function isTablesAvailable($table) {

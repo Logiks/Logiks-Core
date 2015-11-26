@@ -97,7 +97,12 @@
 	public function runCommandQuery($sql) {$this->qCount++;return false;}
 	
 	//Resultset based functions
-	public function fetchData($resultSet,$format="assoc") {return null;}//Get the data
+	public function fetchData($resultSet,$format="assoc") {
+		if(is_a($resultSet,"QueryResult")) {
+			return $resultSet->getResult();
+		}
+		return $resultSet;
+	}//Get the data
 	public function fetchHeaders($resultSet) {return null;}//Get all column names
 	public function fetchFields($resultSet) {return null;}//Get all column names with there info
 	

@@ -12,6 +12,7 @@ include_once dirname(__FILE__)."/database.php";
 include_once dirname(__FILE__)."/AbstractDBDriver.php";
 include_once dirname(__FILE__)."/AbstractQueryBuilder.php";
 include_once dirname(__FILE__)."/QueryBuilder.php";
+include_once dirname(__FILE__)."/QueryResult.php";
 
 if(!function_exists("_db")) {
 	function _db($dbKey="app") {
@@ -22,40 +23,50 @@ if(!function_exists("_db")) {
 			return Database::connect($dbKey);
 		}
 	}
-	function _dbQuery($query,$dbKey="app") {
+	function _dbQuery($query,$dbKey=null) {
 		if($dbKey===true) $dbKey="core";
+		elseif($dbKey==null) $dbKey=Database::getKeyForQuery($query);
+		
 		if(Database::isOpen($dbKey)) {
-			return Database::dbConnection($dbKey)->executeQuery($query);
+			return Database::dbConnection($dbKey)->executeQuery($query,$dbKey);
 		} else {
-			return Database::connect($dbKey)->executeQuery($query);
+			return Database::connect($dbKey)->executeQuery($query,$dbKey);
 		}
 	}
-	function _dbFetch($result,$dbKey="app",$format="assoc") {
+	function _dbFetch($result,$dbKey=null,$format="assoc") {
 		if($dbKey===true) $dbKey="core";
+		elseif($dbKey==null) $dbKey=Database::getKeyForQuery($result);
+		
 		if(Database::isOpen($dbKey)) {
 			return Database::dbConnection($dbKey)->fetchData($result,$format);
 		} else {
 			return false;
 		}
 	}
-	function _dbData($result,$dbKey="app",$format="assoc") {
+	function _dbData($result,$dbKey=null,$format="assoc") {
 		if($dbKey===true) $dbKey="core";
+		elseif($dbKey==null) $dbKey=Database::getKeyForQuery($result);
+		
 		if(Database::isOpen($dbKey)) {
 			return Database::dbConnection($dbKey)->fetchAllData($result,$format);
 		} else {
 			return false;
 		}
 	}
-	function _dbFree($result,$dbKey="app") {
+	function _dbFree($result,$dbKey=null) {
 		if($dbKey===true) $dbKey="core";
+		elseif($dbKey==null) $dbKey=Database::getKeyForQuery($result);
+		
 		if(Database::isOpen($dbKey)) {
 			return Database::dbConnection($dbKey)->free($result);
 		} else {
 			return false;
 		}
 	}
-	function _dbtable($tblName,$dbKey="app") {
+	function _dbTable($tblName,$dbKey=null) {
 		if($dbKey===true) $dbKey="core";
+		elseif($dbKey==null) $dbKey=Database::getKeyForQuery($query);
+		
 		if(Database::isOpen($dbKey)) {
 			return Database::dbConnection($dbKey)->get_Table($tblName);
 		} else {

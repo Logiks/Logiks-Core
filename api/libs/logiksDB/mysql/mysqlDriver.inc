@@ -75,6 +75,7 @@ class mysqlDriver extends AbstractDBDriver {
 	
 	//Result based functions
 	public function fetchData($result,$format="assoc") {
+		$result=parent::fetchData($result);
 		$format=strtolower($format);
 		if($format=="array") {
 			return mysql_fetch_array($result,MYSQL_BOTH);

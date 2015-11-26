@@ -64,14 +64,15 @@ class mysqliDriver extends AbstractDBDriver {
 		return $r;
 	}
 	public function freeResult($result) {
-		if($result) {
-			return @mysqli_free_result($result);
+		if($result && is_a($result,"mysqli_result")) {
+			mysqli_free_result($result);
 		}
-		return false;
+		return true;
 	}
 
 	//Result based functions
 	public function fetchData($result,$format="assoc") {
+		$result=parent::fetchData($result);
 		$format=strtolower($format);
 		if($format=="array") {
 			return mysqli_fetch_array($result,MYSQLI_BOTH);
