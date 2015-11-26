@@ -123,7 +123,7 @@ if(!function_exists("__cleanup")) {
 	function logiksServiceBoot() {
 		if(LogiksSingleton::funcCheckout("logiksServiceBoot")) {
 			$dm=new DomainMap();
-			$dm->detect();
+			$dm->detect(false);
 
 			if(!defined("SITENAME")) {
 				trigger_error("SITE NOT DEFINED", E_USER_ERROR);

@@ -9,17 +9,26 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists('loadComponent')) {
 	function loadComponent($component) {
-		$f1=APPROOT.APPS_PAGES_FOLDER."comps/{$component}.php";
-		$f2=APPROOT.APPS_PAGES_FOLDER."comps/{$component}.tpl";
-		$f3=APPROOT.APPS_PAGES_FOLDER."comps/{$component}.htm";
-		if(file_exists($f1)) {
-			include $f1;
-		} elseif(file_exists($f2)) {
-			_templatePage($f2);
-		} elseif(file_exists($f3)) {
-			readfile($f3);
+		$fs=[
+				APPROOT.APPS_PAGES_FOLDER."comps/{$component}.php"=>"php",
+				APPROOT.APPS_PAGES_FOLDER."comps/{$component}.tpl"=>"tpl",
+				APPROOT.APPS_PAGES_FOLDER."comps/{$component}.htm"=>"htm",
+			];
+		foreach($fs as $f=>$ext) {
+			if(file_exists($f)) {
+				switch($ext) {
+					case "tpl":
+						_templatePage($f);
+					break;
+					case "php":
+						include $f;
+					break;
+					case "htm":
+						readfile($f);
+					break;
+				}
+			}
 		}
-
 	}
 
 	function loadContent($file) {

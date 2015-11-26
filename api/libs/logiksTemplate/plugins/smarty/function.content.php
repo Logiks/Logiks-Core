@@ -8,6 +8,6 @@
  */
 
 function smarty_function_content($params) {
-	loadComponent($params['src']);
+	loadContent($params['src']);
 }
 ?>

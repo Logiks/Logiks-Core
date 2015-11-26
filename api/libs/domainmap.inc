@@ -32,9 +32,12 @@ class DomainMap {
     }
   }
 
-  public function detect() {
+  public function detect($redirect=true) {
     $site="";
     $adminApps=explode(",", DOMAIN_CONTROLS_ADMINAPP);
+    $mappedSite=$this->detectDomainApp();
+    define("WEBDOMAIN",$mappedSite);
+
     if(isset($_REQUEST['site'])) {
   		if(is_dir(ROOT.APPS_FOLDER.$_REQUEST['site']) && file_exists(ROOT.APPS_FOLDER.$_REQUEST['site']."/apps.cfg")) {
         if(DOMAIN_CONTROLS_STRICT) {
@@ -54,18 +57,22 @@ class DomainMap {
             } else {
               $uri=WEBROOT.PAGE;
             }
-            header("Location:{$uri}");
+            if($redirect) {
+              header("Location:{$uri}");
+            } else {
+              $site=$mappedSite;
+            }
           }
         } else {
           $site=$_REQUEST['site'];
         }
   		} else {
         //Detect APPSITE
-        $site=$this->detectDomainApp();
+        $site=$mappedSite;
       }
   	} else {
       //Detect APPSITE
-      $site=$this->detectDomainApp();
+      $site=$mappedSite;
     }
     return $this->setupAppSite($site);
   }
