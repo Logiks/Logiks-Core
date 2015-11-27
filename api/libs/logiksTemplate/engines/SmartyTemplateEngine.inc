@@ -119,7 +119,7 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
   //$caching==0 Means Temp Data
 	//$caching==1 Means Replace The Old Data In Cache
 	//$caching==2 Means Use Old Data
-	public function printTemplate($tmpl,$data=array(),$recreateCache=false) {
+	public function fetchTemplate($tmpl,$data=array(),$recreateCache=false) {
     //echo $tmpl;
     if(is_array($data)) {
       foreach($data as $a=>$b) {
@@ -144,7 +144,12 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
     $this->addVar("ROOT",ROOT);
     $this->addVar("WEBROOT",WEBROOT);
 
+    ob_start();
     $this->smartyEngine->display($tmpl);
+    $data=ob_get_contents();
+    ob_clean();
+
+    return $data;
   }
 }
 ?>

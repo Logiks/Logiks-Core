@@ -54,7 +54,17 @@ class LogiksTemplate {
     if(!file_exists($tmpl)) {
   		trigger_error("Template ".basename($tmpl)." Not Found",E_USER_ERROR);
   	}
-    return $this->engine->printTemplate($tmpl,$data,$recreateCache);
+    $data=$this->engine->fetchTemplate($tmpl,$data,$recreateCache);
+    $data=$this->processTemplate($data);
+    echo $data;
+  }
+  public function getTemplateData($tmpl,$data=array(),$recreateCache=false) {
+    if(!file_exists($tmpl)) {
+      trigger_error("Template ".basename($tmpl)." Not Found",E_USER_ERROR);
+    }
+    $data=$this->engine->fetchTemplate($tmpl,$data,$recreateCache);
+    $data=$this->processTemplate($data);
+    return $data;
   }
 
   //BYPASS compileTemplate to driver
@@ -127,33 +137,38 @@ class LogiksTemplate {
 	}
 
   //Database related functions
-  public function loadSQL($sqlData) {
-	// 	if(strlen($sqlData)<=0) return;
-	// 	if(!is_array($sqlData)) {
-	// 		$sqlData=explode("\n",$sqlData);
-	// 	}
-	// 	$cnt=0;
-	// 	$allData=array();
-	// 	foreach($sqlData as $q) {
-	// 		if(strlen($q)>0) {
-	// 			if(strpos(" ".$q,"#")==1) {
-	// 				$allData[$cnt]=array();
-	// 			} else {
-	// 				$sql=TemplateEngine::processQuery($q);
-	// 				$res=_dbQuery($sql);
-	// 				if($res) {
-	// 					$data=_db()->fetchAllData($res);
-	// 					$allData[$cnt]=$data;
-	// 				} else {
-	// 					$allData[$cnt]=array();
-	// 				}
-	// 			}
-	// 		} else {
-	// 			$allData[$cnt]=array();
-	// 		}
-	// 		$cnt++;
-	// 	}
-	// 	$this->addVar("SQL",$allData);
+  public function loadSQL($sqlData,$dbKey="app") {
+    if(strlen($sqlData)<=0) return;
+    if(is_file($sqlData)) {
+      $sqlData=file_get_contents($sqlData);
+      $sqlData=explode("\n", trim($sqlData));
+    } elseif(!is_array($sqlData)) {
+      $sqlData=explode("\n",$sqlData);
+    }	
+
+		$cnt=0;
+		$allData=array();
+		foreach($sqlData as $q) {
+			if(strlen($q)>0) {
+				if(strpos(" ".$q,"#")==1) {
+					$allData[$cnt]=array();
+				} else {
+					$sql=$this->processQuery($q);
+          $query=_db($dbKey)->queryBuilder()->_raw($sql);
+					$res=_dbQuery($query,$dbKey);
+					if($res) {
+						$data=_db($dbKey)->fetchAllData($res);
+						$allData[$cnt]=$data;
+					} else {
+						$allData[$cnt]=array();
+					}
+				}
+			} else {
+				$allData[$cnt]=array();
+			}
+			$cnt++;
+		}
+		$this->addVar("SQL",$allData);
 	}
 }
 ?>

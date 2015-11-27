@@ -13,7 +13,7 @@ class AbstractTemplateEngine {
 	}
 
 	public function compileTemplate($tmpl,$data=array()) {}
-	public function printTemplate($tmpl,$data=array()) {}
+	public function fetchTemplate($tmpl,$data=array()) {}
 
 	public function clearCache($tmpl) {}
 	public function isCached($tmpl) {}

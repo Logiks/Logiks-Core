@@ -17,11 +17,21 @@ if(!function_exists("_template")) {
 			$file.=".tpl";
 		}
 		if(!file_exists($file)) {
-			if(file_exists(APPROOT.TEMPLATE_FOLDER.$file)) {
-				$file=APPROOT.TEMPLATE_FOLDER.$file;
-			} elseif(file_exists(ROOT.TEMPLATE_FOLDER.$file)) {
-				$file=ROOT.TEMPLATE_FOLDER.$file;
-			} else {
+			$fss=[];
+			if(defined("APPS_TEMPLATE_FOLDER")) $fss[]=APPROOT.APPS_TEMPLATE_FOLDER.$file;
+			if(defined("TEMPLATE_FOLDER")) {
+				$fss[]=APPROOT.TEMPLATE_FOLDER.$file;
+				$fss[]=ROOT.TEMPLATE_FOLDER.$file;
+			}
+			$templateFound=false;
+			foreach ($fss as $fx) {
+				if(file_exists($fx)) {
+					$file=$fx;
+					$templateFound=true;
+					break;
+				}
+			}
+			if(!$templateFound) {
 				return false;
 			}
 		}
@@ -31,7 +41,12 @@ if(!function_exists("_template")) {
 		$engine=LogiksTemplate::getEngineForExtension($ext);
 
 		$lt=new LogiksTemplate($engine);
+		
+		$sqlFile=str_replace(".tpl", ".sql", $file);
+		if(!file_exists($sqlFile)) $sqlFile=false;
+		$lt->loadSQL($sqlFile);
 		$lt->loadSQL($sqlQuerySet);
+
 		if(MASTER_DEBUG_MODE)
 			$lt->printTemplate($file,$dataArr,true);
 		else
