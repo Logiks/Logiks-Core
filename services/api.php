@@ -9,10 +9,12 @@ if(!function_exists("getServiceCMD")) {
 	}
 
 	function isAjax() {
-		$isAjax = _server('HTTP_X_REQUESTED_WITH') AND
-				strtolower(_server('HTTP_X_REQUESTED_WITH')) === 'xmlhttprequest';
-		if(!$isAjax) {
-			return false;
+		$x=_server('HTTP_X_REQUESTED_WITH');
+		if($x) {
+			$isAjax = $x AND strtolower($x) === 'xmlhttprequest';
+			if(!$isAjax) {
+				return false;
+			}
 		}
 		return true;
 	}

@@ -111,9 +111,12 @@ class LogiksTemplate {
 		$in=$in[0];
 		$in=substr($in,1,strlen($in)-2);
 		if(isset($_REQUEST[$in])) return $_REQUEST[$in];
-		elseif(isset($_SESSION[$in])) return $_SESSION[$in];
+		//elseif(isset($_SESSION[$in])) return $_SESSION[$in];
 		//elseif(isset($GLOBALS[$in])) return $GLOBALS[$in];
+		elseif(_session($in)) return _session($in);
 		elseif(_server($in)) return _server($in);
+		elseif(_env($in)) return _env($in);
+		elseif(getConfig($in)) return getConfig($in);
 		return "";
 	}
 
