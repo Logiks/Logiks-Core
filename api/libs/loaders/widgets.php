@@ -72,9 +72,7 @@ if(!function_exists('loadAllWidgets')) {
 	}
 	function getAllWidgetsFolders() {
 		if(!isset($_ENV['WIDGETS_DIRS'])) {
-			$_ENV['WIDGETS_DIRS']=getPluginFolders("widgets");
-		} else {
-			$paths=$_ENV['WIDGETS_DIRS'];
+			$_ENV['WIDGETS_DIRS']=getLoaderFolders('pluginPaths',"widgets");
 		}
 		return $_ENV['WIDGETS_DIRS'];
 	}

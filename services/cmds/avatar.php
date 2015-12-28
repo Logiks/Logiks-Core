@@ -42,7 +42,8 @@ function printAvatarPhoto($method) {
 		$authorid=explode("@",$_REQUEST['authorid']);
 		$authorid=$authorid[0];
 		if($method=="facebook") {
-			$url="http://graph.facebook.com/{$authorid}/picture?type=large";//?redirect=false
+			//$url="http://graph.facebook.com/{$authorid}/picture?type=large";//?redirect=false
+			$url="http://avatars.io/facebook/{$authorid}/large";
 			$data=file_get_contents($url);
 			printAvatar($data,"jpeg");
 		} elseif($method=="gravatar") {
@@ -50,15 +51,15 @@ function printAvatarPhoto($method) {
 			$data=file_get_contents($url);
 			printAvatar($data,"png");
 		} elseif($method=="twitter") {
-			$url="http://avatars.io/twitter/{$authorid}?size=large";
+			$url="http://avatars.io/twitter/{$authorid}/large";
 			$data=file_get_contents($url);
 			printAvatar($data,"jpeg");
 		} elseif($method=="instagram") {
-			$url="http://avatars.io/instagram/{$authorid}?size=large";
+			$url="http://avatars.io/instagram/{$authorid}/large";
 			$data=file_get_contents($url);
 			printAvatar($data,"jpeg");
 		} elseif($method=="email") {
-			$url="http://avatars.io/email/{$_REQUEST['authorid']}?size=large";
+			$url="http://avatars.io/email/{$_REQUEST['authorid']}/large";
 			$data=file_get_contents($url);
 			printAvatar($data,"jpeg");
 		}

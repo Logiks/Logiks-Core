@@ -54,17 +54,17 @@ class LogiksTemplate {
     if(!file_exists($tmpl)) {
   		trigger_error("Template ".basename($tmpl)." Not Found",E_USER_ERROR);
   	}
-    $data=$this->engine->fetchTemplate($tmpl,$data,$recreateCache);
-    $data=$this->processTemplate($data);
-    echo $data;
+    $html=$this->engine->fetchTemplate($tmpl,$data,$recreateCache);
+    $html=$this->processTemplate($html,$data);
+    echo $html;
   }
   public function getTemplateData($tmpl,$data=array(),$recreateCache=false) {
     if(!file_exists($tmpl)) {
       trigger_error("Template ".basename($tmpl)." Not Found",E_USER_ERROR);
     }
-    $data=$this->engine->fetchTemplate($tmpl,$data,$recreateCache);
-    $data=$this->processTemplate($data);
-    return $data;
+    $html=$this->engine->fetchTemplate($tmpl,$data,$recreateCache);
+    $html=$this->processTemplate($html,$data);
+    return $html;
   }
 
   //BYPASS compileTemplate to driver
@@ -126,9 +126,12 @@ class LogiksTemplate {
 	}
 	public static function processTemplate($txt,$data=array(),$editable=true) {
 		if(strlen($txt)>0) {
-			foreach($data as $a=>$b) {
-				$t="#$a#";
-				$txt=str_replace($t,$b,$txt);
+			if(is_array($data)) {
+				foreach($data as $a=>$b) {
+					if(is_array($b)) continue;
+					$t="#$a#";
+					$txt=str_replace($t,$b,$txt);
+				}
 			}
 			$txt=preg_replace_callback("/#[a-zA-Z0-9-_]+#/",array("LogiksTemplate","replaceFromEnviroment"),$txt);
 			if($editable) {

@@ -246,16 +246,19 @@ class LogiksError {
       $errTmplData['stackTrace-Table']=implode("", $errTmplData['stackTrace-Table']);
     }
     if(is_object($errCFG)) {
-      $html=$errCFG->getPageContent();
+      $html=$errCFG->getPageContent($errData);
       if(!$html) $html="";
+      
+      echo $html;
     } else {
       $html=file_get_contents($errorTemplate);
-    }
-    $lr=new LogiksReplace();
-    $lr->addData($errData);
-    $lr->addData($errTmplData);
+      
+      $lr=new LogiksReplace();
+      $lr->addData($errData);
+      $lr->addData($errTmplData);
 
-    echo $lr->replace($html);
+      echo $lr->replace($html);
+    }
     exit();
   }
   private function log($errLogMsg,$errData,$errLevel=null) {

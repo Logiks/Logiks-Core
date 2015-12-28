@@ -1,6 +1,6 @@
 <?php
 /*
- * For Testing system support oily
+ * For Testing system support only
  *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Version: 2.0

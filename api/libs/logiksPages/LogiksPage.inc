@@ -59,6 +59,9 @@ class LogiksPage {
 					$pageConfig['modules_preload']=$pageConfig['modules'];
 					unset($pageConfig['modules']);
 				}
+				if(!isset($pageConfig['modules_preload'])) $pageConfig['modules_preload']="";
+				if(!isset($pageConfig['modules_postload'])) $pageConfig['modules_postload']="";
+				
 				$pageConfig['modules_preload']=explode(",", trim($pageConfig['modules_preload']));
 				$pageConfig['modules_postload']=explode(",", trim($pageConfig['modules_postload']));
 
@@ -104,7 +107,7 @@ class LogiksPage {
 
 		return $this->pageConfig;
 	}
-	public function getPageContent() {
+	public function getPageContent($dataPrint=null) {
 		$pageConfig=$this->pageConfig;
 		$page=$pageConfig['page'];
 		//printArray($pageConfig);exit();
@@ -139,9 +142,9 @@ class LogiksPage {
 					
 					ob_start();
 					if(MASTER_DEBUG_MODE)
-						$lt->printTemplate($tmpl,null,true);
+						$lt->printTemplate($tmpl,$dataPrint,true);
 					else
-						$lt->printTemplate($tmpl,null);
+						$lt->printTemplate($tmpl,$dataPrint);
 
 					$html=ob_get_contents();
 					ob_clean();

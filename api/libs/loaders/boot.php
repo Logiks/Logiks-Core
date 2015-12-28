@@ -18,7 +18,8 @@ include_once dirname(__FILE__)."/apps.php";
 if(!function_exists('getLoaderFolders')) {
 	function getLoaderFolders($loaderType,$addPath="",$site=null) {
 		$src="LOADERS_".strtoupper($loaderType);
-		if(!isset($_ENV[$src])) {
+		if(isset($_ENV[$src]) && isset($_ENV[$src][$addPath])) return $_ENV[$src][$addPath];
+		else {
 			if($site==null) $site=SITENAME;
 			$basePath=APPS_FOLDER.$site."/";
 
@@ -35,9 +36,10 @@ if(!function_exists('getLoaderFolders')) {
 				
 				$pluginFolders[$key]=$value."{$addPath}";
 			}
-			$_ENV[$src]=$pluginFolders;
+			$_ENV[$src][$addPath]=$pluginFolders;
+			
+			return $_ENV[$src][$addPath];
 		}
-		return $_ENV[$src];
 	}
 
 	function checkService($scmd,$supportedEngines=array("php")) {

@@ -332,7 +332,7 @@
 	protected function clean($str) {
 		$str = @trim($str);
 		if(get_magic_quotes_gpc()) {$str=stripslashes($str);}
-		$str=@mysql_real_escape_string($str);
+		//$str=@mysql_real_escape_string($str);
 		return $str;
 	}
 	

@@ -63,6 +63,10 @@ loadConfigs([
 		]);
 LogiksConfig::fixPHPINIConfigs();
 
+$dirPath=str_replace(_server("DOCUMENT_ROOT"),'',dirname(dirname(_server("SCRIPT_FILENAME")))."/");
+$dirPath=substr($dirPath, 1);
+if(!defined("InstallFolder")) define('InstallFolder',$dirPath);
+
 define ('SiteLocation', 'http' . (_server('HTTPS') ? 's' : '') . '://' . "{_server('HTTP_HOST')}/".InstallFolder);
 require_once ROOT. "api/libs/errorLogs/boot.php";
 

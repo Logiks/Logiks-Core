@@ -3,7 +3,7 @@
 #
 
 # Protect files and directories from prying eyes.
-<FilesMatch "\.(lst|lic|xml|dat|db|cfg|frm|rpt|json|page|dgn|engine|inc|info|install|make|module|profile|test|po|sh|.*sql|theme|tpl(\.php)?|xtmpl)$|^(\..*|Entries.*|Repository|Root|Tag|Template)$">
+<FilesMatch "\.(yaml|lst|lic|dat|db|cfg|frm|rpt|page|dgn|engine|inc|info|install|make|module|profile|test|po|sh|sql|theme|tpl(\.php)?|xtmpl)$|^(\..*|Entries.*|Repository|Root|Tag|Template)$">
   Order allow,deny
 </FilesMatch>
 
@@ -26,7 +26,10 @@ DirectoryIndex index.php index.html index.htm
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 
-	RewriteBase /devlogiks/
+	#RewriteBase /
+
+	RewriteRule config/ - [F,L]
+	RewriteRule data/ - [F,L]
 
 	RewriteRule services/.* services/index.php [L]
 
@@ -43,6 +46,8 @@ DirectoryIndex index.php index.html index.htm
 	
 	# Send the Vary header to help crawl mobile content
 	Header append Vary User-Agent
+
+	Header set Access-Control-Allow-Origin "*"
 </IfModule>
 
 <IfModule mod_expires.c>
@@ -60,15 +65,27 @@ DirectoryIndex index.php index.html index.htm
 	# CSS
 	ExpiresByType text/css "access 1 month"
 	# Javascript
-	ExpiresByType application/javascript "access plus 1 year"
+	ExpiresByType application/javascript "access 1 month"
+	# Media
+	ExpiresByType audio/mp3 "access plus 1 month"
+	ExpiresByType audio/mp4 "access plus 1 month"
+	# Others
+	ExpiresByType application/pdf "access 1 month"
+	ExpiresByType application/flv "access 1 month"
 </IfModule>
 
 # gzip compression.
 <IfModule mod_deflate.c>
   # html, xml, css, and js:
-  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/x-javascript text/javascript application/javascript application/json
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/x-javascript text/javascript application/javascript application/x-javascript application/json
   # webfonts and svg:
   <FilesMatch "\.(ttf|otf|eot|svg)$" >
     SetOutputFilter DEFLATE
   </FilesMatch>
 </IfModule>
+
+<FilesMatch "\.(txt|html|htm|php|json)">
+    php_value output_handler ob_gzhandler
+</FilesMatch>
+
+

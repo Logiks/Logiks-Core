@@ -35,12 +35,14 @@ if(!isset($initialized)) {
 	
 	_envData("SESSION",'REQUEST_PAGE_START',microtime(true));
 
-	if(!defined("InstallFolder")) define('InstallFolder',basename(dirname(__DIR__))."/");
+	$dirPath=str_replace(_server("DOCUMENT_ROOT"),'',dirname(_server("SCRIPT_FILENAME"))."/");
+	$dirPath=substr($dirPath, 1);
+	if(!defined("InstallFolder")) define('InstallFolder',$dirPath);
 
 	if(!defined("WEBROOT")) define ('WEBROOT', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
-			_server('HTTP_HOST').dirname(_server('SCRIPT_NAME'))."/");
+			str_replace("//", "/", _server('HTTP_HOST').dirname(_server('SCRIPT_NAME'))."/"));
 	if(!defined("SiteLocation")) define ('SiteLocation', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
-			_server('HTTP_HOST')."/".InstallFolder);
+			str_replace("//", "/", _server('HTTP_HOST')."/".InstallFolder));
 	
 	include_once ROOT. "config/classpath.php";
 

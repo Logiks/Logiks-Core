@@ -33,6 +33,7 @@ class Widgets {
 		return $s;
 	}
 	public static function printWidget($name, $widgetPath, $params=array()) {
+		if(!file_exists($widgetPath)) return false;
 		global $js,$css,$ling,$cache,$templates;
 
 		if(strlen($widgetPath)<=0) return;

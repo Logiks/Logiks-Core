@@ -49,7 +49,7 @@ class LogiksReplace {
     $str=preg_replace_callback("/{$glue}[a-zA-Z0-9-_]+{$glue}/",function($matches) {
       $matches[0]=substr($matches[0], 1,strlen($matches[0])-2);
       if(isset($this->dataArr[$matches[0]])) return $this->dataArr[$matches[0]];
-      return $matches[0];
+			return $matches[0];
 		},$str);
     return $str;
   }

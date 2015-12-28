@@ -51,6 +51,7 @@ CREATE TABLE `rules` (
    `rule_schema` longblob,
    `rule_precaller` varchar(255) not null,
    `rule_postcaller` varchar(255) not null,
+   `site` varchar(150) not null,
    `blocked` enum('true','false') default 'false',
    `creator` varchar(150) not null,
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
@@ -62,7 +63,7 @@ CREATE TABLE `rules` (
 CREATE TABLE `security_apikeys` (
    `id` int(10) unsigned not null auto_increment,
    `apikey` varchar(100) not null,
-   `site` varchar(155) not null,
+   `site` varchar(150) not null,
    `userid` varchar(155) not null,
    `guid` varchar(155) not null,
    `privilegeid` int(11) not null default '7',
@@ -104,6 +105,7 @@ CREATE TABLE `security_iplist` (
 
 CREATE TABLE `security_userkeys` (
    `id` int(10) unsigned not null auto_increment,
+   `site` varchar(150) not null,
    `userid` varchar(155) not null,
    `devicetype` varchar(100) not null,
    `userkey` varchar(100) not null,
@@ -115,6 +117,17 @@ CREATE TABLE `security_userkeys` (
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
+
+CREATE TABLE `security_geoip` (
+   `id` int(10) unsigned not null auto_increment,
+   `ip_address` varchar(155),
+   `country_code` varchar(25),
+   `country_name` varchar(500),
+   `geolocation` varchar(25),
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 CREATE TABLE `settings` (
    `id` int(10) unsigned not null auto_increment,
@@ -131,6 +144,8 @@ CREATE TABLE `settings` (
 
 CREATE TABLE `system_bucket` (
    `id` int(10) unsigned not null auto_increment,
+   `site` varchar(150) not null,
+   `bucket_category` varchar(255) not null,
    `bucket_key` varchar(255) not null,
    `bucket_data` longblob,
    `share` text,
@@ -181,6 +196,7 @@ CREATE TABLE `users` (
    `zipcode` varchar(15),
    `geolocation` varchar(15),
    `geoip` varchar(15),
+   `tags` varchar(255),
    `avatar_type` varchar(15) not null default 'photoid',
    `avatar` varchar(250),
    `privacy` enum('private','public','protected') default 'protected',
@@ -198,3 +214,4 @@ CREATE TABLE `users` (
    PRIMARY KEY (`id`),
    UNIQUE KEY (`userid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+

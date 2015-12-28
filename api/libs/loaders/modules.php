@@ -34,15 +34,12 @@ if(!function_exists('loadModule')) {
 				include $fpath;
 				runPluginHooks($module,"postload");
 				$_ENV['CURRENT_MODULE']=$curModule;
-
-				return true;
 			} else {
 				if(MASTER_DEBUG_MODE && !$notMandatory) {
 					trigger_logikserror("Module Not Found :: " . $module,E_LOGIKS_ERROR,404);
 				}
 			}
 		}
-		return false;
 	}
 	function loadModuleLib($module,$file) {
 		$f=checkModule($module);
@@ -73,7 +70,10 @@ if(!function_exists('loadModule')) {
 		return false;
 	}
 	function getPluginFolders() {
-		return getLoaderFolders('pluginPaths',"modules");
+		if(!isset($_ENV['MODULE_DIRS'])) {
+			$_ENV['MODULE_DIRS']=getLoaderFolders('pluginPaths',"modules");
+		}
+		return $_ENV['MODULE_DIRS'];
 	}
 
 	function checkModule($module) {

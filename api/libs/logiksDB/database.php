@@ -153,7 +153,8 @@ class Database {
 			$keyName=$sql->getInstanceName();
 		}
 		$result=$this->objDriver->runQuery($sql);
-		return new QueryResult($keyName,$result);
+		if($result) return new QueryResult($keyName,$result);
+		else return false;
 	}
 	public function executeCommandQuery($sql) {
 		return $this->objDriver->runCommandQuery($sql);
