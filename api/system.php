@@ -11,17 +11,17 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!function_exists("getRequestTime")) {
   loadHelpers("pathfuncs");
 
-  function redirectTo($relink=null,$carryForwardQuery=true) {
-    echo "<h5>Redirecting To Application ...</h5>";
+  	function redirectTo($relink=null,$carryForwardQuery=true) {
+	    echo "<h5>Redirecting To Application ...</h5>";
 
-    if(substr($relink, 0,7)=="http://" || substr($relink, 0,8)=="https://") {
-      header("Location:$relink");
-    } else {
-      $relink=getPrettyLink($relink);
-      header("Location:$relink");
-    }
+	    if(substr($relink, 0,7)=="http://" || substr($relink, 0,8)=="https://") {
+	      header("Location:$relink");
+	    } else {
+	      $relink=getPrettyLink($relink);
+	      header("Location:$relink");
+	    }
 		exit();
-	}
+ 	}
 
   //Quick hack to delete the cookies at runtime and impact tthe system as well.
   function deleteCookies($name) {

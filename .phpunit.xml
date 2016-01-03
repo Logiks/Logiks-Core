@@ -40,5 +40,8 @@
         <testsuite name="Logiks Test Suite">
             <directory prefix='test_' suffix='.php'>tests/</directory>
         </testsuite>
+        <testsuite name="Logiks Plugin Suite">
+            <directory prefix='test_' suffix='.php'>plugins/</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

@@ -307,15 +307,20 @@ class LogiksError {
     return array("template"=>$errorTemplate,"css"=>$errorCSS,"js"=>$errorJS);
   }
   protected function getErrorTemplate($errorCode="error") {
+    $errorCode=strtoupper($errorCode);
+    $errorPage=getConfig("PAGE_{$errorCode}");
+    if(!$errorPage) {
+      $errorPage=getConfig("PAGE_ERROR");
+    }
+    if(!$errorPage) {
+      $errorPage="error";
+    }
     if(defined("SITENAME")) {
-      $errorCode="error";
-
       if(defined("APPS_THEME")) {
         $lt=new LogiksTheme(APPS_THEME,SITENAME);
-
         $lp=new LogiksPage($lt);
         if($lp) {
-          $pg=$lp->loadPage($errorCode);
+          $pg=$lp->loadPage($errorPage);
           if($pg) {
             return $lp;
           } else {

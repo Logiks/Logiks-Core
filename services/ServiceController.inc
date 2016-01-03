@@ -110,7 +110,7 @@ class ServiceController {
 		if($this->params['file']) {
 			if(file_exists($this->params['file']['src'])) {
 				if($this->params['cache'] && getConfig("SERVICE_CACHE_ENABLED")) {
-					echo _cache($this->params['file']['src']);
+					echo _dataCache($this->params['file']['src']);
 					return true;
 				} else {
 					return $this->executeFile($this->params['file']['src'],$this->params['file']['ext']);

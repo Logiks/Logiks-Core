@@ -183,5 +183,9 @@
 		if(strlen($sx)>0) $tblName="{$tblName}_{$sx}";
 		return $tblName;
 	}
- }
+
+	public function __debugInfo() {
+        return [];
+    }
+}
 ?>

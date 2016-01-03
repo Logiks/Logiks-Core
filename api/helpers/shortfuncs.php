@@ -24,8 +24,8 @@ if(!function_exists("_service")) {
 	//Gets the service cmd link
 	function _service($scmd, $action="", $format="json", $params=array(), $site=SITENAME) {
 		//$s=SiteLocation."services/{$scmd}?site={$site}";
-		$s=SiteLocation."services/{$scmd}/{$action}?site={$site}";
-		//if(strlen($action)>0) $s.="&action={$action}";
+		$s=SiteLocation."services/{$scmd}?site={$site}";
+		if(strlen($action)>0) $s.="&action={$action}";
 		if(strlen($format)>0) $s.="&format={$format}";
 		if(is_array($params)) foreach($params as $a=>$b) $s.="&{$a}={$b}";
 		return $s;

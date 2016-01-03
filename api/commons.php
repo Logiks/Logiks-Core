@@ -57,7 +57,13 @@ if (!function_exists('printArray')) {
 	}
 	function cleanForDB($data) {
 		$data=cleanCode($data);
-		$data=mysql_real_escape_string($data);
+		//$data=mysqli::real_escape_string($data);
+		
+		$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
+    	$replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
+
+    	$data=str_replace($search, $replace, $data);
+
 		return $data;
 	}
 	function clean($str) {
@@ -65,7 +71,7 @@ if (!function_exists('printArray')) {
 		if(get_magic_quotes_gpc()) {
 			$str = stripslashes($str);
 		}
-		$str=mysql_real_escape_string($str);
+		$str=cleanForDB($str);
 		return $str;
 	}
 	function htmlClean($value) {

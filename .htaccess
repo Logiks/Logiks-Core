@@ -15,8 +15,8 @@
 Options -Indexes
 # Allow anyone except this list or maybe not
 Order deny,allow
-# Follow symbolic links in this directory.
-#Options +FollowSymLinks
+# Don't follow symbolic links in this directory.
+Options +FollowSymLinks
 # Multiviews creates problems with aliased URLs and is not needed for Logiks.
 Options -Multiviews
 
@@ -87,5 +87,3 @@ DirectoryIndex index.php index.html index.htm
 <FilesMatch "\.(txt|html|htm|php|json)">
     php_value output_handler ob_gzhandler
 </FilesMatch>
-
-

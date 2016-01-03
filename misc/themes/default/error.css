@@ -31,6 +31,7 @@ h1 i[class^="icon-"]:before {
 }
 
 .container.error {
+  max-width: 100%;
   margin-right: auto;
   margin-left: auto;
   padding-left: 15px;

@@ -9,6 +9,8 @@
 
 define ('ROOT', dirname(__FILE__) . '/');
 
+ini_set('display_errors', 'On');
+
 //Start the flow
 require_once ('api/initialize.php');
 
@@ -17,8 +19,6 @@ require_once ('api/initialize.php');
 // }
 // ini_set('display_errors', 1);
 // error_reporting(-1);
-ini_set('display_errors', 'On');
-
 
 //Time To Start Router System
 require_once ('api/router.php');

@@ -42,7 +42,7 @@ if(!isset($initialized)) {
 	if(!defined("WEBROOT")) define ('WEBROOT', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
 			str_replace("//", "/", _server('HTTP_HOST').dirname(_server('SCRIPT_NAME'))."/"));
 	if(!defined("SiteLocation")) define ('SiteLocation', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
-			str_replace("//", "/", _server('HTTP_HOST')."/".InstallFolder));
+			str_replace("//", "/", _server('HTTP_HOST')."/".InstallFolder."/"));
 	
 	include_once ROOT. "config/classpath.php";
 

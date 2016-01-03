@@ -29,11 +29,10 @@ class Database {
 		}
 		
 		$db=new Database($key,$params);
-		
 		//Setup Cache
 
 		//Setup Logging
-		
+
 		return $db;
 	}
 	//Get the instance name of the Query
@@ -93,7 +92,7 @@ class Database {
 		$this->connectionParams=$params;
 		Database::$connections[$name]=$this;
 		
-		//printObj($this->connectionParams);
+		//printArray($this->connectionParams);
 	}
 	
 	//Closes the current connection
@@ -235,11 +234,15 @@ class Database {
 			return call_user_func_array(array($qbuilder::create($this), $method), $arguments);
 		} elseif(strpos($method,"get_")===0) {
 			return call_user_func_array(array($this->objDriver, $method), $arguments);
-		} elseif(strpos($method,"fetch")===0) {
+		} elseif(strpos($method,"fetch")===0 || strpos($method,"free")===0 || strpos($method,"run")===0) {
 			return call_user_func_array(array($this->objDriver, $method), $arguments);
 		} else {
 			trigger_error("Database ERROR, [$method] Method Not Found [".$this->dbParams('driver')."]");
 		}
 	}
+
+	// public function __debugInfo() {
+ //        return [];
+ //    }
 }
 ?>

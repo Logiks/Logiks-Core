@@ -12,6 +12,7 @@ class LogiksConfig {
 
   private static $instance=null;
   private $configCompilePath="";
+  private static $CONFIGPARAMS=[];
 
   public static function getInstance() {
     if(LogiksConfig::$instance==null) {
@@ -148,10 +149,10 @@ class LogiksConfig {
   public function loadJSONConfig($configName,$forceReload=false) {
     $cfgData=array();
     
-    if($forceReload && isset($_SESSION['JSONCONFIG'][$configName])) unset($_SESSION['JSONCONFIG'][$configName]);
+    if($forceReload && isset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName])) unset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName]);
 
-    if(isset($_SESSION['JSONCONFIG'][$configName])) {
-    	$cfgData=$_SESSION['JSONCONFIG'][$configName];
+    if(isset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName])) {
+    	$cfgData=LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName];
     } else {
     	$f=ROOT."config/jsonConfig/{$configName}.json";
 		if(file_exists($f)) {
@@ -169,7 +170,7 @@ class LogiksConfig {
 					$fData[0]=array_merge($fData[0],$fData[$i]);
 				}
 				$cfgData=$fData[0];
-				$_SESSION['JSONCONFIG'][$configName]=$cfgData;
+				LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName]=$cfgData;
 			}
 		} else {
 	      trigger_error("$configName configuration not found, Error In Installation.", E_USER_ERROR);

@@ -11,8 +11,9 @@ if(isset($_POST['site'])) $domain=$_POST['site'];
 elseif(isset($_REQUEST['site'])) $domain=$_REQUEST['site']; 
 else $domain=SITENAME;
 
-LoadConfigFile(ROOT . "config/auth.cfg");
+loadConfigs(ROOT . "config/auth.cfg");
 include ROOT."api/helpers/pwdhash.php";
+//include ROOT."api/security.php";
 
 /*
 CLEAR_OLD_SESSION=true
@@ -20,10 +21,10 @@ CLEAR_OLD_SESSION=true
 session_destroy();
 session_start();
 */
-$dbLink=getSysDBLink();
+$dbLink=_db(true);
 $dbLogLink=null;//LogDB::getInstance()->getLogDBCon();
 
-if(!$dbLink->isOpen()) {
+if(!$dbLink->isAlive()) {
 	relink("Database Connection Error",$domain);
 }
 if($userid == '') {
@@ -37,8 +38,7 @@ $date=date('Y-m-d');
 
 $userFields=explode(",", USERID_FIELDS);
 
-$q1="SELECT id, guid, userid, pwd, site, privilege, access, name, email, mobile, blocked, avatar, avatar_type FROM "._dbTable("users",true)." where (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
-//$q1="SELECT id, guid, userid, pwd, site, privilege, access, name, email, mobile, blocked FROM "._dbTable("users",true)." where userid='$userid' AND blocked='false' AND (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
+$q1="SELECT id, guid, userid, pwd, privilegeid, accessid, name, email, mobile, blocked, avatar, avatar_type FROM "._dbTable("users",true)." where (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
 
 if(CASE_SENSITIVE_AUTH=="true") {
 	foreach ($userFields as $key => $value) {
@@ -57,8 +57,10 @@ else {
 }
 
 $result=$dbLink->executeQuery($q1);
+
 if($result) {
 	$data=$dbLink->fetchData($result);
+
 	$dbLink->freeResult($result);
 	if($data==null) {
 		relink("Sorry, you have not yet joined us or your userid has expired.",$domain);
@@ -75,8 +77,8 @@ if($data['blocked']=="true") {
 }
 
 //Creating Access Rules
-$q3="SELECT sites,master FROM "._dbTable("access",true)." where id='".$data['access']."' and blocked='false'";
-$q4="SELECT name as privilege_name FROM "._dbTable("privileges",true)." where id='".$data['privilege']."' and blocked='false'";
+$q3="SELECT sites,name as access_name FROM "._dbTable("access",true)." where id='".$data['accessid']."' and blocked='false'";
+$q4="SELECT hash,name as privilege_name FROM "._dbTable("privileges",true)." where id='".$data['privilegeid']."' and blocked='false'";
 
 $result=$dbLink->executeQuery($q3);
 if($result) {
@@ -112,6 +114,7 @@ if(count($allSites)>0) {
 if(!in_array($domain,$allSites)) {
 	relink("Sorry, You [UserID] do not have access to requested site.", $domain);
 }
+
 $_ENV['AUTH-DATA']=array_merge($data,$d1);
 $_ENV['AUTH-DATA']=array_merge($_ENV['AUTH-DATA'],$d2);
 
@@ -128,11 +131,12 @@ $_ENV['AUTH-DATA']['sitelist']=$allSites;
 checkBlockedUser($data,$domain);
 checkBlacklists($data,$domain,$dbLink,$userid);
 
-initializeLogin($userid,$domain, $dbLogLink);
+initializeLogin($userid, $domain, $dbLogLink);
 
 
 //All Functions Required By Authentication System
 function relink($msg,$domain) {
+	exit($msg);
 	$_SESSION['SESS_ERROR_MSG']=$msg;
 	
 	$onerror="";
@@ -175,7 +179,8 @@ function checkBlockedUser($data,$domain) {
 	} return false;
 }
 function checkBlacklists($data,$domain,$dbLink,$userid) {
-	if(Security::isBlacklisted($dbLink,$domain)) {
+	$ls=new LogiksSecurity();
+	if($ls->isBlacklisted("login",$domain)) {
 		relink("You are currently Blacklisted On Server, Please contact Site Admin.",$domain);
 	} else {
 		return false;
@@ -183,40 +188,43 @@ function checkBlacklists($data,$domain,$dbLink,$userid) {
 }
 //LogBook Checking
 function initializeLogin($userid,$domain, $dbLink,$params=array()) {
-	$q1=$dbLink->_selectQ("lgks_log_login",
-						"date, login_time, logout_time, sys_spec, token, mauth_key, client, persistant",
-						array("user"=>$userid,"status"=>"LOGGED IN")// and site='$domain'
-					);
-	$result=$dbLink->executeQuery($q1);
-	if($result) {
-		$logData=$dbLink->fetchAllData($result);
-		$dbLink->freeResult($result);
-		if($logData!=null && count($logData)>0) {
-			$mauthKey=generateMAuthKey();
-			foreach($logData as $data) {
-				if($data['mauth_key']==$mauthKey) {
-					if($data['persistant']=="true") {
-						restoreOldSession($data, $userid, $domain, $dbLink, $params);
-					} else {
-						logoutOldSessions($userid, $domain, $dbLink, $params);
-						startNewSession($userid, $domain, $dbLink, $params);
-					}
-					return;
-				}
-			}
-			if(ALLOW_MULTI_LOGIN=="false") {
-				//relink("MultiLogin Attempt, You are logged in from the system {$data['sys_spec']} since {$data['login_time']} On {$data['date']}.",$domain);
-				logoutOldSessions($userid, $domain, $dbLink, $params);
-				startNewSession($userid, $domain, $dbLink, $params);
-			} else {
-				startNewSession($userid, $domain, $dbLink, $params);
-			}
-		} else {
-			startNewSession($userid, $domain, $dbLink, $params);
-		}
-	} else {
-		startNewSession($userid, $domain, $dbLink, $params);
-	}
+	$mauthKey=generateMAuthKey();
+	startNewSession($userid, $domain, $dbLink, $params);
+
+	// $q1=$dbLink->_selectQ("lgks_log_login",
+	// 					"date, login_time, logout_time, sys_spec, token, mauth_key, client, persistant",
+	// 					array("user"=>$userid,"status"=>"LOGGED IN")// and site='$domain'
+	// 				);
+	// $result=$dbLink->executeQuery($q1);
+	// if($result) {
+	// 	$logData=$dbLink->fetchAllData($result);
+	// 	$dbLink->freeResult($result);
+	// 	if($logData!=null && count($logData)>0) {
+	// 		$mauthKey=generateMAuthKey();
+	// 		foreach($logData as $data) {
+	// 			if($data['mauth_key']==$mauthKey) {
+	// 				if($data['persistant']=="true") {
+	// 					restoreOldSession($data, $userid, $domain, $dbLink, $params);
+	// 				} else {
+	// 					logoutOldSessions($userid, $domain, $dbLink, $params);
+	// 					startNewSession($userid, $domain, $dbLink, $params);
+	// 				}
+	// 				return;
+	// 			}
+	// 		}
+	// 		if(ALLOW_MULTI_LOGIN=="false") {
+	// 			//relink("MultiLogin Attempt, You are logged in from the system {$data['sys_spec']} since {$data['login_time']} On {$data['date']}.",$domain);
+	// 			logoutOldSessions($userid, $domain, $dbLink, $params);
+	// 			startNewSession($userid, $domain, $dbLink, $params);
+	// 		} else {
+	// 			startNewSession($userid, $domain, $dbLink, $params);
+	// 		}
+	// 	} else {
+	// 		startNewSession($userid, $domain, $dbLink, $params);
+	// 	}
+	// } else {
+	// 	startNewSession($userid, $domain, $dbLink, $params);
+	// }
 	exit();
 }
 //All session functions
@@ -225,13 +233,13 @@ function startNewSession($userid, $domain, $dbLink, $params=array()) {
 	$data=$_ENV['AUTH-DATA'];
 	//printArray($data);exit();
 
-	$_SESSION['SESS_USER_ID'] = $data['userid'];
-	$_SESSION['SESS_PRIVILEGE_ID'] = $data['privilege'];
-	$_SESSION['SESS_ACCESS_ID'] = $data['access'];
 	$_SESSION['SESS_GUID'] = $data['guid'];
-
+	$_SESSION['SESS_USER_ID'] = $data['userid'];
+	$_SESSION['SESS_PRIVILEGE_ID'] = $data['privilegeid'];
+	$_SESSION['SESS_ACCESS_ID'] = $data['accessid'];
+	
 	$_SESSION['SESS_PRIVILEGE_NAME'] = $data['privilege_name'];
-	$_SESSION['SESS_ACCESS_NAME'] = $data['master'];
+	$_SESSION['SESS_ACCESS_NAME'] = $data['access_name'];
 	$_SESSION['SESS_ACCESS_SITES'] = $data['sitelist'];
 
 	$_SESSION['SESS_USER_NAME'] = $data['name'];
@@ -248,7 +256,7 @@ function startNewSession($userid, $domain, $dbLink, $params=array()) {
 	$_SESSION['SESS_LOGIN_TIME'] =time();
 	$_SESSION['MAUTH_KEY'] = generateMAuthKey();
 	
-	if($data['privilege']<=3) {
+	if($data['privilegeid']<=2) {
 		$_SESSION["SESS_FS_FOLDER"]=ROOT;
 		$_SESSION["SESS_FS_URL"]=SiteLocation;
 	} else {
@@ -262,23 +270,23 @@ function startNewSession($userid, $domain, $dbLink, $params=array()) {
 	header_remove("SESSION-KEY");
 	header("SESSION-KEY:".session_id(),false);
 
-	$q1=$dbLink->_insertQ1(_dbTable("log_login",true),array(
-			"date"=>date("Y-m-d"),
-			"user"=>$userid,
-			"site"=>$domain,
-			"login_time"=>date('H:i:s'),
-			//"logout_time"=>,
-			"sys_spec"=>_server('REMOTE_ADDR'),
-			"token"=>$_SESSION['SESS_TOKEN'],
-			"mauth_key"=>$_SESSION['MAUTH_KEY'],
-			"status"=>'LOGGED IN',
-			"msg"=>'',
-			"persistant"=>$data['persistant'],
-			"client"=>_server('REMOTE_ADDR'),
-			"user_agent"=>_server('HTTP_USER_AGENT'),
-			"device"=>$data['device'],
-		));
-	$dbLink->executeQuery($q1);
+	// $q1=$dbLink->_insertQ1(_dbTable("log_login",true),array(
+	// 		"date"=>date("Y-m-d"),
+	// 		"user"=>$userid,
+	// 		"site"=>$domain,
+	// 		"login_time"=>date('H:i:s'),
+	// 		//"logout_time"=>,
+	// 		"sys_spec"=>_server('REMOTE_ADDR'),
+	// 		"token"=>$_SESSION['SESS_TOKEN'],
+	// 		"mauth_key"=>$_SESSION['MAUTH_KEY'],
+	// 		"status"=>'LOGGED IN',
+	// 		"msg"=>'',
+	// 		"persistant"=>$data['persistant'],
+	// 		"client"=>_server('REMOTE_ADDR'),
+	// 		"user_agent"=>_server('HTTP_USER_AGENT'),
+	// 		"device"=>$data['device'],
+	// 	));
+	// $dbLink->executeQuery($q1);
 
 	setcookie("LOGIN", "true", time()+36000);
 	setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000);
@@ -286,19 +294,19 @@ function startNewSession($userid, $domain, $dbLink, $params=array()) {
 	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000);
 
 	if($data['persistant']=="true") {
-		$q1=$dbLink->_insertQ1(_dbTable("log_sessions",true),array(
-				"sessionid"=>$_SESSION['SESS_TOKEN'],
-				"timestamp"=>date("Y-m-d H:i:s"),
-				"last_updated"=>date("Y-m-d H:i:s"),
-				"user"=>$userid,
-				"site"=>$domain,
-				"session_data"=>json_encode($_SESSION),
-				"global_data"=>json_encode($GLOBALS),
-				"client"=>_server('REMOTE_ADDR'),
-				"user_agent"=>_server('HTTP_USER_AGENT'),
-				"device"=>$data['device'],
-			));
-		$dbLink->executeQuery($q1);	
+		// $q1=$dbLink->_insertQ1(_dbTable("log_sessions",true),array(
+		// 		"sessionid"=>$_SESSION['SESS_TOKEN'],
+		// 		"timestamp"=>date("Y-m-d H:i:s"),
+		// 		"last_updated"=>date("Y-m-d H:i:s"),
+		// 		"user"=>$userid,
+		// 		"site"=>$domain,
+		// 		"session_data"=>json_encode($_SESSION),
+		// 		"global_data"=>json_encode($GLOBALS),
+		// 		"client"=>_server('REMOTE_ADDR'),
+		// 		"user_agent"=>_server('HTTP_USER_AGENT'),
+		// 		"device"=>$data['device'],
+		// 	));
+		// $dbLink->executeQuery($q1);	
 	}
 
 	gotoSuccessLink();
@@ -387,10 +395,10 @@ function gotoSuccessLink() {
 			}
 		}
 	} else {
-		echo "<h5>Securing Access Authentication ... </h5>";
-		if(strlen($onsuccess)==0 || $onsuccess=="*")
-			header("location: ".SiteLocation.$domain);
-		else {
+		//echo "<h5>Securing Access Authentication ... </h5>";
+		if(strlen($onsuccess)==0 || $onsuccess=="*") {
+			header("location: "._link(getConfig("PAGE_HOME")));
+		} else {
 			if(substr($onsuccess,0,7)=="http://" || substr($onsuccess,0,8)=="https://" ||
 				substr($onsuccess,0,2)=="//" || substr($onsuccess,0,2)=="./" || substr($onsuccess,0,1)=="/") {
 					header("location: $onsuccess");

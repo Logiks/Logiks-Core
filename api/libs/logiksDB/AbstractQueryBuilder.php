@@ -448,5 +448,9 @@
 		}
 		return $s;
 	}
- }
+
+	public function __debugInfo() {
+        return [];
+    }
+}
 ?>

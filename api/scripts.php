@@ -23,7 +23,7 @@ function _service(cmd,action,format,q) {
 	if(cmd==null || cmd.length<=0) {
 		return "";
 	}
-	sxx="<?=SiteLocation?>services/"+cmd+"?site=<?=SITENAME?>";
+	sxx="<?=SiteLocation?>services/"+cmd+"?site=<?=SITENAME?>&syshash=<?=md5(session_id())?>";
 	<?php
 		if(isset($_REQUEST["forsite"]) && strlen($_REQUEST["forsite"])>0)
 			echo "sxx+='&forsite={$_REQUEST["forsite"]}';";
@@ -40,7 +40,7 @@ function _service(cmd,action,format,q) {
 	return sxx;	
 }
 function _link(href) {
-	if(href==null) href="<?=SiteLocation._server('REQUEST_PATH')?>";
+	if(href==null) href="<?=_server('REQUEST_PATH')?>";
 	if(href.indexOf("http")>=0) {
 	} else if(href.indexOf("ftp")>=0) {
 	} else if(href.indexOf("/")===0) {

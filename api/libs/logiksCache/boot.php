@@ -23,25 +23,37 @@ include_once dirname(__FILE__)."/MetaCache.inc";
 
 //Dcoument caching Capabilities, can cache remote objects
 if(!function_exists("_cache")) {
+	//Gets or sets the cache data in a quick and accessible fashion
+	function _cache($key,$value=null,$group="LOGIKS-".SiteID) {
+		$metaCache=MetaCache::getInstance();
+		if($value!==null) {
+			$metaCache->setMetaFor($group,$key,$value);
+		}
+		return $metaCache->getMetaFor($group,$key);
+	}
+}
+
+//Dcoument caching Capabilities, can cache remote objects
+if(!function_exists("_dataCache")) {
 	//This function checks if cache exists, yes returns cached data, no creates and returns cached data
-	function _cache($source,$cacheID=null,$reCache=false) {
+	function _dataCache($source,$cacheID=null,$reCache=false) {
 		$cache=DataCache::getInstance();
 		return $cache->getCache($source,$cacheID,$reCache);
 	}
 	//This function checks if cache exists, yes returns cache ID, no creates and returns cache ID
-	function _cacheID($source,$reCache=false) {
+	function _dataCacheID($source,$reCache=false) {
 		$cache=DataCache::getInstance();
 		return $cache->getCacheID($source,$reCache);
 	}
 	//Sometimes we just need to print the Cache From CachedID with out caring about source
 	//Usefull while transfering command of the cache from one object to another
-	function _cachePrint($cacheID) {
+	function _dataCachePrint($cacheID) {
 		$cache=DataCache::getInstance();
 		return $cache->printCacheFromID($cacheID);
 	}
 }
 
-//Key value pair cache system, meant to store oneliner outputs, etc.
+//A more extensive Key value pair cache system, meant to store oneliner outputs, etc.
 if(!function_exists("_metaCache")) {
 	function _metaCache($group,$srcFile) {
 		$metaCache=MetaCache::getInstance();

@@ -29,22 +29,24 @@
    }
 
    public function checkUserSiteAccess() {
-      if(session_check()) {
-        if(isset($_SESSION["SESS_ACCESS_ID"]) && $_SESSION["SESS_ACCESS_ID"]=="1") {
-          return true;
-        }
-        if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]=="1") {
-          return true;
-        }
-        if(in_array(SITENAME, $_SESSION["SESS_ACCESS_SITES"])) return true;
-        trigger_logikserror(403.1);
+      if(defined("ACCESS")) {
+        switch (strtolower(ACCESS)) {
+            case 'public':
+              return true;
+              break;
+            case 'private':
+                if(session_check()) return true;
+                if(getConfig("PAGE_LOGIN")==PAGE) {
+                  return true;
+                }
+                redirectTo(_link(getConfig("PAGE_LOGIN")));
+               break;
+            default:
+              trigger_logikserror(403.1);
+              break;
+          }
       } else {
-        if(defined("ACCESS")) {
-          if((strtolower(ACCESS)=="public")) return true;
-          trigger_logikserror(403.1);
-        } else {
-          trigger_logikserror("Logiks Site Is Misconfigured",null,800);
-        }
+        trigger_logikserror("Logiks Site Is Misconfigured",null,800);
       }
    }
 

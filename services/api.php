@@ -9,14 +9,19 @@ if(!function_exists("getServiceCMD")) {
 	}
 
 	function isAjax() {
-		$x=_server('HTTP_X_REQUESTED_WITH');
-		if($x) {
-			$isAjax = $x AND strtolower($x) === 'xmlhttprequest';
-			if(!$isAjax) {
-				return false;
+		if(_server('HTTP_REFERER')) {
+			$x=_server('HTTP_X_REQUESTED_WITH');
+
+			if(isset($_REQUEST['syshash']) && $_REQUEST['syshash']==md5(session_id())) {
+				return true;
+			} elseif($x) {
+				$isAjax = $x AND strtolower($x) === 'xmlhttprequest';
+				if($isAjax) {
+					return true;
+				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 	//All Error Printing Funcs
