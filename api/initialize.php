@@ -5,35 +5,22 @@
  *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Author: Kshyana Prava kshyana23@gmail.com
- * Version: 1.2
+ * Version: 1.3
  */
 
 if(!defined('ROOT')) exit('No direct script access allowed');
-
-//Check Installation
-$bpath=dirname(dirname(__FILE__));
-if(!file_exists("$bpath/config/basic.cfg")) {
-	if(file_exists("$bpath/install/")) {
-		echo "Initiating Installation Sequence ...";
-		header("Location:install/");
-	} else {
-		echo "<h1 align=center style='color:#BF2E11'>Error In Logiks Installation Or Corrupt Installation. <br/>Please Contact Admin.</h1>";
-	}
-	exit();
-}
-if(!is_writable("$bpath/tmp")) {
-	echo "<h1 align=center style='color:#BF2E11'>Error In Logiks TMP Directory, its not writable.</h1>";
-	exit();
-}
 
 if(!isset($initialized)) {
 	ob_start();
 	//clearstatcache();
 	@session_start();
 
-	include_once ('commons.php');
-	
-	_envData("SESSION",'REQUEST_PAGE_START',microtime(true));
+	$_SESSION['REQUEST_PAGE_START']=microtime(true);
+
+	include_once 'syscheck.php';
+	include_once 'commons.php';
+
+	_envData("SESSION",'REQUEST_PAGE_START',$_SESSION['REQUEST_PAGE_START']);
 
 	$dirPath=str_replace(_server("DOCUMENT_ROOT"),'',dirname(_server("SCRIPT_FILENAME"))."/");
 	$dirPath=substr($dirPath, 1);
