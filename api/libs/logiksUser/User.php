@@ -253,6 +253,8 @@ if(!function_exists("getUserList")) {
 		$params=getDefaultParams($userID,$pwd,$privilegeID,$accessID);
 		$data=array_merge($params,$attrs);
 
+		$data['guid']=generateGUID($data['guid']);
+
 		$reqParams=explode(",", getConfig("USER_CREATE_REQUIRED_FIELDS"));
 		
 		foreach ($reqParams as $vx) {
@@ -263,7 +265,13 @@ if(!function_exists("getUserList")) {
 		$sql=_db(true)->_insertQ1(_dbtable("users",true),$data);
 		$res=_dbQuery($sql,true);
 		if($res) {
-			return true;
+			return array(
+					"guid"=>$data['guid'],
+					"userid"=>$data['userid'],
+					"name"=>$data['name'],
+					"email"=>$data['email'],
+					"status"=>"success",
+				);
 		}
 		return array("error"=>"Error In User Creation","details"=>_db(true)->get_error());
 	}

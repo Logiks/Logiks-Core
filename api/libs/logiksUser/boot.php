@@ -19,6 +19,9 @@ if(!function_exists("checkUserRoles")) {
 	function checkUserRoles($module,$activity,$category="Block") {
 		return RoleModel::checkRole($module,$activity,$category);
 	}
+	function generateGUID($name) {
+		return trim(strtolower(preg_replace('/\W/', '', $name)));
+	}
 }
 
 
