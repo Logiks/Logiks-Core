@@ -241,8 +241,8 @@ class Database {
 		}
 	}
 
-	// public function __debugInfo() {
- //        return [];
- //    }
+	public function __debugInfo() {
+        return [];
+    }
 }
 ?>

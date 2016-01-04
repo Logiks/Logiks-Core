@@ -17,11 +17,11 @@ if(!function_exists("getUserList")) {
 				if(strpos("#".$params['avatar'], "http://") || strpos("#".$params['avatar'], "https://")) {
 					return $params['avatar'];
 				} elseif(isset($params['avatar_type'])) {
-					return _service("avatar")."&authorid={$data['avatar']}&method={$data['avatar_type']}";
-				} elseif(is_numeric($data['avatar'])) {
-					return _service("avatar")."&authorid={$data['avatar']}&method=photoid";
+					return _service("avatar")."&authorid={$params['avatar']}&method={$params['avatar_type']}";
+				} elseif(is_numeric($params['avatar'])) {
+					return _service("avatar")."&authorid={$params['avatar']}&method=photoid";
 				} else {
-					return _service("avatar")."&authorid={$data['avatar']}&method=email";
+					return _service("avatar")."&authorid={$params['avatar']}&method=email";
 				}
 			} elseif(isset($params['userid'])) {
 				$params=$params['userid'];
@@ -81,6 +81,24 @@ if(!function_exists("getUserList")) {
 			foreach ($data as $a => $row) {
 				$data[$a]['avatarlink']=getUserAvatar($row);
 			}
+		}
+		return $data;
+	}
+
+	function getPrivilegeByName($privilageName) {
+		$sql=_db(true)->_selectQ(_dbTable("privileges",true),"id,name,site,remarks,blocked")->_where(array(
+				"blocked"=>'false',
+				"name"=>$privilageName,
+			));
+		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]>ROLE_PRIME) {
+			$sql=$sql->_raw(" AND (site='".SITENAME."' OR site='*')");
+		}
+
+		$res=_dbQuery($sql,true);
+		$data=[];
+		if($res) {
+			$data=_dbData($res,true);
+			_dbFree($res,true);
 		}
 		return $data;
 	}

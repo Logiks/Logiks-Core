@@ -56,5 +56,9 @@ class AbstractCacheDriver {
 	public function cache_stats() {
 		//echo "cache_stats\n<br>";
 	}
+
+	public function __debugInfo() {
+        return [];
+    }
 }
 ?>
