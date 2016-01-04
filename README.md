@@ -10,7 +10,7 @@ Logiks Framework is an open source high-performance web application building pla
 Added the continuous testing and integration framework from Travis. Find the state above.
 
 ###Server Requirments
-+ PHP 5.5+
++ PHP 5.6+
 + Apache/Web Server with .htaccess capabilities and rewrite mod enabled
 
 ###Apache Mods Required
@@ -19,9 +19,9 @@ Added the continuous testing and integration framework from Travis. Find the sta
 + mod_expires	(optional)
 + mod_deflate	(optional)
 
-###Server Requirments (Optional)
-+ Memcached		For caching
+###Server Requirments
 + MySQL 5.6+	For database
++ Memcached		For caching (Optional)
 
 ###Optional Requirments
 + SQLite3 Libs
