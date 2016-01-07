@@ -25,7 +25,7 @@ if(!function_exists("getNav")) {
 			$params=array(
 					//"printTitle"=>true,
 					"orderBy"=>null,
-					"dbtable"=>_dbtable("links"),
+					"dbtable"=>_dbTable("links"),
 					"requiredTableList"=>_db(true)->getTableList(),
 					"requiredModuleList"=>null,
 					"sysdb"=>false,
@@ -50,7 +50,7 @@ if(!function_exists("getNav")) {
 		if($params==null) {
 			$params=array(
 					//"printTitle"=>true,
-					"dbtable"=>_dbtable("links"),
+					"dbtable"=>_dbTable("links"),
 					"requiredTableList"=>_db(true)->getTableList(),
 					"requiredModuleList"=>null,
 					"sysdb"=>false,

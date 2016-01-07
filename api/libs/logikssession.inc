@@ -65,31 +65,4 @@ class LogiksSession {
 	}
 }
 LogiksSession::getInstance();
-
-if(!function_exists("_session")) {
-	function _session($var) {
-		$data=LogiksSession::getInstance()->data('SESSION');
-		if(isset($data[$var])) {
-			return $data[$var];
-		}
-		return false;
-	}
-	function _server($var) {
-		$data=LogiksSession::getInstance()->data('SERVER');
-		if(isset($data[$var])) {
-			return $data[$var];
-		}
-		return false;
-	}
-	function _env($var) {
-		$data=LogiksSession::getInstance()->data('ENV');
-		if(isset($data[$var])) {
-			return $data[$var];
-		}
-		return false;
-	}
-	function _envData($key,$name,$value) {
-		LogiksSession::getInstance()->set(strtoupper($key),$name,$value);
-	}
-}
 ?>

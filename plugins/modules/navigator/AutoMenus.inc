@@ -57,7 +57,7 @@ class AutoMenus {
 
 	public function generateSQL($site,$pid,$sys=false) {
 		foreach($this->menus as $a=>$b) {
-			$b['table']=_dbtable($b['table'],$sys);
+			$b['table']=_dbTable($b['table'],$sys);
 			$sql="SELECT {$this->dbCols} FROM {$b['table']}";
 			$where="where (site='$site' OR site='*') AND blocked='false' AND onmenu='true'";
 

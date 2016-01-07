@@ -35,7 +35,7 @@ if(isset($_REQUEST['file'])) {
 		if(isset($_REQUEST['dbtbl'])) {
 			$dbtbl=$_REQUEST['dbtbl'];
 		} else {
-			$dbtbl=_dbtable("docs");
+			$dbtbl=_dbTable("docs");
 		}
 		if(isset($_REQUEST['bpath'])) {
 			$bpath=$_REQUEST['bpath']."/";
@@ -69,7 +69,7 @@ if(isset($_REQUEST['file'])) {
 		if(isset($_REQUEST['dbtbl'])) {
 			$dbtbl=$_REQUEST['dbtbl'];
 		} else {
-			$dbtbl=_dbtable("files");
+			$dbtbl=_dbTable("files");
 		}
 		$sql="SELECT file_name,file_type,file_data,file_size FROM $dbtbl WHERE ID=".$_REQUEST['file'];
 		$result=_db()->executeQuery($sql);

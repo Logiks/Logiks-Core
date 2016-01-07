@@ -52,7 +52,7 @@ class RoleModel {
 		
 		$sql1="";
 		$date=date('Y-m-d');
-		$roleTbl=_dbtable("rolemodel",true);
+		$roleTbl=_dbTable("rolemodel",true);
 		$userid="auto";
 		if($r) {
 			$data=_dbData($r,true);

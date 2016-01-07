@@ -102,5 +102,9 @@ class LogiksCache {
 	public function purge() {
 		return $this->cacheDriverObject->purge($group);
 	}
+	
+	public function __debugInfo() {
+        return [];
+    }
 }
 ?>

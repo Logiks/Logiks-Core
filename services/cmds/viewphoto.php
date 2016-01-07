@@ -96,7 +96,7 @@ function displayDBImage($imgID,$type="view") {
 	if(isset($_REQUEST['dbtbl'])) {
 		$dbtbl=$_REQUEST['dbtbl'];
 	} else {
-		$dbtbl=_dbtable("photos");
+		$dbtbl=_dbTable("photos");
 	}
 	$sql="SELECT image_type,image_data,image_size FROM $dbtbl WHERE ID=$imgID";
 	$result=_db()->executeQuery($sql);

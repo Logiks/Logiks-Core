@@ -8,7 +8,7 @@ if(isset($_REQUEST['src'])) {
 
 if(isset($_REQUEST['rss'])) {
 	$rssid=$_REQUEST['rss'];
-	$tbl=_dbtable($rsstable);
+	$tbl=_dbTable($rsstable);
 	$temp_FULL_MEDIA_PATH=getConfig("FULL_MEDIA_PATH");
 	setConfig("FULL_MEDIA_PATH","true");
 	$rss=RSSGen::generateFromDB($tbl,$rssid);
@@ -22,7 +22,7 @@ if(isset($_REQUEST['rss'])) {
 	if(!isset($_REQUEST['format'])) {
 		$_REQUEST['format']="json";
 	}
-	$tbl=_dbtable($rsstable);
+	$tbl=_dbTable($rsstable);
 	$list=RSSGen::listFeeds($tbl);
 	if(count($list)>0) {
 		foreach($list as $a=>$b) {

@@ -7,7 +7,7 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-class ConfigFiles {
+class ConfigFileReader {
 	public static function supportedFileTypes() {
 		return array(
 				"cfg"=>"Configuration Files",
@@ -21,11 +21,12 @@ class ConfigFiles {
 		if(file_exists($path) && is_readable($path)) {
 			$pArr=pathinfo($path);
 			$ext=strtolower($pArr["extension"]);
-			if($ext=="cfg") return SpecialCfgFiles::LoadCfgFile($path);
-			elseif($ext=="ini" || $ext=="map") return SpecialCfgFiles::LoadIniFile($path);
-			elseif($ext=="lst") return SpecialCfgFiles::LoadListFile($path);
-			elseif($ext=="xml") return SpecialCfgFiles::LoadXmlFile($path);
-			elseif($ext=="json") return SpecialCfgFiles::LoadJsonFile($path);
+			if($ext=="cfg") return ConfigFileReader::LoadCfgFile($path);
+			elseif($ext=="cfg2") return ConfigFileReader::LoadCfg2File($path);
+			elseif($ext=="ini" || $ext=="map") return ConfigFileReader::LoadIniFile($path);
+			elseif($ext=="lst") return ConfigFileReader::LoadListFile($path);
+			elseif($ext=="xml") return ConfigFileReader::LoadXmlFile($path);
+			elseif($ext=="json") return ConfigFileReader::LoadJsonFile($path);
 			else return false;
 		}
 		return false;
@@ -77,7 +78,7 @@ class ConfigFiles {
 		if(file_exists($path) && is_readable($path)) {
 			$cfgData=file_get_contents($path);
 			$cfgData=explode("\n",$cfgData."\n");
-			$mode="DEFINE";
+			$mode="";
 			foreach($cfgData as $s) {
 				if(strlen($s)<=1) continue;
 				if(substr($s,0,2)=="//") continue;
@@ -91,13 +92,44 @@ class ConfigFiles {
 						$s1=$ss[0];
 						unset($ss[0]);
 						$s2=implode("=",$ss);
-						$arr[$mode][$s1]=$s2;
+						if(strlen($mode)>0) {
+							$arr[$mode][$s1]=$s2;
+						} else {
+							$arr[$s1]=$s2;
+						}
 					}
 				}
 			}
 		} else {
 			if(MASTER_DEBUG_MODE=="true") echo "<br/>CFG File Could Not Be Loaded " . $path;
 		}
+		return $arr;
+	}
+	public static function LoadCfg2File($path) {
+		$arr=array();
+		if(file_exists($path) && is_readable($path)) {
+			$cfgData=file_get_contents($path);
+			$cfgData=explode("\n",$cfgData."\n");
+			foreach($cfgData as $s) {
+				if(strlen($s)<=1) continue;
+				if(substr($s,0,2)=="//") continue;
+				if(substr($s,0,1)=="#") continue;
+				if(substr($s,0,1)=="[") continue;
+
+				if(strlen($s)>0) {
+					$ss=explode("=",$s);
+					
+					$temp = &$arr;
+					foreach(explode('_', $ss[0]) as $key) {
+				        $temp = &$temp[$key];
+				    }
+				    $temp = array_reverse($ss);
+				}
+			}
+		} else {
+			if(MASTER_DEBUG_MODE=="true") echo "<br/>CFG File Could Not Be Loaded " . $path;
+		}
+		printArray($arr);
 		return $arr;
 	}
 	public static function LoadXmlFile($path) {

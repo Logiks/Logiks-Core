@@ -20,15 +20,18 @@ class Database {
 	private $dbLink=null;
 	
 	//Static Utility Functions for connecting, closing, status checking and gettingConnection
-	public static function connect($key,$params=array()) {
-		$cfg=loadJSONConfig("db");
-		if(!isset($cfg[$key])) {
-			trigger_error("Database ERROR, Connection Configuration Could Not Be Found For {$key}");	
-		} else {
-			$params=$cfg[$key];
+	public static function connect($key,$params=null) {
+		if($params==null || !is_array($params)) {
+			$cfg=loadJSONConfig("db");
+			if(!isset($cfg[$key])) {
+				trigger_error("Database ERROR, Connection Configuration Could Not Be Found For {$key}");	
+			} else {
+				$params=$cfg[$key];
+			}
 		}
-		
+
 		$db=new Database($key,$params);
+		
 		//Setup Cache
 
 		//Setup Logging

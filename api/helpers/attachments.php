@@ -38,7 +38,7 @@ if(!function_exists("deleteAttachments")) {
 		} elseif(strpos($_POST['src'],"db#")===0) {
 			$storePath=substr($_POST['src'],3);
 			$storeType="db";
-			if(strlen($storePath)<=0) $storePath=_dbtable("files");
+			if(strlen($storePath)<=0) $storePath=_dbTable("files");
 		} else {
 			$file['src']="fs#attachments/";
 			$storePath=substr($_POST['src'],3);
@@ -204,7 +204,7 @@ if(!function_exists("deleteAttachments")) {
 		} elseif(strpos($file['src'],"db#")===0) {
 			$storePath=substr($file['src'],3);
 			$storeType="db";
-			if(strlen($storePath)<=0) $storePath=_dbtable("files");
+			if(strlen($storePath)<=0) $storePath=_dbTable("files");
 		} else {
 			$file['src']="fs#attachments/";
 			$storePath=substr($file['src'],3);

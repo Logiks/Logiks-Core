@@ -3,7 +3,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("printContent")) {
 	function loadContent($refID,$category="",$silent=false,$autoCreate=false) {
-		$sql="SELECT title,category,text,blocked FROM "._dbtable("contents")." WHERE (ID='$refID' OR reflink='$refID')";
+		$sql="SELECT title,category,text,blocked FROM "._dbTable("contents")." WHERE (ID='$refID' OR reflink='$refID')";
 		if(strlen($category)>0) $sql.=" AND category='$category'";
 		$sql.=" AND (site='*' OR site='".SITENAME."')";
 		$rs=_dbQuery($sql);
@@ -26,7 +26,7 @@ if(!function_exists("printContent")) {
 			);
 	}
 	function printContent($refID,$category="",$silent=false,$autoCreate=false) {
-		$sql="SELECT title,category,text,blocked FROM "._dbtable("contents")." WHERE (ID='$refID' OR reflink='$refID')";
+		$sql="SELECT title,category,text,blocked FROM "._dbTable("contents")." WHERE (ID='$refID' OR reflink='$refID')";
 		if(strlen($category)>0) $sql.=" AND category='$category'";
 		$sql.=" AND (site='*' OR site='".SITENAME."')";
 		$rs=_dbQuery($sql);
@@ -59,7 +59,7 @@ if(!function_exists("printContent")) {
 			$date=date("Y-m-d");
 			$cols="id,reflink,title,category,text,blocked,site,userid,doc,doe";
 			$vals="0,'$refID','".toTitle($refID)."','{$category}','','false','".SITENAME."','auto','$date','$date'";
-			$sql="INSERT INTO "._dbtable("contents")." ($cols) VALUES ($vals)";
+			$sql="INSERT INTO "._dbTable("contents")." ($cols) VALUES ($vals)";
 			_dbQuery($sql);
 			return true;
 		}

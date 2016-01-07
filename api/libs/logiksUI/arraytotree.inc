@@ -8,7 +8,7 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-class ArrayToList {
+class ArrayToTree {
 
 	private $maxTags=4;
 	private $format="ul,li,h2,a";
@@ -37,8 +37,8 @@ class ArrayToList {
 		if($format!=null) {
 			if(!is_array($format)) $this->format=explode(",",$format);
 			else $this->format=$format;
-			if(sizeOf($this->format)<$this->maxTags) {
-				for($i=sizeOf($this->format);$i<$this->maxTags;$i++) {
+			if(count($this->format)<$this->maxTags) {
+				for($i=count($this->format);$i<$this->maxTags;$i++) {
 					array_push($this->format,"span");
 				}
 			}
@@ -47,7 +47,7 @@ class ArrayToList {
 	}
 
 	public function getTree($treeArray,$dataStr="data",$depth=0,$showID=false) {
-		if(sizeOf($treeArray)<=0) return "";
+		if(count($treeArray)<=0) return "";
 		$colData=array();
 		$s="";
 

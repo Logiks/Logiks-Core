@@ -136,7 +136,6 @@ initializeLogin($userid, $domain, $dbLogLink);
 
 //All Functions Required By Authentication System
 function relink($msg,$domain) {
-	exit($msg);
 	$_SESSION['SESS_ERROR_MSG']=$msg;
 	
 	$onerror="";

@@ -49,7 +49,7 @@ if(!function_exists("getSettings")) {
 				$data=array(
 						"settings"=>$value,
 					);
-				$q=_db(true)->_updateQ(_dbtable("settings",true),$data,array(
+				$q=_db(true)->_updateQ(_dbTable("settings",true),$data,array(
 						"userid"=>$_SESSION['SESS_USER_ID'],
 						"site"=>SITENAME,
 						"scope"=>$scope,
@@ -71,7 +71,7 @@ if(!function_exists("getSettings")) {
 				"name"=>$name,
 				"settings"=>$value,
 			);
-		$q=_db(true)->_insertQ1(_dbtable("settings",true),$data);
+		$q=_db(true)->_insertQ1(_dbTable("settings",true),$data);
 		$res=_dbQuery($q,true);
 		if($res) return true;
 		else return false;

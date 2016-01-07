@@ -262,7 +262,7 @@ if(!function_exists("getUserList")) {
 				return array("error"=>"Missing Field","field"=>$vx);
 			}
 		}
-		$sql=_db(true)->_insertQ1(_dbtable("users",true),$data);
+		$sql=_db(true)->_insertQ1(_dbTable("users",true),$data);
 		$res=_dbQuery($sql,true);
 		if($res) {
 			return array(
@@ -329,7 +329,7 @@ if(!function_exists("getUserList")) {
 					return array("error"=>"AccessID Not Found For This Site $site");
 				}
 			}
-			$sql=_db(true)->_updateQ(_dbtable("users",true),$dataUser,array("userid"=>"$userID"));
+			$sql=_db(true)->_updateQ(_dbTable("users",true),$dataUser,array("userid"=>"$userID"));
 			$res=_dbQuery($sql,true);
 			if($res) {
 				return true;

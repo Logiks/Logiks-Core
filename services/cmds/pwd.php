@@ -19,7 +19,7 @@ if($_REQUEST["type"]=="dialog") {
 exit();
 function changePWD() {
 	$userid=$_SESSION["SESS_USER_ID"];
-	$tbl=_dbtable("users",true);
+	$tbl=_dbTable("users",true);
 	
 	$sql1="SELECT pwd FROM $tbl WHERE userid='{$userid}'";
 	$r=_dbQuery($sql1,true);

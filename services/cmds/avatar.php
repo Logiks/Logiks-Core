@@ -93,7 +93,7 @@ function printAvatarPhoto($method) {
 			if(!isset($_REQUEST['src'])) {
 				$_REQUEST['src']=getConfig("DBTABLE_AVATAR");
 				if(strlen($_REQUEST['src'])<=0) {
-					$_REQUEST['src']=_dbtable("avatar");
+					$_REQUEST['src']=_dbTable("avatar");
 				}
 			}
 			$lx=_service("viewphoto")."&type=view&loc=db&dbtbl={$_REQUEST['src']}&image={$_REQUEST['authorid']}";

@@ -36,7 +36,9 @@
               break;
             case 'private':
                 if(session_check()) return true;
-                if(getConfig("PAGE_LOGIN")==PAGE) {
+                $noLogin=explode(",", getConfig("PAGE_NOLOGIN"));
+                $noLogin[]=getConfig("PAGE_LOGIN");
+                if(in_array(PAGE, $noLogin)) {
                   return true;
                 }
                 redirectTo(_link(getConfig("PAGE_LOGIN")));

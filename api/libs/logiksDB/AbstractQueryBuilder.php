@@ -36,6 +36,11 @@
 	public function getInstanceName() {
 		return $this->dbInstance->getInstanceName();
 	}
+
+	public function _get() {
+		$res=$this->dbInstance->runQuery($this);
+		return $this->dbInstance->fetchAllData($res);
+	}
 	
 	//CRUD stands for Create, Update, Retrive and Delete.
 	public function _envelop($sql) {
