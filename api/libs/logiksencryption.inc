@@ -9,11 +9,11 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 class LogiksEncryption {
-    private $skey = "asd4564asd5as4";//session_id();
+    private $skey = "asd4564asd5as44e";//session_id();
 
 	public function __construct($skey=null) {
 		if($skey==null) {
-			$this->skey=session_id();
+			$this->skey=md5(session_id());
 		}
 	}
 

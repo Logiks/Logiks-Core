@@ -7,6 +7,13 @@
  */
 class test_helpers_shortfuncs extends LogiksTestCase {
 	
+	public static function setUpBeforeClass() {
+		define("PAGE","test1/test2");
+		define("WEBDOMAIN","default");
+		
+		loadHelpers("urltools");
+	}
+
 	public function setUp() {
 		parent::setUp();
 	}
@@ -19,8 +26,8 @@ class test_helpers_shortfuncs extends LogiksTestCase {
 	}
 	
 	public function test_service() {
-		$actual = _service('tmp','get-user','json',array('id' => 30),'ssf');
-		$expected = SiteLocation . 'services/tmp/get-user?site=ssf&format=json&id=30';
+		$actual = _service('test','action1','json',array('id' => 30),'default');
+		$expected = SiteLocation . 'services/test?site=default&action=action1&format=json&id=30';
 		$this->assertEquals($actual,$expected);
 	}
 	

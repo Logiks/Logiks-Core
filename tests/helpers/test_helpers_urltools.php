@@ -9,7 +9,8 @@ class test_helpers_urltools extends LogiksTestCase {
 	
 	public static function setUpBeforeClass() {
 		define("PAGE","test1/test2");
-
+		define("WEBDOMAIN","default");
+		
 		loadHelpers("urltools");
 	}
 	
