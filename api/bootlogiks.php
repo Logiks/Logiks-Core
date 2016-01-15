@@ -8,6 +8,8 @@
  * Version: 1.0
  */
 
+if(!defined('ROOT')) exit('No direct script access allowed');
+
 include_once dirname(__FILE__). "/libs/logikssingleton.inc";
 include_once dirname(__FILE__). "/libs/logiksclassloader.inc";
 

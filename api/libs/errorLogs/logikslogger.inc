@@ -64,8 +64,8 @@ class LogiksLogger {
   public function getLogKeys() {
     $siteKey="core";
     if(defined("SITENAME")) $siteKey=SITENAME;
-
-    return array_keys($this->logBook[$siteKey]);
+    if(isset($this->logBook[$siteKey])) return array_keys($this->logBook[$siteKey]);
+    else return [];
   }
   public function getLogger($logKey) {
     $siteKey="core";

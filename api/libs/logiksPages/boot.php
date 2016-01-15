@@ -74,8 +74,22 @@ if(!function_exists("_css")) {
 		return $html;
 	}
 
-	function _slug() {
-		if(isset($_ENV['PAGESLUG'])) return $_ENV['PAGESLUG'];
+	function _slug($arrCfg=null) {
+		if($arrCfg==null) {
+			if(isset($_ENV['PAGESLUG'])) return $_ENV['PAGESLUG'];
+		} else {
+			if(isset($_ENV['PAGESLUG-MAIN'])) {
+				if(!is_array($arrCfg)) $arrCfg=explode("/", $arrCfg);
+				$arrCfg=array_flip($arrCfg);
+
+				foreach ($arrCfg as $key => $value) {
+					if(isset($_ENV['PAGESLUG-MAIN'][$value])) $arrCfg[$key]=$_ENV['PAGESLUG-MAIN'][$value];
+					else $arrCfg[$key]="";
+				}
+
+				return $arrCfg;
+			}
+		}
 		return array();
 	}
 

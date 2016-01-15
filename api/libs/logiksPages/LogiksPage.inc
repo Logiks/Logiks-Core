@@ -424,19 +424,25 @@ class LogiksPage {
 		if(substr($pageSlug, -1,1)=="/") $pageSlug=substr($pageSlug, 0,-1);
 
 		$pageSlug=explode("/", $pageSlug);
+		$_ENV['PAGESLUG-MAIN']=$pageSlug;
 
 		switch ($this->pageType) {
 			case 'json':
 				$slugX=array();
-				if(isset($this->pageConfig['slug'])) $slugX=explode("/", $this->pageConfig['slug']);
-				$slugX=array_flip($slugX);
+				if(isset($this->pageConfig['slug'])) {
+					$slugX=explode("/", $this->pageConfig['slug']);
+					$slugX=array_flip($slugX);
 
-				foreach ($slugX as $key => $value) {
-					if(isset($pageSlug[$value])) $slugX[$key]=$pageSlug[$value];
-					else $slugX[$key]="";
+					foreach ($slugX as $key => $value) {
+						if(isset($pageSlug[$value])) $slugX[$key]=$pageSlug[$value];
+						else $slugX[$key]="";
+					}
+					$_ENV['PAGESLUG']=$slugX;
+					$arrSlug=$_ENV['PAGESLUG'];
+				} else {
+					$_ENV['PAGESLUG']=$pageSlug;
+					$arrSlug=$_ENV['PAGESLUG'];
 				}
-				$_ENV['PAGESLUG']=$slugX;
-				$arrSlug=$_ENV['PAGESLUG'];
 			break;
 			
 			case 'php':

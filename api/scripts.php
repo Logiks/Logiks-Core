@@ -48,6 +48,15 @@ function _link(href) {
 	} else {
 		href="<?=SiteLocation?>"+href;
 	}
+	<?php
+		if(SITENAME!=WEBDOMAIN) {
+			echo 'if(href.indexOf("?")>1) {';
+				echo "href+='&site=".SITENAME."';";
+			echo '} else {';
+				echo "href+='?site=".SITENAME."';";
+			echo '}';
+		}
+	?>
 	return href;
 }
 function appMedia(media,userData) {

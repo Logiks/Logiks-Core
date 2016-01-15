@@ -116,7 +116,7 @@ if(!function_exists("getServiceCMD")) {
 				$arrData['Request']['slug']["SLUG_{$key}"]=$value;
 			}
 		}
-		$htmlFormats=array("list","select","table");
+		$htmlFormats=array("list","select","table","html");
 		if(in_array($format, $htmlFormats)) {
 			if(isset($_REQUEST['debug']) && $_REQUEST['debug']=="true") {
 				header("Content-Type:text/text");

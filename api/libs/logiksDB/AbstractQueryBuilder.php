@@ -265,6 +265,9 @@
 	
 	//Creates QueryBuilder Object From SQL String
 	public static function fromSQL($sql,$dbInstance) {
+		if(!is_a($dbInstance, "Database")) {
+			trigger_error("Database ERROR, DBInstance should be an object of Database");
+		}
 		$obj=QueryBuilder::create($dbInstance);
 		$obj->sql=$sql;
 		$obj->fromSQL=true;
@@ -278,11 +281,16 @@
 	//Creates QueryBuilder Object From Array
 	//Currently it can not handle very complex queries
 	public static function fromArray($arr,$dbInstance) {
+		if(!is_a($dbInstance, "Database")) {
+			trigger_error("Database ERROR, DBInstance should be an object of Database");
+		}
+
 		$table=null;
 		$cols="";
 		$where=null;
 		$groupby = null;
 		$orderby = null;
+		$index=0;
 		$limit = FALSE;
 		
 		$table=$arr['table'];
@@ -290,7 +298,8 @@
 		if(isset($arr['where'])) $where=$arr['where'];
 		if(isset($arr['groupby'])) $groupby=$arr['groupby'];
 		if(isset($arr['orderby'])) $orderby=$arr['orderby'];
-		if(isset($arr['limits'])) $limit=$arr['limits'];
+		if(isset($arr['limit'])) $limit=$arr['limit'];
+		if(isset($arr['index'])) $index=$arr['index'];
 		
 		if(is_array($table)) {
 			$obj=QueryBuilder::fromArray($table,$dbInstance);
@@ -313,7 +322,7 @@
 		
 		$objx=$objx->_groupby($groupby);
 		$objx=$objx->_orderby($orderby);
-		$objx=$objx->_limit($limit);
+		$objx=$objx->_limit($limit,$index);
 		
 		return $objx;
 	}
@@ -377,10 +386,16 @@
 	}
 	//WHERE Condition Parser
 	protected function parseRelation($col,$arr) {
+		if(array_key_exists("RAW", $arr)) {
+			return "{$arr['RAW']}";
+		}
+		if(isset($arr['VALUE'])) $arr[0]=$arr['VALUE'];
+		if(isset($arr['OP'])) $arr[1]=$arr['OP'];
+
 		if(!isset($arr[1])) $arr[1]="=";
 		
 		$s="";
-		switch($arr[1]) {
+		switch(strtolower($arr[1])) {
 			case "eq":case ":eq:":
 			case "=":
 				$arr[0]=$this->sqlData($arr[0]);
@@ -399,16 +414,19 @@
 				$arr[0]=$this->sqlData($arr[0]);
 				$s="{$col}<{$arr[0]}";
 			break;
+
 			case "le":case ":le:":
 			case "<=":
 				$arr[0]=$this->sqlData($arr[0]);
 				$s="{$col}<={$arr[0]}";
 			break;
+
 			case "gt":case ":gt:":
 			case ">":
 				$arr[0]=$this->sqlData($arr[0]);
 				$s="{$col}>{$arr[0]}";
 			break;
+
 			case "ge":case ":ge:":
 			case ">=":
 				$arr[0]=$this->sqlData($arr[0]);
@@ -418,6 +436,7 @@
 			case "nn":case ":nn:":
 				$s="{$col} IS NOT NULL";
 			break;
+
 			case "nu":case ":nu:":
 				$s="{$col} IS NULL";
 			break;
@@ -426,6 +445,7 @@
 			case "starts":
 				$s="{$col} LIKE '{$arr[0]}%'";
 			break;
+
 			case "bn":case ":bn:":
 				$s="{$col} NOT LIKE '{$arr[0]}%'";
 			break;
@@ -434,16 +454,20 @@
 			case "ends":
 				$s="{$col} LIKE '%{$arr[0]}'";
 			break;
+
 			case "ln":case ":ln:":
 				$s="{$col} NOT LIKE '%{$arr[0]}'";
 			break;
 			
 			case "cw":case ":cw:":
 			case "in":case ":in:":
+			case "between":
 				$s="{$col} LIKE '%{$arr[0]}%'";
 			break;
+			
 			case "cn":case ":cn:":
 			case "ni":case ":ni:":
+			case "notbetween":
 				$s="{$col} NOT LIKE '%{$arr[0]}%'";
 			break;
 			

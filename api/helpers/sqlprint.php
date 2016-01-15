@@ -277,7 +277,7 @@ if(!function_exists('printSQLResult')) {
 	}
 
 	function printTreeList($treeArray) {
-		if(sizeOf($treeArray)<=0) return "";
+		if(count($treeArray)<=0) return "";
 		$s="";
 		foreach($treeArray as $a=>$b) {
 			$data=$b['data'];
@@ -286,7 +286,7 @@ if(!function_exists('printSQLResult')) {
 				$s.="<li>";
 				$s.="<h3 rel='{$data['id']}'>$a</h3>";
 				$s.="<ul>";
-				$s.=printTree($b);
+				$s.=printTreeList($b);
 				$s.="</ul>";
 				$s.="</li>";
 			} else {

@@ -173,20 +173,6 @@ if(!function_exists("getMsgEnvelop")) {
 		return $envelop;
 	}
 }
-if(!function_exists("println")) {
-	function println($str) {
-		if(is_array($str)) {
-			printArray($str);
-		} else echo $str . "<br/>";
-	}
-}
-if(!function_exists("printArray")) {
-	function printArray($arr) {
-		echo "<pre>";
-		print_r($arr);
-		echo "</pre><br/>";
-	}
-}
 if(!function_exists("arrayToXML")) {
 	function arrayToXML($arr, &$xml_node) {
 		foreach($arr as $key => $value) {

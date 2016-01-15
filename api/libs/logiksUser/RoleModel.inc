@@ -13,6 +13,11 @@ class RoleModel {
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]<=ROLE_PRIME) {
 			return true;
 		}
+		if(!isset($_SESSION["SESS_PRIVILEGE_HASH"])) {
+			if(isset($_SESSION["SESS_PRIVILEGE_NAME"]) && isset($_SESSION["SESS_PRIVILEGE_ID"])) {
+				$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_NAME"].$_SESSION["SESS_PRIVILEGE_ID"]);
+			}
+		}
 		if(isset($_SESSION["SESS_PRIVILEGE_HASH"])) {
 			$privilegehash=$_SESSION["SESS_PRIVILEGE_HASH"];
 
@@ -38,6 +43,8 @@ class RoleModel {
 					return $_SESSION["ROLEMODEL"][$roleHash];
 				}
 			}
+		} else {
+			trigger_logikserror("Role access error");
 		}
 		return false;
 	}

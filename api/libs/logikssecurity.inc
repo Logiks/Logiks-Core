@@ -13,6 +13,7 @@
      $this->checkSiteMode();
      $this->checkDevMode();
      $this->checkUserSiteAccess();
+     $this->checkUserPageAccess();
      if(REQUEST_CHECK_BLACKLIST) $this->isBlacklisted(PAGE,SITENAME);
      if(REQUEST_CHECK_BADBOT) $this->checkBadBot(true);
      // $this->isLinkRedirected(PAGE);
@@ -26,6 +27,17 @@
      if(REQUEST_CHECK_BADBOT) $this->checkBadBot(true);
 
      runHooks("serviceSecurityChecks");
+   }
+
+   public function checkUserPageAccess() {
+      $noLogin=explode(",", getConfig("PAGE_NOLOGIN"));
+      $noLogin[]=getConfig("PAGE_LOGIN");
+      if(in_array(PAGE, $noLogin)) {
+        return true;
+      }
+      if(!RoleModel::checkRole("PAGES","Access : ".PAGE)) {
+        trigger_logikserror("This page is forbidden to you.");
+      }
    }
 
    public function checkUserSiteAccess() {

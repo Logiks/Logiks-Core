@@ -241,6 +241,8 @@ function startNewSession($userid, $domain, $dbLink, $params=array()) {
 	$_SESSION['SESS_ACCESS_NAME'] = $data['access_name'];
 	$_SESSION['SESS_ACCESS_SITES'] = $data['sitelist'];
 
+	$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_NAME"].$_SESSION["SESS_PRIVILEGE_ID"]);
+
 	$_SESSION['SESS_USER_NAME'] = $data['name'];
 	$_SESSION['SESS_USER_EMAIL'] = $data['email'];
 	$_SESSION['SESS_USER_CELL'] = $data['mobile'];
