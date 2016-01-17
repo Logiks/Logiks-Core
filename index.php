@@ -10,15 +10,10 @@
 define ('ROOT', dirname(__FILE__) . '/');
 
 ini_set('display_errors', 'On');
+error_reporting('On');
 
 //Start the flow
 require_once ('api/initialize.php');
-
-// if(!defined("MASTER_DEBUG_MODE")) {
-// 	define("MASTER_DEBUG_MODE",true);
-// }
-// ini_set('display_errors', 1);
-// error_reporting(-1);
 
 //Time To Start Router System
 require_once ('api/router.php');
