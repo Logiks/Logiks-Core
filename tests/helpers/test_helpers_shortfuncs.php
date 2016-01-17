@@ -27,7 +27,7 @@ class test_helpers_shortfuncs extends LogiksTestCase {
 	
 	public function test_service() {
 		$actual = _service('test','action1','json',array('id' => 30),'default');
-		$expected = SiteLocation . 'services/test?site=default&action=action1&format=json&id=30';
+		$expected = SiteLocation . 'services/test?site=default&syshash='.md5(session_id()._server('REMOTE_ADDR')).'&action=action1&format=json&id=30';
 		$this->assertEquals($actual,$expected);
 	}
 	
