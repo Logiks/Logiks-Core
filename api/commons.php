@@ -275,7 +275,7 @@ if (!function_exists('printArray')) {
 		return $subject;
 	}
 	function getSysHash() {
-		return md5(session_id().$_SERVER['REMOTE_ADDR']);
+		return md5(session_id()._server('REMOTE_ADDR'));
 	}
 }
 
