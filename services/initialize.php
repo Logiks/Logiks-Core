@@ -74,7 +74,7 @@ if(!defined("SiteLocation")) define ('SiteLocation', 'http' . (_server('HTTPS') 
 
 require_once ROOT. "api/libs/errorLogs/boot.php";
 
-logiksServiceBoot();
+logiksSystemBoot();
 
 header("X-Powered-By: Logiks [http://openlogiks.org]",false);
 header("SESSION-KEY:".session_id(),false);
@@ -88,10 +88,13 @@ header("Access-Control-Allow-Origin:*");
 //print_r($GLOBALS['LOGIKS']["_SERVER"]);exit();
 
 include_once ROOT. "api/libs/logiksCache/boot.php";
+
 include_once ROOT. "api/libs/loaders/boot.php";
 include_once ROOT. "api/system.php";
 include_once ROOT. "api/security.php";
 include_once ROOT. "api/app.php";
+
+logiksServiceBoot();
 
 include_once ROOT. "api/libs/logiksUser/boot.php";
 include_once ROOT. "api/libs/logiksTemplate/boot.php";

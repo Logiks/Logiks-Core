@@ -14,6 +14,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 include_once dirname(__FILE__)."/HTMLAssets.inc";
 include_once dirname(__FILE__)."/LogiksPage.inc";
 include_once dirname(__FILE__)."/LogiksTheme.inc";
+include_once dirname(__FILE__)."/PageIndex.inc";
 
 if(!function_exists("_css")) {
 	function _cssLink($cssLnk,$themeName=null) {

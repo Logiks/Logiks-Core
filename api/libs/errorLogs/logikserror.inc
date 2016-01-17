@@ -35,6 +35,9 @@ class LogiksError {
     if($errorCode==null || !is_numeric($errorCode)) $errorCode=500;
 
     $errData=[
+        "site"=>SITENAME,
+        "domain"=>$_SERVER['HTTP_HOST'],
+        "userid"=>"",
         "code"=>$errorCode,
         "level"=>$severity,
         "level_name"=>$levelName,
@@ -45,6 +48,10 @@ class LogiksError {
         "msg"=>$errMsg,
         "timesnap"=>0,
       ];
+
+    if(isset($_SESSION['SESS_USER_ID'])) {
+      $errData['userid']=$_SESSION['SESS_USER_ID'];
+    }
 
     if(_server('REQUEST_PAGE_START')) {
       $errData['timesnap']=(microtime(true)-_server('REQUEST_PAGE_START'));

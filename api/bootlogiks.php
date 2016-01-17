@@ -96,26 +96,24 @@ if(!function_exists("__cleanup")) {
 		define('SiteProtocol',str_replace("://","",$hostProtocol));
 	}
 
-	function logiksRequestBoot() {
-		if(LogiksSingleton::funcCheckout("logiksRequestBoot")) {
-			$page=str_replace("?"._server('QUERY_STRING'),"",_server('REQUEST_URI'));
-			$page=str_replace(InstallFolder, "", $page);
-			if(substr($page, 0,1)=="/") $page=substr($page, 1);
-			if($page==null || strlen($page)<=0) {
-				$page="home";
-			}
-			define("PAGE",$page);
-
-			_envData("SESSION",'QUERY',$_GET);
-
-			_envData("SERVER",'REQUEST_PATH',SiteProtocol."://"._server('HTTP_HOST')._server('REQUEST_URI'));
-
+	function logiksSystemBoot() {
+		if(LogiksSingleton::funcCheckout("logiksSystemBoot")) {
 			$dm=new DomainMap();
 			$dm->detect();
 
 			if(!defined("SITENAME")) {
 				trigger_error("SITE NOT DEFINED", E_USER_ERROR);
 			}
+		}
+	}
+
+	function logiksRequestBoot() {
+		if(LogiksSingleton::funcCheckout("logiksRequestBoot")) {
+			_envData("SESSION",'QUERY',$_GET);
+
+			_envData("SERVER",'REQUEST_PATH',SiteProtocol."://"._server('HTTP_HOST')._server('REQUEST_URI'));
+
+			define("PAGE",PageIndex::findPageFromURL(SITENAME));
 
 			if(!isset($_SESSION['SESS_USER_ID'])) $_SESSION['SESS_USER_ID']="";
 			if(!isset($_SESSION['SESS_USER_NAME'])) $_SESSION['SESS_USER_NAME']="Guest";
@@ -124,13 +122,6 @@ if(!function_exists("__cleanup")) {
 
 	function logiksServiceBoot() {
 		if(LogiksSingleton::funcCheckout("logiksServiceBoot")) {
-			$dm=new DomainMap();
-			$dm->detect(false);
-
-			if(!defined("SITENAME")) {
-				trigger_error("SITE NOT DEFINED", E_USER_ERROR);
-			}
-
 			if(!isset($_REQUEST['scmd'])) {
 				$rURI=explode("?", _server('REQUEST_URI'));
 				$rURI=explode(".", $rURI[0]);
@@ -184,14 +175,14 @@ if(!function_exists("__cleanup")) {
 
 			$cmdFormat=explode(",",SUPPORTED_OUTPUT_FORMATS);
 			if(!isset($_REQUEST['format'])) {
-				$_REQUEST['format']=getConfig("DEFAULT_OUTPUT_FORMAT");
+				$_REQUEST['format']=strtolower(getConfig("DEFAULT_OUTPUT_FORMAT"));
 			} else {
 				$_REQUEST['format']=strtolower($_REQUEST['format']);
-				if(!in_array($_REQUEST['format'], $cmdFormat)) {
-					trigger_logikserror(902, E_USER_ERROR);
-				} else {
-					$_GET['format']=$_REQUEST['format'];
-				}
+			}
+			if(!in_array($_REQUEST['format'], $cmdFormat)) {
+				trigger_logikserror(902, E_USER_ERROR);
+			} else {
+				$_GET['format']=$_REQUEST['format'];
 			}
 		}
 	}
@@ -252,6 +243,7 @@ if(!function_exists("__cleanup")) {
 	}
 
 	LogiksSingleton::funcRegister("logiksPreboot");
+	LogiksSingleton::funcRegister("logiksSystemBoot");
 	LogiksSingleton::funcRegister("logiksRequestBoot");
 	LogiksSingleton::funcRegister("logiksServiceBoot");
 

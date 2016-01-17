@@ -59,8 +59,8 @@ if(!isset($initialized)) {
 
 	LogiksConfig::fixPHPINIConfigs();
 
-	logiksRequestBoot();
-
+	logiksSystemBoot();
+	
 	include_once ROOT. "api/libs/logiksCache/boot.php";
 	include_once ROOT. "api/libs/loaders/boot.php";
 	include_once ROOT. "api/system.php";
@@ -71,6 +71,8 @@ if(!isset($initialized)) {
 	include_once ROOT. "api/libs/logiksTemplate/boot.php";
 
 	include_once ROOT. "api/libs/logiksPages/boot.php";
+
+	logiksRequestBoot();
 
 	loadHelpers(array("urltools","hooks","mobility","outputbuffer","shortfuncs"));
 

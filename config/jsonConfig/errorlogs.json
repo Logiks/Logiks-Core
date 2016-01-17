@@ -1,9 +1,33 @@
 {
     "GLOBALS": {
         "handler": {
-            "one": {
+            "generic": {
                 "Monolog\\Handler\\RotatingFileHandler":{
                     "params1":"#logFilePath#/app.log",
+                    "params2":30,
+                    "level":"NOTICE",
+                    "formatter":{
+                        "class":"Monolog\\Formatter\\LineFormatter",
+                        "params1":"#LOG_FORMAT#\n",
+                        "params2":"#LOG_DATE# #LOG_TIME#"
+                    }
+                }
+            },
+            "activity": {
+                "Monolog\\Handler\\RotatingFileHandler":{
+                    "params1":"#logFilePath#/app.log",
+                    "params2":30,
+                    "level":"NOTICE",
+                    "formatter":{
+                        "class":"Monolog\\Formatter\\LineFormatter",
+                        "params1":"#LOG_FORMAT#\n",
+                        "params2":"#LOG_DATE# #LOG_TIME#"
+                    }
+                }
+            },
+            "error": {
+                "Monolog\\Handler\\RotatingFileHandler":{
+                    "params1":"#logFilePath#/data.log",
                     "params2":30,
                     "level":"NOTICE",
                     "formatter":{
@@ -51,19 +75,19 @@
         },
         "logger": {
             "error": {
-                "handler": ["one"]
+                "handler": ["error"]
             },
             "console":{
                 "handler": "console"
             },
             "system":{
-                "handler": ["one","console"]
+                "handler": ["generic","console"]
             },
             "login":{
                 "handler": "login"
             },
             "activity":{
-                "handler": "blackhole"
+                "handler": "activity"
             },
             "pcron":{
                 "handler": "pcron"

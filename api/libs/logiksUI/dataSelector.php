@@ -13,9 +13,9 @@ if(!function_exists("createDataSelector")) {
 		$sqlObj=_db()->_selectQ("do_lists","title,value,class")
 			->_where(array("groupid"=>$groupID,"blocked"=>"false"));
 
-		if(isset($_SESSION['SESS_PRIVILEGE_ID'])) {
+		if(isset($_SESSION['SESS_PRIVILEGE_HASH'])) {
 			$sqlObj=$sqlObj->_where(array("privilege"=>"*"))
-				->where("(privilege='*' OR FIND_IN_SET('{$_SESSION['SESS_PRIVILEGE_NAME']}',privilege))");
+				->_where("(privilege='*' OR FIND_IN_SET('{$_SESSION['SESS_PRIVILEGE_HASH']}',privilege))");
 		} else {
 			$sqlObj=$sqlObj->_where(array("privilege"=>"*"));
 		}
@@ -54,7 +54,7 @@ if(!function_exists("createDataSelector")) {
 		if($orderBy==null) $sqlObj=$sqlObj->_orderby($colx);
 		elseif(strlen($orderBy)>0) $sqlObj=$sqlObj->_orderby($orderBy);
 
-		return generateSelect(_dataSQL($sqlObj));
+		return generateSelect(_dataSQL($sqlObj),null,null,$col1);
 	}
 
 	function createDataSelectorFromTable($table, $columns, $where=null, $groupBy=null,$orderBy=null) {

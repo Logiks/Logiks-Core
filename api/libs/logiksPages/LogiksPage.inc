@@ -23,9 +23,9 @@ class LogiksPage {
 
 		$this->device=strtolower(getUserDeviceType());
 
-		$pageFolder=APPROOT.APPS_PAGES_FOLDER."layouts_".$this->device."/";
+		$pageFolder=APPROOT.APPS_PAGES_FOLDER."defn_".$this->device."/";
 		if(!is_dir($pageFolder)) {
-			$pageFolder=APPROOT.APPS_PAGES_FOLDER."layouts/";
+			$pageFolder=APPROOT.APPS_PAGES_FOLDER."defn/";
 		}
 		if(is_dir($pageFolder)) {
 			$this->pageFolder=$pageFolder;
