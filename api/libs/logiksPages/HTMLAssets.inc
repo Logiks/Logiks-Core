@@ -30,7 +30,7 @@ class HTMLAssets {
 
 		$cacheLink="{$assetName}-{$assetType}-{$theme}";
 		$cachePath=_metaCache("HTMLAssets:".strtoupper($assetType),$cacheLink);
-		if(!$cachePath) {
+		if(!$cachePath || !file_exists($cachePath)) {
 			$searchPath=array();
 			if(!isset($this->assetBuffer["{$assetType}-{$theme}"])) {
 				$moduleFolders=getPluginFolders("modules",$this->siteName);
