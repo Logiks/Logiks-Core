@@ -23,7 +23,7 @@ function _service(cmd,action,format,q) {
 	if(cmd==null || cmd.length<=0) {
 		return "";
 	}
-	sxx="<?=SiteLocation?>services/"+cmd+"?site=<?=SITENAME?>&syshash=<?=md5(session_id())?>";
+	sxx="<?=SiteLocation?>services/"+cmd+"?site=<?=SITENAME?>&syshash=<?=getSysHash()?>";
 	<?php
 		if(isset($_REQUEST["forsite"]) && strlen($_REQUEST["forsite"])>0)
 			echo "sxx+='&forsite={$_REQUEST["forsite"]}';";

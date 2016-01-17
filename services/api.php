@@ -12,7 +12,7 @@ if(!function_exists("getServiceCMD")) {
 		if(_server('HTTP_REFERER')) {
 			$x=_server('HTTP_X_REQUESTED_WITH');
 
-			if(isset($_REQUEST['syshash']) && $_REQUEST['syshash']==md5(session_id())) {
+			if(isset($_REQUEST['syshash']) && $_REQUEST['syshash']==getSysHash()) {
 				return true;
 			} elseif($x) {
 				$isAjax = $x AND strtolower($x) === 'xmlhttprequest';
