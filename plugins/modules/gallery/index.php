@@ -2,6 +2,7 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("getGalleryImages")) {
+	
 	function getGalleryImages($galId,$index=0,$limit=100,$greedyOnLarge=false,$greedyOnThumbs=false,$autoImageTagOnGreedy=true,
 			$bPath="galleries/") {
 		$baseDir=APPROOT.APPS_MEDIA_FOLDER.$bPath;

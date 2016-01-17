@@ -30,6 +30,9 @@
    }
 
    public function checkUserPageAccess() {
+      if(defined("ACCESS") && strtolower(ACCESS)=="public") {
+        return true;
+      }
       $noLogin=explode(",", getConfig("PAGE_NOLOGIN"));
       $noLogin[]=getConfig("PAGE_LOGIN");
       if(in_array(PAGE, $noLogin)) {
