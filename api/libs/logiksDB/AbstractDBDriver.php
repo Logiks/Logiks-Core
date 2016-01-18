@@ -118,7 +118,7 @@
 	
 	//All mainline functions and All special queries
 	public function get_maxInCol($table,$colname) {
-		$sql="SELECT MAX($colname) as mv FROM $table";echo $sql;
+		$sql="SELECT MAX($colname) as mv FROM $table";
 		$result=$this->runQuery($sql);
 		if (!$result) {
 			return null;

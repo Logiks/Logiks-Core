@@ -13,9 +13,9 @@
 				"table"=>"",
 				"cols"=>"",
 				"where"=>"",
-				"groupby"=>"",
+				"groupby"=>array("group"=>null,"having"=>null),
 				"orderby"=>"",
-				"limits"=>array(),
+				"limits"=>array("limit"=>100,"offset"=>0),
 			);
 	protected $fromSQL=false;
 	
@@ -63,34 +63,17 @@
 		return $this;
 	}
 	
-	
 	//WHERE Functions
-	public function _where($where=null,$type="AND") {
-		if(is_array($this->obj['where'])) $this->obj['where']=implode(" AND ",$this->obj['where']);
+	public function _where($where=null,$joinType="AND",$implodeType='AND') {
+		if(!$where) return $this;
+		if(!is_array($this->obj['where'])) $this->obj['where']=[];
 		
-		$whr="";
 		if(is_array($where)) {
-			$w=array();
-			foreach($where as $a=>$b) {
-				if(is_array($b)) {
-					$w[]=$this->parseRelation($a,$b);
-				} else {
-					$w[]="$a=".$this->sqlData($b)."";
-				}
-			}
-			$whr.=implode(" AND ",$w);
-		} elseif(strlen($where)>0) {
-			$whr.=$where;
+			$this->obj['where'][]=array($joinType,$where,$implodeType);
+		} else {
+			$this->obj['where'][]=array($joinType,$where,$implodeType);
 		}
-		if(strlen($whr)>0) {
-			if(strpos(strtoupper($this->sql)," WHERE")<=0) {
-				$this->sql.=" WHERE {$whr}";
-				$this->obj['where'].=$whr;
-			} else {
-				$this->sql.=" {$type} ({$whr})";
-				$this->obj['where'].=" {$type} ({$whr})";
-			}
-		}
+		
 		return $this;
 	}
 	//GROUP BY Function
@@ -102,26 +85,9 @@
 			}
 			$groupby=$groupby["group"];
 		}
-		
-		$obj=array();
-		if(is_array($groupby)) {
-			$groupby=$this->cleanArr($groupby);
-			$this->sql.=(count($groupby) >= 1)?' GROUP BY '.implode(", ", $groupby):'';
-		} elseif(strlen($groupby)>0) {
-			$this->sql.=" GROUP BY $groupby";
-		}
-		if($having!=null) {
-			if(is_array($having)) {
-				if(is_array($having[1])) {
-					$having=$this->parseRelation($having[0],$having[1]);
-				} else {
-					$having="{$having[0]}=".$this->sqlData($having[1])."";
-				}
-				$this->sql.=" HAVING {$having}";
-			} elseif(strlen($having)>0) {
-				$this->sql.=" HAVING {$having}";
-			}
-		}
+		$groupby=$this->clean($groupby);
+		$having=$this->clean($having);
+
 		$this->obj['groupby']['group']=$groupby;
 		$this->obj['groupby']['having']=$having;
 		return $this;
@@ -131,9 +97,8 @@
 		if(!$orderby) return $this;
 		if(is_array($orderby)) {
 			$orderby=$this->cleanArr($orderby);
-			$this->sql.=(count($orderby) >= 1)?' ORDER BY '.implode(", ", $orderby):'';
-		} elseif(strlen($orderby)>0) {
-			$this->sql.=" ORDER BY $orderby";
+		} else {
+			$orderby=$this->clean($orderby);
 		}
 		$this->obj['orderby']=$orderby;
 		return $this;
@@ -149,15 +114,14 @@
 				$limit=$limit[1];
 			}
 		}
+
 		if(is_numeric($limit) && $limit>0) {
-			if($offset==null || !is_numeric($offset)) $offset=0;
-			else $offset=$this->clean($offset);
-			
 			$limit=$this->clean($limit);
-			$this->sql.=" LIMIT $offset,{$limit}";	
-		} elseif($offset!=null && is_numeric($offset)) {
-			$this->sql.=" LIMIT $offset";	
 		}
+
+		if($offset==null || !is_numeric($offset)) {
+			$offset=0;
+		} else $offset=$this->clean($offset);
 		
 		$this->obj['limits']['limit']=$limit;
 		$this->obj['limits']['offset']=$offset;
@@ -250,7 +214,72 @@
 	//GETS/SETS the sql data into a queryBuilder object
 	//@$sql	params	SQL Query to be set into QueryBuilder
 	public function _SQL($sql=null) {
-		return $this->sql;
+		//var_dump($this->obj);
+
+		$limit=$this->obj['limits']['limit'];
+		$offset=$this->obj['limits']['offset'];
+
+		$orderby=$this->obj['orderby'];
+
+		$group=null;
+		$having=null;
+		if(is_array($this->obj['groupby'])) {
+			if(isset($this->obj['groupby']['group'])) {
+				$group=$this->obj['groupby']['group'];
+			}
+			if(isset($this->obj['groupby']['having'])) {
+				$having=$this->obj['groupby']['having'];
+			}
+		}
+
+		$where=$this->obj['where'];
+
+		$sql=$this->sql;
+
+		$whereFinal=[];
+		if($where && is_array($where)) {
+			foreach($where as $a=>$b) {
+				if(!isset($b[2])) $b[2]="AND";
+				if(count($whereFinal)>0) {
+					$startW="{$b[0]}";
+				} else {
+					$startW="";
+				}
+				if(is_array($b[1])) {
+					$sx=[];
+					foreach ($b[1] as $m=>$n) {
+						if(!is_array($n)) {
+							$n=["VALUE"=>$n,"OP"=>"EQ"];
+						}
+						$sx[]=$this->parseRelation($m,$n);
+					}
+					$startW.=" (".implode(" {$b[2]} ", $sx).") ";
+				} else {
+					$startW.=" {$b[1]}";
+				}
+
+				$whereFinal[]=trim($startW);
+			}
+		}
+		if(count($whereFinal)>0) {
+			$sql.=" WHERE ".implode(" ", $whereFinal);
+		}
+
+		if($group && strlen($group)>0) {
+			$sql.=" GROUP BY $group";
+		}
+
+		if($having && strlen($having)>0) {
+			$sql.=" HAVING $having";
+		}
+
+		if($orderby && strlen($orderby)>0) {
+			$sql.=" ORDER BY $orderby";
+		}
+
+		$sql.=" LIMIT $offset, $limit";
+
+		return $sql;
 	}
 	//GETS/SETS the sql data into a queryBuilder object
 	//@$sql	params	SQL Query to be set into QueryBuilder
@@ -289,6 +318,7 @@
 		$cols="";
 		$where=null;
 		$groupby = null;
+		$having = null;
 		$orderby = null;
 		$index=0;
 		$limit = FALSE;
@@ -297,6 +327,7 @@
 		$cols=$arr['cols'];
 		if(isset($arr['where'])) $where=$arr['where'];
 		if(isset($arr['groupby'])) $groupby=$arr['groupby'];
+		if(isset($arr['having'])) $having=$arr['having'];
 		if(isset($arr['orderby'])) $orderby=$arr['orderby'];
 		if(isset($arr['limit'])) $limit=$arr['limit'];
 		if(isset($arr['index'])) $index=$arr['index'];
@@ -306,8 +337,8 @@
 			$table=$obj->_SQL();
 		}
 		
-		$objx=QueryBuilder::create($dbInstance)->_selectQ($table,$cols);
-		$objx=$objx->_where($where);
+		$objx=QueryBuilder::create($dbInstance)->_selectQ($table,$cols,$where);
+		//$objx->_where($where);
 		
 		if(isset($arr['join'])) {
 			foreach($arr['join'] as $jn) {
@@ -316,13 +347,13 @@
 				$as=$jn['as'];
 				$type=$jn['type'];
 				
-				$objx=$objx->_join($query,$condition,$as,$type);
+				$objx->_join($query,$condition,$as,$type);
 			}
 		}
 		
-		$objx=$objx->_groupby($groupby);
-		$objx=$objx->_orderby($orderby);
-		$objx=$objx->_limit($limit,$index);
+		$objx->_groupby($groupby,$having);
+		$objx->_orderby($orderby);
+		$objx->_limit($limit,$index);
 		
 		return $objx;
 	}
@@ -449,7 +480,7 @@
 			case "bn":case ":bn:":
 				$s="{$col} NOT LIKE '{$arr[0]}%'";
 			break;
-			
+
 			case "lw":case ":lw:":
 			case "ends":
 				$s="{$col} LIKE '%{$arr[0]}'";
@@ -461,7 +492,7 @@
 			
 			case "cw":case ":cw:":
 			case "in":case ":in:":
-			case "between":
+			case "between":case "like":
 				$s="{$col} LIKE '%{$arr[0]}%'";
 			break;
 			

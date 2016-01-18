@@ -231,7 +231,7 @@ class QueryBuilder extends AbstractQueryBuilder {
 			$this->obj=array(
 					"table"=>$table->_array(),
 					"cols"=>$cols,
-					"where"=>$where,
+					"where"=>[],
 					"groupby"=>$groupby,
 					"orderby"=>$orderby,
 					"limits"=>$limit,
@@ -242,7 +242,7 @@ class QueryBuilder extends AbstractQueryBuilder {
 			$this->obj=array(
 				"table"=>$table,
 				"cols"=>$cols,
-				"where"=>$where,
+				"where"=>[],
 				"groupby"=>$groupby,
 				"orderby"=>$orderby,
 				"limits"=>$limit,
