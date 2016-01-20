@@ -276,8 +276,13 @@
 		if($orderby && strlen($orderby)>0) {
 			$sql.=" ORDER BY $orderby";
 		}
-
-		$sql.=" LIMIT $offset, $limit";
+		
+		if($limit!=null && $limit>0) {
+			if($offset==null) {
+				$offset=0;
+			}
+			$sql.=" LIMIT $offset, $limit";
+		}
 
 		return $sql;
 	}

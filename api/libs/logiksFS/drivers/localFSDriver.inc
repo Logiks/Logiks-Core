@@ -101,10 +101,43 @@
  		return rename($path, $newPath);
  	}
  	
- 	public function copy($oldPath,$newPath) {trigger_error("Current FS Driver Does Not Support This");}
- 	public function move($oldPath,$newPath) {trigger_error("Current FS Driver Does Not Support This");}
+ 	public function copy($oldPath,$newPath) {
+ 		if(file_exists($oldPath)) {
+ 			
+ 		} elseif(file_exists($this->CURRENT_PATH.$oldPath)) {
+ 			$oldPath=$this->CURRENT_PATH.$oldPath;
+ 		} else {
+ 			return false;
+ 		}
 
- 	public function chmod($path,$permissions) {trigger_error("Current FS Driver Does Not Support This");}
+ 		return copy($oldPath,$newPath);
+ 	}
+ 	public function move($oldPath,$newPath) {
+ 		if(file_exists($oldPath)) {
+ 			
+ 		} elseif(file_exists($this->CURRENT_PATH.$oldPath)) {
+ 			$oldPath=$this->CURRENT_PATH.$oldPath;
+ 		} else {
+ 			return false;
+ 		}
+
+ 		$a=copy($oldPath,$newPath);	
+ 		unlink($oldPath);
+
+ 		return $a;
+ 	}
+
+ 	public function chmod($path,$permissions=0755) {
+ 		if(file_exists($path)) {
+ 			
+ 		} elseif(file_exists($this->CURRENT_PATH.$path)) {
+ 			$path=$this->CURRENT_PATH.$path;
+ 		} else {
+ 			return false;
+ 		}
+
+ 		return chmod($path,$permissions);
+ 	}
 
 	public function grep($path, $q) {trigger_error("Current FS Driver Does Not Support This");}
  	public function grepName($path, $q) {trigger_error("Current FS Driver Does Not Support This");}
