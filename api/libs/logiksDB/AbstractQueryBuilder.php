@@ -235,6 +235,7 @@
 		$where=$this->obj['where'];
 
 		$sql=$this->sql;
+		$sqlType=strtoupper(trim(current(explode(" ", $sql))));
 
 		$whereFinal=[];
 		if($where && is_array($where)) {
@@ -265,8 +266,10 @@
 			$sql.=" WHERE ".implode(" ", $whereFinal);
 		}
 
-		if($group && strlen($group)>0) {
-			$sql.=" GROUP BY $group";
+		if($sqlType=="SELECT") {
+			if($group && strlen($group)>0) {
+				$sql.=" GROUP BY $group";
+			}
 		}
 
 		if($having && strlen($having)>0) {
@@ -277,11 +280,13 @@
 			$sql.=" ORDER BY $orderby";
 		}
 		
-		if($limit!=null && $limit>0) {
-			if($offset==null) {
-				$offset=0;
+		if($sqlType=="SELECT") {
+			if($limit!=null && $limit>0) {
+				if($offset==null) {
+					$offset=0;
+				}
+				$sql.=" LIMIT $offset, $limit";
 			}
-			$sql.=" LIMIT $offset, $limit";
 		}
 
 		return $sql;
