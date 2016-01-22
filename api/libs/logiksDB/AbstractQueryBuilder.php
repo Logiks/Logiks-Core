@@ -15,7 +15,7 @@
 				"where"=>"",
 				"groupby"=>array("group"=>null,"having"=>null),
 				"orderby"=>"",
-				"limits"=>array("limit"=>100,"offset"=>0),
+				"limits"=>array("limit"=>null,"offset"=>null),
 			);
 	protected $fromSQL=false;
 	
