@@ -16,6 +16,14 @@ UserDevice="<?=strtoupper(getUserDevice())?>";
 UserDeviceType="<?=strtoupper(getUserDeviceType())?>";
 CurrentUser="<?=(isset($_SESSION['SESS_USER_ID']))?$_SESSION['SESS_USER_ID']:"" ?>";
 CurrentRole="<?=(isset($_SESSION['SESS_PRIVILEGE_NAME']))?$_SESSION['SESS_PRIVILEGE_NAME']:"" ?>";
+LingData={};
+<?php
+	$ling=Lingulizer::getInstance();
+	$json=json_encode($ling->lang);
+	if(strlen($json)>2) echo 'LingData='.$json.';';
+?>
+
+
 function getServiceCMD(cmd,action,q) {
 	return _service(cmd,action,null,q);
 }
@@ -68,7 +76,16 @@ function appMedia(media,userData) {
 	<?php } else { ?>
 		return "<?=SiteLocation."/".MEDIA_FOLDER?>"+media;
 	<?php } ?>
-	
+}
+function _ling(txt,forceWord,toLang) {
+	if(txt==null) return "";
+	if(forceWord==null) forceWord=true;
+	if(toLang==null) toLang="<?=getConfig("DEFAULT_LOCALE")?>";
+
+	txtTemp=txt.toLowerCase();
+
+	if(LingData[txtTemp]!=null) return LingData[txtTemp];
+	else return txt;
 }
 </script>
 

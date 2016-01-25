@@ -37,8 +37,8 @@ class Lingulizer {
 		return self::$instance;
 	}
 	public static function reloadInstance() {
-		Lingulizer::getInstance()->loadLocaleFile(getConfig("DEFAULT_LOCALE"));
 		if(defined("LINGUALIZER_DICTIONARIES")) Lingulizer::getInstance()->loadLocaleFile(LINGUALIZER_DICTIONARIES);
+		Lingulizer::getInstance()->loadLocaleFile(getConfig("DEFAULT_LOCALE"));
 	}
 	public function loadLocaleFile($locale) {
 		if(strlen($locale)<=0) return false;
@@ -89,6 +89,9 @@ class Lingulizer {
 	}
 	protected function loadDataFile($file) {
 		if(!file_exists($file)) {
+			return false;
+		}
+		if(in_array($file, $this->loadedLingFiles)) {
 			return false;
 		}
 		$fh=@fopen($file,"r");
@@ -146,7 +149,7 @@ class Lingulizer {
 
 	public function getSize() {
 		if($this->lang==null) return 0;
-		else return sizeOf($this->lang);
+		else return count($this->lang);
 	}
 
 	public function lingSeparator($txt=null) {
