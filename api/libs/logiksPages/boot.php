@@ -28,23 +28,30 @@ if(!function_exists("_css")) {
 
 		return $lx;
 	}
-	function _css($cssLnk,$themeName=null,$browser="",$media="") {
-		//$lx=_cssLink($cssLnk, $themeName);
-		$lx=LogiksSession::getInstance()->htmlAssets()->getAssetURL($cssLnk,'css');
-		if(strlen($lx)<=0) return false;
+	function _css($css,$themeName=null,$browser="",$media="") {
+		if(!is_array($css)) $css=explode(",", $css);
 
-		$html="";
-		if($browser!=null && strlen($browser)>0) {
-			$html.="<!--[if $browser]>\n";
-			$html.="<link href='$lx' rel='stylesheet' type='text/css'";
-			if($media!=null && strlen($media)>0) $html.=" media='$media'";
-			$html.=" />\n";
-			$html.="<![endif]-->\n";
-		} else {
-			$html.="<link href='$lx' rel='stylesheet' type='text/css'";
-			if($media!=null && strlen($media)>0) $html.=" media='$media'";
-			$html.=" />\n";
+		$html="\n\n";
+		foreach ($css as $cssLnk) {
+			if(strlen($cssLnk)<=0) continue;
+
+			//$lx=_cssLink($cssLnk, $themeName);
+			$lx=LogiksSession::getInstance()->htmlAssets()->getAssetURL($cssLnk,'css');
+			if(strlen($lx)<=0) continue;
+
+			if($browser!=null && strlen($browser)>0) {
+				$html.="<!--[if $browser]>\n";
+				$html.="<link href='$lx' rel='stylesheet' type='text/css'";
+				if($media!=null && strlen($media)>0) $html.=" media='$media'";
+				$html.=" />\n";
+				$html.="<![endif]-->\n";
+			} else {
+				$html.="<link href='$lx' rel='stylesheet' type='text/css'";
+				if($media!=null && strlen($media)>0) $html.=" media='$media'";
+				$html.=" />\n";
+			}
 		}
+		
 		return $html;
 	}
 
@@ -59,19 +66,26 @@ if(!function_exists("_css")) {
 
 		return $lx;
 	}
-	function _js($jsLnk,$themeName=null,$browser="") {
-		//$lx=_jsLink($jsLnk, $themeName);
-		$lx=LogiksSession::getInstance()->htmlAssets()->getAssetURL($jsLnk,'js');
-		if(strlen($lx)<=0) return false;
+	function _js($js,$themeName=null,$browser="") {
+		if(!is_array($js)) $js=explode(",", $js);
 
-		$html="";
-		if($browser!=null && strlen($browser)>0) {
-			$html.="<!--[if $browser]>\n";
-			$html.="<script src='$lx' type='text/javascript' language='javascript'></script>\n";
-			$html.="<![endif]-->\n";
-		} else {
-			$html.="<script src='$lx' type='text/javascript' language='javascript'></script>\n";
+		$html="\n\n";
+		foreach ($js as $jsLnk) {
+			if(strlen($jsLnk)<=0) continue;
+
+			//$lx=_jsLink($jsLnk, $themeName);
+			$lx=LogiksSession::getInstance()->htmlAssets()->getAssetURL($jsLnk,'js');
+			if(strlen($lx)<=0) continue;
+			
+			if($browser!=null && strlen($browser)>0) {
+				$html.="<!--[if $browser]>\n";
+				$html.="<script src='$lx' type='text/javascript' language='javascript'></script>\n";
+				$html.="<![endif]-->\n";
+			} else {
+				$html.="<script src='$lx' type='text/javascript' language='javascript'></script>\n";
+			}
 		}
+		
 		return $html;
 	}
 

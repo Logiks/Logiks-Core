@@ -27,6 +27,9 @@ if(!function_exists("createDataSelector")) {
 	}
 
 	function createDataSelectorFromUniques($table, $col1, $col2=null, $where="", $orderBy="") {
+		if(is_array($col2)) {
+			$col2=implode(",", $col2);
+		}
 		if($col2!=null && strlen($col2)>0) {
 			$sqlObj=_db()->_selectQ($table,"$col1,$col2")
 				->_where(array("blocked"=>"false"));
@@ -34,7 +37,7 @@ if(!function_exists("createDataSelector")) {
 			$sqlObj=_db()->_selectQ($table,"$col1")
 				->_where(array("blocked"=>"false"));
 		}
-		if($where!=null && strlen($where)>0) {
+		if($where!=null) {
 			$sqlObj=$sqlObj->_where($where);
 		}
 		$sqlObj=$sqlObj->_where("length($col1)>0");
@@ -61,7 +64,7 @@ if(!function_exists("createDataSelector")) {
 		$sqlObj=_db()->_selectQ($table,$columns)
 				->_where(array("blocked"=>"false"));
 
-		if($where!=null && strlen($where)>0) {
+		if($where!=null) {
 			$sqlObj=$sqlObj->_where($where);
 		}
 		
