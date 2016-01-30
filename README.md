@@ -11,7 +11,15 @@ Added the continuous testing and integration framework from Travis. Find the sta
 
 ###Server Requirments
 + PHP 5.6+
-+ Apache/Web Server with .htaccess capabilities and rewrite mod enabled
++ Supported Servers : Apache/Web Server with .htaccess capabilities
++ Supported OS : Windows 2000/XP/Vista/Server, CentOS, Any Linux 
++ Supported DBs: Mysql, SQLite
+
+###PHP.ini Configurations
++ Make sure you turn off notices in your php.ini file: 
++ error_reporting = E_ALL & ~E_NOTICE
++ Insure that you have set session.save_path to a valid directory
++ Ensure that short_open_tag = On
 
 ###Apache Mods Required
 + mod_rewrite
@@ -27,6 +35,9 @@ Added the continuous testing and integration framework from Travis. Find the sta
 + SQLite3 Libs
 + Curl Libs
 + GD Libs
+
+###Installation
+Complete installation instruction can be found at <https://github.com/Logiks/Logiks-Core/wiki/Installation>
 
 ###License
 Open Source MIT. Please visit the License Agreement Page Of <http://openlogiks.org/olgks/license/logiks>.

@@ -63,6 +63,10 @@ class Database {
 		}
 		return $a;
 	}
+	//Retrives the list of all database connections
+	public static function getConnectionList() {
+		return array_keys(Database::$connections);
+	}
 	//Gets the database object for the named db connection
 	public static function dbConnection($key) {
 		if(isset(Database::$connections[$key])) return Database::$connections[$key];

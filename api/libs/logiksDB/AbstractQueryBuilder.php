@@ -483,20 +483,24 @@
 			break;
 			
 			case "bw":case ":bw:":
+			case "sw":case ":sw:":
 			case "starts":
 				$s="{$col} LIKE '{$arr[0]}%'";
 			break;
 
 			case "bn":case ":bn:":
+			case "sn":case ":sn:":
 				$s="{$col} NOT LIKE '{$arr[0]}%'";
 			break;
 
 			case "lw":case ":lw:":
+			case "ew":case ":ew:":
 			case "ends":
 				$s="{$col} LIKE '%{$arr[0]}'";
 			break;
 
 			case "ln":case ":ln:":
+			case "ew":case ":ew:":
 				$s="{$col} NOT LIKE '%{$arr[0]}'";
 			break;
 			

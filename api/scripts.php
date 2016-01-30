@@ -88,4 +88,3 @@ function _ling(txt,forceWord,toLang) {
 	else return txt;
 }
 </script>
-
