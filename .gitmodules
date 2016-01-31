@@ -1,0 +1,3 @@
+[submodule "dashboard"]
+	path = dashboard
+	url = /srcspace/wwwLogiks/devlogiks/pluginsDev/modules/dashboard
