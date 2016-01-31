@@ -180,7 +180,7 @@ class QueryBuilder extends AbstractQueryBuilder {
 		
 		$this->sql=trim($sql);
 		
-		$this->_where($where,"AND");
+		//$this->_where($where);
 		$this->_orderby($orderby);
 		if($limit!==false) $this->_limit($limit);
 		

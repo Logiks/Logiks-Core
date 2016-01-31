@@ -90,7 +90,7 @@ class RoleModel {
 				$sql1=substr($sql1,0,strlen($sql1)-1);
 			}
 			if(strlen($sql1)>1) {
-				$sql="INSERT INTO {$roleTbl} (id,site,category,module,activity,privilegehash,remarks,allow,role_type,userid) VALUES $sql1";
+				$sql="INSERT INTO {$roleTbl} (id,site,category,module,activity,privilegehash,remarks,allow,role_type,creator) VALUES $sql1";
 				_dbQuery($sql,true);
 			}
 		}

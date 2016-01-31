@@ -7,6 +7,7 @@ CREATE TABLE `access` (
    `name` varchar(255),
    `sites` varchar(500),
    `blocked` enum('true','false') default 'false',
+   `creator` varchar(155) not null,
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`)
@@ -18,9 +19,9 @@ CREATE TABLE `privileges` (
    `hash` varchar(80),
    `site` varchar(150),
    `name` varchar(35),
-   `blocked` enum('true','false') default 'false',
    `remarks` varchar(255),
-   `userid` varchar(150),
+   `blocked` enum('true','false') default 'false',
+   `creator` varchar(155) not null,
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`)
@@ -37,7 +38,7 @@ CREATE TABLE `rolemodel` (
    `remarks` varchar(200),
    `allow` enum('true','false') default 'true',
    `role_type` varchar(55) not null default 'auto',
-   `userid` varchar(150),
+   `creator` varchar(155) not null,
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`)
@@ -156,6 +157,18 @@ CREATE TABLE `system_bucket` (
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
+CREATE TABLE `system_queue` (
+   `id` int(10) unsigned not null auto_increment,
+   `site` varchar(150) not null,
+   `queue_key` varchar(255) not null,
+   `queue_data` longblob,
+   `expires` timestamp,
+   `creator` varchar(150) not null,
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
 
 CREATE TABLE `system_cronjobs` (
    `id` int(11) not null auto_increment,
@@ -209,6 +222,7 @@ CREATE TABLE `users` (
    `refid` varchar(30),
    `security_policy` varchar(25) not null default 'open',
    `last_login` datetime,
+   `creator` varchar(155) not null,
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`),

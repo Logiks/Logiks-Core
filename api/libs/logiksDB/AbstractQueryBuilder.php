@@ -240,28 +240,39 @@
 		$whereFinal=[];
 		if($where && is_array($where)) {
 			foreach($where as $a=>$b) {
-				if(!isset($b[2])) $b[2]="AND";
-				if(count($whereFinal)>0) {
-					$startW="{$b[0]}";
-				} else {
-					$startW="";
-				}
-				if(is_array($b[1])) {
-					$sx=[];
-					foreach ($b[1] as $m=>$n) {
-						if(!is_array($n)) {
-							$n=["VALUE"=>$n,"OP"=>"EQ"];
-						}
-						$sx[]=$this->parseRelation($m,$n);
+				if(is_array($b)) {
+					if(!isset($b[2])) $b[2]="AND";
+					if(count($whereFinal)>0) {
+						$startW="{$b[0]}";
+					} else {
+						$startW="";
 					}
-					$startW.=" (".implode(" {$b[2]} ", $sx).") ";
-				} else {
-					$startW.=" {$b[1]}";
-				}
+					if(is_array($b[1])) {
+						$sx=[];
+						foreach ($b[1] as $m=>$n) {
+							if(!is_array($n)) {
+								$n=["VALUE"=>$n,"OP"=>"EQ"];
+							}
+							$sx[]=$this->parseRelation($m,$n);
+						}
+						$startW.=" (".implode(" {$b[2]} ", $sx).") ";
+					} else {
+						$startW.=" {$b[1]}";
+					}
 
-				$whereFinal[]=trim($startW);
+					$whereFinal[]=trim($startW);
+				} else {
+					$b=explode(":", $b);
+					if(!isset($b[1])) $b[1]="EQ";
+					if(count($whereFinal)>0) {
+						$whereFinal[]=" AND ".$this->parseRelation($a,["VALUE"=>$b[0],"OP"=>$b[1]]);
+					} else {
+						$whereFinal[]=$this->parseRelation($a,["VALUE"=>$b[0],"OP"=>$b[1]]);
+					}
+				}
 			}
 		}
+
 		if(count($whereFinal)>0) {
 			$sql.=" WHERE ".implode(" ", $whereFinal);
 		}

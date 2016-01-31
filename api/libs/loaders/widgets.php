@@ -23,6 +23,8 @@ if(!function_exists('loadAllWidgets')) {
 		if(strlen($widget)<=0) return;
 		if(!Widgets::isEnabled($widget)) return;
 
+		$widget=str_replace(".","/",str_replace("/", "", $widget));
+
 		$cachePath=_metaCache("WIDGETS",$widget);
 		if(!$cachePath) {
 			$path=getAllWidgetsFolders();

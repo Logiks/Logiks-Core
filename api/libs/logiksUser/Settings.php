@@ -10,7 +10,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("getSettings")) {
 
-	function getSettings($name,$defaultValue="",$scope="default") {//,$type="string",$editParams="",$class=""
+	function getSettings($name,$defaultValue="",$scope="system") {//,$type="string",$editParams="",$class=""
 		if(strlen($name)<=0 || !isset($_SESSION['SESS_USER_ID'])) return $defaultValue;
 
 		$sql=_db(true)->_selectQ(_dbTable("settings",true),"name,settings")->_where(array(
@@ -26,13 +26,13 @@ if(!function_exists("getSettings")) {
 			if(isset($data[0])) {
 				return $data[0]['settings'];
 			} else {
-				registerSettings($name,$value,$scope);
+				registerSettings($name,$defaultValue,$scope);
 			}
 		}
 		return $defaultValue;
 	}
 	
-	function setSettings($name,$value="",$scope="default") {
+	function setSettings($name,$value="",$scope="system") {
 		if(strlen($name)<=0 || !isset($_SESSION['SESS_USER_ID'])) return $defaultValue;
 
 		$sql=_db(true)->_selectQ(_dbTable("settings",true),"name,settings")->_where(array(
@@ -52,9 +52,10 @@ if(!function_exists("getSettings")) {
 				$q=_db(true)->_updateQ(_dbTable("settings",true),$data,array(
 						"userid"=>$_SESSION['SESS_USER_ID'],
 						"site"=>SITENAME,
-						"scope"=>$scope,
+						"scope"=>strtolower($scope),
 						"name"=>$name,
 					));
+				
 				_dbQuery($q,true);
 				return $value;
 			}
@@ -63,11 +64,11 @@ if(!function_exists("getSettings")) {
 		return false;
 	}
 	
-	function registerSettings($name,$value="",$scope="default") {
+	function registerSettings($name,$value="",$scope="system") {
 		$data=array(
 				"userid"=>$_SESSION['SESS_USER_ID'],
 				"site"=>SITENAME,
-				"scope"=>$scope,
+				"scope"=>strtolower($scope),
 				"name"=>$name,
 				"settings"=>$value,
 			);
