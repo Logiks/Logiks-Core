@@ -43,11 +43,6 @@
 	}
 	
 	//CRUD stands for Create, Update, Retrive and Delete.
-	public function _envelop($sql) {
-		$this->sql=$sql;
-		return $this;
-	}
-
 	public function _selectQ($table, $cols="", $where=null, $groupby = null, $orderby = null, $limit = FALSE) {return $this;}
 	public function _insertQ($table, $keys, $values) {return $this;}
 	public function _insertQ1($table, $arr) {return $this;}
@@ -58,8 +53,7 @@
 	public function _deleteQ($table, $where = array(), $limit = false) {return $this;}
 
 	public function _raw($sql) {
-		if($this->sql==null) $this->sql="";
-		$this->sql.=$sql; 
+		$this->sql=$sql; 
 		return $this;
 	}
 	

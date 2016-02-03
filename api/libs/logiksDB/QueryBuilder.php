@@ -166,7 +166,7 @@ class QueryBuilder extends AbstractQueryBuilder {
 	public function _updateQ($table, $values, $where, $orderby = array(), $limit = false) {
 		$this->obj['table']=$table;
 		$this->obj['cols']=array_keys($values);
-		$this->obj['where']=$where;
+		//$this->obj['where']=$where;
 		
 		foreach($values as $key => $val) {
 			$valstr[] = $key." = '".parent::clean($val)."'";
@@ -180,7 +180,7 @@ class QueryBuilder extends AbstractQueryBuilder {
 		
 		$this->sql=trim($sql);
 		
-		//$this->_where($where);
+		$this->_where($where);
 		$this->_orderby($orderby);
 		if($limit!==false) $this->_limit($limit);
 		
@@ -200,7 +200,7 @@ class QueryBuilder extends AbstractQueryBuilder {
 	 */
 	public function _deleteQ($table, $where = array(), $limit = false) {
 		$this->obj['table']=$table;
-		$this->obj['where']=$where;
+		//$this->obj['where']=$where;
 		
 		$sql="DELETE FROM $table";
 

@@ -54,14 +54,14 @@ if(!function_exists("getUserList")) {
 				"blocked"=>'false'
 			));
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]>ROLE_PRIME) {
-			//$sql=$sql->_raw(" AND (site='".SITENAME."' OR site='*')");
+			//$sql=$sql->_where(" (site='".SITENAME."' OR site='*')");
 			$sql1=_db(true)->_selectQ(_dbTable("access",true),"id")->_where(array(
 				"blocked"=>'false'
-			))->_raw(" AND FIND_IN_SET('".SITENAME."',sites) OR sites='*'");
+			))->_where(" (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
 			$sql=$sql->_query("accessid",$sql1);
 		}
 		if(strlen($where)>0) {
-			$sql=$sql->_raw(" AND ($where)");
+			$sql=$sql->_where(" ($where)");
 		}
 		if(strlen($orderBy)>0) {
 			$sql=$sql->_orderBy($orderBy);
@@ -91,7 +91,7 @@ if(!function_exists("getUserList")) {
 				"name"=>$privilageName,
 			));
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]>ROLE_PRIME) {
-			$sql=$sql->_raw(" AND (site='".SITENAME."' OR site='*')");
+			$sql=$sql->_where(" (site='".SITENAME."' OR site='*')");
 		}
 
 		$res=_dbQuery($sql,true);
@@ -108,10 +108,10 @@ if(!function_exists("getUserList")) {
 				"blocked"=>'false'
 			));
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]>ROLE_PRIME) {
-			$sql=$sql->_raw(" AND (site='".SITENAME."' OR site='*')");
+			$sql=$sql->_where(" (site='".SITENAME."' OR site='*')");
 		}
 		if(strlen($where)>0) {
-			$sql=$sql->_raw(" AND ($where)");
+			$sql=$sql->_where(" ($where)");
 		}
 
 		$res=_dbQuery($sql,true);
@@ -170,7 +170,7 @@ if(!function_exists("getUserList")) {
 			));
 		$sql1=_db(true)->_selectQ(_dbTable("access",true),"id")->_where(array(
 			"blocked"=>'false',
-		))->_raw(" AND FIND_IN_SET('".SITENAME."',sites) OR sites='*'");
+		))->_where(" (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
 		$sql=$sql->_query("accessid",$sql1);
 
 		$res=_dbQuery($sql,true);
@@ -224,7 +224,7 @@ if(!function_exists("getUserList")) {
 		//Check PrivilegeID
 		$sql=_db(true)->_selectQ(_dbTable("privileges",true),"count(*) as cnt")->_where(array(
 				"id"=>$privilegeID,
-			))->_raw(" AND (site='".SITENAME."' OR site='*')");
+			))->_where(" (site='".SITENAME."' OR site='*')");
 		$res=_dbQuery($sql,true);
 		if(!$res) {
 			return array("error"=>"PrivilegeID Query Error");
@@ -232,14 +232,14 @@ if(!function_exists("getUserList")) {
 		$data=_dbData($res,true);
 		_dbFree($res,true);
 		if($data[0]['cnt']<=0) {
-			return array("error"=>"PrivilegeID Not Found This Site $site");
+			return array("error"=>"PrivilegeID Not Found For Site $site");
 		}
 
 		//Check AccessID
 		$sql=_db(true)->_selectQ(_dbTable("access",true),"count(*) as cnt")->_where(array(
 				"blocked"=>'false',
 				"id"=>$accessID,
-			))->_raw(" AND (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
+			))->_where(" (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
 		$res=_dbQuery($sql,true);
 		if(!$res) {
 			return array("error"=>"AccessID Query Error");
@@ -247,7 +247,7 @@ if(!function_exists("getUserList")) {
 		$data=_dbData($res,true);
 		_dbFree($res,true);
 		if($data[0]['cnt']<=0) {
-			return array("error"=>"AccessID Not Found For This Site $site");
+			return array("error"=>"AccessID Not Found For For Site $site");
 		}
 
 		$params=getDefaultParams($userID,$pwd,$privilegeID,$accessID);
@@ -301,7 +301,7 @@ if(!function_exists("getUserList")) {
 				$privilegeID=$dataUser['privilegeid'];
 				$sql=_db(true)->_selectQ(_dbTable("privileges",true),"count(*) as cnt")->_where(array(
 						"id"=>$privilegeID,
-					))->_raw(" AND (site='".SITENAME."' OR site='*')");
+					))->_where(" (site='".SITENAME."' OR site='*')");
 				$res=_dbQuery($sql,true);
 				if(!$res) {
 					return array("error"=>"PrivilegeID Query Error");
@@ -318,7 +318,7 @@ if(!function_exists("getUserList")) {
 				$sql=_db(true)->_selectQ(_dbTable("access",true),"count(*) as cnt")->_where(array(
 						"blocked"=>'false',
 						"id"=>$accessID,
-					))->_raw(" AND (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
+					))->_where(" (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
 				$res=_dbQuery($sql,true);
 				if(!$res) {
 					return array("error"=>"AccessID Query Error");
