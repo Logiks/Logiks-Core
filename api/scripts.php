@@ -33,8 +33,9 @@ function _service(cmd,action,format,q) {
 	}
 	sxx="<?=SiteLocation?>services/"+cmd+"?site=<?=SITENAME?>&syshash=<?=getSysHash()?>";
 	<?php
-		if(isset($_REQUEST["forsite"]) && strlen($_REQUEST["forsite"])>0)
+		if(isset($_REQUEST["forsite"]) && strlen($_REQUEST["forsite"])>0) {
 			echo "sxx+='&forsite={$_REQUEST["forsite"]}';";
+		}
 	?>
 	if(action!=null && action.length>0) {
 		sxx+="&action="+action;
@@ -63,6 +64,11 @@ function _link(href) {
 			echo '} else {';
 				echo "href+='?site=".SITENAME."';";
 			echo '}';
+		}
+	?>
+	<?php
+		if(isset($_REQUEST["forsite"]) && strlen($_REQUEST["forsite"])>0) {
+			echo "href+='&forsite={$_REQUEST["forsite"]}';";
 		}
 	?>
 	return href;

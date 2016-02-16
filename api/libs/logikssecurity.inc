@@ -51,6 +51,7 @@
               break;
             case 'private':
                 if(session_check()) return true;
+                //if(!defined("PAGE")) return true;
                 $noLogin=explode(",", getConfig("PAGE_NOLOGIN"));
                 $noLogin[]=getConfig("PAGE_LOGIN");
                 if(in_array(PAGE, $noLogin)) {

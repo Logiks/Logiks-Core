@@ -62,6 +62,8 @@ if(!function_exists("getServiceCMD")) {
 		if($errCode==null) $errCode=500;
 		if(is_numeric($errCode)) {
 		  $errorMessage=getErrorTitle($errCode);
+	    } else {
+	    	$errorMessage="";
 	    }
 	    if($errMsg==null) {
 	    	$errMsg=$errorMessage;

@@ -70,6 +70,21 @@
 		
 		return $this;
 	}
+	//public function _query($where=null,$joinType="AND",$implodeType='AND') {
+	public function _query($col,$query,$relation="IN",$glueType="AND") {
+		if(is_a($query,"AbstractQueryBuilder")) {
+			$sql=$query->_SQL();
+			$this->_where("$col $relation ($sql)");
+		//} elseif(is_array($query)) {
+
+		} elseif(is_string($query)) {
+			$this->_where("$col $relation ($sql)");
+		} else {
+			trigger_error("$query should be an object of AbstractQueryBuilder or String");// or Array
+		}
+
+		return $this;
+	}
 	//GROUP BY Function
 	public function _groupby($groupby,$having=null) {
 		if(!$groupby) return $this;
@@ -122,31 +137,7 @@
 		
 		return $this;
 	}
-	//SubQuery
-	public function _query($col,$query,$relation="IN",$glueType="AND") {
-		if(is_a($query,"QueryBuilder")) {
-			$this->obj['query']=array(
-				"col"=>$col,
-				"query"=>$query->_array(),
-				"relation"=>$relation,
-				"glueType"=>$glueType,
-			);
-			$query=$query->_SQL();
-			$this->sql=trim($this->sql)." {$glueType} {$col} {$relation} ({$query})";
-		} elseif(is_array($query)) {
-			
-		} else {
-			$this->obj['query']=array(
-				"col"=>$col,
-				"query"=>$query,
-				"relation"=>$relation,
-				"glueType"=>$glueType,
-			);
-			$this->sql=trim($this->sql)." {$glueType} {$col} {$relation} ({$query})";
-		}
-		
-		return $this;
-	}
+	
 	//Join Statements
 	public function _join($query,$condition,$as=null,$type="LEFT") {
 		if(is_a($query,"QueryBuilder")) {

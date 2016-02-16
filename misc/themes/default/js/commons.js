@@ -220,3 +220,24 @@ function showField(formID,input) {
 function insertAfter(parent, node, referenceNode) {
 	parent.insertBefore(node, referenceNode.nextSibling);
 }
+
+function calcTime(time) {
+  var units = {
+      "yr": 24*60*365,
+      "mnth": 24*60*30,
+      "week": 24*60*7,
+      "day": 24*60,
+      "hr": 60,
+      "min": 1,
+  }
+
+  var result = []
+
+  for(var name in units) {
+    var p =  Math.floor(time/units[name]);
+    if(p == 1) result.push(p + " " + name);
+    if(p >= 2) result.push(p + " " + name + "s");
+    time %= units[name]
+  }
+  return result.join(" ");
+}

@@ -10,6 +10,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!function_exists("generateSelect")) {
 	include_once "commons.php";
 	include_once "dataSelector.php";
+	include_once "selectGenerator.php";
 	include_once "arraytotree.inc";
 
 	function generateSelect(LogiksData $ld,$searchQ="",$paramTags=null,$titleCol="title") {
