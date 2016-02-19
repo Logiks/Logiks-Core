@@ -8,6 +8,17 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
+/*Shorthand function for special folders for this site*/
+if(!function_exists("_dirTemp")) {
+	function _dirTemp($dir) {
+		$fx=ROOT.CACHE_APPS_FOLDER.SITENAME."/{$dir}/";
+		if(!is_dir($fx)) {
+			mkdir($fx,0777,true);
+		}
+		return $fx;
+	}
+}
+
 /*URL Oriented Functions*/
 if(!function_exists("_link")) {
 	//default url generator for logiks

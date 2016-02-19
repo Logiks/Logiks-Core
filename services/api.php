@@ -20,6 +20,8 @@ if(!function_exists("getServiceCMD")) {
 					return true;
 				}
 			}
+		} elseif(isset($_REQUEST['syshash']) && $_REQUEST['syshash']==getSysHash()) {
+			return true;
 		}
 		return false;
 	}

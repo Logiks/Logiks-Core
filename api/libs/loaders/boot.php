@@ -60,7 +60,7 @@ if(!function_exists('getLoaderFolders')) {
 				$cmdArr[]=ROOT.$path.$scmd."/service";
 			}
 			$cmdArr=array_unique($cmdArr);
-			
+
 			foreach($cmdArr as $fl) {
 				foreach ($supportedEngines as $ext) {
 					$fpath="{$fl}.{$ext}";
