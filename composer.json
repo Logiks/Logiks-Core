@@ -11,6 +11,12 @@
             "email": "bismay4u@gmail.com",
             "homepage": "https://openlogiks.org/",
             "role": "Admin"
+        },
+        {
+            "name": "Kshyana Prava Hati",
+            "email": "kshyana23@gmail.com",
+            "homepage": "https://openlogiks.org/",
+            "role": "Admin"
         }
     ],
     "require": {
