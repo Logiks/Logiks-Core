@@ -63,5 +63,31 @@
 			"readonly":false,
 			"block":[]
 		}
+	},
+"play": {
+		"app":{
+			"driver":"mysqli",
+			"host":"localhost",
+			"port":"",
+			"database":"devlogiks400_appdb",
+			"user":"devlogiks",
+			"pwd":"devlogiks",
+			"prefix":"",
+			"suffix":"",
+			"readonly":false,
+			"block":[]
+		},
+		"test":{
+			"driver":"sqlite3",
+			"host":"localhost",
+			"port":"",
+			"database":"testdata",
+			"user":"",
+			"pwd":"",
+			"prefix":"",
+			"suffix":"",
+			"readonly":false,
+			"block":[]
+		}
 	}
 }

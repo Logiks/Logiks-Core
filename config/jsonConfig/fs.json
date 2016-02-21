@@ -32,5 +32,11 @@
         "app":{
             "driver":"local"
         }
+    },
+    "play": {
+        "app":{
+            "driver":"local",
+            "basedir":"/srcspace/wwwLogiks/devlogiks/apps/play/services/"
+        }
     }
 }

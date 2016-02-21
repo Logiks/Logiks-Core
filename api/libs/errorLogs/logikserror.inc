@@ -252,6 +252,7 @@ class LogiksError {
       $errTmplData['stackTrace-Table']=array_reverse($errTmplData['stackTrace-Table']);
       $errTmplData['stackTrace-Table']=implode("", $errTmplData['stackTrace-Table']);
     }
+    //printArray($errCFG);exit();
     if(is_object($errCFG)) {
       $html=$errCFG->getPageContent($errData);
       if(!$html) $html="";
