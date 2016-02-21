@@ -40,12 +40,12 @@ Added the continuous testing and integration framework from Travis. Find the sta
 Complete installation instruction can be found at <https://github.com/Logiks/Logiks-Core/wiki/Installation>
 
 ###License
-Open Source MIT. Please visit the License Agreement Page Of <http://openlogiks.org/olgks/license/logiks>.
+Open Source MIT. Please visit the License Agreement Page Of <http://openlogiks.org/license/logiks>.
 This project uses some other open source projects, please find their descriptions at OpenLogiks License Page.
 
 ###Notes
 These are plain source code of/part of the complete working project.
-+ For more details visit <http://openlogiks.org>
++ For more details visit <http://openlogiks.org/>
 + For a complete api documentation  visit <http://apidocs.openlogiks.org/>
-+ For a complete working downloadable package please visit <http://openlogiks.org/olgks/downloads/>
-+ For a complete working demo visit <http://demo.openlogiks.org>
++ For a complete working downloadable package please visit <http://openlogiks.org/downloads/>
++ Use Logiks Play to learn and explore Logiks, prototype parts of your app without installing anything <http://play.openlogiks.net>

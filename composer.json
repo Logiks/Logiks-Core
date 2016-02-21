@@ -1,0 +1,23 @@
+{
+    "name": "logiks/logiks-core",
+    "type": "project",
+    "description": "Logiks Framework Core",
+    "keywords": ["logiks","framework"],
+    "homepage": "https://openlogiks.org/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bismay K Mohapatra",
+            "email": "bismay4u@gmail.com",
+            "homepage": "https://openlogiks.org/",
+            "role": "Admin"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+    }
+}
