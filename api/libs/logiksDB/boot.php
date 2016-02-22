@@ -65,7 +65,7 @@ if(!function_exists("_db")) {
 	}
 	function _dbTable($tblName,$dbKey=null) {
 		if($dbKey===true) $dbKey="core";
-		elseif($dbKey==null) $dbKey=Database::getKeyForQuery($query);
+		elseif($dbKey==null) $dbKey=Database::getKeyForQuery($tblName);
 		
 		if(Database::isOpen($dbKey)) {
 			return Database::dbConnection($dbKey)->get_Table($tblName);
