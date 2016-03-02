@@ -149,7 +149,9 @@ class LogiksConfig {
   public function loadJSONConfig($configName,$forceReload=false) {
     $cfgData=array();
     
-    if($forceReload && isset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName])) unset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName]);
+    if($forceReload && isset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName])) {
+    	unset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName]);
+    }
 
     if(isset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName])) {
     	$cfgData=LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName];
