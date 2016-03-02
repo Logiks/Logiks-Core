@@ -29,12 +29,13 @@ Added the continuous testing and integration framework from Travis. Find the sta
 
 ###Server Requirments
 + MySQL 5.6+	For database
-+ Memcached		For caching (Optional)
++ Memcached	For caching (Optional)
 
 ###Optional Requirments
 + SQLite3 Libs
 + Curl Libs
 + GD Libs
++ Memcached Libs
 
 ###Installation
 Complete installation instruction can be found at <https://github.com/Logiks/Logiks-Core/wiki/Installation>
@@ -49,3 +50,4 @@ These are plain source code of/part of the complete working project.
 + For a complete api documentation  visit <http://apidocs.openlogiks.org/>
 + For a complete working downloadable package please visit <http://openlogiks.org/downloads/>
 + Use Logiks Play to learn and explore Logiks, prototype parts of your app without installing anything <http://play.openlogiks.net>
+
