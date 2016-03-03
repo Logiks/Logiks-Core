@@ -52,14 +52,14 @@ if(!function_exists('loadModule')) {
 		}
 		return false;
 	}
-	function loadModuleComponent($component,$module) {
+	function loadModuleComponent($module,$component) {
 		$f=checkModule($module);
 		if(strlen($f)>0) {
 			$ff=[
 					dirname($f)."/api.php"=>false,
 					dirname($f)."/comps/{$component}.php"=>false
 				];
-			foreach ($ff as $fx) {
+			foreach ($ff as $fx=>$status) {
 				if(file_exists($fx)) {
 					@include $fx;
 					$ff[$fx]=true;

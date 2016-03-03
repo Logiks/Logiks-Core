@@ -12,6 +12,9 @@ if(!defined("BASEPATH")) {
 
   //Load the app.cfg and app Config Folder
   loadLogiksApp(SITENAME);
+
+  logiksRequestBoot();
+
   loadLogiksBootEngines();
 
   $security=new LogiksSecurity();

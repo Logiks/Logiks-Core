@@ -39,7 +39,9 @@
 
 	public function _get() {
 		$res=$this->dbInstance->runQuery($this);
-		return $this->dbInstance->fetchAllData($res);
+		$data=$this->dbInstance->fetchAllData($res);
+		$this->dbInstance->free($res);
+		return $data;
 	}
 	
 	//CRUD stands for Create, Update, Retrive and Delete.

@@ -16,7 +16,6 @@ CREATE TABLE `access` (
 
 CREATE TABLE `privileges` (
    `id` int(10) unsigned not null auto_increment,
-   `hash` varchar(80),
    `site` varchar(150),
    `name` varchar(35),
    `remarks` varchar(255),

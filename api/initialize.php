@@ -72,8 +72,6 @@ if(!isset($initialized)) {
 
 	include_once ROOT. "api/libs/logiksPages/boot.php";
 
-	logiksRequestBoot();
-
 	loadHelpers(array("urltools","hooks","mobility","outputbuffer","shortfuncs"));
 
 	$initialized=true;

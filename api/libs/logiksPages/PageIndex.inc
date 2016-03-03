@@ -18,7 +18,7 @@ class PageIndex {
 		$page=str_replace(InstallFolder, "", $page);
 		if(substr($page, 0,1)=="/") $page=substr($page, 1);
 		if($page==null || strlen($page)<=0) {
-			$page="home";
+			$page=getConfig("PAGE_HOME");
 		}
 
 		return $page;

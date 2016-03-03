@@ -23,6 +23,25 @@ if(!function_exists("checkUserRoles")) {
 		return trim(strtolower(preg_replace('/\W/', '', $name)));
 	}
 
+	function getMyRoleHash() {
+		if(!isset($_SESSION["SESS_PRIVILEGE_HASH"])) {
+			if(isset($_SESSION["SESS_PRIVILEGE_NAME"]) && isset($_SESSION["SESS_PRIVILEGE_ID"])) {
+				$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_NAME"].$_SESSION["SESS_PRIVILEGE_ID"]);
+			} else {
+				return false;
+			}
+		}
+		return $_SESSION["SESS_PRIVILEGE_HASH"];
+	}
+	function fetchUserRoleHash($userid) {
+		$tbl1=_dbTable("users", true);
+		$tbl2=_dbTable("privileges", true);
+		$data=_db(true)->_raw("SELECT md5(concat({$tbl2}.name,{$tbl2}.id)) as hash FROM {$tbl1},{$tbl2} WHERE {$tbl1}.privilegeid={$tbl2}.id AND {$tbl1}.userid='root'")
+				->_get();
+		if(isset($data[0])) return $data[0]['hash'];
+		else return false;
+	}
+
 	//Returns the User Configuration for the scope
 	function getUserConfig($configKey,$baseFolder=null,$reset=false) {
 		$configKey=strtolower($configKey);

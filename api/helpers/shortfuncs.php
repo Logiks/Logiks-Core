@@ -264,35 +264,36 @@ if(!function_exists("_replace")) {
 }
 
 if(!function_exists("_pageConfig")) {
-	function _pageConfig($key,$value=null) {
-		if(!isset($value) && $value!=null) {
-			if($value==-1) {
-				unset($_ENV['PAGECONFIG'][$key]);
-			} else {
-				$_ENV['PAGECONFIG'][$key]=$value;
-			}
-		}
-  		if(isset($_ENV['PAGECONFIG']) && isset($_ENV['PAGECONFIG'][$key])) {
-  			return $_ENV['PAGECONFIG'][$key];
-  		}
-  		return false;
-  	}
-  	function _pageParams($params) {
-  		if(is_array($params)) {
-  			foreach ($params as $key => $value) {
-  				_pageVar($key,$value);
+	//Sets single variable into enviroment, volatile in nature,
+  	function _pageVar($key,$value=null) {
+  		if($value==null) {
+  			if(isset($_ENV['PAGEVAR'][$key])) {
+  				return $_ENV['PAGEVAR'][$key];
+  			} else {
+  				return false;
   			}
-  			return true;
   		}
-  		return false;
-  	}
-  	function _pageVar($key,$value) {
 		if($value==-1 && isset($_ENV['PAGEVAR'][$key])) {
 			unset($_ENV['PAGEVAR'][$key]);
 			return false;
 		}
   		$_ENV['PAGEVAR'][$key]=$value;
   		return $value;
+  	}
+  	//Sets single variable into enviroment, across session
+  	function _pageConfig($key,$value=null) {
+		if($value==null) {
+  			if(isset($_SESSION['PAGECONFIG'][$key])) {
+  				return $_SESSION['PAGECONFIG'][$key];
+  			} else {
+  				return false;
+  			}
+  		}
+		if($value==-1 && isset($_SESSION['PAGECONFIG'][$key])) {
+			unset($_SESSION['PAGECONFIG'][$key]);
+		}
+		$_SESSION['PAGECONFIG'][$key]=$value;
+		return $value;
   	}
 }
 ?>

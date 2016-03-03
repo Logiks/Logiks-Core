@@ -33,7 +33,7 @@
       if(defined("ACCESS") && strtolower(ACCESS)=="public") {
         return true;
       }
-      $noLogin=explode(",", getConfig("PAGE_NOLOGIN"));
+      $noLogin=explode(",", getConfig("LOGIN_EXEMPT"));
       $noLogin[]=getConfig("PAGE_LOGIN");
       if(in_array(PAGE, $noLogin)) {
         return true;
@@ -52,7 +52,7 @@
             case 'private':
                 if(session_check()) return true;
                 //if(!defined("PAGE")) return true;
-                $noLogin=explode(",", getConfig("PAGE_NOLOGIN"));
+                $noLogin=explode(",", getConfig("LOGIN_EXEMPT"));
                 $noLogin[]=getConfig("PAGE_LOGIN");
                 if(in_array(PAGE, $noLogin)) {
                   return true;
