@@ -225,7 +225,7 @@ if (!function_exists('printArray')) {
 	}
 	function createTimeStamp($encoded=true) {
 		if($encoded) {
-			$s=date(TIMESTAMP_FORMAT).microtime();
+			$s=date(getConfig("TIMESTAMP_FORMAT")).microtime();
 			if(function_exists("md5")) {
 				$s=md5($s);
 			} else {
@@ -233,7 +233,7 @@ if (!function_exists('printArray')) {
 			}
 			return $s;
 		} else {
-			$s=date(TIMESTAMP_FORMAT).microtime();
+			$s=date(getConfig("TIMESTAMP_FORMAT")).microtime();
 			return $s;
 		}
 	}

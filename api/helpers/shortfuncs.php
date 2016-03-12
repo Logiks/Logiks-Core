@@ -70,7 +70,7 @@ if(!function_exists("_time")) {
 		$timeStore=array("h"=>"","H"=>"","i"=>"","u"=>"","s"=>"","g"=>"","G"=>"","a"=>"","A"=>"");
 
 		$inFormat=str_replace("-","/",$inFormat);
-		$inFormat=str_replace(TIME_SEPARATOR,":",$inFormat);
+		$inFormat=str_replace(getConfig("TIME_SEPARATOR"),":",$inFormat);
 
 		if($inFormat==$outFormat) return $time;
 
@@ -206,9 +206,9 @@ if(!function_exists("_pDate")) {
 if(!function_exists("_timestamp")) {
 	function _timestamp($micro=true) {
 		if($micro)
-			return date(TIMESTAMP_FORMAT).microtime();
+			return date(getConfig("TIMESTAMP_FORMAT")).microtime();
 		else
-			return date(TIMESTAMP_FORMAT);
+			return date(getConfig("TIMESTAMP_FORMAT"));
 	}
 }
 /*Xtra Functions*/
