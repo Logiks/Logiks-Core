@@ -36,7 +36,7 @@ if(!function_exists('isValidEmail')) {
 				"bcc"=>"",
 				"replyto"=>"",
 				"attachments"=>array(),
-				"msg_plain"=>strip_tags($msgBody),
+				"msg_plain"=>strip_tags($body),
 			);
 		if(_session("SESS_USER_EMAIL") && strlen(_session("SESS_USER_EMAIL"))>0) {
 			$defaultParams['from']=_session("SESS_USER_EMAIL");
@@ -84,9 +84,11 @@ if(!function_exists('isValidEmail')) {
 
 		$mail = new PHPMailer();
 		$mail->isSMTP();
-		//$mail->SMTPDebug = 3;                               // Enable verbose debug output
-		//$mail->Debugoutput = 'html';
 
+		if(isset($mailConfig['debug']) && $mailConfig['debug']) {
+			$mail->SMTPDebug = 3;                               // Enable verbose debug output
+			$mail->Debugoutput = 'html';
+		}
 		//$mailConfig['engine']=="smtp"
 
 		//Set the hostname of the mail server

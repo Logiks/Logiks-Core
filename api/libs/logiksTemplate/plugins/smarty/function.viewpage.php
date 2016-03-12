@@ -32,8 +32,11 @@ function smarty_function_viewpage($params, Smarty_Internal_Template $template) {
 					$dx=[];
 					foreach ($vx as $key => $value) {
 						$dx[$key]=$value->value;
+						$template->smarty->assign($key,$value->value);
 					}
-					_templatePage($f,$dx);
+					$template->smarty->assign("viewpage",$f);
+					$template->smarty->display($f);
+					//_templatePage($f,$dx);
 				break;
 				case 'htm':
 					readfile($f);

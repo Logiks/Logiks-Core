@@ -12,8 +12,8 @@ class AbstractTemplateEngine {
 	public function __construct() {
 	}
 
-	public function compileTemplate($tmpl,$data=array()) {}
-	public function fetchTemplate($tmpl,$data=array()) {}
+	public function compileTemplate($tmpl,$data=array(),$tmplID=null) {}
+	public function fetchTemplate($tmpl,$data=array(),$tmplID=null) {}
 
 	public function clearCache($tmpl) {}
 	public function isCached($tmpl) {}

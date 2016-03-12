@@ -78,7 +78,7 @@ if($data['blocked']=="true") {
 
 //Creating Access Rules
 $q3="SELECT sites,name as access_name FROM "._dbTable("access",true)." where id='".$data['accessid']."' and blocked='false'";
-$q4="SELECT hash,name as privilege_name FROM "._dbTable("privileges",true)." where id='".$data['privilegeid']."' and blocked='false'";
+$q4="SELECT id,md5(concat(name,id)) as hash,name as privilege_name FROM "._dbTable("privileges",true)." where id='".$data['privilegeid']."' and blocked='false'";
 
 $result=$dbLink->executeQuery($q3);
 if($result) {
@@ -224,7 +224,7 @@ function initializeLogin($userid,$domain, $dbLink,$params=array()) {
 	// } else {
 	// 	startNewSession($userid, $domain, $dbLink, $params);
 	// }
-	exit();
+	exit("Login Failed !!!");
 }
 //All session functions
 function startNewSession($userid, $domain, $dbLink, $params=array()) {

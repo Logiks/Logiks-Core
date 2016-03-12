@@ -50,19 +50,19 @@ class LogiksTemplate {
   }
 
   //BYPASS printTemplate to driver
-  public function printTemplate($tmpl,$data=array(),$recreateCache=false) {
-    if(!file_exists($tmpl)) {
-  		trigger_error("Template ".basename($tmpl)." Not Found",E_USER_ERROR);
-  	}
-    $html=$this->engine->fetchTemplate($tmpl,$data,$recreateCache);
-    $html=$this->processTemplate($html,$data);
-    echo $html;
-  }
-  public function getTemplateData($tmpl,$data=array(),$recreateCache=false) {
+  public function printTemplate($tmpl,$data=array(),$tmplID=null,$recreateCache=false) {
     if(!file_exists($tmpl)) {
       trigger_error("Template ".basename($tmpl)." Not Found",E_USER_ERROR);
     }
-    $html=$this->engine->fetchTemplate($tmpl,$data,$recreateCache);
+    $html=$this->engine->fetchTemplate($tmpl,$data,$tmplID,$recreateCache);
+    $html=$this->processTemplate($html,$data);
+    echo $html;
+  }
+  public function getTemplateData($tmpl,$data=array(),$tmplID=null,$recreateCache=false) {
+    if(!file_exists($tmpl)) {
+      trigger_error("Template ".basename($tmpl)." Not Found",E_USER_ERROR);
+    }
+    $html=$this->engine->fetchTemplate($tmpl,$data,$tmplID,$recreateCache);
     $html=$this->processTemplate($html,$data);
     return $html;
   }

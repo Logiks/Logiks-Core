@@ -11,7 +11,7 @@ include_once dirname(__FILE__)."/engines/AbstractTemplateEngine.inc";
 include_once dirname(__FILE__)."/LogiksTemplate.inc";
 
 if(!function_exists("_template")) {
-	function _template($file,$dataArr=null,$sqlQuerySet=null) {
+	function _template($file,$dataArr=null,$sqlQuerySet=null,$tmplID=null) {
 		//$file=str_replace(".","/",$file);
 		if(strtolower(strstr($file,"."))!=".tpl") {
 			$file.=".tpl";
@@ -48,12 +48,12 @@ if(!function_exists("_template")) {
 		$lt->loadSQL($sqlQuerySet);
 
 		if(MASTER_DEBUG_MODE)
-			$lt->printTemplate($file,$dataArr,true);
+			$lt->printTemplate($file,$dataArr,$tmplID,true);
 		else
-			$lt->printTemplate($file,$dataArr);
+			$lt->printTemplate($file,$dataArr,$tmplID);
 	}
 
-	function _templateData($templateData,$dataArr=null,$sqlData="",$editable=true) {
+	function _templateData($templateData,$dataArr=null,$sqlData="",$tmplID=null,$editable=true) {
 		if($dataArr==null) {
 			$dataArr=array();
 			$dataArr["date"]=date(getConfig("PHP_DATE_FORMAT"));

@@ -140,11 +140,13 @@ class LogiksPage {
 					$lt=new LogiksTemplate($engine);
 					$this->setupMeta($lt);
 					
+					$tmplID=md5(PAGE.$tmpl);
+
 					ob_start();
 					if(MASTER_DEBUG_MODE)
-						$lt->printTemplate($tmpl,$dataPrint,true);
+						$lt->printTemplate($tmpl,$dataPrint,$tmplID,true);
 					else
-						$lt->printTemplate($tmpl,$dataPrint);
+						$lt->printTemplate($tmpl,$dataPrint,$tmplID);
 
 					$html=ob_get_contents();
 					ob_clean();
@@ -222,13 +224,15 @@ class LogiksPage {
 
 					$lt=new LogiksTemplate($engine);
 					$this->setupMeta($lt);
-					
+
+					$tmplID=md5(PAGE.$tmpl);
+
 					if(count($pageConfig['modules_preload'])>0) loadModule($pageConfig['modules_preload']);
 
 					if(MASTER_DEBUG_MODE)
-						$lt->printTemplate($tmpl,null,true);
+						$lt->printTemplate($tmpl,null,$tmplID,true);
 					else
-						$lt->printTemplate($tmpl,null);
+						$lt->printTemplate($tmpl,null,$tmplID);
 
 					if(count($pageConfig['modules_postload'])>0) loadModule($pageConfig['modules_postload']);
 
@@ -408,6 +412,14 @@ class LogiksPage {
 
 		if(strlen(trim($page['JS_POSTLOAD']))>0) 
 			$page['JS_POSTLOAD']="<script src='"._jsLink(explode(",", trim($page['JS_POSTLOAD'])))."' type='text/javascript' language='javascript'></script>";
+
+
+		if(isset($_ENV['PAGEVAR']) && is_array($_ENV['PAGEVAR'])) {
+			foreach ($_ENV['PAGEVAR'] as $key => $value) {
+				$page[$key]=$value;
+			}
+		}
+		//var_dump($page);exit();
 
 		$logiksTemplate->addVar("PAGE",$page);
   	}

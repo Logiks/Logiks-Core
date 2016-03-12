@@ -104,7 +104,7 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
     $this->smartyEngine->clearCache($tmpl);
   }
 
-  public function compileTemplate($tmpl,$data=array()) {
+  public function compileTemplate($tmpl,$data=array(),$tmplID=null) {
     foreach($data as $a=>$b) {
       $this->addVar($a,$b);
     }
@@ -119,7 +119,7 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
   //$caching==0 Means Temp Data
 	//$caching==1 Means Replace The Old Data In Cache
 	//$caching==2 Means Use Old Data
-	public function fetchTemplate($tmpl,$data=array(),$recreateCache=false) {
+	public function fetchTemplate($tmpl,$data=array(),$tmplID=null,$recreateCache=false) {
     //echo $tmpl;
     if(is_array($data)) {
       foreach($data as $a=>$b) {
@@ -138,14 +138,22 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
     if($recreateCache) {
       $this->clearCache($tmpl);
     }
-
+    if(getConfig("TEMPLATE_CLEARCACHE_ON_DISPLAY")) {
+      $this->clearCache($tmpl);
+    }
+    //$this->clearCache($tmpl);exit();
+    //println("$tmpl $tmplID");
     //var_dump($this->smartyEngine);
 
     $this->addVar("ROOT",ROOT);
     $this->addVar("WEBROOT",WEBROOT);
 
     ob_start();
-    $this->smartyEngine->display($tmpl);
+    if($tmplID && strlen($tmplID)>3) {
+      $this->smartyEngine->display($tmpl,$tmplID);
+    } else {
+      $this->smartyEngine->display($tmpl);
+    }
     $data=ob_get_contents();
     ob_clean();
 
