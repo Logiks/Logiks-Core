@@ -94,5 +94,47 @@ if(!function_exists("_template")) {
 
 		return $body;
 	}
+
+	function _templateFetch($file,$dataArr=null,$sqlQuerySet=null,$tmplID=null) {
+		//$file=str_replace(".","/",$file);
+		if(strtolower(strstr($file,"."))!=".tpl") {
+			$file.=".tpl";
+		}
+		if(!file_exists($file)) {
+			$fss=[];
+			if(defined("APPS_TEMPLATE_FOLDER")) $fss[]=APPROOT.APPS_TEMPLATE_FOLDER.$file;
+			if(defined("TEMPLATE_FOLDER")) {
+				$fss[]=APPROOT.TEMPLATE_FOLDER.$file;
+				$fss[]=ROOT.TEMPLATE_FOLDER.$file;
+			}
+			$templateFound=false;
+			foreach ($fss as $fx) {
+				if(file_exists($fx)) {
+					$file=$fx;
+					$templateFound=true;
+					break;
+				}
+			}
+			if(!$templateFound) {
+				return false;
+			}
+		}
+		$ext=explode(".", $file);
+		$ext=$ext[count($ext)-1];
+		$ext=".{$ext}";
+		$engine=LogiksTemplate::getEngineForExtension($ext);
+
+		$lt=new LogiksTemplate($engine);
+		
+		$sqlFile=str_replace(".tpl", ".sql", $file);
+		if(!file_exists($sqlFile)) $sqlFile=false;
+		$lt->loadSQL($sqlFile);
+		$lt->loadSQL($sqlQuerySet);
+
+		if(MASTER_DEBUG_MODE)
+			return $lt->getTemplateData($file,$dataArr,$tmplID,true);
+		else
+			return $lt->getTemplateData($file,$dataArr,$tmplID);
+	}
 }
 ?>

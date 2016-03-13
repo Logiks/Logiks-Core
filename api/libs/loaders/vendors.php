@@ -30,6 +30,8 @@ if(!function_exists('loadVendor')) {
   function checkVendor($vendor) {
     if(strlen($vendor)<=0) return false;
 
+    $vendor=strtolower($vendor);
+
     $cachePath=_metaCache("VENDORS",$vendor);
 
     if(!$cachePath || !file_exists($cachePath)) {
@@ -38,10 +40,14 @@ if(!function_exists('loadVendor')) {
       $fpath="";
 			foreach($vendorPath as $a) {
 				$f1=ROOT . $a . $vendor . "/boot.php";
+        $f2=ROOT . $a . $vendor . "/$vendor.php";
 				if(file_exists($f1)) {
           $fpath=$f1;
 					break;
-				} else {
+				} elseif(file_exists($f2)) {
+          $fpath=$f2;
+          break;
+        } else {
 					$fpath="";
 				}
 			}

@@ -100,13 +100,16 @@ class LogiksClassLoader {
 		$vendorpath=$GLOBALS['vendorPath'];
 		foreach($vendorpath as $p) {
 			if(function_exists("logiks_replace")) {
-				$p=logiks_replace($p);
+				$p=logiks_replace($p)."vendors/";
 			}
 			$pths=array(
 					$p.$fileName . '.php',
 					$p.$fileName . '.inc',
+					$p.strtolower($fileName) . '.php',
+					$p.strtolower($fileName) . '.inc',
 				);
 			foreach ($pths as $f) {
+				//println($f);
 				if(file_exists($f)) {
 					$this->addToCache($cls, $f);
 					return $f;

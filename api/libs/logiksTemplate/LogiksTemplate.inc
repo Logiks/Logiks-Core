@@ -32,8 +32,8 @@ class LogiksTemplate {
     $this->engineParam=self::$templateEngines[$engine];
     $this->engineName=$engine;
 
-    if(!is_dir(CACHE_TEMPLATES_FOLDER)) {
-			mkdir(CACHE_TEMPLATES_FOLDER,0755,true);
+    if(!is_dir(ROOT.CACHE_TEMPLATES_FOLDER)) {
+			mkdir(ROOT.CACHE_TEMPLATES_FOLDER,0755,true);
 		}
 
     if(isset($this->engineParam['source']) && strlen($this->engineParam['source'])>0) {
