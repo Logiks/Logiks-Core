@@ -94,7 +94,7 @@
 		}
 		return true;
 	}
-	public function runCommandQuery($sql) {$this->qCount++;return false;}
+	public function runCommandQuery($sql) {$this->qCount++;return true;}
 	
 	//Resultset based functions
 	public function fetchData($resultSet,$format="assoc") {

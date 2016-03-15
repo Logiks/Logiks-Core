@@ -43,6 +43,10 @@
 		$this->dbInstance->free($res);
 		return $data;
 	}
+
+	public function _run() {
+		return $this->dbInstance->runQuery($this);
+	}
 	
 	//CRUD stands for Create, Update, Retrive and Delete.
 	public function _selectQ($table, $cols="", $where=null, $groupby = null, $orderby = null, $limit = FALSE) {return $this;}
