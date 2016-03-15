@@ -127,6 +127,23 @@
  		return $a;
  	}
 
+ 	public function upload($localPath,$newPath) {
+ 		if(file_exists($localPath)) {
+ 			
+ 		} elseif(file_exists($this->CURRENT_PATH.$localPath)) {
+ 			$localPath=$this->CURRENT_PATH.$localPath;
+ 		} else {
+ 			return false;
+ 		}
+
+ 		if(!is_dir(dirname($newPath))) mkdir(dirname($newPath),0777,true);
+
+ 		$a=copy($localPath,$newPath);
+ 		unlink($localPath);
+
+ 		return $a;
+ 	}
+
  	public function chmod($path,$permissions=0755) {
  		if(file_exists($path)) {
  			
@@ -142,7 +159,6 @@
 	public function grep($path, $q) {trigger_error("Current FS Driver Does Not Support This");}
  	public function grepName($path, $q) {trigger_error("Current FS Driver Does Not Support This");}
 
- 	public function upload($path,$file) {trigger_error("Current FS Driver Does Not Support This");}
 	public function download($path,$targetDir) {trigger_error("Current FS Driver Does Not Support This");}
  }
  ?>

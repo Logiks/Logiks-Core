@@ -16,6 +16,6 @@ $pg=$lp->loadPage(PAGE);
 if($pg) {
 	$lp->printPage();
 } else {
-	trigger_logikserror("Sorry, page not found",E_LOGIKS_ERROR,404);
+	trigger_logikserror("Sorry, '".PAGE."' page not found",E_LOGIKS_ERROR,404);
 }
 ?>

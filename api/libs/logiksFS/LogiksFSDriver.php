@@ -42,7 +42,7 @@
  	public function rm($path) {trigger_error("Current FS Driver Does Not Support This");}
  	public function rename($path,$newName) {trigger_error("Current FS Driver Does Not Support This");}
  	
- 	public function upload($path,$file) {trigger_error("Current FS Driver Does Not Support This");}
+ 	public function upload($localPath,$newPath) {trigger_error("Current FS Driver Does Not Support This");}
 	public function download($path,$targetDir) {trigger_error("Current FS Driver Does Not Support This");}
  	
  	public function copy($oldPath,$newPath) {trigger_error("Current FS Driver Does Not Support This");}

@@ -20,7 +20,7 @@ if(!function_exists("_fs")) {
 		if($params==null || !is_array($params)) {
 			$cfg=loadJSONConfig("fs");
 			if(!isset($cfg[$fsKey])) {
-				trigger_error("FS ERROR, Connection Configuration Could Not Be Found For {$fsKey}");	
+				trigger_error("FS ERROR, Connection Configuration Could Not Be Found For {$fsKey}");
 			} else {
 				$params=$cfg[$fsKey];
 			}
