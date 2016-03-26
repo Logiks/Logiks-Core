@@ -3,8 +3,8 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists('loadConfigs')) {
 
-	function loadConfigs($pathParam) {
-		return LogiksConfig::getInstance()->loadConfigs($pathParam);
+	function loadConfigs($pathParam,$reload=false) {
+		return LogiksConfig::getInstance()->loadConfigs($pathParam,$reload);
 	}
 
 	//No Compile Yet and loads json configuration on demand.

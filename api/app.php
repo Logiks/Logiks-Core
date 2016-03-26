@@ -26,7 +26,7 @@ if(!function_exists("loadLogiksApp")) {
     if(!file_exists($apps_cfg)) {
     	trigger_error("Site <b>'".$appName."'</b> Has Not Yet Been Activated (missing apps.cfg).",E_USER_ERROR);
     }
-    loadConfigs($apps_cfg);
+    loadConfigs($apps_cfg,true);
 
     if(defined("RELINK") && strlen(RELINK)>0) {
       if(substr(RELINK, 0,7)=="http://" || substr(RELINK, 0,8)=="https://") {

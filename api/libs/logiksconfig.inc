@@ -58,7 +58,7 @@ class LogiksConfig {
     return false;
   }
 
-  public function loadConfigs($pathParam) {
+  public function loadConfigs($pathParam,$reload=false) {
     $ckey=$this->getCompileKey($pathParam);
     if(defined("MASTER_DEBUG_MODE") && MASTER_DEBUG_MODE) {
       $this->compileConfig($pathParam);
@@ -66,6 +66,9 @@ class LogiksConfig {
     } else {
       if(!$this->isPreCompiled($ckey)) {
         $this->compileConfig($pathParam);
+      }
+      if($reload) {
+      	$this->compileConfig($pathParam);
       }
       return $this->loadCompiledConfig($ckey);
     }
@@ -137,8 +140,10 @@ class LogiksConfig {
     else return false;
   }
   protected function getCompileKey($pathParam) {
-    if(is_array($pathParam)) return md5(implode("-", $pathParam));
-    else return md5($pathParam);
+  	$site="core";
+  	if(defined("SITENAME")) $site=SITENAME;
+    if(is_array($pathParam)) return $site."-".md5(implode("-", $pathParam));
+    else return $site."-".md5($pathParam);
   }
   protected function getCompilePath($compileKey) {
     return $this->configCompilePath.$compileKey;
