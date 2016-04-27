@@ -15,12 +15,13 @@ if(!isset($initialized)) {
 	//clearstatcache();
 	@session_start();
 
-	$_SESSION['REQUEST_PAGE_START']=microtime(true);
+	$startTime=microtime(true);
+	$_SESSION['REQUEST_PAGE_START']=$startTime;
 
 	include_once 'syscheck.php';
 	include_once 'commons.php';
 
-	_envData("SESSION",'REQUEST_PAGE_START',$_SESSION['REQUEST_PAGE_START']);
+	_envData("SESSION",'REQUEST_PAGE_START',$startTime);
 
 	$dirPath=str_replace(_server("DOCUMENT_ROOT"),'',dirname(_server("SCRIPT_FILENAME"))."/");
 	$dirPath=substr($dirPath, 1);
@@ -28,6 +29,7 @@ if(!isset($initialized)) {
 
 	if(!defined("WEBROOT")) define ('WEBROOT', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
 			str_replace("//", "/", _server('HTTP_HOST').dirname(_server('SCRIPT_NAME'))."/"));
+	
 	if(!defined("SiteLocation")) define ('SiteLocation', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
 			str_replace("//", "/", _server('HTTP_HOST')."/".InstallFolder."/"));
 	

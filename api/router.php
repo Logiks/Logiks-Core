@@ -27,12 +27,8 @@ if(!defined("BASEPATH")) {
     trigger_error("Site <b>'".SITENAME."'</b> Does Not Have ROUTER Defined.",E_USER_ERROR);
   }
 
-  //$routerDir=ROOT.API_FOLDER."libs/routers/";
-  //$routerFile="{$routerDir}{$routerPage}.php";
-
   $routerFiles=array(
       APPROOT."{$routerPage}.php",
-      //APPROOT."router.php",
       ROOT.API_FOLDER."libs/routers/{$routerPage}.php"
     );
 

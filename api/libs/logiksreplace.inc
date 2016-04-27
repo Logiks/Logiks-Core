@@ -79,35 +79,16 @@ class LogiksReplace {
 		if(strpos($in,"@")>0) {
 			$inArr=explode("@",$in);
 			$in=$inArr[0];
-			if(isset($inArr[1])) $con=strtolower($inArr[1]);
+			
+      if(isset($inArr[1])) $con=strtolower($inArr[1]);
 			else $con="get";
-			if($con=="get" && isset($_GET[$in])) return $_GET[$in];
-			elseif($con=="post" && isset($_POST[$in])) return $_POST[$in];
-			elseif($con=="session" && isset($_SESSION[$in])) return $_SESSION[$in];
-			elseif($con=="server" && _server($in)) return _server($in);
-			elseif($con=="cookie" && isset($_COOKIE[$in])) return $_COOKIE[$in];
+
+			if($con=="get") return $_GET[$in];
+			elseif($con=="post") return $_POST[$in];
+			elseif($con=="session") return _session[$in];
+			elseif($con=="server") return _server($in);
+			elseif($con=="cookie") return _cookie[$in];
 			return "";
-		// } elseif(strpos($in,"!")>0) {
-		// 	$inArr=explode("!",$in);
-		// 	$in=$inArr[0];
-		// 	if(isset($inArr[1])) $n=strtolower($inArr[1]);
-		// 	else $n=0;
-		// 	$sr="";
-    //
-		// 	if(isset($dataArr[$in])) $sr=$dataArr[$in];
-		// 	elseif(isset($_REQUEST[$in])) $sr=$_REQUEST[$in];
-		// 	elseif(isset($_SESSION[$in])) $sr=$_SESSION[$in];
-		// 	elseif(_server($in)) $sr=_server($in);
-		// 	elseif(isset($_COOKIE[$in])) $sr=$_COOKIE[$in];
-		// 	else $sr=getConfig($in);
-    //
-		// 	if(!is_array($sr)) {
-		// 		$sr=str_replace(",","/",$sr);
-		// 		$sr=explode("/",$sr);
-		// 	}
-		// 	if(isset($sr[$n])) return $sr[$n];
-		// 	elseif(isset($sr[0])) return $sr[0];
-		// 	else return "";
 		} else {
 			if(isset($this->dataArr[$in])) return $this->dataArr[$in];
 			elseif(isset($_REQUEST[$in])) return $_REQUEST[$in];

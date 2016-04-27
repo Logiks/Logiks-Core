@@ -9,9 +9,9 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("getRequestTime")) {
-  loadHelpers("pathfuncs");
+	loadHelpers("pathfuncs");
 
-  	function redirectTo($relink=null,$carryForwardQuery=true) {
+	function redirectTo($relink=null,$carryForwardQuery=true) {
 	    echo "<h5>Redirecting To Application ...</h5>";
 
 	    if(substr($relink, 0,7)=="http://" || substr($relink, 0,8)=="https://") {
@@ -21,14 +21,15 @@ if(!function_exists("getRequestTime")) {
 	      header("Location:$relink");
 	    }
 		exit();
- 	}
+	}
 
-  //Quick hack to delete the cookies at runtime and impact tthe system as well.
-  function deleteCookies($name) {
+	//Quick hack to delete the cookies at runtime and impact tthe system as well.
+	function deleteCookies($name) {
 		setcookie($name, "", time()-1000000000);
 		if(isset($_COOKIE[$name])) unset($_COOKIE[$name]);
 	}
-    //Checks is localhost
+
+	//Checks is localhost
 	function isLocalhost() {
 		$client=_server('REMOTE_ADDR');
 		$server=_server('SERVER_ADDR');
@@ -36,13 +37,14 @@ if(!function_exists("getRequestTime")) {
 		elseif($server=="localhost" || $server=="127.0.0.1") return true;
 		else return false;
 	}
+	
 	//Used for converting filepath to direct webpath, $refs :: __FILE__
 	function getLocation($refs) {
 		$x=SiteLocation . "/" .str_replace(ROOT,"",$refs);
 		return $x;
 	}
-  //Clears the permission cache
-  function flushPermissions($site=SITENAME) {
+		//Clears the permission cache
+		function flushPermissions($site=SITENAME) {
 		$f=ROOT.CACHE_PERMISSIONS_FOLDER."{$site}/";
 		if(is_dir($f)) {
 			$fs=scandir($f);
@@ -54,25 +56,25 @@ if(!function_exists("getRequestTime")) {
 		}
 		return false;
 	}
-  //Used for debugging
-  function getFunctionCaller() {
+  	//Used for debugging
+  	function getFunctionCaller() {
 		$trace=debug_backtrace();
 		array_shift($trace);//Remove Self
 		//array_shift($trace);//Remove Parent
 		$caller=array_shift($trace);//Caller
 		return $caller;
 	}
-  //Returns the list of supported pages for Logiks
-  function getSupportedPages($page=null) {
-    if($page==null) $page="page";
-		$arr=array(
-      "pages"=>array(
-        "{$page}.php","{$page}.htm","{$page}.html","{$page}.tpl"
-      ),
-      "config"=>array(
-        "{$page}.cfg","{$page}.json","{$page}.lst"
-      )
-    );
+  	//Returns the list of supported pages for Logiks
+  	function getSupportedPages($page=null) {
+	    if($page==null) $page="page";
+			$arr=array(
+	      "pages"=>array(
+	        "{$page}.php","{$page}.htm","{$page}.html","{$page}.tpl"
+	      ),
+	      "config"=>array(
+	        "{$page}.cfg","{$page}.json","{$page}.lst"
+	      )
+	    );
 		return $arr;
 	}
 	//Logsout the session cleanly

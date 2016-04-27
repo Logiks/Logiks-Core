@@ -23,8 +23,8 @@ if(!function_exists("__cleanup")) {
 
 		if(function_exists("runHooks")) runHooks("shutdown");
 
-		// saveSettings();
-		// saveSiteSettings();
+		if(function_exists("saveSettings")) saveSettings();
+		if(function_exists("saveSiteSettings")) saveSiteSettings();
 		if(function_exists("saveSession")) saveSession();
 
 		if(class_exists("LogiksCache"))  {
@@ -33,7 +33,6 @@ if(!function_exists("__cleanup")) {
 		}
 
 		if(class_exists("Database")) Database::closeAll();
-
 
 	 // $error = error_get_last();
 	 //    if ($error['type'] == 1) {
@@ -93,6 +92,7 @@ if(!function_exists("__cleanup")) {
 		if(_server('HTTPS')) {
 			$hostProtocol="https://";
 		}
+		_envData("SERVER",'SiteProtocol',str_replace("://","",$hostProtocol));
 		define('SiteProtocol',str_replace("://","",$hostProtocol));
 	}
 
@@ -113,7 +113,9 @@ if(!function_exists("__cleanup")) {
 
 			_envData("SERVER",'REQUEST_PATH',SiteProtocol."://"._server('HTTP_HOST')._server('REQUEST_URI'));
 
-			define("PAGE",PageIndex::findPageFromURL(SITENAME));
+			$page=PageIndex::findPageFromURL(SITENAME);
+			_envData("SERVER","PAGE",$page);
+			define("PAGE",$page);
 
 			if(!isset($_SESSION['SESS_USER_ID'])) $_SESSION['SESS_USER_ID']="";
 			if(!isset($_SESSION['SESS_USER_NAME'])) $_SESSION['SESS_USER_NAME']="Guest";
@@ -148,6 +150,7 @@ if(!function_exists("__cleanup")) {
 				//		PATCH, COPY, HEAD, OPTIONS, LINK, UNLINK, LOCK, UNLOCK, PROPFIND,
 				$_REQUEST['action']="";
 			}
+			
 			if(!isset($_REQUEST['actionslug'])) $_REQUEST['slugpath']=$_REQUEST['action'];
 			if(!isset($_REQUEST['slug'])) $_REQUEST['slug']=array();
 
@@ -198,13 +201,11 @@ if(!function_exists("__cleanup")) {
 
 		switch ($status) {
 			case 'development':
-				if(isset($_GET['debug']) && $_GET['debug']=="true") {
-				    ini_set('display_errors', 'On');
-				    error_reporting(1);
-				    if(!defined("MASTER_DEBUG_MODE")) {
-				    	define("MASTER_DEBUG_MODE",true);
-				    }
-				}
+				ini_set('display_errors', 'On');
+			    error_reporting(1);
+			    if(!defined("MASTER_DEBUG_MODE")) {
+			    	define("MASTER_DEBUG_MODE",true);
+			    }
 			break;
 			case 'staging':
 				if(isset($_GET['debug']) && $_GET['debug']=="true") {

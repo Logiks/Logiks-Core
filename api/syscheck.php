@@ -1,6 +1,7 @@
 <?php
 /*
- * For doing some basic system check once per session.
+ * For doing some basic system check once per session. This is done so that there is no issue while running 
+ * logiks apps.
  *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Version: 1.0

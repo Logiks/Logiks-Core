@@ -35,7 +35,7 @@
       }
       $noLogin=explode(",", getConfig("LOGIN_EXEMPT"));
       $noLogin[]=getConfig("PAGE_LOGIN");
-      if(in_array(PAGE, $noLogin)) {
+      if(in_array(current(explode("/",PAGE)), $noLogin)) {
         return true;
       }
       if(!RoleModel::checkRole("PAGES","Access : ".PAGE)) {
@@ -51,10 +51,9 @@
               break;
             case 'private':
                 if(session_check()) return true;
-                //if(!defined("PAGE")) return true;
                 $noLogin=explode(",", getConfig("LOGIN_EXEMPT"));
                 $noLogin[]=getConfig("PAGE_LOGIN");
-                if(in_array(PAGE, $noLogin)) {
+                if(in_array(current(explode("/",PAGE)), $noLogin)) {
                   return true;
                 }
                 redirectTo(_link(getConfig("PAGE_LOGIN")));

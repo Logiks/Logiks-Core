@@ -25,6 +25,9 @@ if(!function_exists("_fs")) {
 				$params=$cfg[$fsKey];
 			}
 		}
+		if(!isset($params['basedir']) || strlen($params['basedir'])<=0 || $params['basedir']=="./") {
+			$params['basedir']=APPROOT;
+		}
 		if(!isset($params['driver'])) {
 			trigger_error("FS ERROR, Connection Configuration Could Not Be Found For {$fsKey}");	
 		}

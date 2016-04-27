@@ -32,9 +32,14 @@ if(!function_exists('loadComponent')) {
 	}
 
 	function loadContent($file) {
-		$f=APPROOT.APPS_PAGES_FOLDER."contents/{$file}.htm";
-		if(file_exists($f)) {
-			return file_get_contents($f);
+		$fs=[
+				APPROOT.APPS_MISC_FOLDER."contents/{$file}.htm"
+				APPROOT.APPS_PAGES_FOLDER."contents/{$file}.htm"
+			];
+		foreach ($fs as $f) {
+			if(file_exists($f)) {
+				return file_get_contents($f);
+			}
 		}
 		return "";
 	}

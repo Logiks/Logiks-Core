@@ -166,7 +166,7 @@ if (!function_exists('printArray')) {
 		return preg_replace('/([a-z0-9])?([A-Z])/','$1 $2',$string);
 	}
 	function getHash($txt,$method="md5") {
-		$unique_salt=HASH_SALT;
+		$unique_salt=getConfig("HASH_SALT");
 		switch($method) {
 			case "md5":
 				return md5($pwd);
@@ -296,6 +296,13 @@ if(!function_exists("_session")) {
 	}
 	function _env($var) {
 		$data=LogiksSession::getInstance()->data('ENV');
+		if(isset($data[$var])) {
+			return $data[$var];
+		}
+		return false;
+	}
+	function _cookie($var) {
+		$data=LogiksSession::getInstance()->data('COOKIE');
 		if(isset($data[$var])) {
 			return $data[$var];
 		}

@@ -27,7 +27,17 @@ foreach ($pageFiles as $f) {
 	if(file_exists($f)) {
 		$loaded=true;
 		runHooks("prePage");
-		include_once $f;
+		switch ($k) {
+			case 0:
+				_templatePage($f);
+				break;
+			case 1:
+				include_once $f
+				break;
+			case 2:
+				readfile($f);
+				break;
+		}
 		runHooks("postPage");
 		break;
 	}

@@ -7,6 +7,10 @@
  * Version: 1.0
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
+
+//CurrentUser="(isset($_SESSION['SESS_USER_ID']))?$_SESSION['SESS_USER_ID']:"" ";
+//CurrentRole="(isset($_SESSION['SESS_PRIVILEGE_NAME']))?$_SESSION['SESS_PRIVILEGE_NAME']:"" ";
+
 ?>
 <script language='javascript'>
 SiteLocation="<?=SiteLocation?>";
@@ -14,15 +18,12 @@ SITENAME="<?=SITENAME?>";
 PAGE="<?=PAGE?>";
 UserDevice="<?=strtoupper(getUserDevice())?>";
 UserDeviceType="<?=strtoupper(getUserDeviceType())?>";
-CurrentUser="<?=(isset($_SESSION['SESS_USER_ID']))?$_SESSION['SESS_USER_ID']:"" ?>";
-CurrentRole="<?=(isset($_SESSION['SESS_PRIVILEGE_NAME']))?$_SESSION['SESS_PRIVILEGE_NAME']:"" ?>";
 LingData={};
 <?php
 	$ling=Lingulizer::getInstance();
 	$json=json_encode($ling->lang);
 	if(strlen($json)>2) echo 'LingData='.$json.';';
 ?>
-
 
 function getServiceCMD(cmd,action,q) {
 	return _service(cmd,action,null,q);

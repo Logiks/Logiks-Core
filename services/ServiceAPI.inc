@@ -15,6 +15,7 @@ if(!defined('ROOT')) exit('Direct Access Is Not Allowed');
 class ServiceAPI {
 	private $API_ENGINE="simple";
 	private $KEY_STATIC="";
+	
 	public function __construct() {
 		$this->API_ENGINE=getConfig("APIKEY_ENGINE");
 		$this->KEY_STATIC=getConfig("APIKEY_STATIC");

@@ -36,6 +36,7 @@ if(!function_exists("loadLogiksApp")) {
         redirectTo($relink);
       }
     }
+    
     if(defined("APPS_TYPE") && strtolower(APPS_TYPE)=="3rdparty") {
     	$relink=WEBAPPROOT;
     	redirectTo($relink);

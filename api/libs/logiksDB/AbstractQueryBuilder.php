@@ -432,8 +432,8 @@
 		if(array_key_exists("RAW", $arr)) {
 			return "{$arr['RAW']}";
 		}
-		if(isset($arr['VALUE'])) $arr[0]=$arr['VALUE'];
-		if(isset($arr['OP'])) $arr[1]=$arr['OP'];
+		if(array_key_exists("VALUE",$arr)) $arr[0]=$arr['VALUE'];
+		if(array_key_exists("OP",$arr)) $arr[1]=$arr['OP'];
 
 		if(!isset($arr[1])) $arr[1]="=";
 		

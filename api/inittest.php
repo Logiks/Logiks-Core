@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file initializes the system for testing system.
+ *
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
+ * Author: Kshyana Prava kshyana23@gmail.com
+ * Version: 1.3
+ */
+
 
 if(!isset($initialized)) {
 
