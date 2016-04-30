@@ -11,8 +11,8 @@ class test_helpers_pathfuncs extends LogiksTestCase {
 		parent::setUp();
 		if(!defined("APPROOT")) define("APPROOT",__DIR__."/apps/default/");
 
-		if(!defined("APPS_USERDATA_FOLDER")) define("APPS_USERDATA_FOLDER","userdata");
-		if(!defined("APPS_CONFIG_FOLDER")) define("APPS_CONFIG_FOLDER","config");
+		if(!defined("APPS_USERDATA_FOLDER")) define("APPS_USERDATA_FOLDER","userdata/");
+		if(!defined("APPS_CONFIG_FOLDER")) define("APPS_CONFIG_FOLDER","config/");
 
 		loadHelpers("pathfuncs");
 	}
