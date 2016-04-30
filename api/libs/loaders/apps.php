@@ -33,7 +33,7 @@ if(!function_exists('loadComponent')) {
 
 	function loadContent($file) {
 		$fs=[
-				APPROOT.APPS_MISC_FOLDER."contents/{$file}.htm"
+				APPROOT.APPS_MISC_FOLDER."contents/{$file}.htm",
 				APPROOT.APPS_PAGES_FOLDER."contents/{$file}.htm"
 			];
 		foreach ($fs as $f) {

@@ -119,7 +119,7 @@ class DataCache extends LogiksCache {
 	}
 	//Displays the Error in caching source
 	private function cacheError($source) {
-		if(function_exists("trigger_ErrorCode")) trigger_ErrorCode(404,"Unable to Cache Resource.");
+		if(function_exists("trigger_logikserror")) trigger_logikserror(404,"Unable to Cache Resource.");
 		else echo "Unable to Cache Resource (404).";
 		//exit();
 	}

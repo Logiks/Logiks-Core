@@ -16,20 +16,20 @@ class mysqlDriver extends AbstractDBDriver {
 	}
 	public function open($keyName) {
 		if(!parent::open($keyName)) {
-			trigger_error("Database ERROR, Database Is Already Open {$keyName}");
+			trigger_logikserror("Database ERROR, Database Is Already Open {$keyName}");
 			return false;
 		}
 		
 		$this->link = mysql_connect($this->dbParams['host'],$this->dbParams['user'],$this->dbParams['pwd'],$this->dbParams['database']) or die("MySQL DB Connection Error [{$keyName}] Connection");
 		
 		if (!$this->link) {
-			trigger_error("Database ERROR, Connection Error For {$keyName}");
+			trigger_logikserror("Database ERROR, Connection Error For {$keyName}");
 		}
 		
 		$db = mysql_select_db($this->dbParams['database'],$this->link) or die("MySQL Database Selection Error For [{$keyName}] Connection");
 		
 		if(!$db) {
-			trigger_error("Database ERROR, Database Selection Error For {$keyName}");
+			trigger_logikserror("Database ERROR, Database Selection Error For {$keyName}");
 		}
 		
 		return $this;
@@ -43,7 +43,7 @@ class mysqlDriver extends AbstractDBDriver {
 	
 	public function runQuery($sql) {
 		if(!parent::runQuery($sql)) {
-			trigger_error("Database ERROR, Security Threat Query Execution Hash Mismatch.");
+			trigger_logikserror("Database ERROR, Security Threat Query Execution Hash Mismatch.");
 			return false;
 		}
 		
@@ -56,7 +56,7 @@ class mysqlDriver extends AbstractDBDriver {
 		$qArr=strtoupper($qArr[0]);
 		
 		if(!$this->checkQuery($qArr)) {
-			trigger_error("Database ERROR, Restricted Query [{$qArr}] for ".$this->instanceName,E_USER_WARNING);
+			trigger_logikserror("Database ERROR, Restricted Query [{$qArr}] for ".$this->instanceName,E_USER_WARNING);
 		}
 		
 		$r=mysql_query($q, $this->link);
@@ -90,7 +90,7 @@ class mysqlDriver extends AbstractDBDriver {
 		} else if($format=="row") {
 			return mysql_fetch_row($result);
 		} else {
-			trigger_error("Database ERROR, Unknown Data Format Requested : $format");
+			trigger_logikserror("Database ERROR, Unknown Data Format Requested : $format");
 		}
 		return null;
 	}

@@ -35,19 +35,19 @@ class FilesCacheDriver extends AbstractCacheDriver {
 		}
 		if(!file_exists($this->cacheFolder)) {
 			if(!is_writable(dirname($this->cacheFolder))) {
-				trigger_error("Cache Folder Is ReadOnly. Failed To Create Cache");
+				trigger_logikserror("Cache Folder Is ReadOnly. Failed To Create Cache");
 				exit();
 			}
 			mkdir($this->cacheFolder, 0777, true);
 			if (!file_exists($this->cacheFolder)) {
-				trigger_error("Cache Folder Is ReadOnly. Failed To Create Cache");
+				trigger_logikserror("Cache Folder Is ReadOnly. Failed To Create Cache");
 				exit();
 			} else {
 				//chmod($this->cacheFolder, 0777);
 			}
 		}
 		if(!is_writable($this->cacheFolder)) {
-			trigger_error("Cache {$this->cacheTag} Not Writable");
+			trigger_logikserror("Cache {$this->cacheTag} Not Writable");
 		}
 
 		file_put_contents(dirname($this->cacheFolder)."/.htaccess", "Deny from all");

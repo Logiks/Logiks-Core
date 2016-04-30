@@ -147,7 +147,7 @@ class DeviceDetection {
 		if ($name == "is" . ucfirst($device) && array_key_exists(strtolower($device), $this->devices)) {
 			return $this->isDevice($device);
 		} else {
-			trigger_error("Method $name not defined", E_USER_WARNING);
+			trigger_logikserror("Method $name not defined", E_WARNING);
 		}
 	}
 

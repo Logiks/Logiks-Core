@@ -180,7 +180,7 @@ class LogiksConfig {
 				LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName]=$cfgData;
 			}
 		} else {
-	      trigger_error("$configName configuration not found, Error In Installation.", E_USER_ERROR);
+	      trigger_logikserror("$configName configuration not found, Error In Installation.", E_USER_ERROR);
 	    }
     }
 	return $cfgData;

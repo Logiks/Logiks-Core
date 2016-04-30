@@ -1,93 +1,107 @@
 {
-    "GLOBALS": {
-		"core":{
-			"driver":"mysqli",
-			"host":"localhost",
-			"port":"",
-			"database":"devlogiks400_coredb",
-			"user":"devlogiks",
-			"pwd":"devlogiks",
-			"prefix":"lgks",
-			"suffix":"",
-			"readonly":true,
-			"block":[],
-			"allowSQL":true
+	"GLOBALS": {
+		"core": {
+			"driver": "mysqli",
+			"host": "localhost",
+			"port": "",
+			"database": "devlogiks400_coredb",
+			"user": "devlogiks",
+			"pwd": "devlogiks",
+			"prefix": "lgks",
+			"suffix": "",
+			"readonly": true,
+			"block": [],
+			"allowSQL": true
 		},
-		"log":{
-			"driver":"mysqli",
-			"host":"localhost",
-			"port":"",
-			"database":"devlogiks400_logdb",
-			"user":"devlogiks",
-			"pwd":"devlogiks",
-			"prefix":"",
-			"suffix":"",
-			"readonly":false,
-			"block":[]
+		"log": {
+			"driver": "mysqli",
+			"host": "localhost",
+			"port": "",
+			"database": "devlogiks400_logdb",
+			"user": "devlogiks",
+			"pwd": "devlogiks",
+			"prefix": "",
+			"suffix": "",
+			"readonly": false,
+			"block": []
 		},
-		"security":{
-			"driver":"sqlite3",
-			"host":"localhost",
-			"port":"",
-			"database":"security",
-			"user":"",
-			"pwd":"",
-			"prefix":"",
-			"suffix":"",
-			"readonly":true,
-			"block":[]
-		}
-    },
-	"default": {
-		"app":{
-			"driver":"mysqli",
-			"host":"localhost",
-			"port":"",
-			"database":"devlogiks400_appdb",
-			"user":"devlogiks",
-			"pwd":"devlogiks",
-			"prefix":"",
-			"suffix":"",
-			"readonly":false,
-			"block":[]
-		},
-		"test":{
-			"driver":"sqlite3",
-			"host":"localhost",
-			"port":"",
-			"database":"testdata",
-			"user":"",
-			"pwd":"",
-			"prefix":"",
-			"suffix":"",
-			"readonly":false,
-			"block":[]
+		"security": {
+			"driver": "sqlite3",
+			"host": "localhost",
+			"port": "",
+			"database": "security",
+			"user": "",
+			"pwd": "",
+			"prefix": "",
+			"suffix": "",
+			"readonly": true,
+			"block": []
 		}
 	},
-"play": {
-		"app":{
-			"driver":"mysqli",
-			"host":"localhost",
-			"port":"",
-			"database":"devlogiks400_appdb",
-			"user":"devlogiks",
-			"pwd":"devlogiks",
-			"prefix":"",
-			"suffix":"",
-			"readonly":false,
-			"block":[]
+	"default": {
+		"app": {
+			"driver": "mysqli",
+			"host": "localhost",
+			"port": "",
+			"database": "devlogiks400_appdb",
+			"user": "devlogiks",
+			"pwd": "devlogiks",
+			"prefix": "",
+			"suffix": "",
+			"readonly": false,
+			"block": []
 		},
-		"test":{
-			"driver":"sqlite3",
-			"host":"localhost",
-			"port":"",
-			"database":"testdata",
-			"user":"",
-			"pwd":"",
-			"prefix":"",
-			"suffix":"",
-			"readonly":false,
-			"block":[]
+		"test": {
+			"driver": "sqlite3",
+			"host": "localhost",
+			"port": "",
+			"database": "testdata",
+			"user": "",
+			"pwd": "",
+			"prefix": "",
+			"suffix": "",
+			"readonly": false,
+			"block": []
+		}
+	},
+	"play": {
+		"app": {
+			"driver": "mysqli",
+			"host": "localhost",
+			"port": "",
+			"database": "devlogiks400_appdb",
+			"user": "devlogiks",
+			"pwd": "devlogiks",
+			"prefix": "",
+			"suffix": "",
+			"readonly": false,
+			"block": []
+		},
+		"test": {
+			"driver": "sqlite3",
+			"host": "localhost",
+			"port": "",
+			"database": "testdata",
+			"user": "",
+			"pwd": "",
+			"prefix": "",
+			"suffix": "",
+			"readonly": false,
+			"block": []
+		}
+	},
+	"kims": {
+		"app": {
+			"driver": "mysqli",
+			"host": "localhost",
+			"port": "",
+			"database": "devlogiks400_kims",
+			"user": "devlogiks",
+			"pwd": "devlogiks",
+			"prefix": "",
+			"suffix": "",
+			"readonly": false,
+			"block": []
 		}
 	}
 }

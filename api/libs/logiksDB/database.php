@@ -24,7 +24,7 @@ class Database {
 		if($params==null || !is_array($params)) {
 			$cfg=loadJSONConfig("db");
 			if(!isset($cfg[$key])) {
-				trigger_error("Database ERROR, Connection Configuration Could Not Be Found For {$key}");	
+				trigger_logikserror("Database ERROR, Connection Configuration Could Not Be Found For {$key}");	
 			} else {
 				$params=$cfg[$key];
 			}
@@ -71,7 +71,7 @@ class Database {
 	public static function dbConnection($key) {
 		if(isset(Database::$connections[$key])) return Database::$connections[$key];
 		else {
-			trigger_error("Database ERROR, Connection Could Not Be Found For {$key}");
+			trigger_logikserror("Database ERROR, Connection Could Not Be Found For {$key}");
 		}
 	}
 	
@@ -80,7 +80,7 @@ class Database {
 		$driver=$params['driver'];
 		$driverPath=dirname(__FILE__)."/$driver/";
 		if(!is_dir($driverPath)) {
-			trigger_error("Database ERROR, Driver Not Found For {$name} :: {$driver}");
+			trigger_logikserror("Database ERROR, Driver Not Found For {$name} :: {$driver}");
 		}
 		
 		$driverClass="{$driver}Driver";
@@ -144,7 +144,7 @@ class Database {
 			$dbh = new PDO($dsn, $dbuser, $dbpwd);
 			return $dbh;
 		} catch (PDOException $e) {
-			trigger_error("Database ERROR, PDO Creation Failed For Driver Not ".$this->instanceName." :: ". $e->getMessage());
+			trigger_logikserror("Database ERROR, PDO Creation Failed For Driver Not ".$this->instanceName." :: ". $e->getMessage());
 		}
 	}
 	
@@ -152,7 +152,7 @@ class Database {
 	public function executeQuery($sql,$keyName=null) {
 		if(!$this->objDriver->isAllowedSQL()) {
 			if(!is_a($sql,"AbstractQueryBuilder")) {
-				trigger_error("Database ERROR, Direct SQL Queries are not allowed for this database.");
+				trigger_logikserror("Database ERROR, Direct SQL Queries are not allowed for this database.");
 			}
 		}
 		if($keyName==null && is_a($sql,"AbstractQueryBuilder")) {
@@ -244,7 +244,7 @@ class Database {
 		} elseif(strpos($method,"fetch")===0 || strpos($method,"free")===0 || strpos($method,"run")===0) {
 			return call_user_func_array(array($this->objDriver, $method), $arguments);
 		} else {
-			trigger_error("Database ERROR, [$method] Method Not Found [".$this->dbParams('driver')."]");
+			trigger_logikserror("Database ERROR, [$method] Method Not Found [".$this->dbParams('driver')."]");
 		}
 	}
 

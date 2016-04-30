@@ -37,7 +37,7 @@ class LogiksCache {
 			$cDriver=$this->cacheDriver;
 			$this->cacheDriverObject=new $cDriver($srcTag,$driverParams);
 		} else {
-			trigger_error("Cache Driver is not supported.");
+			trigger_logikserror("Cache Driver is not supported.");
 			exit();
 		}
 	}

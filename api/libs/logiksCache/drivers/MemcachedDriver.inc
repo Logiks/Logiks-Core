@@ -27,7 +27,7 @@ class MemcachedDriver extends AbstractCacheDriver {
 		if(!isset($this->params['weight'])) $this->params['weight']=100;
 
 		if(!class_exists("Memcached")) {
-			trigger_error("MemcachedDriver needs Memcached Class to run.",E_USER_ERROR);
+			trigger_logikserror("MemcachedDriver needs Memcached Class to run.",E_USER_ERROR);
 		}
 
 		$this->memcache = new Memcached();
@@ -36,7 +36,7 @@ class MemcachedDriver extends AbstractCacheDriver {
 		$statuses = $this->memcache->getStats();
 
 		if($statuses[$this->params['host'].":".$this->params['port']]['pid']<0) {
-			trigger_error("MemcachedDriver could not access the memcache server for '$srcTag'.",E_USER_ERROR);
+			trigger_logikserror("MemcachedDriver could not access the memcache server for '$srcTag'.",E_USER_ERROR);
 		}
 
 		$_ENV['SOFTHOOKS']['SHUTDOWN'][]=array("FUNC"=>"closeConnection","OBJ"=>$this);
@@ -91,7 +91,7 @@ class MemcachedDriver extends AbstractCacheDriver {
 
 	//Last Updated This Key On
 	public function cache_lastUpdated($group,$key) {
-		trigger_error("MemcachedDriver could not support cache_lastUpdated.",E_USER_WARNING);
+		trigger_logikserror("MemcachedDriver could not support cache_lastUpdated.",E_USER_WARNING);
 	}
 
 	//Is Cache Expired

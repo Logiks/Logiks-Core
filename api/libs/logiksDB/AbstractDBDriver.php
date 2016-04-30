@@ -37,7 +37,7 @@
  		$this->dbParams=$params;
 		
 		if(strlen($this->dbParams['host'])<=0 || strlen($this->dbParams['user'])<=0 || strlen($this->dbParams['database'])<=0) {
-			trigger_error("Database ERROR, Wrong Credentials For {$keyName}");
+			trigger_logikserror("Database ERROR, Wrong Credentials For {$keyName}");
 		}
  	}
  	public function __destruct() {

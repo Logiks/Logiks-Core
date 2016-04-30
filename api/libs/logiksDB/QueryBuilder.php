@@ -127,7 +127,7 @@ class QueryBuilder extends AbstractQueryBuilder {
 	 */
 	public function _insert_batchQ($table, $arr) {
 		if(!isset($arr[0])) {
-			trigger_error("Database ERROR, _insert_batchQ needs array of data");
+			trigger_logikserror("Database ERROR, _insert_batchQ needs array of data");
 			return false;
 		}
 		$keys=array_keys($arr[0]);

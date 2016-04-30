@@ -22,7 +22,7 @@ class sqlite3Driver extends AbstractDBDriver {
 		parent::__construct($params);
 
 		if(!class_exists("sqlite3")) {
-			trigger_error("Database ERROR, SQLite Not Installed.");
+			trigger_logikserror("Database ERROR, SQLite Not Installed.");
 			return false;
 		}
 
@@ -31,7 +31,7 @@ class sqlite3Driver extends AbstractDBDriver {
 			mkdir(dirname($dataFile));
 		}
 		if(!is_writable(dirname($dataFile))) {
-			trigger_error("Database ERROR, SQLite folder is not writable Open {$keyName}");
+			trigger_logikserror("Database ERROR, SQLite folder is not writable Open {$keyName}");
 			return false;
 		}
 		$this->dataFile=$dataFile;
@@ -40,7 +40,7 @@ class sqlite3Driver extends AbstractDBDriver {
 	}
 	public function open($keyName) {
 		if(!parent::open($keyName)) {
-			trigger_error("Database ERROR, Database Is Already Open {$keyName}");
+			trigger_logikserror("Database ERROR, Database Is Already Open {$keyName}");
 			return false;
 		}
 		$sqliteerror=null;
@@ -48,7 +48,7 @@ class sqlite3Driver extends AbstractDBDriver {
 		$this->link = new sqlite3($this->dataFile, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE, $this->dbParams['pwd']);
 
 		if(!$this->link) {
-			trigger_error("Database ERROR, Connection Error For {$keyName}");
+			trigger_logikserror("Database ERROR, Connection Error For {$keyName}");
 		}
 	}
 
@@ -61,7 +61,7 @@ class sqlite3Driver extends AbstractDBDriver {
 
 	public function runQuery($sql) {
 		if(!parent::runQuery($sql)) {
-			trigger_error("Database ERROR, Security Threat Query Execution Hash Mismatch.");
+			trigger_logikserror("Database ERROR, Security Threat Query Execution Hash Mismatch.");
 			return false;
 		}
 		
@@ -103,7 +103,7 @@ class sqlite3Driver extends AbstractDBDriver {
 		} else if($format=="assoc") {
 			return $result->fetchArray(SQLITE3_ASSOC);
 		} else {
-			trigger_error("Database ERROR, Unknown Data Format Requested : $format");
+			trigger_logikserror("Database ERROR, Unknown Data Format Requested : $format");
 		}
 		return false;
 	}
@@ -122,7 +122,7 @@ class sqlite3Driver extends AbstractDBDriver {
 	            $out[]=$row;
 	        }
 		} else {
-			trigger_error("Database ERROR, Unknown Data Format Requested : $format");
+			trigger_logikserror("Database ERROR, Unknown Data Format Requested : $format");
 		}
 		return $out;
 	}

@@ -69,8 +69,10 @@
 		if(!is_array($this->obj['where'])) $this->obj['where']=[];
 		
 		if(is_array($where)) {
+			$where=$this->cleanArr($where);
 			$this->obj['where'][]=array($joinType,$where,$implodeType);
 		} else {
+			$where=$this->clean($where);
 			$this->obj['where'][]=array($joinType,$where,$implodeType);
 		}
 		
@@ -86,7 +88,7 @@
 		} elseif(is_string($query)) {
 			$this->_where("$col $relation ($sql)");
 		} else {
-			trigger_error("$query should be an object of AbstractQueryBuilder or String");// or Array
+			trigger_logikserror("$query should be an object of AbstractQueryBuilder or String");// or Array
 		}
 
 		return $this;
@@ -190,7 +192,7 @@
 	
 	//Special Queries Generator
 	public function _truncateQ($table) {
-		return "TRUNCATE ".$table;
+		return "TRUNCATE ".$this->clean($table);
 	}
 	
 	public function _dbVersionQ() {
@@ -307,7 +309,7 @@
 	//Creates QueryBuilder Object From SQL String
 	public static function fromSQL($sql,$dbInstance) {
 		if(!is_a($dbInstance, "Database")) {
-			trigger_error("Database ERROR, DBInstance should be an object of Database");
+			trigger_logikserror("Database ERROR, DBInstance should be an object of Database");
 		}
 		$obj=QueryBuilder::create($dbInstance);
 		$obj->sql=$sql;
@@ -323,7 +325,7 @@
 	//Currently it can not handle very complex queries
 	public static function fromArray($arr,$dbInstance) {
 		if(!is_a($dbInstance, "Database")) {
-			trigger_error("Database ERROR, DBInstance should be an object of Database");
+			trigger_logikserror("Database ERROR, DBInstance should be an object of Database");
 		}
 
 		$table=null;
@@ -388,8 +390,13 @@
 	//For cleaning of data internally
 	protected function clean($str) {
 		$str = @trim($str);
-		if(get_magic_quotes_gpc()) {$str=stripslashes($str);}
+		//if(get_magic_quotes_gpc()) {$str=stripslashes($str);}
 		//$str=@mysql_real_escape_string($str);
+
+		$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a", ";");
+	    $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z", "%3B");
+	    $str=str_replace($search, $replace, $str);
+
 		return $str;
 	}
 	

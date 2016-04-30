@@ -11,7 +11,7 @@ if(!function_exists("loadLogiksApp")) {
 
   function loadLogiksApp($appName=SITENAME) {
     if(defined("BASEPATH")) {
-      trigger_error("App <b>'".$appName."'</b> has already been activated",E_USER_ERROR);
+      trigger_logikserror("App <b>'".$appName."'</b> has already been activated",E_ERROR);
     }
 
     define("BASEPATH",APPS_FOLDER . $appName . "/");
@@ -19,12 +19,12 @@ if(!function_exists("loadLogiksApp")) {
     define("WEBAPPROOT",SiteLocation . BASEPATH);
 
     if(!file_exists(APPROOT)) {
-      trigger_error("Site Not Found <b>'".$appName."'</b>",E_USER_ERROR);
+      trigger_logikserror("Site Not Found <b>'".$appName."'</b>",E_ERROR);
     }
 
     $apps_cfg=APPROOT."apps.cfg";
     if(!file_exists($apps_cfg)) {
-    	trigger_error("Site <b>'".$appName."'</b> Has Not Yet Been Activated (missing apps.cfg).",E_USER_ERROR);
+    	trigger_logikserror("Site <b>'".$appName."'</b> Has Not Yet Been Activated (missing apps.cfg).",E_ERROR);
     }
     loadConfigs($apps_cfg,true);
 
@@ -60,7 +60,7 @@ if(!function_exists("loadLogiksApp")) {
 
   function loadAppServices($appName=SITENAME) {
     if(defined("BASEPATH")) {
-      trigger_error("App <b>'".$appName."'</b> has already been activated",E_USER_ERROR);
+      trigger_logikserror("App <b>'".$appName."'</b> has already been activated",E_ERROR);
     }
 
     define("BASEPATH",APPS_FOLDER . $appName . "/");
@@ -68,12 +68,12 @@ if(!function_exists("loadLogiksApp")) {
     define("WEBAPPROOT",SiteLocation . BASEPATH);
 
     if(!file_exists(APPROOT)) {
-      trigger_error("Site Not Found <b>'".$appName."'</b>",E_USER_ERROR);
+      trigger_logikserror("Site Not Found <b>'".$appName."'</b>",E_ERROR);
     }
 
     $apps_cfg=APPROOT."apps.cfg";
     if(!file_exists($apps_cfg)) {
-      trigger_error("Site <b>'".$appName."'</b> Has Not Yet Been Activated (missing apps.cfg).",E_USER_ERROR);
+      trigger_logikserror("Site <b>'".$appName."'</b> Has Not Yet Been Activated (missing apps.cfg).",E_ERROR);
     }
     loadConfigs($apps_cfg);
 

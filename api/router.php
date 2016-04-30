@@ -24,7 +24,7 @@ if(!defined("BASEPATH")) {
 
   $routerPage=getConfig("APPS_ROUTER");
   if(strlen($routerPage)<=0) {
-    trigger_error("Site <b>'".SITENAME."'</b> Does Not Have ROUTER Defined.",E_USER_ERROR);
+    trigger_logikserror("Site <b>'".SITENAME."'</b> Does Not Have ROUTER Defined.",E_ERROR);
   }
 
   $routerFiles=array(
@@ -45,7 +45,7 @@ if(!defined("BASEPATH")) {
     }
   }
   if(!$routerLoaded) {
-    trigger_error("Site <b>'".SITENAME."'</b> Does Not Have ROUTER Defined.",E_USER_ERROR);
+    trigger_logikserror("Site <b>'".SITENAME."'</b> Does Not Have ROUTER Defined.",E_ERROR);
   }
 }
 ?>

@@ -13,20 +13,20 @@ class mysqliDriver extends AbstractDBDriver {
 	}
 	public function open($keyName) {
 		if(!parent::open($keyName)) {
-			trigger_error("Database ERROR, Database Is Already Open {$keyName}");
+			trigger_logikserror("Database ERROR, Database Is Already Open {$keyName}");
 			return false;
 		}
 		
 		$this->link = mysqli_connect($this->dbParams['host'],$this->dbParams['user'],$this->dbParams['pwd'],$this->dbParams['database']) or die("MySQL DB Connection Error [{$keyName}] Connection");
 		
 		if (!$this->link) {
-			trigger_error("Database ERROR, Connection Error For {$keyName}");
+			trigger_logikserror("Database ERROR, Connection Error For {$keyName}");
 		}
 		
 		$db = mysqli_select_db($this->link,$this->dbParams['database']) or die("MySQL Database Selection Error For [{$keyName}] Connection");
 		
 		if(!$db) {
-			trigger_error("Database ERROR, Database Selection Error For {$keyName}");
+			trigger_logikserror("Database ERROR, Database Selection Error For {$keyName}");
 		}
 		
 		return $this;
@@ -40,7 +40,7 @@ class mysqliDriver extends AbstractDBDriver {
 
 	public function runQuery($sql) {
 		if(!parent::runQuery($sql)) {
-			trigger_error("Database ERROR, Security Threat Query Execution Hash Mismatch.");
+			trigger_logikserror("Database ERROR, Security Threat Query Execution Hash Mismatch.");
 			return false;
 		}
 		
@@ -53,7 +53,7 @@ class mysqliDriver extends AbstractDBDriver {
 		$qArr=strtoupper($qArr[0]);
 		
 		if(!$this->checkQuery($qArr)) {
-			trigger_error("Database ERROR, Restricted Query [{$qArr}] for ".$this->instanceName,E_USER_WARNING);
+			trigger_logikserror("Database ERROR, Restricted Query [{$qArr}] for ".$this->instanceName,E_USER_WARNING);
 		}
 		
 		$r=mysqli_query($this->link, $q);
@@ -87,7 +87,7 @@ class mysqliDriver extends AbstractDBDriver {
 		} else if($format=="row") {
 			return mysqli_fetch_row($result);
 		} else {
-			trigger_error("Database ERROR, Unknown Data Format Requested : $format");
+			trigger_logikserror("Database ERROR, Unknown Data Format Requested : $format");
 		}
 		return null;
 	}

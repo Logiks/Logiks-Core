@@ -18,7 +18,7 @@ $page=current($page);
 
 $pageFiles=array(
 		APPROOT.APPS_PAGES_FOLDER."{$page}.tpl",
-		APPROOT.APPS_PAGES_FOLDER."{$page}.php"
+		APPROOT.APPS_PAGES_FOLDER."{$page}.php",
 		APPROOT.APPS_PAGES_FOLDER."{$page}.htm"
 	);
 
@@ -43,6 +43,6 @@ foreach ($pageFiles as $f) {
 	}
 }
 if(!$loaded) {
-	trigger_error("Page Not Found $page");
+	trigger_logikserror("Page Not Found $page");
 }
 ?>

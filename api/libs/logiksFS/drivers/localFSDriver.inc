@@ -30,7 +30,7 @@
  		$this->CURRENT_PATH=$this->BASE_PATH;
  	}
 
- 	public function info($path=null) {trigger_error("Current FS Driver Does Not Support This");}
+ 	public function info($path=null) {trigger_logikserror("Current FS Driver Does Not Support This");}
 
  	public function pwd() {
  		return $this->CURRENT_PATH;
@@ -156,9 +156,9 @@
  		return chmod($path,$permissions);
  	}
 
-	public function grep($path, $q) {trigger_error("Current FS Driver Does Not Support This");}
- 	public function grepName($path, $q) {trigger_error("Current FS Driver Does Not Support This");}
+	public function grep($path, $q) {trigger_logikserror("Current FS Driver Does Not Support This");}
+ 	public function grepName($path, $q) {trigger_logikserror("Current FS Driver Does Not Support This");}
 
-	public function download($path,$targetDir) {trigger_error("Current FS Driver Does Not Support This");}
+	public function download($path,$targetDir) {trigger_logikserror("Current FS Driver Does Not Support This");}
  }
  ?>

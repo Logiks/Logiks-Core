@@ -102,7 +102,7 @@ if(!function_exists("__cleanup")) {
 			$dm->detect();
 
 			if(!defined("SITENAME")) {
-				trigger_error("SITE NOT DEFINED", E_USER_ERROR);
+				trigger_error("SITE NOT DEFINED", E_ERROR);
 			}
 		}
 	}

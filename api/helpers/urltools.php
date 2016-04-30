@@ -43,7 +43,7 @@ if(!function_exists("getQueryParams")) {
 		// if($query==null && !is_array($query)) {
 		// 	$query=_session('QUERY');
 		// } elseif(is_string($query)) {
-		// 	trigger_error('$query expected array got string');
+		// 	trigger_logikserror('$query expected array got string');
 		// }
 		
 		if(isset($query['site'])) unset($query['site']);
