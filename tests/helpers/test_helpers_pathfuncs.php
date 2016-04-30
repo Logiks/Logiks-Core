@@ -9,7 +9,7 @@ class test_helpers_pathfuncs extends LogiksTestCase {
 	
 	public function setUp(){
 		parent::setUp();
-		//define("APPROOT",__DIR__."/apps/default/");
+		define("APPROOT",__DIR__."/apps/default/");
 		loadHelpers("pathfuncs");
 	}
 	
@@ -24,9 +24,6 @@ class test_helpers_pathfuncs extends LogiksTestCase {
 		$this->assertEquals($result,__FILE__);
 	}
 	
-	/*
-	 * Function not working thus masked
-	 */
 	public function test_getStoragePath(){
 		$result=getStoragePath();
 		
@@ -34,9 +31,6 @@ class test_helpers_pathfuncs extends LogiksTestCase {
 		$this->assertEquals($expected,$result);
 	}
 	
-	/*
-	 * Function not working thus masked
-	 */
 	public function test_getConfigPath(){
 		$result=getConfigPath();
 		
