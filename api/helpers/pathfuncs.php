@@ -25,11 +25,8 @@ if(!function_exists("getRelativePath")) {
 	function getRootPath($file) {
 		return ROOT.dirname(str_replace(ROOT,"",$file))."/".basename($file);
 	}
-	function getBasePath() {
-		if(_server('PATH_INFO')) {
-			$file=_server('PATH_INFO');
-			return getRelativePath($file);
-		} else return "";
+	function getStoragePath() {
+		return APPROOT.APPS_USERDATA_FOLDER;
 	}
 	function getConfigPath($local=true) {
 		if($local && defined("APPROOT")) {

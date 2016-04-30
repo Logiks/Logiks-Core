@@ -5,7 +5,7 @@
  * @author	Arun Joseph <arunjoseph50@gmail.com>
  * @date 	2015-11-16
  */
-class test_helpers_pathfuncs extends LogiksTestCase{
+class test_helpers_pathfuncs extends LogiksTestCase {
 	
 	public function setUp(){
 		parent::setUp();
@@ -27,11 +27,10 @@ class test_helpers_pathfuncs extends LogiksTestCase{
 	/*
 	 * Function not working thus masked
 	 */
-	public function test_getBasePath(){
-		$result=getBasePath();
+	public function test_getStoragePath(){
+		$result=getStoragePath();
 		
-		$result = '/srcspace/www/devlogiks/tests/helpers/test_helpers_pathfuncs.php';
-		$expected = '/srcspace/www/devlogiks/tests/helpers/test_helpers_pathfuncs.php';
+		$expected = '/srcspace/wwwLogiks/devlogiks/apps/default/userdata/';
 		$this->assertEquals($expected,$result);
 	}
 	
@@ -41,8 +40,7 @@ class test_helpers_pathfuncs extends LogiksTestCase{
 	public function test_getConfigPath(){
 		$result=getConfigPath();
 		
-		$result = '/srcspace/www/devlogiks/tests/helpers/test_helpers_pathfuncs.php';
-		$expected = '/srcspace/www/devlogiks/tests/helpers/test_helpers_pathfuncs.php';
+		$expected = '/srcspace/wwwLogiks/devlogiks/apps/default/config/';
 		$this->assertEquals($expected,$result);
 	}
 	
