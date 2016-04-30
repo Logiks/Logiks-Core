@@ -9,7 +9,7 @@ class test_helpers_pathfuncs extends LogiksTestCase {
 	
 	public function setUp(){
 		parent::setUp();
-		define("APPROOT",__DIR__."/apps/default/");
+		if(!defined("APPROOT")) define("APPROOT",__DIR__."/apps/default/");
 		loadHelpers("pathfuncs");
 	}
 	
@@ -27,14 +27,14 @@ class test_helpers_pathfuncs extends LogiksTestCase {
 	public function test_getStoragePath(){
 		$result=getStoragePath();
 		
-		$expected = '/srcspace/wwwLogiks/devlogiks/apps/default/userdata/';
+		$expected = APPROOT.'userdata/';
 		$this->assertEquals($expected,$result);
 	}
 	
 	public function test_getConfigPath(){
 		$result=getConfigPath();
 		
-		$expected = '/srcspace/wwwLogiks/devlogiks/apps/default/config/';
+		$expected = APPROOT.'config/';
 		$this->assertEquals($expected,$result);
 	}
 	
