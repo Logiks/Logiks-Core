@@ -38,7 +38,7 @@ $date=date('Y-m-d');
 
 $userFields=explode(",", USERID_FIELDS);
 
-$q1="SELECT id, guid, userid, pwd, privilegeid, accessid, name, email, mobile, blocked, avatar, avatar_type FROM "._dbTable("users",true)." where (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
+$q1="SELECT id, guid, userid, pwd, pwd_salt, privilegeid, accessid, name, email, mobile, blocked, avatar, avatar_type FROM "._dbTable("users",true)." where (expires IS NULL OR expires='0000-00-00' OR expires > now())";// AND blocked='false'
 
 if(CASE_SENSITIVE_AUTH=="true") {
 	foreach ($userFields as $key => $value) {
@@ -69,7 +69,7 @@ if($result) {
 	relink("Sorry, you have not yet joined us or your userid has expired.",$domain);
 }
 
-if(!matchPWD($data['pwd'],$pwd)) {
+if(!matchPWD($data['pwd'],$pwd, $data['pwd_salt'])) {
 	relink("UserID/Password Wrong/Mismatch",$domain);
 }
 if($data['blocked']=="true") {

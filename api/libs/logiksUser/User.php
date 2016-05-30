@@ -11,6 +11,15 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!function_exists("getUserList")) {
 	loadHelpers("pwdhash");
 
+	function getUserID() {
+		if(isset($_SESSION['SESS_USER_ID'])){
+			$user=$_SESSION['SESS_USER_ID'];
+		} else {
+			$user="Guest";
+		}
+		return $user;
+	}
+
 	function getUserAvatar($params) {
 		if(is_array($params)) {
 			if(isset($params['avatar'])) {
@@ -123,14 +132,7 @@ if(!function_exists("getUserList")) {
 		return $data;
 	}
 
-	function getUserID() {
-		if(isset($_SESSION['SESS_USER_ID'])){
-			$user=$_SESSION['SESS_USER_ID'];
-		} else {
-			$user="Guest";
-		}
-		return $user;
-	}
+	
 
 	function getUserInfo($userid=null) {
 		if($userid==null) $userid=$_SESSION['SESS_USER_ID'];
@@ -183,10 +185,14 @@ if(!function_exists("getUserList")) {
 	}
 
 	function getDefaultParams($userID="",$pwd="",$privilegeID="",$accessID="") {
+		$hashSalt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
+		if(!isValidMd5($pwd)) $pwd=md5($pwd);
+
 		$params=array(
 				"guid"=>"c21f969b5f03d33d43e04f8f136e7682",
 				"userid"=>$userID,
-				"pwd"=>getPWDHash($pwd),
+				"pwd"=>getPWDHash($pwd,$hashSalt),
+				"pwd_salt"=>$hashSalt,
 				"privilegeid"=>$privilegeID,
 				"accessid"=>$accessID,
 				"name"=>toTitle($userID),
@@ -206,9 +212,12 @@ if(!function_exists("getUserList")) {
 				"vcode"=>"",
 				"mauth"=>"",
 				"refid"=>"",
+				"registerd_site"=>SITENAME,
 				"privacy"=>"protected",
 				"avatar_type"=>"photoid",
 				"avatar"=>"",
+				"dtoc"=>date("Y-m-d H:i:s"),
+				"dtoe"=>date("Y-m-d H:i:s"),
 			);
 		return $params;
 	}
@@ -287,6 +296,9 @@ if(!function_exists("getUserList")) {
 
 		if(checkUserID($userID,$site)) {
 			$dataUser=$attrs;
+
+			if(isset($dataUser['pwd'])) unset($dataUser['pwd']);
+			if(isset($dataUser['pwd_salt'])) unset($dataUser['pwd_salt']);
 			
 			$reqParams=explode(",", getConfig("USER_CREATE_REQUIRED_FIELDS"));
 			
@@ -329,6 +341,37 @@ if(!function_exists("getUserList")) {
 					return array("error"=>"AccessID Not Found For This Site $site");
 				}
 			}
+			$dataUser["dtoe"]=date("Y-m-d H:i:s");
+			
+			$sql=_db(true)->_updateQ(_dbTable("users",true),$dataUser,array("userid"=>"$userID"));
+			$res=_dbQuery($sql,true);
+			if($res) {
+				return true;
+			}
+			return array("error"=>"Error In User Updating","details"=>_db(true)->get_error());
+		}
+		return array("error"=>"UserID Not Found");
+	}
+
+	function updatePassword($pwd,$userID=null,$site=SITENAME) {
+		if(!isset($_SESSION['SESS_PRIVILEGE_ID']) || $_SESSION['SESS_PRIVILEGE_ID']>ROLE_PRIME) {
+			$site=SITENAME;
+			$userID=$_SESSION['SESS_USER_ID'];
+		}
+		if($userID==null && isset($_SESSION['SESS_USER_ID'])) {
+			$userID=$_SESSION['SESS_USER_ID'];
+		}
+
+		if(checkUserID($userID,$site)) {
+			$hashSalt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
+
+			if(!isValidMd5($pwd)) $pwd=md5($pwd);
+
+			$dataUser=array(
+					"pwd"=>getPWDHash($pwd,$hashSalt),
+					"pwd_salt"=>$hashSalt,
+					"dtoe"=>date("Y-m-d H:i:s"),
+				);
 			$sql=_db(true)->_updateQ(_dbTable("users",true),$dataUser,array("userid"=>"$userID"));
 			$res=_dbQuery($sql,true);
 			if($res) {

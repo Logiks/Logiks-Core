@@ -78,6 +78,41 @@
 		
 		return $this;
 	}
+	public function _whereOR($col,$data) {
+		if(!$col) return $this;
+		if(!is_array($this->obj['where'])) $this->obj['where']=[];
+
+		if(is_array($data)) {
+			$data=$this->cleanArr($data);
+			$str=[];
+			foreach ($data as $vx) {
+				$str[]=$this->parseRelation($col,$vx);
+			}
+			$this->obj['where'][]=array("AND","(".implode(" OR ", $str).")","OR");
+		}
+
+		return $this;
+	}
+	public function _whereIN($col,$data,$joinType="AND") {
+		if(is_array($data)) {
+			foreach ($data as $key => $value) {
+				$data[$key]=$this->sqlData($value);
+			}
+
+			$whereSQL="$col IN (".implode(",", $data).")";
+		} else {
+			$whereSQL="FIND_IN_SET($data,$col))";
+		}
+
+		$this->obj['where'][]=array($joinType,$whereSQL);
+
+		return $this;
+	}
+	public function _whereRAW($where=null,$joinType="AND",$implodeType='AND') {
+		$this->obj['where'][]=array($joinType,$where,$implodeType);
+
+		return $this;
+	}
 	//public function _query($where=null,$joinType="AND",$implodeType='AND') {
 	public function _query($col,$query,$relation="IN",$glueType="AND") {
 		if(is_a($query,"AbstractQueryBuilder")) {
@@ -389,6 +424,8 @@
 	}
 	//For cleaning of data internally
 	protected function clean($str) {
+		if(is_array($str)) return $this->cleanArr($str);
+
 		$str = @trim($str);
 		//if(get_magic_quotes_gpc()) {$str=stripslashes($str);}
 		//$str=@mysql_real_escape_string($str);
@@ -436,6 +473,43 @@
 	}
 	//WHERE Condition Parser
 	protected function parseRelation($col,$arr) {
+		if(!is_array($arr)) {
+			if(in_array($arr[0], ["~","!","@","#"])) {
+				switch ($arr[0]) {
+					case '~':
+							$arr=[
+									"OP"=>"SW",
+									"VALUE"=>substr($arr, 1)
+								];
+						break;
+					case '!':
+							$arr=[
+									"OP"=>"EW",
+									"VALUE"=>substr($arr, 1)
+								];
+						break;
+					case '@':
+							$arr=[
+									"OP"=>"FIND",
+									"VALUE"=>substr($arr, 1)
+								];
+						break;
+					case '#':
+							$arr=[
+									"OP"=>"LIKE",
+									"VALUE"=>substr($arr, 1)
+								];
+						break;
+					
+					default:
+						$arr=substr($arr, 1);
+						return "{$col}='{$arr}'";
+						break;
+				}
+			} else {
+				return $arr;//"{$col}='{$arr}'";
+			}
+		}
 		if(array_key_exists("RAW", $arr)) {
 			return "{$arr['RAW']}";
 		}
@@ -525,6 +599,11 @@
 				$s="{$col} NOT LIKE '%{$arr[0]}%'";
 			break;
 			
+			case "s":case ":s:":
+			case "find":case ":find:":
+				$s="FIND_IN_SET('{$arr[0]}',{$col})";
+			break;
+
 			default:
 				$arr[0]=$this->sqlData($arr[0]);
 				$s="{$col} {$arr[0]}";

@@ -9,48 +9,58 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("getPWDHash")) {
-	function getPWDHash($pwd) {
+	function getPWDHash($pwd,$salt=null) {
 		if(strlen(getConfig("PWD_HASH_TYPE"))<=0 || !getConfig("PWD_HASH_TYPE")) {
-			setConfig("PWD_HASH_TYPE","pwdhash");
+			setConfig("PWD_HASH_TYPE","logiks");
 		}
-		if(getConfig("PWD_HASH_TYPE")=="md5") return md5($pwd);
-		elseif(getConfig("PWD_HASH_TYPE")=="sha1") return sha1($pwd);
-		else return PwdHash::hash($pwd);
+		switch (strtolower(getConfig("PWD_HASH_TYPE"))) {
+			case 'md5':
+				return md5($pwd);
+				break;
+			case 'sha1':
+				return sha1($pwd);
+				break;
+			case "shamd5":
+				return sha1(md5($pwd));
+				break;
+			default:
+				if($salt==null) {
+					$salt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
+
+					$options = [
+						    'cost' => getConfig("HASH_COST"),
+						    'salt' => $salt,
+						];
+					$hash=password_hash($pwd, PASSWORD_BCRYPT, $options);
+					$options['hash']=$hash;
+					return $options;
+				} else {
+					$options = [
+						    'cost' => getConfig("HASH_COST"),
+						    'salt' => $salt,
+						];
+					$hash=password_hash($pwd, PASSWORD_BCRYPT, $options);
+					return $hash;
+				}
+				break;
+		}
+		return "";
 	}
-	function matchPWD($hash, $pwd) {
+	function matchPWD($pwdHash, $pwd, $salt) {
 		if(strlen(getConfig("PWD_HASH_TYPE"))<=0 || !getConfig("PWD_HASH_TYPE")) {
-			setConfig("PWD_HASH_TYPE","pwdhash");
+			setConfig("PWD_HASH_TYPE","logiks");
 		}
-		if(getConfig("PWD_HASH_TYPE")=="md5") return ($hash==md5($pwd));
-		elseif(getConfig("PWD_HASH_TYPE")=="sha1") return ($hash==sha1($pwd));
-		else return PwdHash::check_password($hash, $pwd);
+		if(!isValidMd5($pwd)) $pwd=md5($pwd);
+
+		$newHash=getPWDHash($pwd, $salt);
+
+		//println($pwdHash);println(getPWDHash($pwd, $salt));exit($pwd);
+		
+		return ($pwdHash===$newHash);
 	}
 
-	class PwdHash {
-		// blowfish
-		private static $algo = '$2a';
-		// cost parameter
-		private static $cost = '$10';
-
-		//mainly for internal use
-		public static function unique_salt() {
-			return substr(sha1(mt_rand()),0,22);
-		}
-
-		// this will be used to generate a hash
-		public static function hash($password) {
-			return crypt($password,
-				self::$algo .
-				self::$cost .
-				'$'.self::unique_salt());
-		}
-
-		// this will be used to compare a password against a hash
-		public static function check_password($hash, $password) {
-			$full_salt = substr($hash, 0, 29);
-			$new_hash = crypt($password, $full_salt);		
-			return ($hash == $new_hash);
-		}
+	function isValidMd5($md5Hash) {
+	    return preg_match('/^[a-f0-9]{32}$/', $md5Hash);
 	}
 }
 ?>

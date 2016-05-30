@@ -221,6 +221,8 @@ class LogiksPage {
 
 				if($tmpl) {
 					runHooks("prePage");
+					
+					$page=current(explode("/",PAGE));
 
 					$lt=new LogiksTemplate($engine);
 					$this->setupMeta($lt);

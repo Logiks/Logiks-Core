@@ -10,13 +10,15 @@
  class LogiksSecurity {
 
    public function checkPageRequest() {
-     $this->checkSiteMode();
-     $this->checkDevMode();
-     $this->checkUserSiteAccess();
-     $this->checkUserPageAccess();
-     if(REQUEST_CHECK_BLACKLIST) $this->isBlacklisted(PAGE,SITENAME);
-     if(REQUEST_CHECK_BADBOT) $this->checkBadBot(true);
-     // $this->isLinkRedirected(PAGE);
+    if(REQUEST_CHECK_BLACKLIST) $this->isBlacklisted(PAGE,SITENAME);
+    if(REQUEST_CHECK_BADBOT) $this->checkBadBot(true);
+     
+    $this->checkSiteMode();
+    $this->checkDevMode();
+    $this->checkUserSiteAccess();
+    $this->checkUserPageAccess();
+
+    // $this->isLinkRedirected(PAGE);
 
      runHooks("requestSecurityChecks");
    }
@@ -30,7 +32,7 @@
    }
 
    public function checkUserPageAccess() {
-      if(defined("ACCESS") && strtolower(ACCESS)=="public") {
+      if(!defined("ACCESS") || strtolower(ACCESS)=="public") {
         return true;
       }
       $noLogin=explode(",", getConfig("LOGIN_EXEMPT"));
@@ -123,9 +125,20 @@
 	 }
 
    protected function checkBadBot($autoBlock=true) {
-		if(!getConfig("STOP_BAD_BOTS")) return false;
-		$uAgent=_server('HTTP_USER_AGENT');
-		$blockedAgents=getConfig("BAD_BOTS");
+    if(!getConfig("STOP_BAD_BOTS")) return false;
+
+    $botFile=ROOT.DATA_FOLDER."lookups/badbots.dat";
+    $botPHP=ROOT.CACHE_FOLDER."badbots.php";
+    if(!file_exists($botPHP) || (time()-filectime($botPHP))>getConfig("CACHE_EXPIRY")) {
+      $botData=file_get_contents($botFile);
+      $botData=explode("\n", $botData);
+      $botData=implode("|", $botData);
+
+      file_put_contents($botPHP, "<?php return '{$botData}'; ?>");
+    }
+    $blockedAgents=include $botPHP;
+    $uAgent=_server('HTTP_USER_AGENT');
+
 		$regex="/\b({$blockedAgents})\b/i";
 		if(preg_match($regex,$uAgent)>0) {
 			if($autoBlock) {

@@ -168,8 +168,12 @@ if(!function_exists("_date")) {
 
 		$dateStore["w"]=date("w",strtotime("{$dateStore["Y"]}/{$dateStore["m"]}/{$dateStore["d"]}"));
 		$dateStore["W"]=date("W",strtotime("{$dateStore["Y"]}/{$dateStore["m"]}/{$dateStore["d"]}"));
-		$dateStore["l"]=$days[$dateStore["w"]];
-		$dateStore["L"]=$daysFull[$dateStore["w"]];
+		
+		if(isset($days[$dateStore["w"]])) $dateStore["l"]=$days[$dateStore["w"]];
+		else $dateStore["l"]=0;
+		
+		if(isset($daysFull[$dateStore["w"]])) $dateStore["L"]=$daysFull[$dateStore["w"]];
+		else $dateStore["L"]=0;
 
 		$a=preg_split("/[\s,:\/]+/",$outFormat);
 		$out=$outFormat;
@@ -270,12 +274,12 @@ if(!function_exists("_pageConfig")) {
   			if(isset($_ENV['PAGEVAR'][$key])) {
   				return $_ENV['PAGEVAR'][$key];
   			} else {
-  				return false;
+  				return "";
   			}
   		}
 		if($value==-1 && isset($_ENV['PAGEVAR'][$key])) {
 			unset($_ENV['PAGEVAR'][$key]);
-			return false;
+			return "";
 		}
   		$_ENV['PAGEVAR'][$key]=$value;
   		return $value;
@@ -286,7 +290,7 @@ if(!function_exists("_pageConfig")) {
   			if(isset($_SESSION['PAGECONFIG'][$key])) {
   				return $_SESSION['PAGECONFIG'][$key];
   			} else {
-  				return false;
+  				return "";
   			}
   		}
 		if($value==-1 && isset($_SESSION['PAGECONFIG'][$key])) {
