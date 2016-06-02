@@ -24,7 +24,7 @@ class test_helpers_pwdhash extends LogiksTestCase {
 		$first = matchPWD($algo_actual,'test',$salt);
 		$this->assertEquals(true,$first);
 		
-		$first = matchPWD($algo_actual,'testing');
+		$first = matchPWD($algo_actual,'testing',$salt);
 		$this->assertEquals(false,$first);
 		
 	}
