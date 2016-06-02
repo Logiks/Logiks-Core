@@ -39,29 +39,24 @@
 			$result=humanize('first_things_first');
 			$this->assertEquals('First Things First',$result);
 		}
-		/*
-			public function test_byte_format() {
-				$actual = byte_format(1021121200652,2);
-				$expected = '0.93 TB';
-				$this->assertEquals($expected,$actual);
-			}
-			*/
-		/*
-			public function test_wordLimiter() {
-				$str = "This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test";
-				$result = wordLimiter($str);
-				$expected = 'This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test…';
-				$this->assertEquals($expected,$result);
-			}
-			*/
-		/*
-			public function test_characterLimiter() {
-				$str = "This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test";
-				$result = characterLimiter($str);
-				$expected = 'This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This…';
-				$this->assertEquals($expected,$result);
-			}
-			*/
+		public function test_byte_format() {
+			$actual = byte_format(1021121200652,2);
+			$expected = '0.93 TB';
+			$this->assertEquals($expected,$actual);
+		}
+		public function test_wordLimiter() {
+			$str = "This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is a test";
+			$result = wordLimiter($str,10);
+			$expected = 'This is a test This is a test This is...';
+			$this->assertEquals($expected,$result);
+		}
+
+		public function test_characterLimiter() {
+			$str = "This is a test This is a test This is a test This is a test This is a test This is a test This is a test This is";
+			$result = characterLimiter($str,10);
+			$expected = 'This is a...';
+			$this->assertEquals($expected,$result);
+		}
 		public function test_wordCensor(){
 			$str='Damn this world is no good place to stay, we will find for a new inhabitant for the good people...';
 			$actual=wordCensor($str,array('Damn','no','good','find'),'*');

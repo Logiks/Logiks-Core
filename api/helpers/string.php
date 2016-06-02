@@ -106,7 +106,7 @@ if (!function_exists('singular')) {
 	    return number_format($num, $precision).' '.$unit;
 	}
 	
-	function wordLimiter($str, $limit = 100, $end_char = '&#8230;') {
+	function wordLimiter($str, $limit = 100, $end_char = '...') {
 		if (trim($str) == '') {
 			return $str;
 		}
@@ -119,7 +119,7 @@ if (!function_exists('singular')) {
 
 		return rtrim($matches[0]).$end_char;
 	}
-	function characterLimiter($str, $n = 500, $end_char = '&#8230;') {
+	function characterLimiter($str, $n = 500, $end_char = '...') {
 		if (strlen($str) < $n) {
 			return $str;
 		}

@@ -17,6 +17,16 @@ class test_helpers_pathfuncs extends LogiksTestCase {
 		loadHelpers("pathfuncs");
 	}
 	
+	public function test_getRelativePath(){
+		$result=getRelativePath(__FILE__);
+		$expected = str_replace(ROOT, "", __FILE__);
+		
+		$expected=explode("/", $expected);
+		$result=explode("/", $result);
+
+		$this->assertEquals(count($expected),(count($result)-1));
+	}
+
 	public function test_getWebPath(){
 		$result=getWebPath(__FILE__);
 		$expected = SiteLocation.str_replace(ROOT, "", dirname(__FILE__)."/".basename(__FILE__));
