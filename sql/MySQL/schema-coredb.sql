@@ -16,6 +16,7 @@ CREATE TABLE `access` (
 
 CREATE TABLE `privileges` (
    `id` int(10) unsigned not null auto_increment,
+   `guid` varchar(64) not null default 'global',
    `site` varchar(150),
    `name` varchar(35),
    `remarks` varchar(255),
@@ -29,13 +30,14 @@ CREATE TABLE `privileges` (
 
 CREATE TABLE `rolemodel` (
    `id` int(10) unsigned not null auto_increment,
+   `guid` varchar(64) not null default 'global',
    `site` varchar(150),
    `category` varchar(100) not null default 'SYSTEM',
    `module` varchar(100) not null,
    `activity` varchar(255) not null,
    `privilegehash` varchar(80) not null,
    `remarks` varchar(200),
-   `allow` enum('true','false') default 'true',
+   `blocked` enum('true','false') not null default 'false',
    `role_type` varchar(55) not null default 'auto',
    `creator` varchar(155) not null,
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
@@ -44,21 +46,33 @@ CREATE TABLE `rolemodel` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
-CREATE TABLE `rules` (
+CREATE TABLE `cache_geoip` (
    `id` int(10) unsigned not null auto_increment,
-   `rule_key` varchar(255) not null,
-   `rule_type` varchar(55) not null,
-   `rule_schema` longblob,
-   `rule_precaller` varchar(255) not null,
-   `rule_postcaller` varchar(255) not null,
-   `site` varchar(150) not null,
-   `blocked` enum('true','false') default 'false',
-   `creator` varchar(150) not null,
+   `ip_address` varchar(155),
+   `country_code` varchar(25),
+   `country_name` varchar(500),
+   `geolocation` varchar(25),
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
+
+CREATE TABLE `cache_sessions` (
+   `id` int(10) unsigned not null auto_increment,
+   `guid` varchar(150) not null,
+   `userid` varchar(155) not null,
+   `site` varchar(150) not null,
+   `device` varchar(100) not null,
+   `client_ip` varchar(25) not null,
+   `session_key` varchar(100) not null,
+   `session_data` longblob,
+   `global_data` longblob,
+   `creator` varchar(150) not null,
+   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
+   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 CREATE TABLE `security_apikeys` (
    `id` int(10) unsigned not null auto_increment,
@@ -70,18 +84,6 @@ CREATE TABLE `security_apikeys` (
    `accessid` int(11) not null default '1',
    `expires` datetime,
    `remarks` varchar(200),
-   `active` enum('true','false') default 'true',
-   `creator` varchar(155) not null,
-   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
-   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-
-CREATE TABLE `security_bots` (
-   `id` int(10) unsigned not null auto_increment,
-   `botkey` varchar(30) not null,
-   `allow_type` enum('blacklist','whitelist') default 'blacklist',
    `active` enum('true','false') default 'true',
    `creator` varchar(155) not null,
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
@@ -118,19 +120,9 @@ CREATE TABLE `security_userkeys` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
-CREATE TABLE `security_geoip` (
-   `id` int(10) unsigned not null auto_increment,
-   `ip_address` varchar(155),
-   `country_code` varchar(25),
-   `country_name` varchar(500),
-   `geolocation` varchar(25),
-   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
-   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
 CREATE TABLE `settings` (
    `id` int(10) unsigned not null auto_increment,
+   `guid` varchar(64) not null default 'global',
    `site` varchar(150) default '*',
    `userid` varchar(155) not null,
    `name` varchar(155) not null,
@@ -144,6 +136,7 @@ CREATE TABLE `settings` (
 
 CREATE TABLE `system_bucket` (
    `id` int(10) unsigned not null auto_increment,
+   `guid` varchar(64) not null default 'global',
    `site` varchar(150) not null,
    `bucket_category` varchar(255) not null,
    `bucket_key` varchar(255) not null,
@@ -158,6 +151,7 @@ CREATE TABLE `system_bucket` (
 
 CREATE TABLE `system_queue` (
    `id` int(10) unsigned not null auto_increment,
+   `guid` varchar(64) not null default 'global',
    `site` varchar(150) not null,
    `queue_key` varchar(255) not null,
    `queue_data` longblob,
@@ -167,7 +161,6 @@ CREATE TABLE `system_queue` (
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
 
 CREATE TABLE `system_cronjobs` (
    `id` int(11) not null auto_increment,
@@ -192,7 +185,7 @@ CREATE TABLE `system_cronjobs` (
 
 CREATE TABLE `users` (
    `id` int(11) not null auto_increment,
-   `guid` varchar(64) not null default '3cbfc610b158e774809db3a5bdf4124c',
+   `guid` varchar(64) not null default 'global',
    `userid` varchar(150) not null,
    `pwd` varchar(128) not null,
    `pwd_salt` varchar(128),

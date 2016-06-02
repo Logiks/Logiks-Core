@@ -19,10 +19,17 @@ function smarty_function_component($params, Smarty_Internal_Template $template) 
 		if(file_exists($f)) {
 			switch($ext) {
 				case "tpl":
-					//_templatePage($f);
+					$vx=$template->tpl_vars;
+					$dx=[];
+					foreach ($vx as $key => $value) {
+						$dx[$key]=$value->value;
+						$template->smarty->assign($key,$value->value);
+					}
+					$template->smarty->assign("component",$f);
 					$template->smarty->display($f);
 				break;
 				case "php":
+					$GLOBALS['PAGETMPL']=$template->smarty;
 					include $f;
 				break;
 				case "htm":

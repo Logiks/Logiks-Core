@@ -117,7 +117,7 @@ if(!function_exists("__cleanup")) {
 			_envData("SERVER","PAGE",$page);
 			define("PAGE",$page);
 
-			if(!isset($_SESSION['SESS_USER_ID'])) $_SESSION['SESS_USER_ID']="";
+			if(!isset($_SESSION['SESS_USER_ID'])) $_SESSION['SESS_USER_ID']="guest";
 			if(!isset($_SESSION['SESS_USER_NAME'])) $_SESSION['SESS_USER_NAME']="Guest";
 		}
 	}

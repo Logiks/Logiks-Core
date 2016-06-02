@@ -130,12 +130,12 @@ class LogiksLogger {
     if(defined("SITENAME")) $siteKey=SITENAME;
 
     $logger->pushProcessor(function ($record) {
-          //$record['extra']['user'] = Auth::user() ? Auth::user()->username : 'anonymous';
-          $record['extra']['ip'] = _server('REMOTE_ADDR');
           $params=explode(",", LOG_PARAMS);
           foreach ($params as $px) {
             if(isset($_SESSION[$px])) $record['extra'][$px] = $_SESSION[$px];
+            elseif(isset($_SERVER[$px])) $record['extra'][$px] = $_SERVER[$px];
             elseif(isset($_REQUEST[$px])) $record['extra'][$px] = $_REQUEST[$px];
+            elseif(defined($px)) $record['extra'][$px] = constant($px);
           }
           return $record;
       });
@@ -293,20 +293,22 @@ class LogiksLogger {
     $this->loadLogConfig($config);
   }
 
+  public function getLogBook($site) {
+    $logger1=[];$logger2=[];
+    if(isset($this->logBook['core'])) $logger1=$this->logBook['core'];
+    if(isset($this->logBook[$site])) $logger2=$this->logBook[$site];
+    return array_merge($logger1,$logger2);
+  }
 
   //Finally log the data into the logger
   public static function log($logKey, $logLevel, $msg, $param=array()) {
     //echo "LOGGING : $logKey > $logLevel > $msg >";//$parame
-    $logBook=null;
     if(defined("SITENAME")) {
-      if(!isset(LogiksLogger::$instance->logBook[SITENAME])) {
-        LogiksLogger::$instance->loadSiteConfig();
-      }
-      $logBook=LogiksLogger::$instance->logBook[SITENAME];
+      $logBook=LogiksLogger::getInstance()->getLogBook(SITENAME);
     } else {
-      $logBook=LogiksLogger::$instance->logBook["core"];
+      $logBook=LogiksLogger::getInstance()->getLogBook("core");
     } 
-
+    
     //var_dump($logBook[$logKey]);exit();
     if($logKey=="*") {
       foreach ($logBook as $a => $logger) {

@@ -54,8 +54,10 @@ class LogiksSession {
 		//$_COOKIE
 		//var_dump($_SERVER);exit();
 	}
-	public static function getInstance() {
-	    if(LogiksSession::$instance==null) {
+	public static function getInstance($recreate=false) {
+		if($recreate) {
+		  LogiksSession::$instance=new LogiksSession();
+		} elseif(LogiksSession::$instance==null) {
 	      LogiksSession::$instance=new LogiksSession();
 	    }
 	    return LogiksSession::$instance;

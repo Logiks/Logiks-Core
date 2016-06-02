@@ -266,38 +266,4 @@ if(!function_exists("_replace")) {
 		return $str;
 	}
 }
-
-if(!function_exists("_pageConfig")) {
-	//Sets single variable into enviroment, volatile in nature,
-  	function _pageVar($key,$value=null) {
-  		if($value==null) {
-  			if(isset($_ENV['PAGEVAR'][$key])) {
-  				return $_ENV['PAGEVAR'][$key];
-  			} else {
-  				return "";
-  			}
-  		}
-		if($value==-1 && isset($_ENV['PAGEVAR'][$key])) {
-			unset($_ENV['PAGEVAR'][$key]);
-			return "";
-		}
-  		$_ENV['PAGEVAR'][$key]=$value;
-  		return $value;
-  	}
-  	//Sets single variable into enviroment, across session
-  	function _pageConfig($key,$value=null) {
-		if($value==null) {
-  			if(isset($_SESSION['PAGECONFIG'][$key])) {
-  				return $_SESSION['PAGECONFIG'][$key];
-  			} else {
-  				return "";
-  			}
-  		}
-		if($value==-1 && isset($_SESSION['PAGECONFIG'][$key])) {
-			unset($_SESSION['PAGECONFIG'][$key]);
-		}
-		$_SESSION['PAGECONFIG'][$key]=$value;
-		return $value;
-  	}
-}
 ?>

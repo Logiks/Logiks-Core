@@ -78,6 +78,9 @@ class LogiksTemplate {
   public function clearTemplateCache($tmpl) {
     return $this->engine->clearCache($tmpl);
   }
+  public function getEngine() {
+    return $this->engine;
+  }
   //BYPASS addVar to driver
   public function addVar($name,$value) {
     return $this->engine->addVar($name,$value);

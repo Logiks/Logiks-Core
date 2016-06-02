@@ -8,13 +8,16 @@
  */
 
 function smarty_function_pageseometa($params) {
-	$pageConfig=_pageConfig('meta');
-	if($pageConfig) {
+	if(!isset($_ENV['PAGECONFIG']['meta'])) return "";
+	
+	$pageConfig=$_ENV['PAGECONFIG']['meta'];
+	if($pageConfig && is_array($pageConfig)) {
 		$html="";
 		foreach($pageConfig as $meta) {
 			$html.="<meta ".array_implode_associative(" ", "=",$meta)." />\n\t";
 		}
 		return $html;
 	}
+	return "";
 }
 ?>

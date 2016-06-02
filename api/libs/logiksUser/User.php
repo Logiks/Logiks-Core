@@ -8,14 +8,14 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 
-if(!function_exists("getUserList")) {
+if(!function_exists("getUserID")) {
 	loadHelpers("pwdhash");
 
 	function getUserID() {
-		if(isset($_SESSION['SESS_USER_ID'])){
+		if(isset($_SESSION['SESS_USER_ID']) && strlen($_SESSION['SESS_USER_ID'])>0){
 			$user=$_SESSION['SESS_USER_ID'];
 		} else {
-			$user="Guest";
+			$user="guest";
 		}
 		return $user;
 	}
@@ -55,84 +55,6 @@ if(!function_exists("getUserList")) {
 		}
 		return loadMedia("images/user.png");
 	}
-	function getUserList($cols=null, $where="", $orderBy="", $limit=null) {
-		if($cols==null || count($cols)==0) {
-			$cols=array("userid", "privilegeid", "accessid", "name", "email", "address", "region", "country", "zipcode", "mobile", "avatar", "avatar_type");
-		}
-		$sql=_db(true)->_selectQ(_dbTable("users",true),$cols)->_where(array(
-				"blocked"=>'false'
-			));
-		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]>ROLE_PRIME) {
-			//$sql=$sql->_where(" (site='".SITENAME."' OR site='*')");
-			$sql1=_db(true)->_selectQ(_dbTable("access",true),"id")->_where(array(
-				"blocked"=>'false'
-			))->_where(" (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
-			$sql=$sql->_query("accessid",$sql1);
-		}
-		if(strlen($where)>0) {
-			$sql=$sql->_where(" ($where)");
-		}
-		if(strlen($orderBy)>0) {
-			$sql=$sql->_orderBy($orderBy);
-		}
-		if(is_array($limit)) {
-			$sql=$sql->_limit($limit);
-		} elseif(strlen($limit)>0) {
-			$sql=$sql->_limit($limit);
-		}
-		
-		$res=_dbQuery($sql,true);
-		$data=[];
-		if($res) {
-			$data=_dbData($res,true);
-			_dbFree($res,true);
-
-			foreach ($data as $a => $row) {
-				$data[$a]['avatarlink']=getUserAvatar($row);
-			}
-		}
-		return $data;
-	}
-
-	function getPrivilegeByName($privilageName) {
-		$sql=_db(true)->_selectQ(_dbTable("privileges",true),"id,name,site,remarks,blocked")->_where(array(
-				"blocked"=>'false',
-				"name"=>$privilageName,
-			));
-		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]>ROLE_PRIME) {
-			$sql=$sql->_where(" (site='".SITENAME."' OR site='*')");
-		}
-
-		$res=_dbQuery($sql,true);
-		$data=[];
-		if($res) {
-			$data=_dbData($res,true);
-			_dbFree($res,true);
-		}
-		return $data;
-	}
-
-	function getPrivilegeList($where="") {
-		$sql=_db(true)->_selectQ(_dbTable("privileges",true),"id,name,site,remarks,blocked")->_where(array(
-				"blocked"=>'false'
-			));
-		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]>ROLE_PRIME) {
-			$sql=$sql->_where(" (site='".SITENAME."' OR site='*')");
-		}
-		if(strlen($where)>0) {
-			$sql=$sql->_where(" ($where)");
-		}
-
-		$res=_dbQuery($sql,true);
-		$data=[];
-		if($res) {
-			$data=_dbData($res,true);
-			_dbFree($res,true);
-		}
-		return $data;
-	}
-
-	
 
 	function getUserInfo($userid=null) {
 		if($userid==null) $userid=$_SESSION['SESS_USER_ID'];
@@ -155,35 +77,12 @@ if(!function_exists("getUserList")) {
 		return $data;
 	}
 
-	function getMyUserInfo() {
+	function getMyInfo() {
 		if(!isset($_SESSION['SESS_USER_ID'])) return false;
 		return getUserInfo($_SESSION['SESS_USER_ID']);
 	}
 
-	function checkUserID($userid,$site=SITENAME) {
-		if($userid=="root") return true;
-		if(!isset($_SESSION['SESS_PRIVILEGE_ID']) || $_SESSION['SESS_PRIVILEGE_ID']>2) {
-			$site=SITENAME;
-		}
-
-		$sql=_db(true)->_selectQ(_dbTable("users",true),"count(*) as cnt")->_where(array(
-				"blocked"=>'false',
-				"userid"=>$userid,
-			));
-		$sql1=_db(true)->_selectQ(_dbTable("access",true),"id")->_where(array(
-			"blocked"=>'false',
-		))->_where(" (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
-		$sql=$sql->_query("accessid",$sql1);
-
-		$res=_dbQuery($sql,true);
-		if($res) {
-			$data=_dbData($res,true);
-			_dbFree($res,true);
-			return ($data[0]['cnt']>0)?true:false;
-		}
-		return false;
-	}
-
+	//Alter User Informations
 	function getDefaultParams($userID="",$pwd="",$privilegeID="",$accessID="") {
 		$hashSalt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
 		if(!isValidMd5($pwd)) $pwd=md5($pwd);
@@ -380,6 +279,29 @@ if(!function_exists("getUserList")) {
 			return array("error"=>"Error In User Updating","details"=>_db(true)->get_error());
 		}
 		return array("error"=>"UserID Not Found");
+	}
+
+	function generateGUID($name) {
+		return trim(strtolower(preg_replace('/\W/', '', $name)));
+	}
+
+	function getMyRoleHash() {
+		if(!isset($_SESSION["SESS_PRIVILEGE_HASH"])) {
+			if(isset($_SESSION["SESS_PRIVILEGE_NAME"]) && isset($_SESSION["SESS_PRIVILEGE_ID"])) {
+				$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_NAME"].$_SESSION["SESS_PRIVILEGE_ID"]);
+			} else {
+				return false;
+			}
+		}
+		return $_SESSION["SESS_PRIVILEGE_HASH"];
+	}
+	function fetchUserRoleHash($userid) {
+		$tbl1=_dbTable("users", true);
+		$tbl2=_dbTable("privileges", true);
+		$data=_db(true)->_raw("SELECT md5(concat({$tbl2}.name,{$tbl2}.id)) as hash FROM {$tbl1},{$tbl2} WHERE {$tbl1}.privilegeid={$tbl2}.id AND {$tbl1}.userid='root'")
+				->_get();
+		if(isset($data[0])) return $data[0]['hash'];
+		else return false;
 	}
 }
 ?>

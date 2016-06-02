@@ -43,4 +43,20 @@ if(!function_exists('loadComponent')) {
 		}
 		return "";
 	}
+	function loadSnippets($files) {
+		if(!is_array($files)) {
+			$files=[$files];
+		}
+		$out=[];
+		foreach ($files as $f) {
+			$fx=APPROOT.APPS_PLUGINS_FOLDER."snippets/{$f}.php";
+			if(file_exists($fx)) {
+				$out["loaded"][]=$f;
+				eval(file_get_contents($fx));
+			} else {
+				$out["error"][]=$f;
+			}
+		}
+		return $out;
+	}
 }

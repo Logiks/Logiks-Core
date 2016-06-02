@@ -39,9 +39,15 @@
 
 	public function _get() {
 		$res=$this->dbInstance->runQuery($this);
+		if(!$res) return false;
 		$data=$this->dbInstance->fetchAllData($res);
 		$this->dbInstance->free($res);
 		return $data;
+	}
+
+	public function _getRaw() {
+		$res=$this->dbInstance->runQuery($this);
+		return $res;
 	}
 
 	public function _run() {
@@ -460,6 +466,7 @@
 			elseif(is_null($s)) return $s;
 			elseif(is_bool($s)) return $s;
 			elseif(preg_match("/\d{2}\-\d{2}-\d{4}/",str_replace("/","-",$s))) return "'"._date($s)."'"; 
+			elseif(strpos($s, "()")>1)  return $s;
 			else return "'$s'";
 		} elseif($sqlType=="int" || $sqlType=="float" || $sqlType=="bool") {
 			if(strlen($s)<=0) return "0";
@@ -467,6 +474,8 @@
 		} elseif($sqlType=="date") {
 			$s=_date($s);
 			return "'$s'";
+		} elseif($sqlType=="func") {
+			return "$s";
 		} else {
 			return "'$s'";
 		}
@@ -507,7 +516,7 @@
 						break;
 				}
 			} else {
-				return $arr;//"{$col}='{$arr}'";
+				return "{$col}=".$this->sqlData($arr);
 			}
 		}
 		if(array_key_exists("RAW", $arr)) {

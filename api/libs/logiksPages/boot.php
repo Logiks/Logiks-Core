@@ -119,4 +119,54 @@ if(!function_exists("_css")) {
 		return _template($file,$dataArr);
 	}
 }
+
+if(!function_exists("_pageConfig")) {
+	//Sets single variable into loaded into template enviroment
+	//This can be accessed from within the templates
+	//Also these variables can be accessed using $<name>
+  	function _pageVar($key,$value=null) {
+  		if(isset($GLOBALS['PAGETMPL'])) {
+  			if(is_a($GLOBALS['PAGETMPL'], "Smarty")) {
+	  			$GLOBALS['PAGETMPL']->assign($key,$value);
+	  			return $value;
+	  		} elseif(is_a($GLOBALS['PAGETMPL'], "SmartyTemplateEngine")) {
+	  			$GLOBALS['PAGETMPL']->addVar($key,$value);
+	  			return $value;
+	  		}
+  		}
+  		return false;
+  	}
+  	//Sets single variable in page enviroment
+  	//Effective if called in viewpage source code
+  	//Also these variables can be accessed using $PAGE.<name>
+  	function _pageConfig($key,$value=null) {
+  		//$key=strtoupper($key);
+		if($value==null) {
+			if(isset($_ENV['PAGEVAR'][$key])) {
+  				return $_ENV['PAGEVAR'][$key];
+  			} else {
+  				return "";
+  			}
+  		}
+		if($value==-1 && isset($_ENV['PAGEVAR'][$key])) {
+			unset($_ENV['PAGEVAR'][$key]);
+		}
+		$_ENV['PAGEVAR'][$key]=$value;
+		return $value;
+  	}
+
+  	//Sets single meta variable in page enviroment
+  	//Effective if called in viewpage source code
+  	function _pageMeta($value=null,$flushAll=false) {
+		if($value==null) {
+			return $_ENV['PAGECONFIG']['meta'];
+		} elseif(is_array($value)) {
+			if($flushAll) {
+				$_ENV['PAGECONFIG']['meta']=$value;
+			} else {
+				$_ENV['PAGECONFIG']['meta'][]=$value;
+			}
+		}
+  	}
+}
 ?>

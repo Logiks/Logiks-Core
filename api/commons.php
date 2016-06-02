@@ -280,13 +280,6 @@ if (!function_exists('printArray')) {
 }
 
 if(!function_exists("_session")) {
-	function _session($var) {
-		$data=LogiksSession::getInstance()->data('SESSION');
-		if(isset($data[$var])) {
-			return $data[$var];
-		}
-		return false;
-	}
 	function _server($var) {
 		$data=LogiksSession::getInstance()->data('SERVER');
 		if(isset($data[$var])) {
@@ -294,12 +287,27 @@ if(!function_exists("_session")) {
 		}
 		return false;
 	}
-	function _env($var) {
-		$data=LogiksSession::getInstance()->data('ENV');
-		if(isset($data[$var])) {
-			return $data[$var];
+	function _session($var,$value=null) {
+		if($value==null) {
+			$data=LogiksSession::getInstance()->data('SESSION');
+			if(isset($data[$var])) {
+				return $data[$var];
+			}
+		} else {
+			_envData("SESSION",$var,$value);
+			return $value;
 		}
-		return false;
+	}
+	function _env($var,$value=null) {
+		if($value==null) {
+			$data=LogiksSession::getInstance()->data('ENV');
+			if(isset($data[$var])) {
+				return $data[$var];
+			}
+		} else {
+			_envData("ENV",$var,$value);
+			return $value;
+		}
 	}
 	function _cookie($var) {
 		$data=LogiksSession::getInstance()->data('COOKIE');

@@ -15,7 +15,7 @@ class LogiksPage {
 	protected $device="";
 
 	protected $pageConfig=array();
-	protected $pageType=null;
+	public $pageType=null;
 	protected $pagePath=null;
 
 	public function __construct($theme) {
@@ -99,13 +99,17 @@ class LogiksPage {
 		$fx=implode(".", $fx);
 		$fx=str_replace("-", "/", $fx);
 
-		$pageConfig['pageuri']=$fx;
+		$pageConfig['pageName']=$fx;
 
 		$this->pageConfig=$pageConfig;
 
 		//printArray($this->pageConfig);
 
 		return $this->pageConfig;
+	}
+	public function getSlug() {
+		if(!isset($_ENV['PAGESLUG'])) $this->generateSLUG();
+		return $_ENV['PAGESLUG'];
 	}
 	public function getPageContent($dataPrint=null) {
 		$pageConfig=$this->pageConfig;
@@ -138,9 +142,15 @@ class LogiksPage {
 
 				if($tmpl) {
 					$lt=new LogiksTemplate($engine);
-					$this->setupMeta($lt);
 					
 					$tmplID=md5(PAGE.$tmpl);
+
+					$pageSrc=APPROOT.APPS_PAGES_FOLDER."viewpage/{$page}.php";
+
+					$GLOBALS['PAGETMPL']=$lt->getEngine();
+					if(file_exists($pageSrc)) include_once $pageSrc;
+
+					$this->setupMeta($lt);
 
 					ob_start();
 					if(MASTER_DEBUG_MODE)
@@ -197,10 +207,11 @@ class LogiksPage {
 		}
 
 		//include ROOT."api/scripts.php";
-		
-		$_ENV['PAGECONFIG']=$this->pageConfig;
-		$this->generateSLUG();
+		//var_dump($this->pageConfig);exit();
 
+		$_ENV['PAGECONFIG']=$this->pageConfig;
+		$slugs=$this->generateSLUG();
+		
 		switch ($this->pageType) {
 			case 'json':
 				$ext=explode(".", $pageConfig['template']);
@@ -225,11 +236,17 @@ class LogiksPage {
 					$page=current(explode("/",PAGE));
 
 					$lt=new LogiksTemplate($engine);
-					$this->setupMeta($lt);
 
 					$tmplID=md5(PAGE.$tmpl);
 
 					if(count($pageConfig['modules_preload'])>0) loadModule($pageConfig['modules_preload']);
+
+					$pageSrc=APPROOT.APPS_PAGES_FOLDER."viewpage/{$page}.php";
+
+					$GLOBALS['PAGETMPL']=$lt->getEngine();
+					if(file_exists($pageSrc)) include_once $pageSrc;
+
+					$this->setupMeta($lt);
 
 					if(MASTER_DEBUG_MODE)
 						$lt->printTemplate($tmpl,null,$tmplID,true);
@@ -269,36 +286,7 @@ class LogiksPage {
 		}
 	}
 
-	protected function isAccessible() {
-		if($this->pageType=="json") {
-			if(isset($this->pageConfig['access'])) {
-				$access=$this->pageConfig['access'];
-
-				if(is_string($access)) $access=explode(",", $access);
-
-				if(strlen($access[0])==0 || $access[0]=="public") {
-					return true;
-				} elseif(function_exists("checkUserRoles")) {
-					return checkUserRoles("PAGES",$this->pageConfig['pageuri'],"PAGES");
-				} else {
-					if(session_check(false,false)) {
-						if(in_array($_SESSION['SESS_USER_ID'], $access)) return true;
-						elseif(in_array(md5($_SESSION['SESS_PRIVILEGE_NAME'].$_SESSION['SESS_PRIVILEGE_ID']), $access)) return true;
-						else return false;
-					} else {
-						return false;
-					}
-				}
-			} else {
-				return true;
-			}
-		} else {
-			
-		}
-		return true;
-  	}
-
-  	protected function findPage($pagePath) {
+	protected function findPage($pagePath) {
   		$pageFile=_metaCache("PAGES",$pagePath);
 
   		if($pageFile && file_exists($pageFile)) {
@@ -359,6 +347,8 @@ class LogiksPage {
 		$page['JS_POSTLOAD']=getConfig("{$device}_JS_TO_POSTLOAD").",".getConfig("DEFAULT_JS_TO_POSTLOAD").",".$page['JS_POSTLOAD'];
 		
 		$page['CSS']=explode(",", str_replace(" ",",",trim($page['CSS'])));
+		$page['CSS'][]=$this->pageConfig['template'];
+		$page['CSS'][]=$this->pageConfig['pageName'];
 		$page['CSS']=array_unique($page['CSS']);
 		//$page['CSS']=implode(",", $page['CSS']);
 		
@@ -429,7 +419,7 @@ class LogiksPage {
   	protected function generateSLUG() {
   		$arrSlug=array();
 
-  		$fx=$this->pageConfig['pageuri'];
+  		$fx=$this->pageConfig['pageName'];
 
 	
 		$page=$this->pageConfig['page'];
@@ -469,6 +459,35 @@ class LogiksPage {
 				return false;
 		}
   		return $arrSlug;
+  	}
+
+  	public function isAccessible() {
+		if($this->pageType=="json") {
+			if(isset($this->pageConfig['access'])) {
+				$pageAccess=$this->pageConfig['access'];
+
+				if(is_string($pageAccess)) $pageAccess=explode(",", $pageAccess);
+
+				if(strlen($pageAccess[0])==0 || $pageAccess[0]=="public") {
+					return true;
+				} elseif(function_exists("checkUserRoles")) {
+					return checkUserRoles("PAGES",$this->pageConfig['pageName'],"PAGES");
+				} else {
+					if(session_check(false,false)) {
+						if(in_array($_SESSION['SESS_USER_ID'], $pageAccess)) return true;
+						elseif(in_array(md5($_SESSION['SESS_PRIVILEGE_NAME'].$_SESSION['SESS_PRIVILEGE_ID']), $pageAccess)) return true;
+						else return false;
+					} else {
+						return false;
+					}
+				}
+			} else {
+				return true;
+			}
+		} else {
+			return checkUserRoles("PAGES",PAGE,"PAGES");
+		}
+		return true;
   	}
 }
 ?>

@@ -18,8 +18,10 @@ if(!defined("BASEPATH")) {
   loadLogiksBootEngines();
 
   $security=new LogiksSecurity();
+  //Global Appsite Access Controls : this ensures prilimanary user access validation : only checks if logged in or not
   $security->checkPageRequest();
 
+  
   $device=getUserDeviceType();
 
   $routerPage=getConfig("APPS_ROUTER");

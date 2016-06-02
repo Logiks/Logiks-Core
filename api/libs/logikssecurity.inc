@@ -16,7 +16,7 @@
     $this->checkSiteMode();
     $this->checkDevMode();
     $this->checkUserSiteAccess();
-    $this->checkUserPageAccess();
+    //$this->checkUserPageAccess(); It can only be done after page load is complete
 
     // $this->isLinkRedirected(PAGE);
 
@@ -24,27 +24,30 @@
    }
 
    public function checkServiceRequest() {
-     //$this->checkSiteMode();
      if(REQUEST_CHECK_BLACKLIST) $this->isBlacklisted("SCMD-".$_REQUEST['scmd'],SITENAME);
      if(REQUEST_CHECK_BADBOT) $this->checkBadBot(true);
+
+     $this->checkSiteMode();
+     $this->checkDevMode();
+     $this->checkUserSiteAccess();     
 
      runHooks("serviceSecurityChecks");
    }
 
-   public function checkUserPageAccess() {
-      if(!defined("ACCESS") || strtolower(ACCESS)=="public") {
-        return true;
-      }
-      $noLogin=explode(",", getConfig("LOGIN_EXEMPT"));
-      $noLogin[]=getConfig("PAGE_LOGIN");
-      if(in_array(current(explode("/",PAGE)), $noLogin)) {
-        return true;
-      }
-      if(!RoleModel::checkRole("PAGES","Access : ".PAGE)) {
-        trigger_logikserror("This page is forbidden to you.");
-      }
+   public function checkAPIRequest() {
+     if(REQUEST_CHECK_BLACKLIST) $this->isBlacklisted("SCMD-".$_REQUEST['scmd'],SITENAME);
+     if(REQUEST_CHECK_BADBOT) $this->checkBadBot(true);
+
+     $this->checkSiteMode();
+
+     runHooks("apiSecurityChecks");
    }
 
+   /*
+   * Global access checking. This function checks for generic condition that user is logged in or not.
+   * This does not check what privileges or roles user has in doing so.
+   *
+   */
    public function checkUserSiteAccess() {
       if(defined("ACCESS")) {
         switch (strtolower(ACCESS)) {
@@ -53,6 +56,7 @@
               break;
             case 'private':
                 if(session_check()) return true;
+                if(defined("SERVICE_ROOT")) return true;
                 $noLogin=explode(",", getConfig("LOGIN_EXEMPT"));
                 $noLogin[]=getConfig("PAGE_LOGIN");
                 if(in_array(current(explode("/",PAGE)), $noLogin)) {
@@ -148,5 +152,13 @@
 		}
 		return false;
 	}
+
+  public static function isPageAccessible($pageObj) {
+    if(is_a($pageObj, "LogiksPage")) {
+      return $pageObj->isAccessible();
+    } else {
+      return checkUserRoles("PAGES",$pageObj,"PAGES");
+    }
+  }
 }
 ?>

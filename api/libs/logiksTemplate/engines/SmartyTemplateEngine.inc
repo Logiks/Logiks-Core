@@ -126,6 +126,7 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
   			$this->addVar($a,$b);
   		}
     }
+    //printArray($this->smartyEngine->getTemplateVars());exit();
     // $c=$this->smarty->getCaching();
 		// if($caching==0) {
 		// 	$this->smarty->setCaching(0);
@@ -146,7 +147,9 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
     //var_dump($this->smartyEngine);
 
     $this->addVar("ROOT",ROOT);
+    $this->addVar("APPROOT",APPROOT);
     $this->addVar("WEBROOT",WEBROOT);
+    $this->addVar("WEBAPPROOT",WEBAPPROOT);
 
     ob_start();
     if($tmplID && strlen($tmplID)>3) {

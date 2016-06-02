@@ -24,9 +24,10 @@ function smarty_function_viewpage($params, Smarty_Internal_Template $template) {
 	foreach ($fs as $f=>$ext) {
 		if(file_exists($f)) {
 			switch ($ext) {
-				case 'php':
-					include $f;
-				break;
+				// case 'php':
+				// 	$GLOBALS['PAGETMPL']=$template->smarty;
+				// 	include $f;
+				// break;
 				case 'tpl':
 					$vx=$template->tpl_vars;
 					$dx=[];

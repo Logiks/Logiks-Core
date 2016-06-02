@@ -141,9 +141,9 @@ class QueryBuilder extends AbstractQueryBuilder {
 		foreach($arr as $a=>$b) {
 			$v=array_values($b);
 			$v=$this->cleanArr($v);
-			array_push($vals,"(".implode(",",$this->_sqlDataArr($v)).")");
+			array_push($vals,"(".implode(",",$this->sqlDataArr($v)).")");
 		}
-		
+		$keys=implode(",", $keys);
 		$sql.="($keys) VALUES ".implode(",",$vals);
 		$this->sql=$sql;
 		

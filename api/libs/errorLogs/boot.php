@@ -97,7 +97,7 @@ if(!function_exists("trigger_logikserror")) {
       //JS Console Logging for advanced debugging
       $logKeys=LogiksLogger::getInstance()->getLogKeys();
       if(!in_array("console", $logKeys)) {
-        LogiksLogger::getInstance()->register("console",new Monolog\Handler\BrowserConsoleHandler());
+        LogiksLogger::getInstance()->registerHandler("console",new Monolog\Handler\BrowserConsoleHandler());
       }
       LogiksLogger::log("console",LogiksLogger::LOG_WARNING,$errData['msg'],$errData);
 
@@ -106,6 +106,8 @@ if(!function_exists("trigger_logikserror")) {
       } elseif(EXCEPTION_TO_SCREEN) {
         LogiksError::handleExpection($errData['severity'], $errData['msg'], $errData['file'], $errData['line'], $errData['code']);
         echo "<div class='logiksException'>{$errData['msg']} <citie>({$errData['severity']})</citie></div>";
+      } else {
+        var_dump($exception);
       }
     }
   }
