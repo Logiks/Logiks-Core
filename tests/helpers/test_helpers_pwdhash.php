@@ -9,24 +9,8 @@ class test_helpers_pwdhash extends LogiksTestCase {
 	
 	public function setUp() {
 		parent::setUp();
+		setConfig("PWD_HASH_TYPE","md5");
 		loadHelpers("pwdhash");
-	}
-	
-	public function test_HashType() {
-		return getConfig("PWD_HASH_TYPE");
-	}
-	
-	/**
-	 * @depends test_HashType
-	 */
-	public function test_getPWDHash($encyption_algo) {
-		$actual = getPWDHash('test');
-		if($encyption_algo != 'pwdhash' && $encyption_algo != 'logiks') {
-			$expected = call_user_func($encyption_algo,'test');
-		} else {
-			$expected = PwdHash::hash('test');
-		}
-		$this->assertEquals($expected,$actual);
 	}
 	
 	/**
