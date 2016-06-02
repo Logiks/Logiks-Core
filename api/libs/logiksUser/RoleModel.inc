@@ -68,7 +68,7 @@ class RoleModel {
 			$data=_dbData($r,true);
 			_dbFree($r,true);
 			foreach($data as $d) {
-				if($d['id']<=1) continue;
+				if($d['id']<=ROLE_PRIME) continue;
 
 				$pid=$d['id'];
 				$privilegehash=md5($d['name'].$d['id']);

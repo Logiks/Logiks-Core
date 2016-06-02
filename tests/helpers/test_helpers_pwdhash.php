@@ -9,11 +9,21 @@ class test_helpers_pwdhash extends LogiksTestCase {
 	
 	public function setUp() {
 		parent::setUp();
-		setConfig("PWD_HASH_TYPE","logiks");
+		
 		loadHelpers("pwdhash");
 	}
 	
+	public function test_getPWDHash() {
+		setConfig("PWD_HASH_TYPE","md5");
+		$this->assertEquals(getPWDHash('test'),md5('test'));
+
+		setConfig("PWD_HASH_TYPE","sha1");
+		$this->assertEquals(getPWDHash('test'),sha1('test'));
+	}
+
 	public function test_matchPWD() {
+		setConfig("PWD_HASH_TYPE","logiks");
+
 		$salt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
 
 		$algo_actual = getPWDHash('test',$salt);
