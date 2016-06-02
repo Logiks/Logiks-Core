@@ -13,9 +13,6 @@ class test_helpers_pwdhash extends LogiksTestCase {
 		loadHelpers("pwdhash");
 	}
 	
-	/**
-	 * @depends test_HashType
-	 */
 	public function test_matchPWD($encyption_algo) {
 		$salt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
 
