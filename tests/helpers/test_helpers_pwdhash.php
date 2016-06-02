@@ -33,10 +33,11 @@ class test_helpers_pwdhash extends LogiksTestCase {
 	 * @depends test_HashType
 	 */
 	public function test_matchPWD($encyption_algo) {
+		$salt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
+
+		$algo_actual = getPWDHash('test',$salt);
 		
-		$algo_actual = getPWDHash('test');
-		
-		$first = matchPWD($algo_actual,'test');
+		$first = matchPWD($algo_actual,'test',$salt);
 		$this->assertEquals(true,$first);
 		
 		$first = matchPWD($algo_actual,'testing');
