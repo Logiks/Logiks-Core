@@ -9,6 +9,9 @@ runHooks("preAuth");
 
 $userid=clean($_POST['userid']);
 $pwd=clean($_POST['password']);
+
+if(!isValidMd5($pwd)) $pwd=md5($pwd);
+
 if(isset($_POST['site'])) $domain=$_POST['site']; 
 elseif(isset($_REQUEST['site'])) $domain=$_REQUEST['site']; 
 else $domain=SITENAME;

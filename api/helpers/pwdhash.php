@@ -50,7 +50,6 @@ if(!function_exists("getPWDHash")) {
 		if(strlen(getConfig("PWD_HASH_TYPE"))<=0 || !getConfig("PWD_HASH_TYPE")) {
 			setConfig("PWD_HASH_TYPE","logiks");
 		}
-		if(!isValidMd5($pwd)) $pwd=md5($pwd);
 
 		$newHash=getPWDHash($pwd, $salt);
 

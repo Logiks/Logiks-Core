@@ -9,7 +9,7 @@ class test_helpers_pwdhash extends LogiksTestCase {
 	
 	public function setUp() {
 		parent::setUp();
-		setConfig("PWD_HASH_TYPE","md5");
+		setConfig("PWD_HASH_TYPE","logiks");
 		loadHelpers("pwdhash");
 	}
 	
@@ -23,7 +23,6 @@ class test_helpers_pwdhash extends LogiksTestCase {
 		
 		$first = matchPWD($algo_actual,'testing',$salt);
 		$this->assertEquals(false,$first);
-		
 	}
 	
 }
