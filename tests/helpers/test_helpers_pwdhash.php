@@ -21,7 +21,7 @@ class test_helpers_pwdhash extends LogiksTestCase {
 	 */
 	public function test_getPWDHash($encyption_algo) {
 		$actual = getPWDHash('test');
-		if($encyption_algo != 'pwdhash') {
+		if($encyption_algo != 'pwdhash' || $encyption_algo != 'logiks') {
 			$expected = call_user_func($encyption_algo,'test');
 		} else {
 			$expected = PwdHash::hash('test');
