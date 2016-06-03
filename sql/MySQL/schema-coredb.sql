@@ -37,7 +37,7 @@ CREATE TABLE `rolemodel` (
    `activity` varchar(255) not null,
    `privilegehash` varchar(80) not null,
    `remarks` varchar(200),
-   `blocked` enum('true','false') not null default 'false',
+   `allow` enum('true','false') not null default 'false',
    `role_type` varchar(55) not null default 'auto',
    `creator` varchar(155) not null,
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,

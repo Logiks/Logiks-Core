@@ -51,13 +51,17 @@ class RoleModel {
 		} else {
 			trigger_logikserror("Role access error");
 		}
-		return false;
+		return (!getConfig("ROLEMODEL_DEFAULT_DENY"));
 	}
 	public static function registerRole($module,$activity,$category="Block") {
 		$roleTbl=_dbTable("rolemodel",true);
 		$userid=$_SESSION['SESS_USER_ID'];
 		$site=SITENAME;
-		$guid=$_SESSION['SESS_GUID'];
+		if(isset($_SESSION['SESS_GUID'])) {
+			$guid=$_SESSION['SESS_GUID'];
+		} else {
+			$guid="global";
+		}
 
 		$finalData=[];
 
@@ -88,6 +92,7 @@ class RoleModel {
 								"module"=>$module,
 								"activity"=>$activity,
 								"privilegehash"=>$privilegehash,
+								"allow"=>(getConfig("ROLEMODEL_DEFAULT_DENY")?"false":"true"),
 								"remarks"=>$privilegename,
 								"role_type"=>"auto",
 								"creator"=>$userid
@@ -102,6 +107,7 @@ class RoleModel {
 							"module"=>$module,
 							"activity"=>$activity,
 							"privilegehash"=>$privilegehash,
+							"allow"=>(getConfig("ROLEMODEL_DEFAULT_DENY")?"false":"true"),
 							"remarks"=>$privilegename,
 							"role_type"=>"auto",
 							"creator"=>$userid
@@ -117,6 +123,7 @@ class RoleModel {
 					"module"=>$module,
 					"activity"=>$activity,
 					"privilegehash"=>md5("guest"),
+					"allow"=>(getConfig("ROLEMODEL_DEFAULT_DENY")?"false":"true"),
 					"remarks"=>"guest",
 					"role_type"=>"auto",
 					"creator"=>$userid
