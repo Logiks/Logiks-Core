@@ -31,10 +31,10 @@ class Database {
 		}
 
 		$db=new Database($key,$params);
-		
 		//Setup Cache
 
 		//Setup Logging
+
 
 		return $db;
 	}
@@ -89,7 +89,7 @@ class Database {
 		include_once $driverPath."{$driverClass}.inc";
 		include_once $driverPath."{$qBuilderClass}.inc";
 		
-		$this->objDriver=new $driverClass($params);
+		$this->objDriver=new $driverClass($name,$params);
 		$this->objDriver->open($name);
 		$this->dbLink=$this->objDriver->get_link();
 		
@@ -99,6 +99,7 @@ class Database {
 		$this->connectionParams=$params;
 		Database::$connections[$name]=$this;
 		
+		//println($name);
 		//printArray($this->connectionParams);
 	}
 	
@@ -114,6 +115,7 @@ class Database {
 	
 	//Gets the php native object for the current connection
 	public function dbLink() {return $this->dbLink;}
+
 	//Gets the driver,database name for the current connection
 	public function dbParams($key) {
 		if(isset($this->connectionParams[$key]))
@@ -121,11 +123,19 @@ class Database {
 		else
 			return "";
 	}
+
+	//Gets the querybuilder object for the database.
+	public function dbDriver() {
+		$driver = $this->driverObject;
+		return $driver;
+	}	
+
 	//Gets the querybuilder object for the database.
 	public function queryBuilder() {
 		$qBuilder = $this->objQBuilder;
 		return $qBuilder::create($this);
 	}
+
 	//Gets the name for this DB Instance
 	public function getInstanceName() {
 		return $this->instanceName;
@@ -135,7 +145,7 @@ class Database {
 	public function toPDO($dbuser=null,$dbpwd=null) {
 		//$dsn = 'mysql:dbname=testdb;host=127.0.0.1;port=3333';
 		//$dsn=$this->driver.":dbname=".$this->dbName.";host=".$this->dbhost;
-		$dsn=$this->objDriver->getDSN();
+		$dsn=$this->objDriver->get_DSN();
 		
 		if($dbuser==null) $dbuser=$this->connectionParams['user'];
 		if($dbpwd==null) $dbpwd=$this->connectionParams['pwd'];
@@ -165,6 +175,7 @@ class Database {
 	public function executeCommandQuery($sql) {
 		return $this->objDriver->runCommandQuery($sql);
 	}
+
 	public function free($result) {
 		if(is_a($result,"QueryResult")) {
 			$rs=$result->getResult();
@@ -179,7 +190,7 @@ class Database {
 		}
 	}
 	
-	public function isTablesAvailable($table) {
+	public function isTableAvailable($table) {
 		$tablesArr=$this->objDriver->get_tableList();
 		if(is_array($table)) {
 			$table=array_flip($table);
@@ -229,8 +240,8 @@ class Database {
 		$sqlSelect=$this->_selectQ($table,$cols,$where);
 		$sql=$this->_insertQ($table,$cols,$sqlSelect);
 		
-		$sql=$sql->_sql();
-		$sql=str_replace(") VALUES (",") (",$sql);
+		//$sql=$sql->_sql();
+		//$sql=str_replace(") VALUES (",") (",$sql);
 		
 		return $this->executeQuery($sql);
 	}

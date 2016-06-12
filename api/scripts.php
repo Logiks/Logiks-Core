@@ -38,6 +38,7 @@ function _service(cmd,action,format,q) {
 			echo "sxx+='&forsite={$_REQUEST["forsite"]}';";
 		}
 	?>
+	
 	if(action!=null && action.length>0) {
 		sxx+="&action="+action;
 	}

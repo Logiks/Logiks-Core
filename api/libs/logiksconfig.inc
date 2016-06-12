@@ -161,7 +161,7 @@ class LogiksConfig {
     if(isset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName])) {
     	$cfgData=LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName];
     } else {
-    	$f=ROOT."config/jsonConfig/{$configName}.json";
+    	$f=ROOT.CFG_FOLDER."/jsonConfig/{$configName}.json";
 		if(file_exists($f)) {
 			$data=file_get_contents($f);
 			if(strlen($data)>2) {

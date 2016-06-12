@@ -50,7 +50,8 @@ if(!function_exists("getQueryParams")) {
 		if($site!=null && $site!=WEBDOMAIN) {
 			$query['site']=$site;
 		}
-		if($query!=null && ((is_array($query) && count($query)>0) || (is_string($query) && strlen($query)>0))) {
+		if(isset($_REQUEST['forsite'])) $query['forsite']=$_REQUEST['forsite'];
+		if($query!=null && (is_array($query) && count($query)>0)) {
 			$url.="?".http_build_query($query);
 		}
 		return $url;

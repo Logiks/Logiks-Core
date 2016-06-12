@@ -41,6 +41,10 @@ if (!function_exists('printArray')) {
 		$s=ucwords($s);
 		return $s;
 	}
+	function cleanSpecial($data) {
+		$data = str_replace(' ', '_', $data); // Replaces all spaces with hyphens.
+		return preg_replace('/[^A-Za-z0-9\-_]/', '', $data); // Removes special chars.
+	}
 	function cleanText($data) {
 		$s=htmlspecialchars_decode($data);
 		$s=str_replace("\\\"","\"",$s);

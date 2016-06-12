@@ -16,7 +16,7 @@ function smarty_function_viewpage($params, Smarty_Internal_Template $template) {
 	$page=explode("/",$viewpage);
 	if(strlen($page[0])<=0) return;
 	$fs=array(
-			APPROOT.APPS_PAGES_FOLDER."viewpage/{$page[0]}.php"=>"php",
+			//APPROOT.APPS_PAGES_FOLDER."viewpage/{$page[0]}.php"=>"php",
 			APPROOT.APPS_PAGES_FOLDER."viewpage/{$page[0]}.tpl"=>"tpl",
 			APPROOT.APPS_PAGES_FOLDER."viewpage/{$page[0]}.htm"=>"htm",
 		);

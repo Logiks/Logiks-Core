@@ -18,8 +18,8 @@ class sqlite3Driver extends AbstractDBDriver {
 			5=>"SQLITE3_NULL",
 		);
 
-	public function __construct($params) {
-		parent::__construct($params);
+	public function __construct($keyName,$params) {
+		parent::__construct($keyName,$params);
 
 		if(!class_exists("sqlite3")) {
 			trigger_logikserror("Database ERROR, SQLite Not Installed.");

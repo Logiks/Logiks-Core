@@ -24,7 +24,7 @@
 	protected $dml=array("INSERT","UPDATE","DELETE","CALL");
 	protected $dql=array("SELECT");
 
- 	public function __construct($params) {
+ 	public function __construct($keyName,$params) {
 		if(is_array($params['block'])) $this->blockedStmnts=$params['block'];
 		else $this->blockedStmnts=explode(",", $params['block']); 
  		
@@ -35,8 +35,9 @@
  		unset($params['instance']); unset($params['allowSQL']);
 
  		$this->dbParams=$params;
-		
-		if(strlen($this->dbParams['host'])<=0 || strlen($this->dbParams['user'])<=0 || strlen($this->dbParams['database'])<=0) {
+		$this->keyName=$keyName;
+
+		if(strlen($this->dbParams['host'])<=0 || strlen($this->dbParams['database'])<=0) {
 			trigger_logikserror("Database ERROR, Wrong Credentials For {$keyName}");
 		}
  	}
@@ -83,6 +84,8 @@
 	
 	//All Query & Resultset Functions
 	public function freeResult($resultSet) {return false;}
+
+
 	public function runQuery($sql) {
 		if(is_a($sql,"AbstractQueryBuilder")) {
 			if(md5($sql->getInstanceName())==md5($this->keyName)) {
@@ -113,8 +116,23 @@
 	//Link/Resource# Based Function
 	public function get_errorNo() {return 0;}
 	public function get_error() {return false;}
+
 	public function get_affectedRows() {return false;}
 	public function get_insertID() {return false;}
+
+	public function get_dbinfo() {return [];}
+	public function get_dbstatus() {return [];}
+	public function get_tablestatus() {return [];}
+	
+	public function get_dbObjects() {
+		return [
+				"tables"=>[],
+				"views"=>[],
+				"routines"=>[],
+				"events"=>[],
+				"triggers"=>[],
+			];
+	}
 	
 	//All mainline functions and All special queries
 	public function get_maxInCol($table,$colname) {
@@ -130,6 +148,7 @@
 		$this->freeResult($result);
 		return (int)$maxvalue;
 	}
+	
 	public function get_tableList() {return array();}
 	public function get_columnList($table,$nameOnly=true) {return array();}
 	public function get_primaryKey($table) {return array();}
@@ -138,8 +157,12 @@
 	//Schema related functions
 	public function get_schema($tables=null,$dropIfExists=true) {return "";}
 
+	public function get_defination($table) {return [];}
+
 	public function get_tableInserts($table) {
 		$result =  $this->runQuery('SELECT * FROM '.$table);
+		if(!$result) return '';
+
 		$num_fields = $this->get_columnCount($result);
 
 		$s="";

@@ -8,8 +8,8 @@
  */
 
 class mysqliDriver extends AbstractDBDriver {
-	public function __construct($params) {
-		parent::__construct($params);
+	public function __construct($keyName,$params) {
+		parent::__construct($keyName,$params);
 	}
 	public function open($keyName) {
 		if(!parent::open($keyName)) {
@@ -130,22 +130,91 @@ class mysqliDriver extends AbstractDBDriver {
 	//Link/Resource# Based Function
 	public function get_errorNo() {return mysqli_errno($this->link);}
 	public function get_error() {return mysqli_error($this->link);}
+	
 	public function get_affectedRows() {return mysqli_affected_rows($this->link);}
 	public function get_insertID() {return mysqli_insert_id($this->link);}
-	
+
+	public function get_dbinfo() {
+		return [
+				"db_host"=>$this->dbParams['host'],
+				"db_name"=>$this->dbParams['database'],
+				"db_driver"=>$this->dbParams['driver'],
+				"tables"=>count($this->get_tableList()),
+			];
+	}
+
+	public function get_dbstatus() {
+		$sql="SHOW STATUS";
+		$result=$this->fetchQuery($sql);
+		return $result;
+	}
+
+	public function get_tableStatus() {
+		$sql="SHOW TABLE STATUS";
+		$result=$this->fetchQuery($sql);
+		return $result;
+	}
+
+	public function get_dbObjects() {
+		$tables=[];$views=[];$triggers=[];$routines=[];$events=[];
+
+		$sql="SELECT * FROM information_schema.tables WHERE  information_schema.tables.table_schema='{$this->dbParams['database']}'";
+		$data=$this->fetchQuery($sql);
+		foreach ($data as $key => $value) {
+			$tables[$value['TABLE_NAME']]=$value;
+		}
+
+		$sql="SELECT * FROM information_schema.views WHERE  information_schema.views.table_schema='{$this->dbParams['database']}'";
+		$data=$this->fetchQuery($sql);
+		foreach ($data as $key => $value) {
+			$views[$value['TABLE_NAME']]=$value;
+		}
+
+		$sql="SELECT * FROM information_schema.triggers WHERE  information_schema.triggers.TRIGGER_SCHEMA='{$this->dbParams['database']}'";
+		$data=$this->fetchQuery($sql);
+		foreach ($data as $key => $value) {
+			$triggers[$value['TRIGGER_NAME']]=$value;
+		}
+
+		$sql="SELECT * FROM information_schema.routines WHERE  information_schema.routines.ROUTINE_SCHEMA='{$this->dbParams['database']}'";
+		$data=$this->fetchQuery($sql);
+		foreach ($data as $key => $value) {
+			$routines[$value['ROUTINE_NAME']]=$value;
+		}
+
+		$sql="SELECT * FROM information_schema.events WHERE  information_schema.events.EVENT_SCHEMA='{$this->dbParams['database']}'";
+		$data=$this->fetchQuery($sql);
+		foreach ($data as $key => $value) {
+			$events[$value['EVENT_NAME']]=$value;
+		}
+
+		return [
+				"tables"=>$tables,
+				"views"=>$views,
+				"triggers"=>$triggers,
+				"routines"=>$routines,
+				"events"=>$events,
+			];
+	}
+
+	public function get_defination($table) {
+		$sql="DESCRIBE $table";
+		$ans=$this->fetchQuery($sql);
+		$arr=[];
+		foreach ($ans as $key => $value) {
+			$arr[]=array_values($value);
+		}
+		return $arr;
+	}
+
 	//All mainline functions and special queries
 	public function get_tableList() {
 		$sql="SHOW TABLES";
-		$result=$this->runQuery($sql);
-		if (!$result) {
-			return array();
+		$ans=$this->fetchQuery($sql);
+		$arr=[];
+		foreach ($ans as $key => $value) {
+			$arr[]=array_values($value)[0];
 		}
-		$arr=array();
-		while($record=mysqli_fetch_array($result)) {
-			$p=$record[0];
-			array_push($arr,$p);
-		}
-		$this->freeResult($result);
 		return $arr;
 	}
 	public function get_columnList($table,$nameOnly=true) {
@@ -243,6 +312,21 @@ class mysqliDriver extends AbstractDBDriver {
 		}
 		return $s;
 	}
+
+	private function fetchQuery($sql) {
+		$result=$this->runQuery($sql);
+		if (!$result) {
+			return array();
+		}
+		$arr=array();
+		while($record=mysqli_fetch_assoc($result)) {
+			$p=$record;
+			array_push($arr,$p);
+		}
+		$this->freeResult($result);
+		return $arr;
+	}
+
 	public function prep_query($sql) {
 		// "DELETE FROM TABLE" returns 0 affected rows This hack modifies
 		// the query so that it returns the number of affected rows
