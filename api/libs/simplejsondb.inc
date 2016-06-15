@@ -45,9 +45,9 @@ class SimpleJSONDB {
 		if($dataDir!=null) {
 			$this->dataDir=dirname($dataDir)."/".basename($dataDir)."/";
 		} elseif(defined("APPS_DATA_FOLDER")) {
-			$this->dataDir=APPROOT.APPS_DATA_FOLDER."jsondb/";
+			$this->dataDir=APPROOT.APPS_DATA_FOLDER."jsonData/";
 		} else {
-			$this->dataDir=ROOT.DATA_FOLDER."jsondb/";
+			$this->dataDir=ROOT.DATA_FOLDER."jsonData/";
 		}
 		if(!is_dir($this->dataDir)) {
 			if(!mkdir($this->dataDir,0777,true)) {

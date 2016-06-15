@@ -20,7 +20,6 @@ if(!defined("BASEPATH")) {
   $security=new LogiksSecurity();
   //Global Appsite Access Controls : this ensures prilimanary user access validation : only checks if logged in or not
   $security->checkPageRequest();
-
   
   $device=getUserDeviceType();
 

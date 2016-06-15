@@ -29,6 +29,9 @@ class Database {
 				$params=$cfg[$key];
 			}
 		}
+		if(count($params)<=1 || !isset($params['driver'])) {
+			return false;
+		}
 
 		$db=new Database($key,$params);
 		//Setup Cache

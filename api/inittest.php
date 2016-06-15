@@ -34,7 +34,7 @@ if(!isset($initialized)) {
 			ROOT . "config/others.cfg",
 			ROOT . "config/xtras.cfg",
 			ROOT . "config/framework.cfg",
-			ROOT . "config/appPage.cfg",
+			ROOT . "config/masters/appPage.cfg",
 		]);
 
 	

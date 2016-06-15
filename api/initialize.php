@@ -52,7 +52,7 @@ if(!isset($initialized)) {
 			ROOT . "config/others.cfg",
 			ROOT . "config/xtras.cfg",
 			ROOT . "config/framework.cfg",
-			ROOT . "config/appPage.cfg",
+			ROOT . "config/masters/appPage.cfg",
 		]);
 
 	if(PRINT_PHP_HEADERS) header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);

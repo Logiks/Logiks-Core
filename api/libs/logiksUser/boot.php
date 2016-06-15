@@ -44,7 +44,7 @@ if(!function_exists("checkUserRoles")) {
 			$baseFolder=dirname($bt[0]['file'])."/";
 		}
 		$configArr=[
-				APPROOT.APPS_CONFIG_FOLDER."features/".$configKey.".json",
+				APPROOT.APPS_DATA_FOLDER."jsonData/".$configKey.".json",
 				$baseFolder."config.json",
 			];
 		foreach ($configArr as $f) {
