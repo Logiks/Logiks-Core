@@ -8,19 +8,7 @@
 			"smtp_auth":true,
 			"smtp_username":"",
 			"smtp_password":"",
-			"default_from":"noreply@openlogiks.org"
-		}
-    },
-	"default": {
-		"app":{
-			"engine":"smtp",
-			"smtp_host":"smtp.gmail.com",
-			"smtp_port":587,
-			"smtp_secure":"tls",
-			"smtp_auth":true,
-			"smtp_username":"",
-			"smtp_password":"",
 			"default_from":""
 		}
-	}
+    }
 }

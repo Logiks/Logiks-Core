@@ -78,7 +78,7 @@ $accessData=_db(true)->_selectQ(_dbTable("access",true),"sites,name as access_na
 		"id"=>$data['accessid'],
 		"blocked"=>"false"
 	])->_get();
-$privilegeData=_db(true)->_selectQ(_dbTable("privileges",true),"id,md5(concat(name,id)) as hash,name as privilege_name")->_where([
+$privilegeData=_db(true)->_selectQ(_dbTable("privileges",true),"id,md5(concat(id,name)) as hash,name as privilege_name")->_where([
 		"id"=>$data['privilegeid'],
 		"blocked"=>"false"
 	])->_get();

@@ -298,7 +298,7 @@ if(!function_exists("getUserID")) {
 	function fetchUserRoleHash($userid) {
 		$tbl1=_dbTable("users", true);
 		$tbl2=_dbTable("privileges", true);
-		$data=_db(true)->_raw("SELECT md5(concat({$tbl2}.name,{$tbl2}.id)) as hash FROM {$tbl1},{$tbl2} WHERE {$tbl1}.privilegeid={$tbl2}.id AND {$tbl1}.userid='root'")
+		$data=_db(true)->_raw("SELECT md5(concat({$tbl2}.id,{$tbl2}.name)) as hash FROM {$tbl1},{$tbl2} WHERE {$tbl1}.privilegeid={$tbl2}.id AND {$tbl1}.userid='root'")
 				->_get();
 		if(isset($data[0])) return $data[0]['hash'];
 		else return false;

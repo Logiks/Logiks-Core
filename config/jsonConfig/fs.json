@@ -13,30 +13,19 @@
             "tmbAtOnce": 5,
             "tmbSize": 48
         },
-        "dirs": {
+        "dir_rules": {
             "/^tmp/": {
                 "read": false,
                 "write": false,
                 "rm": false
             }
         },
-        "exclude_dirs": {
-            "/^config/": {
-                "read": false,
-                "write": false,
-                "rm": false
-            }
-        }
-    },
-    "default": {
-        "app":{
+	"app":{
             "driver":"local"
-        }
-    },
-    "play": {
-        "app":{
+        },
+        "upload":{
             "driver":"local",
-            "basedir":"/srcspace/wwwLogiks/devlogiks/apps/play/services/"
+            "basedir":"#APPROOT##APPS_USERDATA_FOLDER#"
         }
     }
 }

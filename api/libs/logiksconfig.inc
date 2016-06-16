@@ -164,6 +164,7 @@ class LogiksConfig {
     	$f=ROOT.CFG_FOLDER."/jsonConfig/{$configName}.json";
 		if(file_exists($f)) {
 			$data=file_get_contents($f);
+			if(function_exists("_replace")) $data=_replace($data);
 			if(strlen($data)>2) {
 				$json=json_decode($data,true);
 				$fData=array();
