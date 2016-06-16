@@ -103,6 +103,8 @@ if(!function_exists("__cleanup")) {
 
 			if(!defined("SITENAME")) {
 				trigger_error("SITE NOT DEFINED", E_ERROR);
+			} else {
+				LogiksLogger::getInstance()->activateCurrentSite();
 			}
 		}
 	}

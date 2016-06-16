@@ -62,7 +62,7 @@ if(!isset($initialized)) {
 	LogiksConfig::fixPHPINIConfigs();
 
 	logiksSystemBoot();
-	
+
 	include_once ROOT. "api/libs/logiksCache/boot.php";
 	include_once ROOT. "api/libs/loaders/boot.php";
 	include_once ROOT. "api/system.php";

@@ -7,7 +7,7 @@
  * Version: 1.0
  */
 
-if(!isset($_SESSION['SYSCHECK']) || !is_numeric($_SESSION['SYSCHECK']) || time()-$_SESSION['SYSCHECK']>3600) {
+if(!isset($_SESSION['SYSCHECK']) || !is_numeric($_SESSION['SYSCHECK']) || time()-$_SESSION['SYSCHECK']>36000) {
 
 	//Check Supported PHP Version
 	if (!defined('PHP_VERSION_ID')) {

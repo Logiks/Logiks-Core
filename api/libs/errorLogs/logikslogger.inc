@@ -61,6 +61,11 @@ class LogiksLogger {
     $this->loadLogConfig($config);
   }
 
+  public function activateCurrentSite() {
+    $config=ROOT."config/jsonConfig/errorlogs.json";
+    $this->loadLogConfig($config);
+  }
+
   public function getLogKeys() {
     $siteKey="core";
     if(defined("SITENAME")) $siteKey=SITENAME;
@@ -75,6 +80,58 @@ class LogiksLogger {
       return $this->logBook[$siteKey][$logKey];
     }
     return false;
+  }
+
+  public function getLogBook($site) {
+    $logger1=[];$logger2=[];
+    if(isset($this->logBook['core'])) $logger1=$this->logBook['core'];
+    if(isset($this->logBook[$site])) $logger2=$this->logBook[$site];
+    if(!$logger2 || empty($logger2)) {
+      //initiate Site Logbook
+      $this->activateCurrentSite();
+      if(isset($this->logBook[$site])) $logger2=$this->logBook[$site];
+    }
+    return array_merge($logger1,$logger2);
+  }
+
+  public static function severityToLevel($severity) {
+    switch($severity) {
+        case E_ERROR: // 1 //
+            return LogiksLogger::LOG_ERROR;
+        case E_WARNING: // 2 //
+          return LogiksLogger::LOG_WARNING;
+        case E_PARSE: // 4 //
+          return LogiksLogger::LOG_CRITICAL;
+        case E_NOTICE: // 8 //
+          return LogiksLogger::LOG_NOTICE;
+        case E_CORE_ERROR: // 16 //
+          return LogiksLogger::LOG_EMERGENCY;
+        case E_CORE_WARNING: // 32 //
+          return LogiksLogger::LOG_WARN;
+        case E_COMPILE_ERROR: // 64 //
+          return LogiksLogger::LOG_EMERGENCY;
+        case E_COMPILE_WARNING: // 128 //
+          return LogiksLogger::LOG_WARN;
+        case E_USER_ERROR: // 256 //
+          return LogiksLogger::LOG_CRITICAL;
+        case E_USER_WARNING: // 512 //
+          return LogiksLogger::LOG_ALERT;
+        case E_USER_NOTICE: // 1024 //
+          return LogiksLogger::LOG_NOTICE;
+        case E_STRICT: // 2048 //
+          return LogiksLogger::LOG_NOTICE;
+        case E_RECOVERABLE_ERROR: // 4096 //
+          return LogiksLogger::LOG_WARNING;
+        case E_DEPRECATED: // 8192 //
+          return LogiksLogger::LOG_WARNING;
+        case E_USER_DEPRECATED: // 16384 //
+          return LogiksLogger::LOG_NOTICE;
+        case E_EXCEPTION: // 32768 //
+          return LogiksLogger::LOG_WARNING;
+        case E_LOGIKS_ERROR: // 65536 //
+          return LogiksLogger::LOG_CRITICAL;
+    }
+    return LogiksLogger::LOG_ERROR;
   }
 
   //Registers new handler for the given Sitename and logkey as logger
@@ -156,46 +213,6 @@ class LogiksLogger {
     $handler->setFormatter($formatter);
 
     return $handler;
-  }
-
-  public static function severityToLevel($severity) {
-    switch($severity) {
-        case E_ERROR: // 1 //
-            return LogiksLogger::LOG_ERROR;
-        case E_WARNING: // 2 //
-          return LogiksLogger::LOG_WARNING;
-        case E_PARSE: // 4 //
-          return LogiksLogger::LOG_CRITICAL;
-        case E_NOTICE: // 8 //
-          return LogiksLogger::LOG_NOTICE;
-        case E_CORE_ERROR: // 16 //
-          return LogiksLogger::LOG_EMERGENCY;
-        case E_CORE_WARNING: // 32 //
-          return LogiksLogger::LOG_WARN;
-        case E_COMPILE_ERROR: // 64 //
-          return LogiksLogger::LOG_EMERGENCY;
-        case E_COMPILE_WARNING: // 128 //
-          return LogiksLogger::LOG_WARN;
-        case E_USER_ERROR: // 256 //
-          return LogiksLogger::LOG_CRITICAL;
-        case E_USER_WARNING: // 512 //
-          return LogiksLogger::LOG_ALERT;
-        case E_USER_NOTICE: // 1024 //
-          return LogiksLogger::LOG_NOTICE;
-        case E_STRICT: // 2048 //
-          return LogiksLogger::LOG_NOTICE;
-        case E_RECOVERABLE_ERROR: // 4096 //
-          return LogiksLogger::LOG_WARNING;
-        case E_DEPRECATED: // 8192 //
-          return LogiksLogger::LOG_WARNING;
-        case E_USER_DEPRECATED: // 16384 //
-          return LogiksLogger::LOG_NOTICE;
-        case E_EXCEPTION:	// 32768 //
-          return LogiksLogger::LOG_WARNING;
-        case E_LOGIKS_ERROR: // 65536 //
-          return LogiksLogger::LOG_CRITICAL;
-    }
-    return LogiksLogger::LOG_ERROR;
   }
 
   protected function loadLogConfig($configFile) {
@@ -288,18 +305,6 @@ class LogiksLogger {
     }
   }
 
-  public function loadSiteConfig() {
-    $config=ROOT."config/jsonConfig/errorlogs.json";
-    $this->loadLogConfig($config);
-  }
-
-  public function getLogBook($site) {
-    $logger1=[];$logger2=[];
-    if(isset($this->logBook['core'])) $logger1=$this->logBook['core'];
-    if(isset($this->logBook[$site])) $logger2=$this->logBook[$site];
-    return array_merge($logger1,$logger2);
-  }
-
   //Finally log the data into the logger
   public static function log($logKey, $logLevel, $msg, $param=array()) {
     //echo "LOGGING : $logKey > $logLevel > $msg >";//$parame
@@ -309,7 +314,7 @@ class LogiksLogger {
       $logBook=LogiksLogger::getInstance()->getLogBook("core");
     } 
     
-    //var_dump($logBook[$logKey]);exit();
+    //printArray($logBook[$logKey]);exit();
     if($logKey=="*") {
       foreach ($logBook as $a => $logger) {
           $logger->log($logLevel,$msg,$param);

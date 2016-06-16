@@ -186,31 +186,31 @@ class LogiksConfig {
 	return $cfgData;
   }
 
-  public static function loadFeature($fname,$forceReload=false,$debug=false) {
+  public static function loadFeature($moduleName,$forceReload=false,$debug=false) {
 		$ftrs=array();
 
 		$arrFiles=array();
 		if(defined("APPS_CONFIG_FOLDER")) {
-			$arrFiles[]=APPROOT.APPS_CONFIG_FOLDER."features/$fname";
+			$arrFiles[]=APPROOT.APPS_CONFIG_FOLDER."features/$moduleName";
 		}
-		$arrFiles[]=ROOT.CFG_FOLDER."features/$fname";
+		$arrFiles[]=ROOT.CFG_FOLDER."features/$moduleName";
 		if(getConfig("ALLOW_LOCAL_FEATURE_LOAD")=="true") {
-			$mPath=checkModule($fname);
+			$mPath=checkModule($moduleName);
 			if(strlen($mPath)>0) {
 				$arrFiles[]=dirname($mPath)."/config";
 			}
 		}
 		foreach($arrFiles as $f) {
 			if(file_exists("{$f}.cfg")) {
-				if(isset($GLOBALS['FEATURES']["{$fname}.cfg"]) && !$forceReload) {
-					return $GLOBALS['FEATURES']["{$fname}.cfg"];
+				if(isset($GLOBALS['FEATURES']["{$moduleName}.cfg"]) && !$forceReload) {
+					return $GLOBALS['FEATURES']["{$moduleName}.cfg"];
 				} else {
 					$ftrs=LogiksConfig::parseConfigFile("{$f}.cfg");
 					$arr=array();
 					foreach($ftrs as $a=>$b) {
 						$arr[$a]=$b['value'];
 					}
-					$GLOBALS['FEATURES']["{$fname}.cfg"]=$arr;
+					$GLOBALS['FEATURES']["{$moduleName}.cfg"]=$arr;
 					if($debug) {
 						return $ftrs;
 					} else {
@@ -218,22 +218,22 @@ class LogiksConfig {
 					}
 				}
 			} elseif(file_exists("{$f}.json")) {
-				if(isset($GLOBALS['FEATURES']["{$fname}.json"]) && !$forceReload) {
-					return $GLOBALS['FEATURES']["{$fname}.json"];
+				if(isset($GLOBALS['FEATURES']["{$moduleName}.json"]) && !$forceReload) {
+					return $GLOBALS['FEATURES']["{$moduleName}.json"];
 				} else {
 					$data=file_get_contents("{$f}.json");
 					$arr=json_decode($data,true);
-					$GLOBALS['FEATURES']["{$fname}.json"]=$arr;
+					$GLOBALS['FEATURES']["{$moduleName}.json"]=$arr;
 					return $arr;
 				}
 			} elseif(file_exists("{$f}.lst")) {
-				if(isset($GLOBALS['FEATURES']["{$fname}.lst"]) && !$forceReload) {
-					return $GLOBALS['FEATURES']["{$fname}.lst"];
+				if(isset($GLOBALS['FEATURES']["{$moduleName}.lst"]) && !$forceReload) {
+					return $GLOBALS['FEATURES']["{$moduleName}.lst"];
 				} else {
 					$f=file_get_contents("{$f}.lst");
 					$arr=explode("\n",$f);
 					if(strlen($arr[count($arr)-1])==0) unset($arr[count($arr)-1]);
-					$GLOBALS['FEATURES']["{$fname}.lst"]=$arr;
+					$GLOBALS['FEATURES']["{$moduleName}.lst"]=$arr;
 					return $arr;
 				}
 			}

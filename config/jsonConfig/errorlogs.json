@@ -111,7 +111,7 @@
         },
         "logger": {
             "error": {
-                "handler": ["error"]
+                "handler": ["error","console"]
             },
             "console":{
                 "handler": "console"
