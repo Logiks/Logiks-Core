@@ -9,6 +9,10 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!defined("BASEPATH")) {
+  
+  if(isset($_GET['site']) && $_GET['site']!=SITENAME) {
+    trigger_logikserror("Site <b>'{$_GET['site']}'</b> does not exist.",E_ERROR);
+  }
 
   //Load the app.cfg and app Config Folder
   loadLogiksApp(SITENAME);
