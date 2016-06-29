@@ -191,9 +191,7 @@ class LogiksConfig {
 		$ftrs=array();
 
 		$arrFiles=array();
-		if(defined("APPS_CONFIG_FOLDER")) {
-			$arrFiles[]=APPROOT.APPS_CONFIG_FOLDER."features/$moduleName";
-		}
+		$arrFiles[]=APPROOT.CFG_FOLDER."features/$moduleName";
 		$arrFiles[]=ROOT.CFG_FOLDER."features/$moduleName";
 		if(getConfig("ALLOW_LOCAL_FEATURE_LOAD")=="true") {
 			$mPath=checkModule($moduleName);

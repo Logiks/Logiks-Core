@@ -24,11 +24,11 @@ if(!function_exists('isValidEmail')) {
 		}
 	}
 	function isValidEmail($address) {
-		return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
+		return (!preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
 	}
 	
 	function sendMail($to,$subject,$body,$params=array(),$appKey="app") {
-		$mailConfig=loadJSONConfig("mail",$appKey);
+		$mailConfig=loadJSONConfig("message",$appKey);
 
 		$defaultParams=array(
 				"from"=>"",
@@ -61,7 +61,7 @@ if(!function_exists('isValidEmail')) {
 	}
 
 	function sendMailSMTP($to,$subject,$msgBody,$params=array(),$appKey="app") {
-		$mailConfig=loadJSONConfig("mail",$appKey);
+		$mailConfig=loadJSONConfig("message",$appKey);
 
 		$defaultParams=array(
 				"from"=>"",

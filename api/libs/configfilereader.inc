@@ -78,7 +78,7 @@ class ConfigFileReader {
 		if(file_exists($path) && is_readable($path)) {
 			$cfgData=file_get_contents($path);
 			$cfgData=explode("\n",$cfgData."\n");
-			$mode="";
+			$mode="CONFIG";
 			foreach($cfgData as $s) {
 				if(strlen($s)<=1) continue;
 				if(substr($s,0,2)=="//") continue;
@@ -129,7 +129,7 @@ class ConfigFileReader {
 		} else {
 			if(MASTER_DEBUG_MODE=="true") echo "<br/>CFG File Could Not Be Loaded " . $path;
 		}
-		printArray($arr);
+		//printArray($arr);
 		return $arr;
 	}
 	public static function LoadXmlFile($path) {

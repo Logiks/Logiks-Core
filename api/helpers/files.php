@@ -180,7 +180,7 @@ if(!function_exists("getDirTree")) {
 		}
 	}
 
-	function getFileSizeInString($input) {
+	function getFileSizeInString($input,$dec=2) {
 		$prefix_arr = array (" B", " Kb", " Mb", " Gb", " Tb");
 		
 		$value = round($input, $dec);

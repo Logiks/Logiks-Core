@@ -36,6 +36,9 @@ if(!function_exists("_fs")) {
 		$driverClass="{$driver}FSDriver";
 		$driverFile=__DIR__."/drivers/{$driverClass}.inc";
 		if(file_exists($driverFile)) include_once $driverFile;
+		else {
+			trigger_logikserror("FS ERROR, Driver {$driver} Could Not Be Found For {$fsKey}");	
+		}
 
 		$fs=new $driverClass($fsKey, $params);
 

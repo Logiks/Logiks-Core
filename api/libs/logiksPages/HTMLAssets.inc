@@ -153,7 +153,8 @@ class HTMLAssets {
 			echo "\n/*************END***$assetName****************/\n\n";
 		} else {
 			echo "/*************Start***$assetName****************/\n";
-			readfile($path);
+			if(file_exists($path)) readfile($path);
+			else echo "No Asset Found";
 			echo "\n/*************END***$assetName****************/\n\n";
 		}
 	}

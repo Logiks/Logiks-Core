@@ -41,18 +41,19 @@ if(!function_exists('loadModule')) {
 			}
 		}
 	}
-	function loadModuleLib($module,$file) {
+	function loadModuleLib($module,$file,$config=array()) {
 		$f=checkModule($module);
 		if(strlen($f)>0) {
 			$f=dirname($f)."/{$file}.php";
 			if(file_exists($f)) {
+				$module_configs=$config;
 				@include $f;
 				return true;
 			}
 		}
 		return false;
 	}
-	function loadModuleComponent($module,$component) {
+	function loadModuleComponent($module,$component,$config=array()) {
 		$f=checkModule($module);
 		if(strlen($f)>0) {
 			$ff=[
@@ -61,6 +62,7 @@ if(!function_exists('loadModule')) {
 				];
 			foreach ($ff as $fx=>$status) {
 				if(file_exists($fx)) {
+					$module_configs=$config;
 					@include $fx;
 					$ff[$fx]=true;
 				}
