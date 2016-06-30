@@ -103,6 +103,19 @@ if(!function_exists("_css")) {
 				}
 
 				return $arrCfg;
+			} else {
+				$uri=current(explode("?", $_SERVER['REQUEST_URI']));
+				$slugs=explode("/", $uri);
+				if(strlen($slugs[0])==0) $slugs=array_splice($slugs, 1);
+
+				if(!is_array($arrCfg)) $arrCfg=explode("/", $arrCfg);
+				$arrCfg=array_flip($arrCfg);
+
+				foreach ($arrCfg as $key => $value) {
+					if(isset($slugs[$value])) $arrCfg[$key]=$slugs[$value];
+					else $arrCfg[$key]="";
+				}
+				return $arrCfg;
 			}
 		}
 		return array();
