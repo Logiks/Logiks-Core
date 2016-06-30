@@ -41,32 +41,29 @@ class PCronQueue {
     }
     public function runTaskById($taskId,$autoEcho=false) {
 		$tbl=_dbTable("system_cronjobs",true);
-		$sql = "SELECT id,title,scriptpath,script_params,method,schedule,last_completed,run_only_once,task_md5_hash FROM ";
-		$sql.="$tbl WHERE id=$taskId";
-		$r=_dbQuery($sql,true);
+
+		$data=_db(true)->_selectQ($tbl,"id,title,scriptpath,script_params,method,schedule,last_completed,run_only_once,task_md5_hash")->
+							_where(["id"=>$taskId])->_get();
+
 		$out = array();
-		if($r) {			
-			while($row = _db(true)->fetchData($r)) {
-				$out[$row["id"]] = $row;
-			}
-			_db(true)->freeResult($r);
+		foreach ($data as $key => $row) {
+			$out[$row["id"]] = $row;
 		}
 		$this->taskToRun=$out;
 		return $this->run($autoEcho);
 	}
 	private function checkTasks() {
 		$tbl=_dbTable("system_cronjobs",true);
-		$sql = "SELECT id,title,scriptpath,script_params,method,schedule,last_completed,run_only_once,task_md5_hash FROM ";
-		$sql.="$tbl WHERE now()-last_completed>schedule and retired='false' and blocked='false'";
-		$r=_dbQuery($sql,true);
+		
+		$data=_db(true)->_selectQ($tbl,"id,title,scriptpath,script_params,method,schedule,last_completed,run_only_once,task_md5_hash")->
+				_where(["id"=>$taskId,"retired"=>'false',"blocked"=>'false'])->_where("now()-last_completed>schedule")->_get();
+
 		$out = array();
-		if($r) {			
-			while($row = _db(true)->fetchData($r)) {
-				$out[$row["id"]] = $row;
-			}
-			_db(true)->freeResult($r);
+		foreach ($data as $key => $row) {
+			$out[$row["id"]] = $row;
 		}
-		$this->taskToRun=$out;        
+		$this->taskToRun=$out;
+		return $out;
 	}
 	
     private function execute_script($script, $method, $param_array) {
@@ -160,29 +157,28 @@ class PCronQueue {
     
     public static function get_tasks() {
 		$tbl=_dbTable("system_cronjobs",true);
-        $sql = "SELECT * FROM $tbl WHERE now()-last_completed>schedule and retired='false' and blocked='false'";
-        $r=_dbQuery($sql,true);
-        $out = array();
-        if($r) {			
-			while($row = _db(true)->fetchData($r)) {
-				$out[] = $row;
-			}
-			_db(true)->freeResult($r);
-		}		
+
+		$data=_db(true)->_selectQ($tbl,"*")->
+				_where(["id"=>$taskId,"retired"=>'false',"blocked"=>'false'])->_where("now()-last_completed>schedule")->_get();
+
+		$out = array();
+		foreach ($data as $key => $row) {
+			$out[$row["id"]] = $row;
+		}
         return $out;
     }
     
      public static function get_all_tasks() {
 		$tbl=_dbTable("system_cronjobs",true);
-        $sql = "SELECT * FROM $tbl order by site,id";
-        $r=_dbQuery($sql,true);
-        $out = array();
-        if($r) {			
-			while($row = _db(true)->fetchData($r)) {
-				$out[] = $row;
-			}
-			_db(true)->freeResult($r);
-		}		
+
+        $data=_db(true)->_selectQ($tbl,"*")->
+				_where(["id"=>$taskId,"retired"=>'false',"blocked"=>'false'])->_where("now()-last_completed>schedule")->
+				_orderby("site,id")->_get();
+
+		$out = array();
+		foreach ($data as $key => $row) {
+			$out[$row["id"]] = $row;
+		}
         return $out;
     }
     

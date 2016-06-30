@@ -133,22 +133,6 @@ CREATE TABLE `settings` (
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
-
-CREATE TABLE `system_bucket` (
-   `id` int(10) unsigned not null auto_increment,
-   `guid` varchar(64) not null default 'global',
-   `site` varchar(150) not null,
-   `bucket_category` varchar(255) not null,
-   `bucket_key` varchar(255) not null,
-   `bucket_data` longblob,
-   `share` text,
-   `published` enum('true','false') default 'true',
-   `creator` varchar(150) not null,
-   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
-   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
 CREATE TABLE `system_queue` (
    `id` int(10) unsigned not null auto_increment,
    `guid` varchar(64) not null default 'global',
