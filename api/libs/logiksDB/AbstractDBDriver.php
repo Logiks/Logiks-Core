@@ -72,16 +72,6 @@
 			return "{$this->dbParams['driver']}:dbname={$this->dbParams['database']};host={$this->dbParams['host']}";
 	}
 	
-	//Some Predefined functions
-	public function fetchAllData($result,$format="assoc") {
-		if($result==null || !$result) return array();
-		$out=array();
-		while($r=$this->fetchData($result,$format)) {
-			$out[]=$r;
-		}
-		return $out;
-	}
-	
 	//All Query & Resultset Functions
 	public function freeResult($resultSet) {return false;}
 
@@ -100,12 +90,21 @@
 	public function runCommandQuery($sql) {$this->qCount++;return true;}
 	
 	//Resultset based functions
+	public function fetchAllData($result,$format="assoc") {
+		if($result==null || !$result) return array();
+		$out=array();
+		while($r=$this->fetchData($result,$format)) {
+			$out[]=$r;
+		}
+		return $out;
+	}
 	public function fetchData($resultSet,$format="assoc") {
 		if(is_a($resultSet,"QueryResult")) {
 			return $resultSet->getResult();
 		}
 		return $resultSet;
-	}//Get the data
+	}
+	
 	public function fetchHeaders($resultSet) {return null;}//Get all column names
 	public function fetchFields($resultSet) {return null;}//Get all column names with there info
 	
@@ -120,6 +119,7 @@
 	public function get_affectedRows() {return false;}
 	public function get_insertID() {return false;}
 
+	//All Database related functions
 	public function get_dbinfo() {return [];}
 	public function get_dbstatus() {return [];}
 	public function get_tablestatus() {return [];}

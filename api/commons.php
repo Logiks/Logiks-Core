@@ -194,12 +194,12 @@ if (!function_exists('printArray')) {
 		}
 		return md5($pwd);
 	}
-	function arrayToHTML($arr=array(),$format="table") {
+	function arrayToHTML($arr=array(),$format="table",$classes="") {
 		$out="";
 		//printArray($arr);
 		switch ($format) {
 			case 'list':
-				$out="<ul>";
+				$out="<ul class='{$classes}'>";
 				foreach($arr as $a=>$v){
 					$a=toTitle($a);
 					if(is_array($v)){
@@ -213,7 +213,7 @@ if (!function_exists('printArray')) {
 				break;
 			case 'table':
 			default:
-				$out = '<table width=100%>';
+				$out = "<table class='{$classes}' width=100%>";
 				foreach($arr as $a=>$v){
 					$a=toTitle($a);
 					if(is_array($v)){
