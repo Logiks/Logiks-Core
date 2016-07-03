@@ -56,8 +56,12 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
     $sm->setCompileCheck(getConfig("TEMPLATE_COMPILE_CHECK"));
     $sm->setCacheLifetime(getConfig("TEMPLATE_EXPIRY"));
 
-    $sm->setCaching(getConfig("TEMPLATE_CACHE"));
-    //$smarty->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+    if(MASTER_DEBUG_MODE || getConfig("APP_DEBUG_MODE")) {
+      $sm->setCaching(0);
+    } else {
+      $sm->setCaching(getConfig("TEMPLATE_CACHE"));//Smarty::CACHING_LIFETIME_CURRENT
+    }
+    
     //direct_access_security
 
     //var_dump($sm);
@@ -65,7 +69,8 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
     if(getConfig("TEMPLATE_DEBUG")) {
     	$sm->debugging=true;
     }
-    $sm->error_reporting=E_ERROR|E_PARSE;
+
+    $sm->error_reporting=getConfig("TEMPLATE_ERROR_REPORTING");//E_ERROR|E_PARSE;
 
     $this->smartyEngine=$sm;
 
@@ -121,29 +126,31 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
 	//$caching==2 Means Use Old Data
 	public function fetchTemplate($tmpl,$data=array(),$tmplID=null,$recreateCache=false) {
     //echo $tmpl;
+    //printArray($this->smartyEngine->getTemplateVars());exit();
     if(is_array($data)) {
       foreach($data as $a=>$b) {
   			$this->addVar($a,$b);
   		}
     }
-    //printArray($this->smartyEngine->getTemplateVars());exit();
-    // $c=$this->smarty->getCaching();
-		// if($caching==0) {
-		// 	$this->smarty->setCaching(0);
-		// } elseif($caching==1) {
-		// 	$this->clearCache();
-		// 	$this->smarty->setCaching(1);
-		// } elseif($caching==2) {
-		// 	$this->smarty->setCaching(2);
-		// }
+
+    if(MASTER_DEBUG_MODE || getConfig("APP_DEBUG_MODE")) {
+      $this->smartyEngine->setCaching(0);
+    } else {
+      $this->smartyEngine->setCaching(getConfig("TEMPLATE_CACHE"));//Smarty::CACHING_LIFETIME_CURRENT
+    }
+
     if($recreateCache) {
       $this->clearCache($tmpl);
     }
     if(getConfig("TEMPLATE_CLEARCACHE_ON_DISPLAY")) {
       $this->clearCache($tmpl);
     }
+    if(MASTER_DEBUG_MODE || getConfig("APP_DEBUG_MODE")) {
+      $this->clearCache($tmpl);
+    }
+
     //$this->clearCache($tmpl);exit();
-    //println("$tmpl $tmplID");
+    //println("$tmpl $tmplID");exit();
     //var_dump($this->smartyEngine);
 
     $this->addVar("ROOT",ROOT);

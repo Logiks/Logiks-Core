@@ -1,146 +1,123 @@
-.addicon {background:transparent url(images/icons/add.png) no-repeat left center; width:25px; height:25px;}
-.deleteicon {background:transparent url(images/icons/delete.png) no-repeat left center; width:25px; height:25px;}
-.saveicon {background:transparent url(images/icons/save.png) no-repeat left center; width:25px; height:25px;}
-.editicon {background:transparent url(images/icons/edit.png) no-repeat left center; width:25px; height:25px;}
-.viewicon {background:transparent url(images/icons/view.png) no-repeat left center; width:25px; height:25px;}
-.loadicon {background:transparent url(images/icons/load.png) no-repeat left center; width:25px; height:25px;}
-
-.checkicon {background:transparent url(images/icons/check.png) no-repeat left center; width:25px; height:25px;}
-.filtericon {background:transparent url(images/icons/filter.png) no-repeat left center; width:25px; height:25px;}
-.starticon {background:transparent url(images/icons/start.png) no-repeat left center; width:25px; height:25px;}
-
-.openicon {background:transparent url(images/icons/open.png) no-repeat left center; width:25px; height:25px;}
-.closeicon {background:transparent url(images/icons/close.png) no-repeat left center; width:25px; height:25px;}
-
-.uploadicon {background:transparent url(images/icons/upload.png) no-repeat left center; width:25px; height:25px;}
-.downloadicon {background:transparent url(images/icons/download.png) no-repeat left center; width:25px; height:25px;}
-
-.chaticon {background:transparent url(images/icons/msgs/chat.png) no-repeat left center; width:25px; height:25px;}
-.ircicon {background:transparent url(images/icons/msgs/irc.png) no-repeat left center; width:25px; height:25px;}
-.mailicon {background:transparent url(images/icons/msgs/mail.png) no-repeat left center; width:25px; height:25px;}
-.mailPageicon {background:transparent url(images/icons/msgs/mailPage.png) no-repeat left center; width:25px; height:25px;}
-.smsicon {background:transparent url(images/icons/msgs/sms.png) no-repeat left center; width:25px; height:25px;}
-.callicon {background:transparent url(images/icons/msgs/call.png) no-repeat left center; width:25px; height:25px;}
-.rssicon {background:transparent url(images/icons/msgs/rss.png) no-repeat left center; width:25px; height:25px;}
-
-.warnicon {background:transparent url(images/icons/alerts/warn.png) no-repeat left center; width:25px; height:25px;}
-.erroricon {background:transparent url(images/icons/alerts/error.png) no-repeat left center; width:25px; height:25px;}
-.msgicon {background:transparent url(images/icons/alerts/msg.png) no-repeat left center; width:25px; height:25px;}
-
-.printer2icon {background:transparent url(images/icons/output/printer2.png) no-repeat left center; width:25px; height:25px;}
-.printericon {background:transparent url(images/icons/output/printer.png) no-repeat left center; width:25px; height:25px;}
-.publishicon {background:transparent url(images/icons/output/publish.png) no-repeat left center; width:25px; height:25px;}
-.faxicon {background:transparent url(images/icons/output/fax.png) no-repeat left center; width:25px; height:25px;}
-
-.visaicon {background:transparent url(images/icons/apps/visa.png) no-repeat left center; width:25px; height:25px;}
-.fontsicon {background:transparent url(images/icons/apps/fonts.png) no-repeat left center; width:25px; height:25px;}
-
-.addressbookicon {background:transparent url(images/icons/apps/addressbook.png) no-repeat left center; width:25px; height:25px;}
-.calendaricon {background:transparent url(images/icons/apps/calendar.png) no-repeat left center; width:25px; height:25px;}
-.notebookicon {background:transparent url(images/icons/apps/notebook.png) no-repeat left center; width:25px; height:25px;}
-.notesicon {background:transparent url(images/icons/apps/notes.png) no-repeat left center; width:25px; height:25px;}
-.briefcaseicon {background:transparent url(images/icons/apps/briefcase.png) no-repeat left center; width:25px; height:25px;}
-.mapsicon {background:transparent url(images/icons/apps/maps.png) no-repeat left center; width:25px; height:25px;}
-.logsicon {background:transparent url(images/icons/apps/logs.png) no-repeat left center; width:25px; height:25px;}
-.wizardicon {background:transparent url(images/icons/apps/wand.png) no-repeat left center; width:25px; height:25px;}
-
-.picturesicon {background:transparent url(images/icons/apps/pictures.png) no-repeat left center; width:25px; height:25px;}
-.audiosicon {background:transparent url(images/icons/apps/audios.png) no-repeat left center; width:25px; height:25px;}
-.videosicon {background:transparent url(images/icons/apps/videos.png) no-repeat left center; width:25px; height:25px;}
-
-.appsicon {background:transparent url(images/icons/apps/apps.png) no-repeat left center; width:25px; height:25px;}
-.dashboardicon {background:transparent url(images/icons/apps/dashboard.png) no-repeat left center; width:25px; height:25px;}
-.desktopicon {background:transparent url(images/icons/apps/desktop.png) no-repeat left center; width:25px; height:25px;}
-.formsicon {background:transparent url(images/icons/apps/forms.png) no-repeat left center; width:25px; height:25px;}
-.advreportsicon {background:transparent url(images/icons/apps/advreports.png) no-repeat left center; width:25px; height:25px;}
-.reportsicon {background:transparent url(images/icons/apps/reports.png) no-repeat left center; width:25px; height:25px;}
-.chartsicon {background:transparent url(images/icons/apps/charts.png) no-repeat left center; width:25px; height:25px;}
-.templateicon {background:transparent url(images/icons/apps/template.png) no-repeat left center; width:25px; height:25px;}
-.viewsicon {background:transparent url(images/icons/apps/views.png) no-repeat left center; width:25px; height:25px;}
-.plansicon {background:transparent url(images/icons/apps/plans.png) no-repeat left center; width:25px; height:25px;}
-
-.homeicon {background:transparent url(images/icons/home.png) no-repeat left center; width:25px; height:25px;}
-.reloadicon {background:transparent url(images/icons/reload.png) no-repeat left center; width:25px; height:25px;}
-.searchicon {background:transparent url(images/icons/search.png) no-repeat left center; width:25px; height:25px;}
-.linkicon {background:transparent url(images/icons/link.png) no-repeat left center; width:25px; height:25px;}
-.toolsicon {background:transparent url(images/icons/tools.png) no-repeat left center; width:25px; height:25px;}
-.configicon {background:transparent url(images/icons/config.png) no-repeat left center; width:25px; height:25px;}
-.moneyicon {background:transparent url(images/icons/money.png) no-repeat left center; width:25px; height:25px;}
-
-.aboutmeicon {background:transparent url(images/icons/user/info.png) no-repeat left center; width:25px; height:25px;}
-.adminicon {background:transparent url(images/icons/user/admin.png) no-repeat left center; width:25px; height:25px;}
-
-.popupicon {background:transparent url(images/icons/popup.png) no-repeat left center; width:25px; height:25px;}
-.raiseicon {background:transparent url(images/icons/raise.png) no-repeat left center; width:25px; height:25px;}
-
-.infoicon {background:transparent url(images/icons/help/info.png) no-repeat left center; width:25px; height:25px;}
-.tipsicon {background:transparent url(images/icons/help/tips.png) no-repeat left center; width:25px; height:25px;}
-.helpicon {background:transparent url(images/icons/help/help.png) no-repeat left center; width:25px; height:25px;}
-.abouticon {background:transparent url(images/icons/help/about.png) no-repeat left center; width:25px; height:25px;}
-.communityicon {background:transparent url(images/icons/help/community.png) no-repeat left center; width:25px; height:25px;}
-
-.bugicon {background:transparent url(images/icons/bug.png) no-repeat left center; width:25px; height:25px;}
-.lockicon {background:transparent url(images/icons/lock.png) no-repeat left center; width:25px; height:25px;}
-.bookmarkicon {background:transparent url(images/icons/bookmark.png) no-repeat left center; width:25px; height:25px;}
-.trashicon {background:transparent url(images/icons/trash.png) no-repeat left center; width:25px; height:25px;}
-.sidetreeicon {background:transparent url(images/icons/sidetree.png) no-repeat left center; width:25px; height:25px;}
-.logouticon {background:transparent url(images/icons/logout.png) no-repeat left center; width:25px; height:25px;}
-
-.foldericon {background:transparent url(images/icons/files/folder.png) no-repeat left center; width:25px; height:25px;}
-.folderaddicon {background:transparent url(images/icons/files/folder_add.png) no-repeat left center; width:25px; height:25px;}
-.folderediticon {background:transparent url(images/icons/files/folder_edit.png) no-repeat left center; width:25px; height:25px;}
-.folderdeleteicon {background:transparent url(images/icons/files/folder_delete.png) no-repeat left center; width:25px; height:25px;}
-.folderuploadicon {background:transparent url(images/icons/files/folder_up.png) no-repeat left center; width:25px; height:25px;}
-
-.fileicon {background:transparent url(images/icons/files/page.png) no-repeat left center; width:25px; height:25px;}
-.fileaddicon {background:transparent url(images/icons/files/page_add.png) no-repeat left center; width:25px; height:25px;}
-.filedeleteicon {background:transparent url(images/icons/files/page_delete.png) no-repeat left center; width:25px; height:25px;}
-.fileediticon {background:transparent url(images/icons/files/page_edit.png) no-repeat left center; width:25px; height:25px;}
-.fileinfoicon {background:transparent url(images/icons/files/page_info.png) no-repeat left center; width:25px; height:25px;}
-.fileupicon {background:transparent url(images/icons/files/page_up.png) no-repeat left center; width:25px; height:25px;}
-.filedownicon {background:transparent url(images/icons/files/page_down.png) no-repeat left center; width:25px; height:25px;}
-
-.useraddicon {background:transparent url(images/icons/user/add.png) no-repeat left center; width:25px; height:25px;}
-.userediticon {background:transparent url(images/icons/user/edit.png) no-repeat left center; width:25px; height:25px;}
-.userdeleteicon {background:transparent url(images/icons/user/delete.png) no-repeat left center; width:25px; height:25px;}
-.userinfoicon {background:transparent url(images/icons/user/info.png) no-repeat left center; width:25px; height:25px;}
-
-.leftarrowicon {background:transparent url(images/icons/nav/arrowleft.png) no-repeat left center; width:25px; height:25px;}
-.rightarrowicon {background:transparent url(images/icons/nav/arrowright.png) no-repeat left center; width:25px; height:25px;}
-.leftshiftarrowicon {background:transparent url(images/icons/nav/arrowleftshift.png) no-repeat left center; width:25px; height:25px;}
-.rightshiftarrowicon {background:transparent url(images/icons/nav/arrowrightshift.png) no-repeat left center; width:25px; height:25px;}
-.uparrowicon {background:transparent url(images/icons/nav/arrowup.png) no-repeat left center; width:25px; height:25px;}
-.downarrowicon {background:transparent url(images/icons/nav/arrowdown.png) no-repeat left center; width:25px; height:25px;}
-.upshiftarrowicon {background:transparent url(images/icons/nav/arrowupshift.png) no-repeat left center; width:25px; height:25px;}
-.downshiftarrowicon {background:transparent url(images/icons/nav/arrowdownshift.png) no-repeat left center; width:25px; height:25px;}
-.backicon {background:transparent url(images/icons/nav/back.png) no-repeat left center; width:25px; height:25px;}
-.forwardicon {background:transparent url(images/icons/nav/forward.png) no-repeat left center; width:25px; height:25px;}
-.upicon {background:transparent url(images/icons/nav/up.png) no-repeat left center; width:25px; height:25px;}
-
-/*All Mini Icons 16X16*/
-.deleteiconmini {background:transparent url(images/mini/delete.png) no-repeat center center; width:5px; height:5px;}
-.viewiconmini {background:transparent url(images/mini/view.png) no-repeat center center; width:5px; height:5px;}
-.downloadiconmini {background:transparent url(images/mini/download.png) no-repeat center center; width:5px; height:5px;}
-.newpageiconmini {background:transparent url(images/mini/newpage.png) no-repeat center center; width:5px; height:5px;}
-.reloadiconmini {background:transparent url(images/mini/reload.png) no-repeat center center; width:5px; height:5px;}
-.infoiconmini {background:transparent url(images/mini/info.png) no-repeat center center; width:5px; height:5px;}
-.editiconmini {background:transparent url(images/mini/edit.png) no-repeat center center; width:5px; height:5px;}
-
-.addusermini {background:transparent url(images/mini/add_user.png) no-repeat center center; width:16px; height:16px;}
-
-/*Icon Sizes*/
-.icon48 {
-	width:48px; height:48px;
+.logiksicon {
+	background:transparent;
+	padding:16px;
 }
-.icon25 {
-	width:25px; height:25px;
-}
-.icon16 {
-	width:16px; height:16px;
-}
-.icon8 {
-	width:8px; height:8px;
-}
-.icon5 {
-	width:5px; height:5px;
-}
+.addicon {background:transparent url(images/icons/add.png) no-repeat center center; padding:25px;}
+.deleteicon {background:transparent url(images/icons/delete.png) no-repeat center center; padding:25px;}
+.saveicon {background:transparent url(images/icons/save.png) no-repeat center center; padding:25px;}
+.editicon {background:transparent url(images/icons/edit.png) no-repeat center center; padding:25px;}
+.viewicon {background:transparent url(images/icons/view.png) no-repeat center center; padding:25px;}
+.loadicon {background:transparent url(images/icons/load.png) no-repeat center center; padding:25px;}
+
+.checkicon {background:transparent url(images/icons/check.png) no-repeat center center; padding:25px;}
+.filtericon {background:transparent url(images/icons/filter.png) no-repeat center center; padding:25px;}
+.starticon {background:transparent url(images/icons/start.png) no-repeat center center; padding:25px;}
+
+.openicon {background:transparent url(images/icons/open.png) no-repeat center center; padding:25px;}
+.closeicon {background:transparent url(images/icons/close.png) no-repeat center center; padding:25px;}
+
+.uploadicon {background:transparent url(images/icons/upload.png) no-repeat center center; padding:25px;}
+.downloadicon {background:transparent url(images/icons/download.png) no-repeat center center; padding:25px;}
+
+.chaticon {background:transparent url(images/icons/msgs/chat.png) no-repeat center center; padding:25px;}
+.ircicon {background:transparent url(images/icons/msgs/irc.png) no-repeat center center; padding:25px;}
+.mailicon {background:transparent url(images/icons/msgs/mail.png) no-repeat center center; padding:25px;}
+.mailPageicon {background:transparent url(images/icons/msgs/mailPage.png) no-repeat center center; padding:25px;}
+.smsicon {background:transparent url(images/icons/msgs/sms.png) no-repeat center center; padding:25px;}
+.callicon {background:transparent url(images/icons/msgs/call.png) no-repeat center center; padding:25px;}
+.rssicon {background:transparent url(images/icons/msgs/rss.png) no-repeat center center; padding:25px;}
+
+.warnicon {background:transparent url(images/icons/alerts/warn.png) no-repeat center center; padding:25px;}
+.erroricon {background:transparent url(images/icons/alerts/error.png) no-repeat center center; padding:25px;}
+.msgicon {background:transparent url(images/icons/alerts/msg.png) no-repeat center center; padding:25px;}
+
+.printer2icon {background:transparent url(images/icons/output/printer2.png) no-repeat center center; padding:25px;}
+.printericon {background:transparent url(images/icons/output/printer.png) no-repeat center center; padding:25px;}
+.publishicon {background:transparent url(images/icons/output/publish.png) no-repeat center center; padding:25px;}
+.faxicon {background:transparent url(images/icons/output/fax.png) no-repeat center center; padding:25px;}
+
+.visaicon {background:transparent url(images/icons/apps/visa.png) no-repeat center center; padding:25px;}
+.fontsicon {background:transparent url(images/icons/apps/fonts.png) no-repeat center center; padding:25px;}
+
+.addressbookicon {background:transparent url(images/icons/apps/addressbook.png) no-repeat center center; padding:25px;}
+.calendaricon {background:transparent url(images/icons/apps/calendar.png) no-repeat center center; padding:25px;}
+.notebookicon {background:transparent url(images/icons/apps/notebook.png) no-repeat center center; padding:25px;}
+.notesicon {background:transparent url(images/icons/apps/notes.png) no-repeat center center; padding:25px;}
+.briefcaseicon {background:transparent url(images/icons/apps/briefcase.png) no-repeat center center; padding:25px;}
+.mapsicon {background:transparent url(images/icons/apps/maps.png) no-repeat center center; padding:25px;}
+.logsicon {background:transparent url(images/icons/apps/logs.png) no-repeat center center; padding:25px;}
+.wizardicon {background:transparent url(images/icons/apps/wand.png) no-repeat center center; padding:25px;}
+
+.picturesicon {background:transparent url(images/icons/apps/pictures.png) no-repeat center center; padding:25px;}
+.audiosicon {background:transparent url(images/icons/apps/audios.png) no-repeat center center; padding:25px;}
+.videosicon {background:transparent url(images/icons/apps/videos.png) no-repeat center center; padding:25px;}
+
+.appsicon {background:transparent url(images/icons/apps/apps.png) no-repeat center center; padding:25px;}
+.dashboardicon {background:transparent url(images/icons/apps/dashboard.png) no-repeat center center; padding:25px;}
+.desktopicon {background:transparent url(images/icons/apps/desktop.png) no-repeat center center; padding:25px;}
+.formsicon {background:transparent url(images/icons/apps/forms.png) no-repeat center center; padding:25px;}
+.advreportsicon {background:transparent url(images/icons/apps/advreports.png) no-repeat center center; padding:25px;}
+.reportsicon {background:transparent url(images/icons/apps/reports.png) no-repeat center center; padding:25px;}
+.chartsicon {background:transparent url(images/icons/apps/charts.png) no-repeat center center; padding:25px;}
+.templateicon {background:transparent url(images/icons/apps/template.png) no-repeat center center; padding:25px;}
+.viewsicon {background:transparent url(images/icons/apps/views.png) no-repeat center center; padding:25px;}
+.plansicon {background:transparent url(images/icons/apps/plans.png) no-repeat center center; padding:25px;}
+
+.homeicon {background:transparent url(images/icons/home.png) no-repeat center center; padding:25px;}
+.reloadicon {background:transparent url(images/icons/reload.png) no-repeat center center; padding:25px;}
+.searchicon {background:transparent url(images/icons/search.png) no-repeat center center; padding:25px;}
+.linkicon {background:transparent url(images/icons/link.png) no-repeat center center; padding:25px;}
+.toolsicon {background:transparent url(images/icons/tools.png) no-repeat center center; padding:25px;}
+.configicon {background:transparent url(images/icons/config.png) no-repeat center center; padding:25px;}
+.moneyicon {background:transparent url(images/icons/money.png) no-repeat center center; padding:25px;}
+
+.aboutmeicon {background:transparent url(images/icons/user/info.png) no-repeat center center; padding:25px;}
+.adminicon {background:transparent url(images/icons/user/admin.png) no-repeat center center; padding:25px;}
+
+.popupicon {background:transparent url(images/icons/popup.png) no-repeat center center; padding:25px;}
+.raiseicon {background:transparent url(images/icons/raise.png) no-repeat center center; padding:25px;}
+
+.infoicon {background:transparent url(images/icons/help/info.png) no-repeat center center; padding:25px;}
+.tipsicon {background:transparent url(images/icons/help/tips.png) no-repeat center center; padding:25px;}
+.helpicon {background:transparent url(images/icons/help/help.png) no-repeat center center; padding:25px;}
+.abouticon {background:transparent url(images/icons/help/about.png) no-repeat center center; padding:25px;}
+.communityicon {background:transparent url(images/icons/help/community.png) no-repeat center center; padding:25px;}
+
+.bugicon {background:transparent url(images/icons/bug.png) no-repeat center center; padding:25px;}
+.lockicon {background:transparent url(images/icons/lock.png) no-repeat center center; padding:25px;}
+.bookmarkicon {background:transparent url(images/icons/bookmark.png) no-repeat center center; padding:25px;}
+.trashicon {background:transparent url(images/icons/trash.png) no-repeat center center; padding:25px;}
+.sidetreeicon {background:transparent url(images/icons/sidetree.png) no-repeat center center; padding:25px;}
+.logouticon {background:transparent url(images/icons/logout.png) no-repeat center center; padding:25px;}
+
+.foldericon {background:transparent url(images/icons/files/folder.png) no-repeat center center; padding:25px;}
+.folderaddicon {background:transparent url(images/icons/files/folder_add.png) no-repeat center center; padding:25px;}
+.folderediticon {background:transparent url(images/icons/files/folder_edit.png) no-repeat center center; padding:25px;}
+.folderdeleteicon {background:transparent url(images/icons/files/folder_delete.png) no-repeat center center; padding:25px;}
+.folderuploadicon {background:transparent url(images/icons/files/folder_up.png) no-repeat center center; padding:25px;}
+
+.fileicon {background:transparent url(images/icons/files/page.png) no-repeat center center; padding:25px;}
+.fileaddicon {background:transparent url(images/icons/files/page_add.png) no-repeat center center; padding:25px;}
+.filedeleteicon {background:transparent url(images/icons/files/page_delete.png) no-repeat center center; padding:25px;}
+.fileediticon {background:transparent url(images/icons/files/page_edit.png) no-repeat center center; padding:25px;}
+.fileinfoicon {background:transparent url(images/icons/files/page_info.png) no-repeat center center; padding:25px;}
+.fileupicon {background:transparent url(images/icons/files/page_up.png) no-repeat center center; padding:25px;}
+.filedownicon {background:transparent url(images/icons/files/page_down.png) no-repeat center center; padding:25px;}
+
+.useraddicon {background:transparent url(images/icons/user/add.png) no-repeat center center; padding:25px;}
+.userediticon {background:transparent url(images/icons/user/edit.png) no-repeat center center; padding:25px;}
+.userdeleteicon {background:transparent url(images/icons/user/delete.png) no-repeat center center; padding:25px;}
+.userinfoicon {background:transparent url(images/icons/user/info.png) no-repeat center center; padding:25px;}
+
+.leftarrowicon {background:transparent url(images/icons/nav/arrowleft.png) no-repeat center center; padding:25px;}
+.rightarrowicon {background:transparent url(images/icons/nav/arrowright.png) no-repeat center center; padding:25px;}
+.leftshiftarrowicon {background:transparent url(images/icons/nav/arrowleftshift.png) no-repeat center center; padding:25px;}
+.rightshiftarrowicon {background:transparent url(images/icons/nav/arrowrightshift.png) no-repeat center center; padding:25px;}
+.uparrowicon {background:transparent url(images/icons/nav/arrowup.png) no-repeat center center; padding:25px;}
+.downarrowicon {background:transparent url(images/icons/nav/arrowdown.png) no-repeat center center; padding:25px;}
+.upshiftarrowicon {background:transparent url(images/icons/nav/arrowupshift.png) no-repeat center center; padding:25px;}
+.downshiftarrowicon {background:transparent url(images/icons/nav/arrowdownshift.png) no-repeat center center; padding:25px;}
+.backicon {background:transparent url(images/icons/nav/back.png) no-repeat center center; padding:25px;}
+.forwardicon {background:transparent url(images/icons/nav/forward.png) no-repeat center center; padding:25px;}
+.upicon {background:transparent url(images/icons/nav/up.png) no-repeat center center; padding:25px;}
+

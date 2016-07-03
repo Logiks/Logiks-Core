@@ -143,7 +143,11 @@ class LogiksPage {
 				if($tmpl) {
 					$lt=new LogiksTemplate($engine);
 					
-					$tmplID=md5(PAGE.$tmpl);
+					if(getConfig("TEMPLATE_ID_MODE")=="URI") {
+						$tmplID=md5($_SERVER['REQUEST_URI'].$tmpl);
+					} else {
+						$tmplID=md5(PAGE.$tmpl);
+					}
 
 					$pageSrc=APPROOT.APPS_PAGES_FOLDER."viewpage/{$page}.php";
 
@@ -237,8 +241,12 @@ class LogiksPage {
 
 					$lt=new LogiksTemplate($engine);
 
-					$tmplID=md5(PAGE.$tmpl);
-
+					if(getConfig("TEMPLATE_ID_MODE")=="URI") {
+						$tmplID=md5($_SERVER['REQUEST_URI'].$tmpl);
+					} else {
+						$tmplID=md5(PAGE.$tmpl);
+					}
+					
 					if(count($pageConfig['modules_preload'])>0) loadModule($pageConfig['modules_preload']);
 
 					$pageSrc=APPROOT.APPS_PAGES_FOLDER."viewpage/{$page}.php";

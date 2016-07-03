@@ -53,6 +53,7 @@ loadConfigs([
 			ROOT . "config/php.cfg",
 			ROOT . "config/system.cfg",
 			ROOT . "config/developer.cfg",
+			ROOT . "config/debug.cfg",
 			ROOT . "config/services.cfg",
 			ROOT . "config/errorlog.cfg",
 			ROOT . "config/security.cfg",

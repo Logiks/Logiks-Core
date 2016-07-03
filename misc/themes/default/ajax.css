@@ -1,5 +1,5 @@
 /*CSS Tabs 2.0*/
-.ajaxloading, .ajaxloading1, .ajaxloading2, .ajaxloading3, .ajaxloading4, .ajaxloading5, .ajaxloading6, .ajaxloading7, .ajaxloading8 {
+.ajaxloading {
 	text-align:center;
 	padding-left:auto;
 	padding-right:auto;
@@ -7,7 +7,7 @@
 	color:#777;
 }
 
-.ajaxloading {
+.ajaxloading0 {
 	background: transparent url(images/ajax/loading.gif) no-repeat;
 	background-position:center;
 	padding-top:35px;

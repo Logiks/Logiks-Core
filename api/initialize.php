@@ -46,6 +46,7 @@ if(!isset($initialized)) {
 			ROOT . "config/php.cfg",
 			ROOT . "config/system.cfg",
 			ROOT . "config/developer.cfg",
+			ROOT . "config/debug.cfg",
 			ROOT . "config/errorlog.cfg",
 			ROOT . "config/security.cfg",
 			ROOT . "config/folders.cfg",

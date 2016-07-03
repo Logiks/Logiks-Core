@@ -15,8 +15,8 @@ class LogiksError {
     //This error code is not included in error_reporting
     if(!(ERROR_REPORTING & $severity)) { return true; }       //Test Logiks settings allows printing error
 
-    $dontCatch=explode(",",MASTER_DEBUG_DONT_CATCH);
-    $dontPrint=explode(",",MASTER_DEBUG_DONT_PRINT_QUIT);
+    $dontCatch=explode(",",getConfig("MASTER_DEBUG_DONT_CATCH"));
+    $dontPrint=explode(",",getConfig("MASTER_DEBUG_DONT_PRINT_QUIT"));
     if(in_array($severity, $dontCatch)) return true;
     if(in_array($severity, $dontPrint)) {
       $printError=false;
