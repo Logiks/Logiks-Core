@@ -45,12 +45,26 @@ if(!function_exists("getQueryParams")) {
 		// } elseif(is_string($query)) {
 		// 	trigger_logikserror('$query expected array got string');
 		// }
-		
+		if($query==null) $query=[];
+		elseif(is_string($query)) {
+			$dxq=explode("&", $query);
+			$query=[];
+			foreach ($dxq as $key => $vx) {
+				if(strlen($vx)<=0) continue;
+				$vx=explode("=", $vx);
+				if(!isset($vx[1])) $vx[1]="";
+				$query[$vx[0]]=$vx[1];
+			}
+		}
+
 		if(isset($query['site'])) unset($query['site']);
+
 		if($site!=null && $site!=WEBDOMAIN) {
 			$query['site']=$site;
 		}
-		if(isset($_REQUEST['forsite'])) $query['forsite']=$_REQUEST['forsite'];
+		
+		if(isset($_REQUEST['forsite']) && !isset($query['forsite'])) $query['forsite']=$_REQUEST['forsite'];
+
 		if($query!=null && (is_array($query) && count($query)>0)) {
 			$url.="?".http_build_query($query);
 		}

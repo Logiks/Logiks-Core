@@ -20,6 +20,11 @@ if(!function_exists("checkUserRoles")) {
 	function checkUserRoles($module,$activity,$category="Block") {
 		return RoleModel::checkRole($module,$activity,$category);
 	}
+
+	function checkRoleScope($module,$category="Block") {
+		return RoleModel::checkScope($module,$activity,$category);
+	}
+
 	
 	//Returns the User Configuration for the scope
 	function getUserConfig($configKey,$baseFolder=null,$reset=false) {

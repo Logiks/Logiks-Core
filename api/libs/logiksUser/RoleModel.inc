@@ -9,6 +9,43 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 class RoleModel {
+
+	//Checks if a single activity exists for the provided scope/module
+	//ie if the scope is required
+	public static function checkScope($module,$category="Block") {
+		$roleHash=md5($module.$category);
+		if(isset($_SESSION["ROLESCOPE"][$roleHash])) {
+			return $_SESSION["ROLESCOPE"][$roleHash];
+		}
+
+		$sql=_db(true)->_selectQ(_dbTable("rolemodel",true),"count(*) as cnt")
+					->_where(array("site"=>SITENAME,"category"=>$category,"module"=>$module));
+
+		$r=_dbQuery($sql,true);
+		$d=_dbData($r,true);
+		_dbFree($r,true);
+
+		$_SESSION["ROLESCOPE"][$roleHash]=0;
+
+		if($d[0]['cnt']>0) {
+			$privilegehash=$_SESSION["SESS_PRIVILEGE_HASH"];
+			$sql=_db(true)->_selectQ(_dbTable("rolemodel",true),"count(*) as cnt")
+					->_where(array("site"=>SITENAME,"category"=>$category,"module"=>$module,"allow"=>"true", "privilegehash"=>$privilegehash));
+
+			$r=_dbQuery($sql,true);
+			$d=_dbData($r,true);
+			_dbFree($r,true);
+
+			if($d[0]['cnt']>0) {
+				$_SESSION["ROLESCOPE"][$roleHash]=2;
+			} else {
+				$_SESSION["ROLESCOPE"][$roleHash]=1;
+			}
+		}
+		
+		return $_SESSION["ROLESCOPE"][$roleHash];
+	}
+
 	public static function checkRole($module,$activity,$category="Block") {
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]<=ROLE_PRIME) {
 			return true;
