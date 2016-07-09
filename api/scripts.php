@@ -68,6 +68,9 @@ function _link(href) {
 			echo '}';
 		}
 	?>
+	if(href.indexOf("?")<0) {
+		href+="?";
+	}
 	<?php
 		if(isset($_REQUEST["forsite"]) && strlen($_REQUEST["forsite"])>0) {
 			echo "href+='&forsite={$_REQUEST["forsite"]}';";
