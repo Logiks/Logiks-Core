@@ -140,13 +140,16 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
     }
 
     if($recreateCache) {
-      $this->clearCache($tmpl);
+	$this->clearCache($tmpl);
+	$this->clearCache($tmplID);
     }
     if(getConfig("TEMPLATE_CLEARCACHE_ON_DISPLAY")) {
-      $this->clearCache($tmpl);
+	$this->clearCache($tmpl);
+	$this->clearCache($tmplID);
     }
     if(MASTER_DEBUG_MODE || getConfig("APP_DEBUG_MODE")) {
-      $this->clearCache($tmpl);
+	$this->clearCache($tmpl);
+	$this->clearCache($tmplID);
     }
 
     //$this->clearCache($tmpl);exit();

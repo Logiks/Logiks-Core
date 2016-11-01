@@ -71,6 +71,8 @@ if(!function_exists("generateSelectOptions")) {
 				break;
 			case 'dataSelector':
 				if(!isset($fieldinfo['orderBy'])) $fieldinfo['orderBy']=null;
+				
+				$noOption=_ling("No Selection");
 
 				if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
 					$html.="<option value=''>{$noOption}</option>";

@@ -17,12 +17,12 @@ include_once dirname(__FILE__)."/Settings.php";
 //SiteSettings
 
 if(!function_exists("checkUserRoles")) {
-	function checkUserRoles($module,$activity,$category="Block") {
-		return RoleModel::checkRole($module,$activity,$category);
+	function checkUserRoles($module,$activity,$actionType="VIEW") {
+		return RoleModel::checkRole($module,$activity,$actionType);
 	}
 
-	function checkRoleScope($module,$category="Block") {
-		return RoleModel::checkScope($module,$activity,$category);
+	function checkRoleScope($module,$actionType="VIEW") {
+		return RoleModel::checkScope($module,$activity,$actionType);
 	}
 
 	

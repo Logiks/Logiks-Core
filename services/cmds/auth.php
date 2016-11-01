@@ -10,7 +10,7 @@ runHooks("preAuth");
 $userid=clean($_POST['userid']);
 $pwd=clean($_POST['password']);
 
-if(!isValidMd5($pwd)) $pwd=md5($pwd);
+//if(!isValidMd5($pwd)) $pwd=md5($pwd);
 
 if(isset($_POST['site'])) $domain=$_POST['site']; 
 elseif(isset($_REQUEST['site'])) $domain=$_REQUEST['site']; 
@@ -43,7 +43,7 @@ $date=date('Y-m-d');
 
 $userFields=explode(",", USERID_FIELDS);
 if(count($userFields)<=0) $userFields=["userid"];
-if(CASE_SENSITIVE_AUTH=="true") {
+if(CASE_SENSITIVE_AUTH) {
 	foreach ($userFields as $key => $value) {
 		unset($userFields[$key]);
 		$userFields["BINARY {$value}"]=$userid;
@@ -55,7 +55,7 @@ if(CASE_SENSITIVE_AUTH=="true") {
 	}
 }
 
-$sql=_db(true)->_selectQ(_dbTable("users",true),"id, guid, userid, pwd, pwd_salt, privilegeid, accessid, name, email, mobile, blocked, avatar, avatar_type")->_whereOR("expires",[
+$sql=_db(true)->_selectQ(_dbTable("users",true),"id, guid, userid, pwd, pwd_salt, privilegeid, accessid, groupid, name, email, mobile, region, country, blocked, avatar, avatar_type")->_whereOR("expires",[
 			"0000-00-00",["NULL","NU"],["now()","GT"]
 		])->_where($userFields,"AND","OR");
 
@@ -66,6 +66,10 @@ if(!empty($result)) {
 } else {
 	relink("Sorry, you have not yet joined us or your userid has expired.",$domain);
 }
+
+// echo "{$data['pwd']} >>> $pwd >>> {$data['pwd_salt']}\n\n<br>";
+// printArray(getPWDHash($pwd,$data['pwd_salt']));
+// exit(matchPWD($data['pwd'],$pwd, $data['pwd_salt']));
 
 if(!matchPWD($data['pwd'],$pwd, $data['pwd_salt'])) {
 	relink("UserID/Password Wrong/Mismatch",$domain);
@@ -83,6 +87,10 @@ $privilegeData=_db(true)->_selectQ(_dbTable("privileges",true),"id,md5(concat(id
 		"blocked"=>"false"
 	])->_get();
 
+$groupData=_db(true)->_selectQ(_dbTable("users_group",true),"id,group_name,group_manager,group_descs")->_where([
+		"id"=>$data['groupid']
+	])->_get();
+
 if(empty($accessData)) {
 	relink("No Accessibilty Defined For You Or Blocked By Admin.",$domain);
 } else {
@@ -92,6 +100,11 @@ if(empty($privilegeData)) {
 	relink("No Privileges Defined For You Or Blocked By Admin.", $domain);
 } else {
 	$privilegeData=$privilegeData[0];
+}
+if(empty($groupData)) {
+	$groupData="";
+} else {
+	$groupData=$groupData[0];
 }
 
 $allSites=explode(",",$accessData['sites']);
@@ -114,12 +127,13 @@ loadHelpers("mobility");
 
 $_ENV['AUTH-DATA']['device']=getUserDeviceType();
 $_ENV['AUTH-DATA']['client']=_server("REMOTE_ADDR");
-if(isset($_POST['persistant']) && $_POST['persistant']=="true") {
+if(isset($_POST['persistant']) && $_POST['persistant']) {
 	$_ENV['AUTH-DATA']['persistant']="true";
 } else {
 	$_ENV['AUTH-DATA']['persistant']="false";
 }
 $_ENV['AUTH-DATA']['sitelist']=$allSites;
+$_ENV['AUTH-DATA']['groups']=$groupData;
 
 checkBlacklists($data,$domain,$dbLink,$userid);
 
@@ -140,9 +154,20 @@ function relink($msg,$domain) {
 	$_SESSION['SESS_ERROR_MSG']=$msg;
 	
 	$onerror="";
-	if((ALLOW_LOGIN_RELINKING=="true" || ALLOW_LOGIN_RELINKING)) {
+	if((ALLOW_LOGIN_RELINKING || ALLOW_LOGIN_RELINKING)) {
 		if(isset($_REQUEST['onerror'])) $onerror=$_REQUEST['onerror'];
 	}
+	if(ALLOW_MAUTH) {
+		if(isset($_POST['mauth']) && $_POST['mauth']=="authkey") {
+			echo "ERROR:$msg";
+			exit();
+		} elseif(isset($_POST['mauth']) && $_POST['mauth']=="jsonkey") {
+			header("Content-Type:text/json");
+			echo json_encode(["ERROR"=>$msg]);
+			exit();
+		}
+	}
+	
 	if(strlen($onerror)==0 || $onerror=="*") {
 		$s=SiteLocation."login.php";
 		if(strlen($domain)>0) $s.="?site=$domain";
@@ -211,11 +236,26 @@ function startNewSession($userid, $domain, $params=array()) {
 	$_SESSION['SESS_ACCESS_NAME'] = $data['access_name'];
 	$_SESSION['SESS_ACCESS_SITES'] = $data['sitelist'];
 
+	if(empty($data['groups'])) {
+		$data['groups']=[
+				"id"=>0,
+				"group_name"=>"",
+				"group_manager"=>"",
+				"group_descs"=>"",
+			];
+	}
+	$_SESSION['SESS_GROUP_ID'] = $data['groups']['id'];
+	$_SESSION['SESS_GROUP_NAME'] = $data['groups']['group_name'];
+	$_SESSION['SESS_GROUP_MANAGER'] = $data['groups']['group_manager'];
+	$_SESSION['SESS_GROUP_DESCS'] = $data['groups']['group_descs'];
+
 	$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_NAME"].$_SESSION["SESS_PRIVILEGE_ID"]);
 
 	$_SESSION['SESS_USER_NAME'] = $data['name'];
 	$_SESSION['SESS_USER_EMAIL'] = $data['email'];
 	$_SESSION['SESS_USER_CELL'] = $data['mobile'];
+	
+	$_SESSION['SESS_USER_COUNTRY'] = $data['country'];
 
 	$_SESSION['SESS_USER_AVATAR'] = $data['avatar_type']."::".$data['avatar'];
 
@@ -241,7 +281,7 @@ function startNewSession($userid, $domain, $params=array()) {
 	LogiksSession::getInstance(true);
 
 	header_remove("SESSION-KEY");
-	header("SESSION-KEY:".session_id(),false);
+	header("SESSION-KEY:".$_SESSION['SESS_TOKEN'],false);
 	header("SESSION-MAUTH:".$_SESSION['MAUTH_KEY'],false);
 
 	setcookie("LOGIN", "true", time()+36000);
@@ -249,8 +289,9 @@ function startNewSession($userid, $domain, $params=array()) {
 	setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000);
 	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000);
 
-	if($data['persistant']=="true") {
-		_db(true)->_deleteQ(_dbTable("cache_sessions",true),[
+	if($data['persistant'] || (ALLOW_MAUTH && isset($_POST['mauth']))) {
+		_db(true)->_deleteQ(_dbTable("cache_sessions",true),"dtoe< DATE_SUB(NOW(), INTERVAL 10 DAY)")
+				->_where([
 				"guid"=>$_SESSION['SESS_GUID'],
 				"userid"=>$_SESSION['SESS_USER_ID'],
 				"site"=>$domain,
@@ -261,6 +302,7 @@ function startNewSession($userid, $domain, $params=array()) {
 				"site"=>$domain,
 				"device"=>$_ENV['AUTH-DATA']['device'],
 				"session_key"=>$_SESSION['SESS_TOKEN'],
+				"auth_key"=>$_SESSION['MAUTH_KEY'],
 				"session_data"=>json_encode($_SESSION),
 				"global_data"=>json_encode($GLOBALS),
 				"client_ip"=>$_SERVER['REMOTE_ADDR'],
@@ -314,30 +356,37 @@ function restoreOldSession($sessionData, $userid, $domain, $params=array()) {
 }
 function gotoSuccessLink() {
 	$onsuccess="";
-	if((ALLOW_LOGIN_RELINKING=="true" || ALLOW_LOGIN_RELINKING)) {
+	if((ALLOW_LOGIN_RELINKING || ALLOW_LOGIN_RELINKING)) {
 		if(isset($_REQUEST['onsuccess'])) $onsuccess=$_REQUEST['onsuccess'];
 	}
 
 	$domain=$_SESSION['SESS_ACTIVE_SITE'];//ACTIVE
-	if(ALLOW_MAUTH=="true") {
+	if(ALLOW_MAUTH) {
 		if(isset($_POST['mauth']) && $_POST['mauth']=="authkey") {
 			echo $_SESSION['MAUTH_KEY'];
 		} elseif(isset($_POST['mauth']) && $_POST['mauth']=="jsonkey") {
 			$arr=array(
 					"user"=>$_SESSION['SESS_USER_ID'],
+					"mobile"=>$_SESSION['SESS_USER_CELL'],
+					"email"=>$_SESSION['SESS_USER_EMAIL'],
+					"country"=>$_SESSION['SESS_USER_COUNTRY'],
+				
 					"authkey"=>$_SESSION['MAUTH_KEY'],
 					"date"=>date("Y-m-d"),
 					"time"=>date("H:i:s"),
 					"site"=>$domain,
 					"client"=>_server('REMOTE_ADDR'),
 					"token"=>$_SESSION['SESS_TOKEN'],
+				
+					"username"=>$_SESSION['SESS_USER_NAME'],
+					"avatar"=>$_SESSION['SESS_USER_AVATAR'],
 				);
 			header("Content-Type:text/json");
 			echo json_encode($arr);
 		} else {
 			echo "<h5>Securing Access Authentication ... </h5>";
 			if(strlen($onsuccess)==0 || $onsuccess=="*")
-				header("location: ".SiteLocation.$domain);
+				header("location: ".SiteLocation."?site=$domain");
 			else {
 				if(substr($onsuccess,0,7)=="http://" || substr($onsuccess,0,8)=="https://" ||
 					substr($onsuccess,0,2)=="//" || substr($onsuccess,0,2)=="./" || substr($onsuccess,0,1)=="/") {

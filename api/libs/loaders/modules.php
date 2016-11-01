@@ -63,7 +63,7 @@ if(!function_exists('loadModule')) {
 			foreach ($ff as $fx=>$status) {
 				if(file_exists($fx)) {
 					$module_configs=$config;
-					@include $fx;
+					include $fx;
 					$ff[$fx]=true;
 				}
 			}

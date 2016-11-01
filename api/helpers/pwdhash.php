@@ -13,6 +13,9 @@ if(!function_exists("getPWDHash")) {
 		if(strlen(getConfig("PWD_HASH_TYPE"))<=0 || !getConfig("PWD_HASH_TYPE")) {
 			setConfig("PWD_HASH_TYPE","logiks");
 		}
+		
+		if(!isValidMd5($pwd)) $pwd=md5($pwd);
+		
 		switch (strtolower(getConfig("PWD_HASH_TYPE"))) {
 			case 'md5':
 				return md5($pwd);
@@ -20,11 +23,11 @@ if(!function_exists("getPWDHash")) {
 			case 'sha1':
 				return sha1($pwd);
 				break;
-			case "shamd5":
+			/*case "shamd5":
 				return sha1(md5($pwd));
-				break;
+				break;*/
 			default:
-				if($salt==null) {
+				if($salt==null || strlen($salt)<=0 || $salt===false) {
 					$salt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
 
 					$options = [
@@ -40,20 +43,25 @@ if(!function_exists("getPWDHash")) {
 						    'salt' => $salt,
 						];
 					$hash=password_hash($pwd, PASSWORD_BCRYPT, $options);
-					return $hash;
+					$options['hash']=$hash;
+					return $options;
 				}
 				break;
 		}
 		return "";
 	}
-	function matchPWD($pwdHash, $pwd, $salt) {
+	function matchPWD($pwdHash, $pwd, $salt=null) {
 		if(strlen(getConfig("PWD_HASH_TYPE"))<=0 || !getConfig("PWD_HASH_TYPE")) {
 			setConfig("PWD_HASH_TYPE","logiks");
 		}
 
 		$newHash=getPWDHash($pwd, $salt);
+// 		printArray([$newHash,$pwd,$salt,$pwdHash]);
+		if(is_array($newHash)) $newHash=$newHash['hash'];
 
 		//println($pwdHash);println(getPWDHash($pwd, $salt));exit($pwd);
+		
+// 		println(($pwdHash===$newHash));exit("XXX $pwdHash $newHash ".getConfig("PWD_HASH_TYPE"));
 		
 		return ($pwdHash===$newHash);
 	}

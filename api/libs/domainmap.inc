@@ -38,6 +38,21 @@ class DomainMap {
     $mappedSite=$this->detectDomainApp();
     define("WEBDOMAIN",$mappedSite);
 
+    $uri=$_SERVER['REQUEST_URI'];
+    if(substr($uri, 0,1)=="/") $uri=substr($uri, 1);
+    $uri=explode("/", $uri);
+    if(count($uri)==1) {
+      $fp=ROOT.APPS_FOLDER.$uri[0]."/apps.cfg";
+      if(file_exists($fp)) {
+        if($mappedSite!=$uri[0]) {
+          $lx=SiteLocation."?site={$uri[0]}";
+        } else {
+          $lx=SiteLocation;
+        }
+        header("Location:$lx");
+      }
+    }
+    
     if(isset($_REQUEST['site'])) {
   		if(is_dir(ROOT.APPS_FOLDER.$_REQUEST['site']) && file_exists(ROOT.APPS_FOLDER.$_REQUEST['site']."/apps.cfg")) {
         if(DOMAIN_CONTROLS_STRICT) {

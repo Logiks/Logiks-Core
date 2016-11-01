@@ -98,7 +98,7 @@ if(!function_exists("getUserList")) {
 			));
 		$sql1=_db(true)->_selectQ(_dbTable("access",true),"id")->_where(array(
 			"blocked"=>'false',
-		))->_where(" (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
+		))->_whereRAW(' (FIND_IN_SET("'.SITENAME.'",sites) OR sites="*")');
 		$sql=$sql->_query("accessid",$sql1);
 
 		$res=_dbQuery($sql,true);

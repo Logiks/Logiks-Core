@@ -88,9 +88,11 @@ class LogiksPage {
 		if(!isset($pageConfig['enabled'])) $pageConfig['enabled']=true;
 		
 		$pageConfig['theme']=APPS_THEME;
-		$pageConfig['page']=$page;
+		$pageConfig['page']=basename(str_replace(".{$ext}","",$pageToLoad));
 		$pageConfig['pagepath']=$this->pagePath;
 
+		$pageConfig['viewpage']=$pageConfig['page'];
+		$pageConfig['pageuri']=implode("/", explode("_", $pageConfig['page']));
 
 		$fx=explode("/", $this->pagePath);
 		$fx=end($fx);
@@ -103,7 +105,7 @@ class LogiksPage {
 
 		$this->pageConfig=$pageConfig;
 
-		//printArray($this->pageConfig);
+		//printArray($this->pageConfig);exit();
 
 		return $this->pageConfig;
 	}
@@ -157,7 +159,7 @@ class LogiksPage {
 					$this->setupMeta($lt);
 
 					ob_start();
-					if(MASTER_DEBUG_MODE)
+					if(MASTER_DEBUG_MODE || getConfig("APP_DEBUG_MODE"))
 						$lt->printTemplate($tmpl,$dataPrint,$tmplID,true);
 					else
 						$lt->printTemplate($tmpl,$dataPrint,$tmplID);
@@ -198,7 +200,8 @@ class LogiksPage {
 	public function printPage() {
 		$pageConfig=$this->pageConfig;
 		$page=$pageConfig['page'];
-		//printArray($pageConfig);exit();
+		define("PAGEURI",$pageConfig['pageuri']);
+		//printArray($pageConfig);exit($page);
 
 		if(!$pageConfig) {
 			trigger_logikserror("Sorry, page $page is not available or accessible to you.",E_LOGIKS_ERROR,404);
@@ -211,7 +214,12 @@ class LogiksPage {
 		}
 
 		//include ROOT."api/scripts.php";
-		//var_dump($this->pageConfig);exit();
+		//printArray($this->pageConfig);exit();
+		
+		//$this->pageConfig['enabled']=="false"
+		//$this->pageConfig['access']=="public"
+		//
+		
 
 		$_ENV['PAGECONFIG']=$this->pageConfig;
 		$slugs=$this->generateSLUG();
@@ -237,7 +245,8 @@ class LogiksPage {
 				if($tmpl) {
 					runHooks("prePage");
 					
-					$page=current(explode("/",PAGE));
+					//$page=current(explode("/",PAGE));
+					$page=$pageConfig['page'];
 
 					$lt=new LogiksTemplate($engine);
 
@@ -260,7 +269,7 @@ class LogiksPage {
 						$lt->printTemplate($tmpl,null,$tmplID,true);
 					else
 						$lt->printTemplate($tmpl,null,$tmplID);
-
+					
 					if(count($pageConfig['modules_postload'])>0) loadModule($pageConfig['modules_postload']);
 
 					runHooks("postPage");
@@ -304,7 +313,7 @@ class LogiksPage {
 	    $page=explode("/",$pagePath);
 	    foreach ($page as $key => $value) {
 	    	if($key>0) {
-	    		$page[$key]=$page[$key-1]."-".$value;
+	    		$page[$key]=$page[$key-1]."_".$value;
 	    	}
 	    }
 	    $page=array_reverse($page);
@@ -349,14 +358,14 @@ class LogiksPage {
 		$page['PAGE_JS_PRELOAD']=$page['JS_PRELOAD'];
 		$page['PAGE_JS_POSTLOAD']=$page['JS_POSTLOAD'];
 
-  		$device=strtoupper(getUserDeviceType());
+  	$device=strtoupper(getUserDeviceType());
 		$page['CSS']=getConfig("{$device}_CSS_TO_LOAD").",".getConfig("DEFAULT_CSS_TO_LOAD").",".$page['CSS'];
 		$page['JS_PRELOAD']=getConfig("{$device}_JS_TO_PRELOAD").",".getConfig("DEFAULT_JS_TO_PRELOAD").",".$page['JS_PRELOAD'];
 		$page['JS_POSTLOAD']=getConfig("{$device}_JS_TO_POSTLOAD").",".getConfig("DEFAULT_JS_TO_POSTLOAD").",".$page['JS_POSTLOAD'];
 		
 		$page['CSS']=explode(",", str_replace(" ",",",trim($page['CSS'])));
 		$page['CSS'][]=$this->pageConfig['template'];
-		$page['CSS'][]=$this->pageConfig['pageName'];
+		$page['CSS'][]="comps/{$this->pageConfig['pageName']}";
 		$page['CSS']=array_unique($page['CSS']);
 		//$page['CSS']=implode(",", $page['CSS']);
 		
@@ -364,11 +373,13 @@ class LogiksPage {
 		$page['JS_PRELOAD']=array_unique($page['JS_PRELOAD']);
 		$page['JS_PRELOAD']=implode(",", $page['JS_PRELOAD']);
 
-		$page['JS_POSTLOAD']=explode(",", str_replace(" ",",",trim($page['JS_POSTLOAD'])));
+		$page['JS_POSTLOAD']=explode(",", str_replace(" ",",",trim($page['JS_POSTLOAD'].",comps/{$this->pageConfig['pageName']}")));
 		$page['JS_POSTLOAD']=array_unique($page['JS_POSTLOAD']);
 		$page['JS_POSTLOAD']=implode(",", $page['JS_POSTLOAD']);
 
-  		$favicon=getConfig("APPS_ICON");
+		//printArray($page);exit();
+			
+  	$favicon=getConfig("APPS_ICON");
 		if(strlen($favicon)>0) {
 			$favicon="<link rel='shortcut icon' type='image/x-icon' href='$favicon' />";
 		}
@@ -427,13 +438,14 @@ class LogiksPage {
   	protected function generateSLUG() {
   		$arrSlug=array();
 
-  		$fx=$this->pageConfig['pageName'];
+  		$fx=PAGE;
+  		$page=implode("/", explode("_", $this->pageConfig['page']));
+		//$page=$this->pageConfig['page'];
 
-	
-		$page=$this->pageConfig['page'];
-		$pageSlug=str_replace("#{$fx}", "", "#{$page}");
+		$pageSlug=str_replace("#{$page}", "", "#{$fx}");
 		if(substr($pageSlug, 0,1)=="/") $pageSlug=substr($pageSlug, 1);
 		if(substr($pageSlug, -1,1)=="/") $pageSlug=substr($pageSlug, 0,-1);
+		if(substr($pageSlug, 0,1)=="#") $pageSlug=substr($pageSlug, 1);
 
 		$pageSlug=explode("/", $pageSlug);
 		$_ENV['PAGESLUG-MAIN']=$pageSlug;

@@ -12,14 +12,15 @@ class RoleModel {
 
 	//Checks if a single activity exists for the provided scope/module
 	//ie if the scope is required
-	public static function checkScope($module,$category="Block") {
-		$roleHash=md5($module.$category);
+	public static function checkScope($module,$actionType="VIEW") {
+		$actionType=strtoupper($actionType);
+		$roleHash=md5($module.$actionType);
 		if(isset($_SESSION["ROLESCOPE"][$roleHash])) {
 			return $_SESSION["ROLESCOPE"][$roleHash];
 		}
 
 		$sql=_db(true)->_selectQ(_dbTable("rolemodel",true),"count(*) as cnt")
-					->_where(array("site"=>SITENAME,"category"=>$category,"module"=>$module));
+					->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module));
 
 		$r=_dbQuery($sql,true);
 		$d=_dbData($r,true);
@@ -30,7 +31,7 @@ class RoleModel {
 		if($d[0]['cnt']>0) {
 			$privilegehash=$_SESSION["SESS_PRIVILEGE_HASH"];
 			$sql=_db(true)->_selectQ(_dbTable("rolemodel",true),"count(*) as cnt")
-					->_where(array("site"=>SITENAME,"category"=>$category,"module"=>$module,"allow"=>"true", "privilegehash"=>$privilegehash));
+					->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module,"allow"=>"true", "privilegehash"=>$privilegehash));
 
 			$r=_dbQuery($sql,true);
 			$d=_dbData($r,true);
@@ -46,7 +47,8 @@ class RoleModel {
 		return $_SESSION["ROLESCOPE"][$roleHash];
 	}
 
-	public static function checkRole($module,$activity,$category="Block") {
+	public static function checkRole($module,$activity,$actionType="VIEW") {
+		$actionType=strtoupper($actionType);
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]<=ROLE_PRIME) {
 			return true;
 		}
@@ -54,21 +56,19 @@ class RoleModel {
 			if(isset($_SESSION["SESS_PRIVILEGE_NAME"]) && isset($_SESSION["SESS_PRIVILEGE_ID"])) {
 				$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_NAME"].$_SESSION["SESS_PRIVILEGE_ID"]);
 			} else {
-				if($module=="PAGES") {
-					return (strtolower(getConfig("ACCESS"))=="public");
-				}
+				$_SESSION["SESS_PRIVILEGE_HASH"]=md5("guest0");
 			}
 		}
 		if(isset($_SESSION["SESS_PRIVILEGE_HASH"])) {
 			$privilegehash=$_SESSION["SESS_PRIVILEGE_HASH"];
 
-			$roleHash=md5($module.$activity.$category.$privilegehash);
+			$roleHash=md5($module.$activity.$actionType.$privilegehash);
 			if(isset($_SESSION["ROLEMODEL"][$roleHash])) {
 				return $_SESSION["ROLEMODEL"][$roleHash];
 			}
 
 			$sql=_db(true)->_selectQ(_dbTable("rolemodel",true),"id,allow,role_type,count(*) as cnt")
-					->_where(array("site"=>SITENAME,"category"=>$category,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash))
+					->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash))
 					->_orderby("id desc");
 
 			$r=_dbQuery($sql,true);
@@ -77,7 +77,7 @@ class RoleModel {
 				_dbFree($r,true);
 				$data=$data[count($data)-1];
 				if($data['cnt']==0) {
-					RoleModel::registerRole($module,$activity,$category);
+					RoleModel::registerRole($module,$activity,$actionType);
 					$_SESSION["ROLEMODEL"][$roleHash]=false;
 					return false;
 				} else {
@@ -90,7 +90,8 @@ class RoleModel {
 		}
 		return (!getConfig("ROLEMODEL_DEFAULT_DENY"));
 	}
-	public static function registerRole($module,$activity,$category="Block") {
+	public static function registerRole($module,$activity,$actionType="VIEW") {
+		$actionType=strtoupper($actionType);
 		$roleTbl=_dbTable("rolemodel",true);
 		$userid=$_SESSION['SESS_USER_ID'];
 		$site=SITENAME;
@@ -116,7 +117,7 @@ class RoleModel {
 				$privilegename=$d['name'];
 
 				$sql=_db(true)->_selectQ($roleTbl,"count(*) as cnt")
-					->_where(array("site"=>$site,"category"=>$category,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash));
+					->_where(array("site"=>$site,"category"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash));
 				$r=_dbQuery($sql,true);
 				if($r) {
 					$data=_dbData($r);
@@ -125,7 +126,7 @@ class RoleModel {
 								//"id"=>"",
 								"guid"=>$guid,
 								"site"=>$site,
-								"category"=>$category,
+								"category"=>$actionType,
 								"module"=>$module,
 								"activity"=>$activity,
 								"privilegehash"=>$privilegehash,
@@ -140,7 +141,7 @@ class RoleModel {
 							//"id"=>"",
 							"guid"=>$guid,
 							"site"=>$site,
-							"category"=>$category,
+							"category"=>$actionType,
 							"module"=>$module,
 							"activity"=>$activity,
 							"privilegehash"=>$privilegehash,
@@ -156,7 +157,7 @@ class RoleModel {
 					//"id"=>"",
 					"guid"=>$guid,
 					"site"=>$site,
-					"category"=>$category,
+					"category"=>$actionType,
 					"module"=>$module,
 					"activity"=>$activity,
 					"privilegehash"=>md5("guest"),

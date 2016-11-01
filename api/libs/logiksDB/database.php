@@ -78,6 +78,18 @@ class Database {
 		}
 	}
 	
+	public static function checkConnection($key="app") {
+		if(isset(Database::$connections[$key])) {
+			if(Database::$connections[$key]->isAlive()) {
+				return 2;
+			} else {
+				return 1;
+			}
+		}
+		
+		return 0;
+	}
+	
 	//Primary Constructor
 	protected function __construct($name,$params) {
 		$driver=$params['driver'];

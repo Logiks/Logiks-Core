@@ -49,10 +49,16 @@ if(!function_exists('loadComponent')) {
 		}
 		$out=[];
 		foreach ($files as $f) {
-			$fx=APPROOT.APPS_PLUGINS_FOLDER."snippets/{$f}.php";
-			if(file_exists($fx)) {
+			$fx=[
+					APPROOT.APPS_PAGES_FOLDER."snippets/{$f}.php",
+					APPROOT.APPS_PLUGINS_FOLDER."snippets/{$f}.php"
+				];
+			if(file_exists($fx[0])) {
 				$out["loaded"][]=$f;
-				eval(file_get_contents($fx));
+				eval(file_get_contents($fx[0]));
+			} elseif(file_exists($fx[1])) {
+				$out["loaded"][]=$f;
+				eval(file_get_contents($fx[1]));
 			} else {
 				$out["error"][]=$f;
 			}
@@ -60,3 +66,4 @@ if(!function_exists('loadComponent')) {
 		return $out;
 	}
 }
+?>

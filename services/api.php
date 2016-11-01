@@ -205,6 +205,18 @@ if(!function_exists("getServiceCMD")) {
 					$msgData=strip_tags($msgData);
 					echo $msgData;
 				}
+				break;
+			case "event":
+			case "event-stream":
+				if(is_array($msgData)) {
+					echo "data: ";
+					printFormattedArray($msgData);
+				} else {
+					$msgData=strip_tags($msgData);
+					echo "data: $msgData";
+				}
+				flush();
+				break;
 			default://Anything else (raw,css,js)
 				if(is_array($msgData)) {
 					printFormattedArray($msgData);

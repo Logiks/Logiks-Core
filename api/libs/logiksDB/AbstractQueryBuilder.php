@@ -40,6 +40,7 @@
 	public function _get() {
 		$res=$this->dbInstance->runQuery($this);
 		if(!$res) return false;
+		if(is_bool($res)) return $res;
 		$data=$this->dbInstance->fetchAllData($res);
 		$this->dbInstance->free($res);
 		return $data;
@@ -123,11 +124,11 @@
 	public function _query($col,$query,$relation="IN",$glueType="AND") {
 		if(is_a($query,"AbstractQueryBuilder")) {
 			$sql=$query->_SQL();
-			$this->_where("$col $relation ($sql)");
+			$this->_whereRAW("$col $relation ($sql)");
 		//} elseif(is_array($query)) {
 
 		} elseif(is_string($query)) {
-			$this->_where("$col $relation ($sql)");
+			$this->_whereRAW("$col $relation ($sql)");
 		} else {
 			trigger_logikserror("$query should be an object of AbstractQueryBuilder or String");// or Array
 		}
@@ -548,7 +549,7 @@
 				$s="{$col}<{$arr[0]}";
 			break;
 
-			case "le":case ":le:":
+			case "le":case ":le:":case "lte":case ":lte:":
 			case "<=":
 				$arr[0]=$this->sqlData($arr[0]);
 				$s="{$col}<={$arr[0]}";
@@ -560,7 +561,7 @@
 				$s="{$col}>{$arr[0]}";
 			break;
 
-			case "ge":case ":ge:":
+			case "ge":case ":ge:":case "gte":case ":gte:":
 			case ">=":
 				$arr[0]=$this->sqlData($arr[0]);
 				$s="{$col}>={$arr[0]}";
@@ -611,6 +612,14 @@
 			case "s":case ":s:":
 			case "find":case ":find:":
 				$s="FIND_IN_SET('{$arr[0]}',{$col})";
+			break;
+				
+			case "range":
+				if(is_array($arr[0])) {
+					$s="$col BETWEEN {$arr[0][0]} AND {$arr[0][1]}";
+				} else {
+					$s="$col BETWEEN {$arr[0]}";
+				}
 			break;
 
 			default:

@@ -59,9 +59,14 @@ function printAvatarPhoto($method) {
 			$data=file_get_contents($url);
 			printAvatar($data,"jpeg");
 		} elseif($method=="email") {
-			$url="http://avatars.io/email/{$_REQUEST['authorid']}/large";
+			//d=  Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
+			//r=  Maximum rating (inclusive) [ g | pg | r | x ]
+			$url="http://www.gravatar.com/avatar/";
+			$url .= md5( strtolower( trim( $_REQUEST['authorid'] ) ) );
+      $url .= "?s=120&d=identicon&r=g";
 			$data=file_get_contents($url);
-			printAvatar($data,"jpeg");
+			printAvatar($data,"png");
+			//printDefaultAvatar();
 		}
 		/*
 			$url="https://api.twitter.com/1/users/profile_image?screen_name={$authorid}&size=bigger";

@@ -48,6 +48,17 @@ if(!function_exists("session_check")) {
 	}
 	//function session_login_check() {}
 	
+	function checkAccess($module,$activity,$actionType="view") {
+		$module=strtoupper($module);
+		$actionType=strtoupper($actionType);
+		if($module=="PAGE") {
+			//checkPageAccess
+		} else {
+			//checkRoleScope
+			//checkUserRoles
+		}
+	}
+	
 	function isAdminSite($site=SITENAME) {
 		$adminSites=explode(",", DOMAIN_CONTROLS_ADMINAPP);
 		if(in_array($site, $adminSites)) return true;
@@ -67,7 +78,7 @@ if(!function_exists("session_check")) {
 		}
 	}
 
-    function parseHTTPReferer() {
+  function parseHTTPReferer() {
 		$arr=array();
 		$arr["SERVER_PROTOCOL"]="";
 		$arr["HTTP_HOST"]="";
@@ -139,7 +150,8 @@ if(!function_exists("session_check")) {
 	//Generates the auth key required for logging into system remotely and via mobility
 	function generateMAuthKey() {
 		if(!isset($_REQUEST['deviceuuid'])) $_REQUEST['deviceuuid']="LOGIKS007";
-		$str=$_REQUEST['site']._server('HTTP_USER_AGENT').SiteID.$_REQUEST['deviceuuid'];
+		if(!isset($_REQUEST['appkey'])) $_REQUEST['appkey']="SILKAPP0000";
+		$str=$_REQUEST['site']._server('HTTP_USER_AGENT').SiteID.$_REQUEST['deviceuuid'].$_REQUEST['appkey'];
 		if(isset($_SESSION['SESS_USER_ID'])) $str.=$_SESSION['SESS_USER_ID'];
 
 		$key=md5(base64_encode($str));

@@ -23,6 +23,12 @@ if(!function_exists("generateSelect")) {
 		} else {
 			$data=$ld->dump();
 		}
+		if($data==null || !is_array($data)) {
+			if($paramTags!==null) {
+				$html .="</select>";
+			}
+			return $html;
+		}
 		foreach ($data as $key => $value) {
 			if(is_array($value)) {
 				$attr=[];

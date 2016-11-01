@@ -59,6 +59,25 @@ if(!function_exists("_url")) {
 		return $url;
 	}
 }
+if(!function_exists("_uri")) {
+	//Gets current uri for the actual page, eg PAGE - SLUG
+	function _uri() {
+		if(defined('PAGEURI')) {
+			$uri=_link(PAGEURI);
+		} else {
+			$uri=explode("/",PAGE);
+			$fix=false;
+			foreach($uri as $a=>$b) {
+				if($b=="new" || $b=="edit") {
+					$fix=true;
+				}
+				if($fix) unset($uri[$a]);
+			}
+			$uri=_link(implode("/",$uri));
+		}
+		return $uri;
+	}
+}
 /*Date And Time Functions*/
 if(!function_exists("_time")) {
 	//Used Generally To Convert UserFormatted Times To DB Formatted (H:i:s) times

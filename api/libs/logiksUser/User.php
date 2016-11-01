@@ -85,12 +85,14 @@ if(!function_exists("getUserID")) {
 	//Alter User Informations
 	function getDefaultParams($userID="",$pwd="",$privilegeID="",$accessID="") {
 		$hashSalt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
-		if(!isValidMd5($pwd)) $pwd=md5($pwd);
-
+		
+		$pwdAns=getPWDHash($pwd,$hashSalt);
+		if(is_array($pwdAns)) $pwdAns=$pwdAns['hash'];
+		
 		$params=array(
 				"guid"=>"c21f969b5f03d33d43e04f8f136e7682",
 				"userid"=>$userID,
-				"pwd"=>getPWDHash($pwd,$hashSalt),
+				"pwd"=>$pwdAns,
 				"pwd_salt"=>$hashSalt,
 				"privilegeid"=>$privilegeID,
 				"accessid"=>$accessID,
@@ -118,6 +120,7 @@ if(!function_exists("getUserID")) {
 				"dtoc"=>date("Y-m-d H:i:s"),
 				"dtoe"=>date("Y-m-d H:i:s"),
 			);
+	
 		return $params;
 	}
 
@@ -133,8 +136,10 @@ if(!function_exists("getUserID")) {
 		$sql=_db(true)->_selectQ(_dbTable("privileges",true),"count(*) as cnt")->_where(array(
 				"id"=>$privilegeID,
 			))->_where(" (site='".SITENAME."' OR site='*')");
+		
 		$res=_dbQuery($sql,true);
-		if(!$res) {
+		
+		/*if(!$res) {
 			return array("error"=>"PrivilegeID Query Error");
 		}
 		$data=_dbData($res,true);
@@ -157,12 +162,20 @@ if(!function_exists("getUserID")) {
 		if($data[0]['cnt']<=0) {
 			return array("error"=>"AccessID Not Found For For Site $site");
 		}
-
+*/
 		$params=getDefaultParams($userID,$pwd,$privilegeID,$accessID);
+		//code added by Mita 
+		
+		if(isset($attrs['pwd'])) unset($attrs['pwd']);
+		if(isset($attrs['pwd_salt'])) unset($attrs['pwd_salt']);
+		
+		//End of Mita's Code
 		$data=array_merge($params,$attrs);
-
-		$data['guid']=generateGUID($data['guid']);
-
+		
+		//If custom guid is there, then no default guid
+		if(isset($data['guid'])) $data['guid']=generateGUID($data['guid']);
+		else $data['guid']=generateGUID($params['guid']);
+		
 		$reqParams=explode(",", getConfig("USER_CREATE_REQUIRED_FIELDS"));
 		
 		foreach ($reqParams as $vx) {
@@ -170,6 +183,7 @@ if(!function_exists("getUserID")) {
 				return array("error"=>"Missing Field","field"=>$vx);
 			}
 		}
+		
 		$sql=_db(true)->_insertQ1(_dbTable("users",true),$data);
 		$res=_dbQuery($sql,true);
 		if($res) {
@@ -213,6 +227,7 @@ if(!function_exists("getUserID")) {
 				$sql=_db(true)->_selectQ(_dbTable("privileges",true),"count(*) as cnt")->_where(array(
 						"id"=>$privilegeID,
 					))->_where(" (site='".SITENAME."' OR site='*')");
+			
 				$res=_dbQuery($sql,true);
 				if(!$res) {
 					return array("error"=>"PrivilegeID Query Error");
@@ -253,10 +268,12 @@ if(!function_exists("getUserID")) {
 	}
 
 	function updatePassword($pwd,$userID=null,$site=SITENAME) {
+		
 		if(!isset($_SESSION['SESS_PRIVILEGE_ID']) || $_SESSION['SESS_PRIVILEGE_ID']>ROLE_PRIME) {
 			$site=SITENAME;
 			$userID=$_SESSION['SESS_USER_ID'];
 		}
+	
 		if($userID==null && isset($_SESSION['SESS_USER_ID'])) {
 			$userID=$_SESSION['SESS_USER_ID'];
 		}
@@ -264,14 +281,16 @@ if(!function_exists("getUserID")) {
 		if(checkUserID($userID,$site)) {
 			$hashSalt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
 
-			if(!isValidMd5($pwd)) $pwd=md5($pwd);
-
+			$pwdAns=getPWDHash($pwd,$hashSalt);
+			if(is_array($pwdAns)) $pwdAns=$pwdAns['hash'];
+			
 			$dataUser=array(
-					"pwd"=>getPWDHash($pwd,$hashSalt),
+					"pwd"=>$pwdAns,
 					"pwd_salt"=>$hashSalt,
 					"dtoe"=>date("Y-m-d H:i:s"),
 				);
 			$sql=_db(true)->_updateQ(_dbTable("users",true),$dataUser,array("userid"=>"$userID"));
+			
 			$res=_dbQuery($sql,true);
 			if($res) {
 				return true;
