@@ -249,7 +249,7 @@ function startNewSession($userid, $domain, $params=array()) {
 	$_SESSION['SESS_GROUP_MANAGER'] = $data['groups']['group_manager'];
 	$_SESSION['SESS_GROUP_DESCS'] = $data['groups']['group_descs'];
 
-	$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_NAME"].$_SESSION["SESS_PRIVILEGE_ID"]);
+	$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_ID"].$_SESSION["SESS_PRIVILEGE_NAME"]);
 
 	$_SESSION['SESS_USER_NAME'] = $data['name'];
 	$_SESSION['SESS_USER_EMAIL'] = $data['email'];

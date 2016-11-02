@@ -85,6 +85,25 @@
 		
 		return $this;
 	}
+	public function _whereMulti($where=null,$joinType="AND",$implodeType='AND') {
+		if(!$where) return $this;
+		if(!is_array($this->obj['where'])) $this->obj['where']=[];
+		
+		$fWhere=[];
+		foreach($where as $w) {
+			$w=$this->clean($w);
+			$n=count($w);
+			if(is_array($w[1])) {
+				$fWhere[]=$this->parseRelation($w[0],$w[1]);
+			} else {
+				$fWhere[]=$this->parseRelation($w[0],[$w[1],"="]);
+			}
+		}
+		$fWhere="(".implode(" {$implodeType} ",$fWhere).")";
+		$this->_whereRAW($fWhere,$joinType);
+		
+		return $this;
+	}
 	public function _whereOR($col,$data) {
 		if(!$col) return $this;
 		if(!is_array($this->obj['where'])) $this->obj['where']=[];
@@ -108,7 +127,7 @@
 
 			$whereSQL="$col IN (".implode(",", $data).")";
 		} else {
-			$whereSQL="FIND_IN_SET($data,$col))";
+			$whereSQL="FIND_IN_SET('$data',$col)";
 		}
 
 		$this->obj['where'][]=array($joinType,$whereSQL);

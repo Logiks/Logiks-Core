@@ -14,6 +14,7 @@ if(!function_exists("getSettings")) {
 		if(strlen($name)<=0 || !isset($_SESSION['SESS_USER_ID'])) return $defaultValue;
 
 		$sql=_db(true)->_selectQ(_dbTable("settings",true),"name,settings")->_where(array(
+				"guid"=>$_SESSION['SESS_GUID'],
 				"userid"=>$_SESSION['SESS_USER_ID'],
 				"site"=>SITENAME,
 				"scope"=>$scope,
@@ -38,6 +39,7 @@ if(!function_exists("getSettings")) {
 		if(strlen($name)<=0 || !isset($_SESSION['SESS_USER_ID'])) return $value;
 
 		$sql=_db(true)->_selectQ(_dbTable("settings",true),"name,settings")->_where(array(
+				"guid"=>$_SESSION['SESS_GUID'],
 				"userid"=>$_SESSION['SESS_USER_ID'],
 				"site"=>SITENAME,
 				"scope"=>$scope,
@@ -52,6 +54,7 @@ if(!function_exists("getSettings")) {
 						"settings"=>$value,
 					);
 				$q=_db(true)->_updateQ(_dbTable("settings",true),$data,array(
+						"guid"=>$_SESSION['SESS_GUID'],
 						"userid"=>$_SESSION['SESS_USER_ID'],
 						"site"=>SITENAME,
 						"scope"=>strtolower($scope),
@@ -69,6 +72,7 @@ if(!function_exists("getSettings")) {
 	function registerSettings($name,$value="",$scope="system") {
 		if(is_file($value)) $value=json_decode(file_get_contents($value),true);
 		$data=array(
+				"guid"=>$_SESSION['SESS_GUID'],
 				"userid"=>$_SESSION['SESS_USER_ID'],
 				"site"=>SITENAME,
 				"scope"=>strtolower($scope),

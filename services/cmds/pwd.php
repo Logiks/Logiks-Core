@@ -1,6 +1,5 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
-checkServiceSession();
 
 loadHelpers("pwdhash");
 
@@ -8,8 +7,10 @@ if(!isset($_REQUEST["type"])) {
 	$_REQUEST["type"]="";
 }
 if($_REQUEST["type"]=="dialog") {
+	checkServiceSession();
 	printDialog();
 } elseif($_REQUEST["type"]=="change") {
+	checkServiceSession();
 	changePWD();
 } elseif($_REQUEST["type"]=="generate") {
 	loadHelpers("pwdgen");

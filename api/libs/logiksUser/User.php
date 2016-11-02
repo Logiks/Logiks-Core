@@ -1,6 +1,6 @@
 <?php
 /*
- * This class contains the all User related functionalities
+ * This file contains the all User related functionalities
  * 
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Version: 1.0
@@ -96,6 +96,7 @@ if(!function_exists("getUserID")) {
 				"pwd_salt"=>$hashSalt,
 				"privilegeid"=>$privilegeID,
 				"accessid"=>$accessID,
+				"groupid"=>1,
 				"name"=>toTitle($userID),
 				"dob"=>"",
 				"gender"=>"male",
@@ -135,34 +136,27 @@ if(!function_exists("getUserID")) {
 		//Check PrivilegeID
 		$sql=_db(true)->_selectQ(_dbTable("privileges",true),"count(*) as cnt")->_where(array(
 				"id"=>$privilegeID,
-			))->_where(" (site='".SITENAME."' OR site='*')");
+			))->_whereOR("site",[SITENAME,'*']);
 		
-		$res=_dbQuery($sql,true);
-		
-		/*if(!$res) {
+		$resData=$sql->_GET();
+		if(!$resData) {
 			return array("error"=>"PrivilegeID Query Error");
+		} elseif($resData[0]['cnt']<=0) {
+			return array("error"=>"PrivilegeID Not Found For Site");
 		}
-		$data=_dbData($res,true);
-		_dbFree($res,true);
-		if($data[0]['cnt']<=0) {
-			return array("error"=>"PrivilegeID Not Found For Site $site");
-		}
-
-		//Check AccessID
+		
 		$sql=_db(true)->_selectQ(_dbTable("access",true),"count(*) as cnt")->_where(array(
 				"blocked"=>'false',
 				"id"=>$accessID,
-			))->_where(" (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
-		$res=_dbQuery($sql,true);
-		if(!$res) {
+			))->_whereMulti([["sites",[SITENAME,"FIND"]],["sites",'*']],"AND","OR");
+		
+		$resData=$sql->_GET();
+		if(!$resData) {
 			return array("error"=>"AccessID Query Error");
+		} elseif($resData[0]['cnt']<=0) {
+			return array("error"=>"AccessID Not Found For Site");
 		}
-		$data=_dbData($res,true);
-		_dbFree($res,true);
-		if($data[0]['cnt']<=0) {
-			return array("error"=>"AccessID Not Found For For Site $site");
-		}
-*/
+
 		$params=getDefaultParams($userID,$pwd,$privilegeID,$accessID);
 		//code added by Mita 
 		
@@ -195,7 +189,13 @@ if(!function_exists("getUserID")) {
 					"status"=>"success",
 				);
 		}
-		return array("error"=>"Error In User Creation","details"=>_db(true)->get_error());
+		
+		$errMsg=_db(true)->get_error();
+		if(strpos(strtolower("###".$errMsg),"duplicate")>2) {
+			return array("error"=>"UserID Duplicate Across Sites");
+		} else {
+			return array("error"=>"Error In User Creation","details"=>$errMsg);
+		}
 	}
 
 	function updateUser($attrs=array(),$userID=null,$site=SITENAME) {
@@ -307,7 +307,7 @@ if(!function_exists("getUserID")) {
 	function getMyRoleHash() {
 		if(!isset($_SESSION["SESS_PRIVILEGE_HASH"])) {
 			if(isset($_SESSION["SESS_PRIVILEGE_NAME"]) && isset($_SESSION["SESS_PRIVILEGE_ID"])) {
-				$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_NAME"].$_SESSION["SESS_PRIVILEGE_ID"]);
+				$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_ID"].$_SESSION["SESS_PRIVILEGE_NAME"]);
 			} else {
 				return false;
 			}
@@ -317,7 +317,7 @@ if(!function_exists("getUserID")) {
 	function fetchUserRoleHash($userid) {
 		$tbl1=_dbTable("users", true);
 		$tbl2=_dbTable("privileges", true);
-		$data=_db(true)->_raw("SELECT md5(concat({$tbl2}.id,{$tbl2}.name)) as hash FROM {$tbl1},{$tbl2} WHERE {$tbl1}.privilegeid={$tbl2}.id AND {$tbl1}.userid='root'")
+		$data=_db(true)->_raw("SELECT md5(concat({$tbl2}.id,{$tbl2}.name)) as hash FROM {$tbl1},{$tbl2} WHERE {$tbl1}.privilegeid={$tbl2}.id AND {$tbl1}.userid='{$userid}'")
 				->_get();
 		if(isset($data[0])) return $data[0]['hash'];
 		else return false;

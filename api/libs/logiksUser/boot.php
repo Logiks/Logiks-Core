@@ -8,6 +8,7 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
+include_once dirname(__FILE__)."/Group.php";
 include_once dirname(__FILE__)."/User.php";
 include_once dirname(__FILE__)."/Site.php";
 include_once dirname(__FILE__)."/RoleModel.inc";
@@ -17,12 +18,16 @@ include_once dirname(__FILE__)."/Settings.php";
 //SiteSettings
 
 if(!function_exists("checkUserRoles")) {
-	function checkUserRoles($module,$activity,$actionType="VIEW") {
-		return RoleModel::checkRole($module,$activity,$actionType);
+	function resetRoleCache() {
+		unset($_SESSION["ROLEMODEL"]);
+	}
+	
+	function checkUserRoles($module,$activity) {
+		return RoleModel::checkRole($module,$activity);
 	}
 
-	function checkRoleScope($module,$actionType="VIEW") {
-		return RoleModel::checkScope($module,$activity,$actionType);
+	function checkRoleScope($module) {
+		return RoleModel::checkScope($module,$activity);
 	}
 
 	

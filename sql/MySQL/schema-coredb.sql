@@ -16,7 +16,7 @@ CREATE TABLE `access` (
 
 CREATE TABLE `privileges` (
    `id` int(10) unsigned not null auto_increment,
-   `guid` varchar(64) not null default 'global',
+   `guid` varchar(64) not null default 'globals',
    `site` varchar(150),
    `name` varchar(35),
    `remarks` varchar(255),
@@ -30,7 +30,7 @@ CREATE TABLE `privileges` (
 
 CREATE TABLE `rolemodel` (
    `id` int(10) unsigned not null auto_increment,
-   `guid` varchar(64) not null default 'global',
+   `guid` varchar(64) not null default 'globals',
    `site` varchar(150),
    `category` varchar(100) not null default 'SYSTEM',
    `module` varchar(100) not null,
@@ -40,18 +40,6 @@ CREATE TABLE `rolemodel` (
    `allow` enum('true','false') not null default 'false',
    `role_type` varchar(55) not null default 'auto',
    `creator` varchar(155) not null,
-   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
-   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-
-CREATE TABLE `cache_geoip` (
-   `id` int(10) unsigned not null auto_increment,
-   `ip_address` varchar(155),
-   `country_code` varchar(25),
-   `country_name` varchar(500),
-   `geolocation` varchar(25),
    `dtoc` timestamp not null default CURRENT_TIMESTAMP,
    `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`)
@@ -104,25 +92,9 @@ CREATE TABLE `security_iplist` (
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
-
-CREATE TABLE `security_userkeys` (
-   `id` int(10) unsigned not null auto_increment,
-   `site` varchar(150) not null,
-   `userid` varchar(155) not null,
-   `devicetype` varchar(100) not null,
-   `userkey` varchar(100) not null,
-   `devicekey` varchar(100) not null,
-   `session` longblob,
-   `creator` varchar(150) not null,
-   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
-   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-
 CREATE TABLE `settings` (
    `id` int(10) unsigned not null auto_increment,
-   `guid` varchar(64) not null default 'global',
+   `guid` varchar(64) not null default 'globals',
    `site` varchar(150) default '*',
    `userid` varchar(155) not null,
    `name` varchar(155) not null,
@@ -135,7 +107,7 @@ CREATE TABLE `settings` (
 
 CREATE TABLE `system_queue` (
    `id` int(10) unsigned not null auto_increment,
-   `guid` varchar(64) not null default 'global',
+   `guid` varchar(64) not null default 'globals',
    `site` varchar(150) not null,
    `queue_key` varchar(255) not null,
    `queue_data` longblob,
@@ -168,41 +140,80 @@ CREATE TABLE `system_cronjobs` (
 
 
 CREATE TABLE `users` (
-   `id` int(11) not null auto_increment,
-   `guid` varchar(64) not null default 'global',
-   `userid` varchar(150) not null,
-   `pwd` varchar(128) not null,
-   `pwd_salt` varchar(128),
-   `privilegeid` int(11) not null default '7',
-   `accessid` int(11) not null default '1',
-   `name` varchar(255) not null,
-   `dob` date,
-   `gender` enum('male','female','other') default 'male',
-   `email` varchar(200),
-   `mobile` varchar(20),
-   `address` varchar(255),
-   `region` varchar(255),
-   `country` varchar(150),
-   `zipcode` varchar(15),
-   `geolocation` varchar(15),
-   `geoip` varchar(15),
-   `tags` varchar(255),
-   `avatar_type` varchar(15) not null default 'photoid',
-   `avatar` varchar(250),
-   `privacy` enum('private','public','protected') default 'protected',
-   `blocked` enum('true','false') default 'false',
-   `expires` date,
-   `registerd_site` varchar(150),
-   `remarks` varchar(250),
-   `vcode` varchar(65),
-   `mauth` varchar(65),
-   `refid` varchar(30),
-   `security_policy` varchar(25) not null default 'open',
-   `last_login` datetime,
-   `creator` varchar(155) not null,
-   `dtoc` timestamp not null default CURRENT_TIMESTAMP,
-   `dtoe` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`),
-   UNIQUE KEY (`userid`)
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `guid` varchar(64) NOT NULL DEFAULT 'globals',
+  `userid` varchar(150) NOT NULL,
+  `pwd` varchar(128) NOT NULL,
+  `pwd_salt` varchar(128) DEFAULT NULL,
+  `privilegeid` int(11) NOT NULL DEFAULT '7',
+  `accessid` int(11) NOT NULL DEFAULT '1',
+  `groupid` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL,
+  `dob` date DEFAULT NULL,
+  `gender` enum('male','female','other') DEFAULT 'male',
+  `organization_name` varchar(255) DEFAULT NULL,
+  `organization_position` varchar(200) DEFAULT NULL,
+  `organization_email` varchar(255) DEFAULT NULL,
+  `email` varchar(200) DEFAULT NULL,
+  `mobile` varchar(20) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `region` varchar(255) DEFAULT NULL,
+  `country` varchar(150) DEFAULT NULL,
+  `zipcode` varchar(15) DEFAULT NULL,
+  `geolocation` varchar(15) DEFAULT NULL,
+  `geoip` varchar(15) DEFAULT NULL,
+  `tags` varchar(255) DEFAULT NULL,
+  `avatar_type` varchar(15) NOT NULL DEFAULT 'photoid',
+  `avatar` varchar(250) DEFAULT NULL,
+  `privacy` enum('private','public','protected') DEFAULT 'protected',
+  `blocked` enum('true','false') DEFAULT 'false',
+  `expires` date DEFAULT NULL,
+  `registerd_site` varchar(150) DEFAULT NULL,
+  `remarks` varchar(250) DEFAULT NULL,
+  `vcode` varchar(65) DEFAULT NULL,
+  `mauth` varchar(65) DEFAULT NULL,
+  `refid` varchar(30) DEFAULT NULL,
+  `security_policy` varchar(25) NOT NULL DEFAULT 'open',
+  `last_login` datetime DEFAULT NULL,
+  `creator` varchar(155) NOT NULL,
+  `dtoc` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dtoe` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `userid` (`userid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
+CREATE TABLE `users_group` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `guid` varchar(100) NOT NULL,
+  `group_name` varchar(150) NOT NULL,
+  `group_manager` varchar(155) DEFAULT NULL,
+  `group_descs` varchar(255) DEFAULT NULL,
+  `created_by` varchar(155) NOT NULL,
+  `dtoc` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `dtoe` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE `users_guid` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `guid` varchar(64) NOT NULL DEFAULT 'global',
+  `org_name` varchar(255) DEFAULT NULL,
+  `org_email` varchar(255) DEFAULT NULL,
+  `org_mobile` varchar(20) DEFAULT NULL,
+  `org_address` varchar(255) DEFAULT NULL,
+  `org_region` varchar(255) DEFAULT NULL,
+  `org_country` varchar(150) DEFAULT NULL,
+  `org_zipcode` varchar(15) DEFAULT NULL,
+  `org_logo` varchar(255) DEFAULT NULL,
+  `tags` varchar(255) DEFAULT NULL,
+  `blocked` enum('true','false') DEFAULT 'false',
+  `account_expires` date DEFAULT NULL,
+  `account_planid` varchar(155) DEFAULT NULL,
+  `remarks` varchar(250) DEFAULT NULL,
+  `creator` varchar(155) NOT NULL,
+  `dtoc` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dtoe` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `guid` (`guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

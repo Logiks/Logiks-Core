@@ -12,7 +12,7 @@ class RoleModel {
 
 	//Checks if a single activity exists for the provided scope/module
 	//ie if the scope is required
-	public static function checkScope($module,$actionType="VIEW") {
+	public static function checkScope($module,$actionType="ACCESS") {
 		$actionType=strtoupper($actionType);
 		$roleHash=md5($module.$actionType);
 		if(isset($_SESSION["ROLESCOPE"][$roleHash])) {
@@ -47,16 +47,16 @@ class RoleModel {
 		return $_SESSION["ROLESCOPE"][$roleHash];
 	}
 
-	public static function checkRole($module,$activity,$actionType="VIEW") {
+	public static function checkRole($module,$activity,$actionType="ACCESS") {
 		$actionType=strtoupper($actionType);
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]<=ROLE_PRIME) {
 			return true;
 		}
 		if(!isset($_SESSION["SESS_PRIVILEGE_HASH"])) {
 			if(isset($_SESSION["SESS_PRIVILEGE_NAME"]) && isset($_SESSION["SESS_PRIVILEGE_ID"])) {
-				$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_NAME"].$_SESSION["SESS_PRIVILEGE_ID"]);
+				$_SESSION["SESS_PRIVILEGE_HASH"]=md5($_SESSION["SESS_PRIVILEGE_ID"].$_SESSION["SESS_PRIVILEGE_NAME"]);
 			} else {
-				$_SESSION["SESS_PRIVILEGE_HASH"]=md5("guest0");
+				$_SESSION["SESS_PRIVILEGE_HASH"]=md5("0guest");
 			}
 		}
 		if(isset($_SESSION["SESS_PRIVILEGE_HASH"])) {
@@ -90,7 +90,7 @@ class RoleModel {
 		}
 		return (!getConfig("ROLEMODEL_DEFAULT_DENY"));
 	}
-	public static function registerRole($module,$activity,$actionType="VIEW") {
+	public static function registerRole($module,$activity,$actionType="ACCESS") {
 		$actionType=strtoupper($actionType);
 		$roleTbl=_dbTable("rolemodel",true);
 		$userid=$_SESSION['SESS_USER_ID'];
@@ -113,7 +113,7 @@ class RoleModel {
 				if($d['id']<=ROLE_PRIME) continue;
 
 				$pid=$d['id'];
-				$privilegehash=md5($d['name'].$d['id']);
+				$privilegehash=md5($d['id'].$d['name']);
 				$privilegename=$d['name'];
 
 				$sql=_db(true)->_selectQ($roleTbl,"count(*) as cnt")
@@ -160,7 +160,7 @@ class RoleModel {
 					"category"=>$actionType,
 					"module"=>$module,
 					"activity"=>$activity,
-					"privilegehash"=>md5("guest"),
+					"privilegehash"=>md5("0guest"),
 					"allow"=>(getConfig("ROLEMODEL_DEFAULT_DENY")?"false":"true"),
 					"remarks"=>"guest",
 					"role_type"=>"auto",

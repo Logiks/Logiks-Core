@@ -1,6 +1,6 @@
 <?php
 /*
- * This class contains the all Site related user functionalities
+ * This file contains the all Site related user functionalities
  * 
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Version: 1.0
