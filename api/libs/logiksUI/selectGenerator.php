@@ -74,21 +74,28 @@ if(!function_exists("generateSelectOptions")) {
 				
 				$noOption=_ling("No Selection");
 
-				if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
+				/*if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
 					$html.="<option value=''>{$noOption}</option>";
-				}
+				}*/
 
 				$html.=createDataSelector($fieldinfo['groupid'],$fieldinfo['orderBy'],$dbKey);
 				
 				break;
 			case 'dataSelectorFromUniques':
+				if(!isset($fieldinfo['col1'])) {
+					if(isset($fieldinfo['columns'])) {
+						$cols=explode(",",$fieldinfo['columns']);
+						$fieldinfo['col1']=$cols[0];
+						if(isset($cols[1])) $fieldinfo['col2']=$cols[1];
+					}
+				}
 				if(!isset($fieldinfo['col2'])) $fieldinfo['col2']=$fieldinfo['col1'];
 				if(!isset($fieldinfo['where'])) $fieldinfo['where']=null;
 				if(!isset($fieldinfo['orderBy'])) $fieldinfo['orderBy']=null;
 
-				if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
+				/*if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
 					$html.="<option value=''>{$noOption}</option>";
-				}
+				}*/
 
 				$html.=createDataSelectorFromUniques($fieldinfo['table'],$fieldinfo['col1'],$fieldinfo['col2'],$fieldinfo['where'],$fieldinfo['orderBy'],$dbKey);
 
@@ -99,9 +106,9 @@ if(!function_exists("generateSelectOptions")) {
 				if(!isset($fieldinfo['groupBy'])) $fieldinfo['groupBy']=null;
 				if(!isset($fieldinfo['orderBy'])) $fieldinfo['orderBy']=null;
 
-				if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
+				/*if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
 					$html.="<option value=''>{$noOption}</option>";
-				}
+				}*/
 
 				$html.=createDataSelectorFromTable($fieldinfo['table'],$fieldinfo['columns'], $fieldinfo['where'],$fieldinfo['groupBy'],$fieldinfo['orderBy'],$dbKey);
 				

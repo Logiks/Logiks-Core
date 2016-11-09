@@ -14,8 +14,9 @@ if(!function_exists("createDataSelector")) {
 			->_where(array("groupid"=>$groupID,"blocked"=>"false"));
 
 		if(isset($_SESSION['SESS_PRIVILEGE_HASH'])) {
-			$sqlObj=$sqlObj->_where(array("privilege"=>"*"))
-				->_where("(privilege='*' OR FIND_IN_SET('{$_SESSION['SESS_PRIVILEGE_HASH']}',privilege))");
+			$sqlObj=$sqlObj->_whereMulti([["privilege","*"],["privilege",[$_SESSION['SESS_PRIVILEGE_HASH'],"FIND"]]],"AND","OR");
+				//->_where(array("privilege"=>"*"))
+				//->_where("(privilege='*' OR FIND_IN_SET('{$_SESSION['SESS_PRIVILEGE_HASH']}',privilege))");
 		} else {
 			$sqlObj=$sqlObj->_where(array("privilege"=>"*"));
 		}

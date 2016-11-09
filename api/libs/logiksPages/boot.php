@@ -153,14 +153,14 @@ if(!function_exists("_pageConfig")) {
   	//Effective if called in viewpage source code
   	//Also these variables can be accessed using $PAGE.<name>
   	function _pageConfig($key,$value=null) {
-  		//$key=strtoupper($key);
+		//$key=strtoupper($key);
 		if($value==null) {
 			if(isset($_ENV['PAGEVAR'][$key])) {
-  				return $_ENV['PAGEVAR'][$key];
-  			} else {
-  				return "";
-  			}
-  		}
+				return $_ENV['PAGEVAR'][$key];
+			} else {
+				return "";
+			}
+		}
 		if($value==-1 && isset($_ENV['PAGEVAR'][$key])) {
 			unset($_ENV['PAGEVAR'][$key]);
 		}

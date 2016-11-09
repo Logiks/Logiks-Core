@@ -93,10 +93,20 @@
 		foreach($where as $w) {
 			$w=$this->clean($w);
 			$n=count($w);
-			if(is_array($w[1])) {
-				$fWhere[]=$this->parseRelation($w[0],$w[1]);
+			if(isset($w[1])) {
+				if(is_array($w[1])) {
+					$fWhere[]=$this->parseRelation($w[0],$w[1]);
+				} else {
+					$fWhere[]=$this->parseRelation($w[0],[$w[1],"="]);
+				}
 			} else {
-				$fWhere[]=$this->parseRelation($w[0],[$w[1],"="]);
+				foreach($w as $k=>$m) {
+					if(is_array($m)) {
+						$fWhere[]=$this->parseRelation($k,$m);
+					} else {
+						$fWhere[]=$this->parseRelation($k,[$m,"="]);
+					}
+				}
 			}
 		}
 		$fWhere="(".implode(" {$implodeType} ",$fWhere).")";
@@ -293,6 +303,7 @@
 
 		$whereFinal=[];
 		if($where && is_array($where)) {
+			//printArray($where);
 			foreach($where as $a=>$b) {
 				if(is_array($b)) {
 					if(!isset($b[2])) $b[2]="AND";
@@ -304,6 +315,10 @@
 					if(is_array($b[1])) {
 						$sx=[];
 						foreach ($b[1] as $m=>$n) {
+							if($n=="RAW") {
+								$sx[]=$m;
+								continue;
+							}
 							if(!is_array($n)) {
 								$n=["VALUE"=>$n,"OP"=>"EQ"];
 							}
@@ -316,12 +331,16 @@
 
 					$whereFinal[]=trim($startW);
 				} else {
-					$b=explode(":", $b);
-					if(!isset($b[1])) $b[1]="EQ";
-					if(count($whereFinal)>0) {
-						$whereFinal[]=" AND ".$this->parseRelation($a,["VALUE"=>$b[0],"OP"=>$b[1]]);
+					if($b=="RAW") {
+						$whereFinal[]=" AND {$a}";
 					} else {
-						$whereFinal[]=$this->parseRelation($a,["VALUE"=>$b[0],"OP"=>$b[1]]);
+						$b=explode(":", $b);
+						if(!isset($b[1])) $b[1]="EQ";
+						if(count($whereFinal)>0) {
+							$whereFinal[]=" AND ".$this->parseRelation($a,["VALUE"=>$b[0],"OP"=>$b[1]]);
+						} else {
+							$whereFinal[]=$this->parseRelation($a,["VALUE"=>$b[0],"OP"=>$b[1]]);
+						}
 					}
 				}
 			}
@@ -636,6 +655,13 @@
 			case "range":
 				if(is_array($arr[0])) {
 					$s="$col BETWEEN {$arr[0][0]} AND {$arr[0][1]}";
+				} else {
+					$s="$col BETWEEN {$arr[0]}";
+				}
+			break;
+			case "rangestr":
+				if(is_array($arr[0])) {
+					$s="$col BETWEEN '{$arr[0][0]}' AND '{$arr[0][1]}'";
 				} else {
 					$s="$col BETWEEN {$arr[0]}";
 				}

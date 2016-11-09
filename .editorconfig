@@ -1,0 +1,44 @@
+# This file is for unifying the coding style for different editors and IDEs
+# editorconfig.org
+
+# Logiks Coding Standards
+# https://github.com/Logiks/
+
+# top-most EditorConfig file
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+
+[*.js]
+indent_style = space
+indent_size = 2
+
+[*.php]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{html,tpl}]
+indent_style = tab
+indent_size = 2
+
+[*.{css,less,sass}]
+indent_style = tab
+indent_size = 2
+
+# Tab indentation (no size specified)
+[Makefile]
+indent_style = tab
+
+# Matches the exact files either package.json or .travis.yml
+[{package.json,.travis.yml}]
+indent_style = space
+indent_size = 2
