@@ -636,13 +636,12 @@
 			break;
 			
 			case "cw":case ":cw:":
-			case "in":case ":in:":
 			case "between":case "like":
 				$s="{$col} LIKE '%{$arr[0]}%'";
 			break;
 			
 			case "cn":case ":cn:":
-			case "ni":case ":ni:":
+			
 			case "notbetween":
 				$s="{$col} NOT LIKE '%{$arr[0]}%'";
 			break;
@@ -650,6 +649,22 @@
 			case "s":case ":s:":
 			case "find":case ":find:":
 				$s="FIND_IN_SET('{$arr[0]}',{$col})";
+			break;
+				
+			case "in":case ":in:":
+				if(is_array($arr[0])) {
+					$s="$col IN (".implode(",",$arr[0]).")";
+				} else {
+					$s="$col IN ({$arr[0]})";
+				}
+			break;
+				
+			case "ni":case ":ni:":
+				if(is_array($arr[0])) {
+					$s="$col NOT IN (".implode(",",$arr[0]).")";
+				} else {
+					$s="$col NOT IN ({$arr[0]})";
+				}
 			break;
 				
 			case "range":

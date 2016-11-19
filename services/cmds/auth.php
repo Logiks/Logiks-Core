@@ -290,7 +290,7 @@ function startNewSession($userid, $domain, $params=array()) {
 	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000);
 
 	if($data['persistant'] || (ALLOW_MAUTH && isset($_POST['mauth']))) {
-		_db(true)->_deleteQ(_dbTable("cache_sessions",true),"dtoe< DATE_SUB(NOW(), INTERVAL 10 DAY)")
+		_db(true)->_deleteQ(_dbTable("cache_sessions",true),"edited_on< DATE_SUB(NOW(), INTERVAL 10 DAY)")
 				->_where([
 				"guid"=>$_SESSION['SESS_GUID'],
 				"userid"=>$_SESSION['SESS_USER_ID'],

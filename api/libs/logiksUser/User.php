@@ -118,8 +118,8 @@ if(!function_exists("getUserID")) {
 				"privacy"=>"protected",
 				"avatar_type"=>"photoid",
 				"avatar"=>"",
-				"dtoc"=>date("Y-m-d H:i:s"),
-				"dtoe"=>date("Y-m-d H:i:s"),
+				"created_on"=>date("Y-m-d H:i:s"),
+				"edited_on"=>date("Y-m-d H:i:s"),
 			);
 	
 		return $params;
@@ -255,7 +255,7 @@ if(!function_exists("getUserID")) {
 					return array("error"=>"AccessID Not Found For This Site $site");
 				}
 			}
-			$dataUser["dtoe"]=date("Y-m-d H:i:s");
+			$dataUser["edited_on"]=date("Y-m-d H:i:s");
 			
 			$sql=_db(true)->_updateQ(_dbTable("users",true),$dataUser,array("userid"=>"$userID"));
 			$res=_dbQuery($sql,true);
@@ -287,7 +287,7 @@ if(!function_exists("getUserID")) {
 			$dataUser=array(
 					"pwd"=>$pwdAns,
 					"pwd_salt"=>$hashSalt,
-					"dtoe"=>date("Y-m-d H:i:s"),
+					"edited_on"=>date("Y-m-d H:i:s"),
 				);
 			$sql=_db(true)->_updateQ(_dbTable("users",true),$dataUser,array("userid"=>"$userID"));
 			

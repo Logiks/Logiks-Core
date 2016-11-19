@@ -194,7 +194,7 @@ if(!function_exists("_date")) {
 		if(isset($daysFull[$dateStore["w"]])) $dateStore["L"]=$daysFull[$dateStore["w"]];
 		else $dateStore["L"]=0;
 
-		$a=preg_split("/[\s,:\/]+/",$outFormat);
+		$a=preg_split("/[\s,-:\/]+/",$outFormat);
 		$out=$outFormat;
 		foreach($a as $w) {
 			$out=str_replace($w, $dateStore[$w], $out);
@@ -256,7 +256,7 @@ if(!function_exists("_ling")) {
 				return $ling->toLing($data);
 			} else {
 				if(strpos($data," ")>0) {
-					return $ling->toLingContent($data);
+					return $ling->toLing($data);//toLingContent
 				} else {
 					return $ling->toLing($data);
 				}

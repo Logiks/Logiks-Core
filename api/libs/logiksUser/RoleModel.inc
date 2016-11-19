@@ -20,7 +20,8 @@ class RoleModel {
 		}
 
 		$sql=_db(true)->_selectQ(_dbTable("rolemodel",true),"count(*) as cnt")
-					->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module));
+					->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module))
+					->_where(['guid'=>$_SESSION['SESS_GUID']]);
 
 		$r=_dbQuery($sql,true);
 		$d=_dbData($r,true);
@@ -31,7 +32,8 @@ class RoleModel {
 		if($d[0]['cnt']>0) {
 			$privilegehash=$_SESSION["SESS_PRIVILEGE_HASH"];
 			$sql=_db(true)->_selectQ(_dbTable("rolemodel",true),"count(*) as cnt")
-					->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module,"allow"=>"true", "privilegehash"=>$privilegehash));
+					->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module,"allow"=>"true", "privilegehash"=>$privilegehash))
+					->_where(['guid'=>$_SESSION['SESS_GUID']]);
 
 			$r=_dbQuery($sql,true);
 			$d=_dbData($r,true);
@@ -69,6 +71,7 @@ class RoleModel {
 
 			$sql=_db(true)->_selectQ(_dbTable("rolemodel",true),"id,allow,role_type,count(*) as cnt")
 					->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash))
+					->_where(['guid'=>$_SESSION['SESS_GUID']])
 					->_orderby("id desc");
 
 			$r=_dbQuery($sql,true);

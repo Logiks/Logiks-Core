@@ -227,5 +227,9 @@ if(!function_exists("getServiceCMD")) {
 				break;
 		}
 	}
+	//DEPRECATED
+	function checkServiceSession($redirect=false) {
+		return session_check($redirect);
+	}
 }
 ?>

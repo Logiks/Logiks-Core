@@ -1,9 +1,13 @@
 Logiks-Core :: Framework
 ------------------------
 
-[![Project Stats](https://www.openhub.net/p/Logiks-Core/widgets/project_thin_badge.gif)](https://www.openhub.net/p/Logiks-Core)
 [![GitHub version](https://badge.fury.io/gh/Logiks%2FLogiks-Core.svg)](https://badge.fury.io/gh/Logiks%2FLogiks-Core)
+[![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg)]()
 [![Build Status](https://travis-ci.org/Logiks/Logiks-Core.svg)](https://travis-ci.org/Logiks/Logiks-Core)
+[![codecov](https://codecov.io/gh/Logiks/Logiks-Core/branch/master/graph/badge.svg)](https://codecov.io/gh/Logiks/Logiks-Core)
+
+
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/Logiks/Lobby)
 
 Logiks Framework is an open source high-performance web application building platform. It applies RAD principles along with agile concepts for building and deploying web based PHP projects basically AppSites. Logiks is basically built around SRTP principle of project development with prime concern being Developer's ease of creating projects.
 
@@ -50,4 +54,5 @@ These are plain source code of/part of the complete working project.
 + For a complete api documentation  visit <http://apidocs.openlogiks.org/>
 + For a complete working downloadable package please visit <http://openlogiks.org/downloads/>
 + Use Logiks Play to learn and explore Logiks, prototype parts of your app without installing anything <http://play.openlogiks.net>
+
 
