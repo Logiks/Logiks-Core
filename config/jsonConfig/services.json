@@ -3,6 +3,9 @@
 		"ping":{
 			"access_control":"public"
 		},
+		"alive": {
+			"access_control": "public"
+		},
 		"auth":{
 			"access_control":"public"
 		},

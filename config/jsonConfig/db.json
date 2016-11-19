@@ -1,6 +1,17 @@
 {
 	"GLOBALS": {
-		"core": {			
+		"core": {
+			"driver": "mysqli",
+			"host": "localhost",
+			"port": "",
+			"database": "coredb",
+			"user": "coredb",
+			"pwd": "",
+			"prefix": "lgks",
+			"suffix": "",
+			"readonly": true,
+			"block": [],
+			"allowSQL": true
 		},
 		"log": {
 		},
