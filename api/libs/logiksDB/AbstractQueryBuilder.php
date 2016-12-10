@@ -64,6 +64,10 @@
 	public function _insert_batchQ($table, $arr) {return $this;}
 	public function _updateQ($table, $values, $where, $orderby = array(), $limit = false) {return $this;}
 	public function _deleteQ($table, $where = array(), $limit = false) {return $this;}
+	 
+	public function _increment($table, $cols, $where) {return $this;}
+	public function _decrement($table, $cols, $where) {return $this;}
+	
 
 	public function _raw($sql) {
 		$this->sql=$sql; 

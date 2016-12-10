@@ -21,7 +21,7 @@ define('SERVICE_ROOT',dirname(__FILE__) . "/");
 define('SERVICE_PATH',dirname(_server('SCRIPT_NAME'))."/");
 
 define ('SERVICE_HOST', 'http' . (_server('HTTPS') ? 's' : '') . '://' . _server('HTTP_HOST').dirname(_server('SCRIPT_NAME'))."/");
-define ('WEBROOT', 'http' . (_server('HTTPS') ? 's' : '') . '://' . _server('HTTP_HOST').dirname(_server('SCRIPT_NAME'))."/");
+define ('WEBROOT', 'http' . (_server('HTTPS') ? 's' : '') . '://' . _server('HTTP_HOST').dirname(dirname(_server('SCRIPT_NAME'))));
 
 if(!_server("HTTP_REFERER")) _envData("SERVER","HTTP_REFERER","");
 

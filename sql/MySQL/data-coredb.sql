@@ -11,5 +11,5 @@ INSERT INTO `privileges` (`id`, `guid`, `site`, `name`, `blocked`, `remarks`, `c
 INSERT INTO `users` (`id`, `guid`, `userid`, `pwd`, `privilegeid`, `accessid`, `name`, `dob`, `gender`, `email`, `mobile`, `address`, `region`, `country`, `zipcode`, `geolocation`, `geoip`, `tags`, `avatar_type`, `avatar`, `privacy`, `blocked`, `expires`, `registerd_site`, `remarks`, `vcode`, `mauth`, `refid`, `security_policy`) VALUES 
 ('1', 'globals', 'root', '', '1', '1', 'Root User', '', 'male', 'admin@test.com', '', '', '', '', '', '', '', '', 'photoid', '', 'public', 'false', '', '', '', '', '', '', 'open');
 
-INSERT INTO `lgks_users_group` (`id`, `guid`, `group_name`, `group_manager`, `group_descs`, `created_by`, `edited_by`) VALUES
+INSERT INTO `users_group` (`id`, `guid`, `group_name`, `group_manager`, `group_descs`, `created_by`, `edited_by`) VALUES
 (1, 'globals', 'Default', NULL, 'No description available', 'root' 'root');

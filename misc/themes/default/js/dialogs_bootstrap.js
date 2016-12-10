@@ -7,6 +7,45 @@ function lgksPrompt(msg,title,callback) {
 function lgksConfirm(msg,title,callback) {
 	return bootbox.confirm(msg, callback);
 }
+
+function lgksOverlay(msg, title) {
+	params={
+		className: "overlayBox",
+		size: "large",
+	};
+	lgksMsg(msg, title, params);
+}
+function lgksOverlayDiv(divID,title) {
+	if(title==null) title=$(divID).attr('title');
+	msg=$(divID).html();
+	
+	params={
+		className: "overlayBox",
+		size: "large",
+	};
+	
+	lgksMsg(msg, title, params);
+}
+
+function lgksOverlayFrame(url, title) {
+	msg="<iframe width=100% height=100% frameborder=0 style='border:0px;' class='overlayFrame' src='"+url+"'></iframe>";
+	params={
+		className: "overlayBox",
+		size: "large",
+	};
+	lgksMsg(msg, title, params);
+}
+
+function lgksOverlayURL(url, title) {
+	processAJAXQuery(url,function(txt) {
+		params={
+			className: "overlayBox",
+			size: "large",
+		};
+		lgksMsg(txt, title, params);
+	},"TEXT");
+}
+
 function lgksMsg(msg,title,paramsXtra) {
 	params={
 	  /**

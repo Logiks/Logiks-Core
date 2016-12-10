@@ -16,6 +16,21 @@ if(!function_exists("trigger_logikserror")) {
   include_once dirname(__FILE__)."/logiksexception.inc";
   include_once dirname(__FILE__)."/logikserror.inc";
 
+  //Peacefull Error printing
+  function print_error($message, $noLog=false) {
+    echo "<h2 class='errorBox errorMsg' align=center>"._ling($message)."</h2>";
+    
+    if(!$noLog) {
+    	$caller=debug_backtrace();
+    	$caller=current($caller);
+    	
+    	$logMsg="{$caller['file']}:{$caller['line']}";
+    	$logData=$caller['args'];
+    	
+    	_log($logMsg, "error", LogiksLogger::LOG_WARNING, $logData);
+    }
+  }
+	
   //Logiks ERROR Trigger Function
   function trigger_logikserror($message, $severity=E_USER_NOTICE, $errorCode=null) {
     if(is_numeric($message)) {

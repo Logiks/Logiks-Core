@@ -23,7 +23,7 @@ if(!function_exists("_db")) {
 			return Database::connect($dbKey);
 		}
 	}
-	function _dbQuery($query,$dbKey=null) {
+	function _dbQuery($query,$dbKey="app") {
 		if($dbKey===true) $dbKey="core";
 		elseif($dbKey==null) $dbKey=Database::getKeyForQuery($query);
 		
@@ -33,7 +33,7 @@ if(!function_exists("_db")) {
 			return Database::connect($dbKey)->executeQuery($query,$dbKey);
 		}
 	}
-	function _dbFetch($result,$dbKey=null,$format="assoc") {
+	function _dbFetch($result,$dbKey="app",$format="assoc") {
 		if($dbKey===true) $dbKey="core";
 		elseif($dbKey==null) $dbKey=Database::getKeyForQuery($result);
 		
@@ -43,7 +43,7 @@ if(!function_exists("_db")) {
 			return false;
 		}
 	}
-	function _dbData($result,$dbKey=null,$format="assoc") {
+	function _dbData($result,$dbKey="app",$format="assoc") {
 		if($dbKey===true) $dbKey="core";
 		elseif($dbKey==null) $dbKey=Database::getKeyForQuery($result);
 		
@@ -53,7 +53,7 @@ if(!function_exists("_db")) {
 			return false;
 		}
 	}
-	function _dbFree($result,$dbKey=null) {
+	function _dbFree($result,$dbKey="app") {
 		if($dbKey===true) $dbKey="core";
 		elseif($dbKey==null) $dbKey=Database::getKeyForQuery($result);
 		
@@ -63,7 +63,7 @@ if(!function_exists("_db")) {
 			return false;
 		}
 	}
-	function _dbTable($tblName,$dbKey=null) {
+	function _dbTable($tblName,$dbKey="app") {
 		if($dbKey===true) $dbKey="core";
 		
 		if(Database::isOpen($dbKey)) {

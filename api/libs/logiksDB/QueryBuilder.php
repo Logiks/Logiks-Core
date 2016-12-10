@@ -165,11 +165,16 @@ class QueryBuilder extends AbstractQueryBuilder {
 	 */
 	public function _updateQ($table, $values, $where, $orderby = array(), $limit = false) {
 		$this->obj['table']=$table;
-		$this->obj['cols']=array_keys($values);
-		//$this->obj['where']=$where;
 		
-		foreach($values as $key => $val) {
-			$valstr[] = $key." = '".parent::clean($val)."'";
+		if(is_array($values)) {
+			$this->obj['cols']=array_keys($values);
+			//$this->obj['where']=$where;
+
+			foreach($values as $key => $val) {
+				$valstr[] = $key." = '".parent::clean($val)."'";
+			}
+		} else {
+			$valstr[] = $values;
 		}
 
 		$limit = ( ! $limit) ? '' : ' LIMIT '.$limit;
@@ -266,6 +271,68 @@ class QueryBuilder extends AbstractQueryBuilder {
 		$this->_groupby($groupby);
 		$this->_orderby($orderby);
 		if($limit!==false) $this->_limit($limit);
+		
+		return $this;
+	}
+	
+	/**
+	 * Special Update statement
+	 *
+	 * Generates a platform-specific update string for incrementing the column value
+	 *
+	 * @access	public
+	 * @param	string	the table name
+	 * @param	array	the update cols => value to increment
+	 * @param	array	the where clause
+	 * @param	array	the orderby clause
+	 * @param	array	the limit clause
+	 * @return	string
+	 */
+	public function _increment($table, $cols, $where) {
+		$upQ=[];
+		if(is_array($cols)) {
+			foreach($cols as $a=>$b) {
+				if(is_numeric($a)) {
+					$upQ[]="$b=$b+1";
+				} else {
+					$upQ[]="$a=$a+$b";
+				}
+			}
+		} else {
+			$upQ[]="$cols=$cols+1";
+		}
+		$this->_updateQ($table,implode(", ",$upQ),$where);
+		
+		return $this;
+	}
+	
+	/**
+	 * Special Update statement
+	 *
+	 * Generates a platform-specific update string for decrementing the column value
+	 *
+	 * @access	public
+	 * @param	string	the table name
+	 * @param	array	the update cols => value to decrement
+	 * @param	array	the where clause
+	 * @param	array	the orderby clause
+	 * @param	array	the limit clause
+	 * @return	string
+	 */
+	public function _decrement($table, $cols, $where) {
+		$upQ=[];
+		if(is_array($cols)) {
+			foreach($cols as $a=>$b) {
+				if(is_numeric($a)) {
+					$upQ[]="$b=$b-1";
+				} else {
+					$upQ[]="$a=$a-$b";
+				}
+			}
+		} else {
+			$upQ[]="$cols=$cols+1";
+		}
+		$this->_updateQ($table,implode(", ",$upQ),$where);
 		
 		return $this;
 	}

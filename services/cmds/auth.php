@@ -55,7 +55,7 @@ if(CASE_SENSITIVE_AUTH) {
 	}
 }
 
-$sql=_db(true)->_selectQ(_dbTable("users",true),"id, guid, userid, pwd, pwd_salt, privilegeid, accessid, groupid, name, email, mobile, region, country, blocked, avatar, avatar_type")->_whereOR("expires",[
+$sql=_db(true)->_selectQ(_dbTable("users",true),"id, guid, userid, pwd, pwd_salt, privilegeid, accessid, groupid, name, email, mobile, region, country, zipcode, geolocation, geoip, tags, blocked, avatar, avatar_type")->_whereOR("expires",[
 			"0000-00-00",["NULL","NU"],["now()","GT"]
 		])->_where($userFields,"AND","OR");
 
@@ -211,7 +211,7 @@ function checkBlacklists($data,$domain,$dbLink,$userid) {
 function initializeLogin($userid,$domain,$params=array()) {
 	startNewSession($userid, $domain, $params);
 
-	_log("Login Successfull","login",LogiksLogger::LOG_WARNING,[
+	_log("Login Successfull @{$_SESSION['SESS_USER_ID']}","login",LogiksLogger::LOG_INFO,[
 				"guid"=>$_SESSION['SESS_GUID'],
 				"userid"=>$_SESSION['SESS_USER_ID'],
 				"username"=>$_SESSION['SESS_USER_NAME'],
@@ -228,9 +228,11 @@ function startNewSession($userid, $domain, $params=array()) {
 	//printArray($data);exit();
 
 	$_SESSION['SESS_GUID'] = $data['guid'];
+	
 	$_SESSION['SESS_USER_ID'] = $data['userid'];
 	$_SESSION['SESS_PRIVILEGE_ID'] = $data['privilegeid'];
 	$_SESSION['SESS_ACCESS_ID'] = $data['accessid'];
+	$_SESSION['SESS_GROUP_ID'] = $data['groupid'];
 	
 	$_SESSION['SESS_PRIVILEGE_NAME'] = $data['privilege_name'];
 	$_SESSION['SESS_ACCESS_NAME'] = $data['access_name'];
@@ -256,7 +258,9 @@ function startNewSession($userid, $domain, $params=array()) {
 	$_SESSION['SESS_USER_CELL'] = $data['mobile'];
 	
 	$_SESSION['SESS_USER_COUNTRY'] = $data['country'];
-
+	$_SESSION['SESS_USER_ZIPCODE'] = $data['zipcode'];
+	$_SESSION['SESS_USER_GEOLOC'] = $data['geolocation'];
+	
 	$_SESSION['SESS_USER_AVATAR'] = $data['avatar_type']."::".$data['avatar'];
 
 	$_SESSION['SESS_LOGIN_SITE'] = $domain;
@@ -288,14 +292,16 @@ function startNewSession($userid, $domain, $params=array()) {
 	setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000);
 	setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000);
 	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000);
-
+	
+	_db(true)->_deleteQ(_dbTable("cache_sessions",true),"created_on<DATE_SUB(NOW(), INTERVAL 1 MONTH)")->_RUN();
+	
 	if($data['persistant'] || (ALLOW_MAUTH && isset($_POST['mauth']))) {
-		_db(true)->_deleteQ(_dbTable("cache_sessions",true),"edited_on< DATE_SUB(NOW(), INTERVAL 10 DAY)")
+		_db(true)->_deleteQ(_dbTable("cache_sessions",true),"edited_on<DATE_SUB(NOW(), INTERVAL 10 DAY)")
 				->_where([
 				"guid"=>$_SESSION['SESS_GUID'],
 				"userid"=>$_SESSION['SESS_USER_ID'],
 				"site"=>$domain,
-			])->_run();
+			])->_RUN();
 		_db(true)->_insertQ1(_dbTable("cache_sessions",true),[
 				"guid"=>$_SESSION['SESS_GUID'],
 				"userid"=>$_SESSION['SESS_USER_ID'],
@@ -307,7 +313,7 @@ function startNewSession($userid, $domain, $params=array()) {
 				"global_data"=>json_encode($GLOBALS),
 				"client_ip"=>$_SERVER['REMOTE_ADDR'],
 				"creator"=>$_SESSION['SESS_USER_ID'],
-			])->_run();
+			])->_RUN();
 	}
 }
 function logoutOldSessions($userid, $domain, $params=array()) {
@@ -315,7 +321,7 @@ function logoutOldSessions($userid, $domain, $params=array()) {
 				"guid"=>$_SESSION['SESS_GUID'],
 				"userid"=>$_SESSION['SESS_USER_ID'],
 				"site"=>$domain,
-			])->_run();
+			])->_RUN();
 }
 function restoreOldSession($sessionData, $userid, $domain, $params=array()) {
 	$data=$_ENV['AUTH-DATA'];

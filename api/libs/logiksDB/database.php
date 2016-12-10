@@ -275,7 +275,7 @@ class Database {
 	}
 
 	public function __debugInfo() {
-        return [];
-    }
+        	return ["dbkey"=>$this->instanceName,"database"=>$this->connectionParams['database']];
+    	}
 }
 ?>

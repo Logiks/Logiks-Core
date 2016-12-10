@@ -149,7 +149,7 @@ if(!function_exists("__cleanup")) {
 
 			if(!isset($_REQUEST['action'])) {
 				//TODO : GET, POST, PUT, DELETE, PURGE, VIEW
-				//		PATCH, COPY, HEAD, OPTIONS, LINK, UNLINK, LOCK, UNLOCK, PROPFIND,
+				//PATCH, COPY, HEAD, OPTIONS, LINK, UNLINK, LOCK, UNLOCK, PROPFIND,
 				$_REQUEST['action']="";
 			}
 			
