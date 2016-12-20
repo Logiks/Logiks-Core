@@ -98,17 +98,16 @@ function displayDBImage($imgID,$type="view") {
 	} else {
 		$dbtbl=_dbTable("photos");
 	}
-	$sql="SELECT image_type,image_data,image_size FROM $dbtbl WHERE ID=$imgID";
-	$result=_db()->executeQuery($sql);
-	if($result) {
-		if(_db()->recordCount($result)>0) {
-			$record=_db()->fetchData($result);
-			$ext=str_replace("image/","",$record["image_type"]);
-			printHeader("download.$ext",$type);
-			echo $record["image_data"];
-			exit();
-		}
+	$data=_db()->_selectQ($dbtbl,"image_type,image_data,image_size",["id"=>$imgID])->_GET();
+	
+	if(count($data)>0) {
+		$record=$data[0];
+		
+		$ext=str_replace("image/","",$record["image_type"]);
+		printHeader("download.$ext",$type);
+		echo $record["image_data"];
+	} else {
+		displayLocalImage("images/warning.png","view");
 	}
-	displayLocalImage("images/warning.png","view");
 }
 ?>

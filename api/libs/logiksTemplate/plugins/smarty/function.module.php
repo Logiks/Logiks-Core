@@ -12,7 +12,11 @@ function smarty_function_module($params, Smarty_Internal_Template $template) {
 	if(count($src)<=1) {
 		$GLOBALS['PAGETMPL']=$template->smarty;
 		$_ENV['MODULECONFIG'][$params['src']]=$params;
-		return loadModule($params['src']);
+		if(checkModule($params['src'])) {
+			return loadModule($params['src']);
+		} else {
+			return "<div class='errorMsg' align=center><h1>Module '{$params['src']}' Not Found. </h1><citie>Please install it using Package Manager</citie></div>";
+		}
 	} else {
 		$GLOBALS['PAGETMPL']=$template->smarty;
 		$_ENV['MODULECONFIG'][$src[0]]=$params;

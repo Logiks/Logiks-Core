@@ -15,10 +15,11 @@ class test_helpers_pwdhash extends LogiksTestCase {
 	
 	public function test_getPWDHash() {
 		setConfig("PWD_HASH_TYPE","md5");
-		$this->assertEquals(getPWDHash('test'),md5('test'));
+		
+		$this->assertEquals(getPWDHash('test'),md5(md5('test')));
 
 		setConfig("PWD_HASH_TYPE","sha1");
-		$this->assertEquals(getPWDHash('test'),sha1('test'));
+		$this->assertEquals(getPWDHash('test'),sha1(md5('test')));
 	}
 
 	public function test_matchPWD() {
@@ -27,6 +28,7 @@ class test_helpers_pwdhash extends LogiksTestCase {
 		$salt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
 
 		$algo_actual = getPWDHash('test',$salt);
+		if(is_array($algo_actual)) $algo_actual=$algo_actual['hash'];
 		
 		$first = matchPWD($algo_actual,'test',$salt);
 		$this->assertEquals(true,$first);

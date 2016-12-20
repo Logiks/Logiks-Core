@@ -34,7 +34,12 @@ class SMTPMSGDriver extends LogiksMSGDriver {
 			$mail->SMTPDebug = 3;                               // Enable verbose debug output
 			$mail->Debugoutput = 'html';
 		}
-
+	
+		if($mailConfig['default_from']!=null && strlen($mailConfig['default_from'])>0) {
+			$fromMsg=$mailConfig['default_from'];
+		} else {
+			$fromMsg=$mailConfig['smtp_username'];
+		}
 
 		//Set the hostname of the mail server
 		$mail->Host = $mailConfig['smtp_host'];
@@ -49,7 +54,7 @@ class SMTPMSGDriver extends LogiksMSGDriver {
 		//Password to use for SMTP authentication
 		$mail->Password = $mailConfig['smtp_password'];
 
-		$mail->setFrom($mailConfig['default_from']);
+		$mail->setFrom($fromMsg);
 
 		$this->mailObj=$mail;
 
@@ -70,8 +75,10 @@ class SMTPMSGDriver extends LogiksMSGDriver {
 		else $this->mailObj->AltBody = strip_tags($msgBody);
 
  		if (!$this->mailObj->send()) {
+				$this->msgLog(false,$this->mailObj->ErrorInfo,$to,$subject,$msgBody,$params);
 		    return array("error"=>true,"msg"=>$this->mailObj->ErrorInfo,"type"=>"smtp");
 		} else {
+				$this->msgLog(true,"Mail send successfully to {$to} with subject {$subject}",$to,$subject,$msgBody,$params);
 		    return true;
 		}
  	}

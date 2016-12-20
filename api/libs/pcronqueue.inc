@@ -11,35 +11,47 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 class PCronQueue {
 	private $taskToRun=array();
-    public function __construct() {
+	
+	public function __construct() {
 		$this->checkTasks();
 	}
+	
 	public function run($autoEcho=false) {
-		$xs="";
-		$xe="";
-		$xt="";
+		$xs=[];
+		$xe=[];
+		$xt=0;
 		$tots=count($this->taskToRun);
 		foreach ($this->taskToRun as $task) {
 			$tParam=unserialize($task['script_params']);
 			$tParam['appsite']=$task['site'];
-            $result = $this->execute_script($task['scriptpath'], $task['method'], $tParam);
-            if($result === true) {
-				$xs.="{$task['title']}({$task['id']}),";
+			$result = $this->execute_script($task['scriptpath'], $task['method'], $tParam);
+			if($result === true) {
+				$xt++;
+				$xs[]="{$task['title']}({$task['id']})";
 				$this->mark_complete($task);
-                if($autoEcho) echo "Task id {$task['id']} complete.<br>";
-            } else {
-				$xe.="{$task['title']}({$task['id']}),";
-                if($autoEcho) echo "Task id {$task['id']} not complete.<br>";
-            }
-        }
-        if($tots>0) {
-			$sMsg="PCron Tasks [{$xs}]/[{$xe}] Of $tots Tasks Were Completed";
-			if(function_exists("log_SystemEvent")) log_SystemEvent($sMsg,"PCRON",3,"autosys");
+				if($autoEcho) println("Task id {$task['id']} complete.");
+			} else {
+				$xe[]="{$task['title']}({$task['id']})";
+				if($autoEcho) println("Task id {$task['id']} not complete.");
+			}
+		}
+		if($tots>0) {
+			$sMsg="PCron Tasks $xt/$tots Were Run";
+			
+			if($xt<$tots) {
+				_log($sMsg,"pcron",LogiksLogger::LOG_WARNING,["success"=>$xs,"error"=>$xe]);
+			} else {
+				_log($sMsg,"pcron",LogiksLogger::LOG_NOTICE,["success"=>$xs,"error"=>$xe]);
+			}
+			
 			if($autoEcho) echo "$sMsg.<br/>";
 			return $sMsg;
+		} else {
+			return "No PCron jobs schedulled.";
 		}
-    }
-    public function runTaskById($taskId,$autoEcho=false) {
+	}
+	
+	public function runTaskById($taskId,$autoEcho=false) {
 		$tbl=_dbTable("system_cronjobs",true);
 
 		$data=_db(true)->_selectQ($tbl,"id,title,scriptpath,script_params,method,schedule,last_completed,run_only_once,task_md5_hash")->
@@ -52,11 +64,15 @@ class PCronQueue {
 		$this->taskToRun=$out;
 		return $this->run($autoEcho);
 	}
-	private function checkTasks() {
-		$tbl=_dbTable("system_cronjobs",true);
+	private function checkTasks($taskId=null) {
+		$data=_db(true)->_selectQ(_dbTable("system_cronjobs",true),
+						"id,guid,site,title,scriptpath,script_params,method,schedule,last_completed,run_only_once,task_md5_hash",
+					 ["retired"=>'false',"blocked"=>'false'])->_where("now()-last_completed>schedule");
 		
-		$data=_db(true)->_selectQ($tbl,"id,title,scriptpath,script_params,method,schedule,last_completed,run_only_once,task_md5_hash")->
-				_where(["id"=>$taskId,"retired"=>'false',"blocked"=>'false'])->_where("now()-last_completed>schedule")->_get();
+		if($taskId!=null) {
+			$data=$data->_where(["id"=>$taskId]);
+		}
+		$data=$data->_get();
 
 		$out = array();
 		foreach ($data as $key => $row) {
@@ -66,7 +82,8 @@ class PCronQueue {
 		return $out;
 	}
 	
-    private function execute_script($script, $method, $param_array) {
+  private function execute_script($script, $method, $param_array) {
+		if($script==null || strlen($script)<=0) return false;
 		$type="local";
 		if(strstr($script,"://")) {
 			$type="remote";
@@ -134,8 +151,9 @@ class PCronQueue {
 				return -1;
 			}
 		}
-    }
-    private function mark_complete($task) {
+  }
+  
+	private function mark_complete($task) {
 		$task_id=$task["id"];
 		$tbl1=_dbTable("system_cronjobs",true);
 		$tbl2=_dbTable("log_pcron",true);
@@ -151,70 +169,74 @@ class PCronQueue {
 		$sql2=sprintf($sql2,$task["scriptpath"],$task["script_params"],$task["method"],$task["task_md5_hash"],$task["run_only_once"]);
 		//echo $sql2;
         
-        _dbQuery($sql1,true);
-        _dbQuery($sql2,true);
-    }
+		_dbQuery($sql1,true);
+	}
     
-    public static function get_tasks() {
+  public static function get_tasks($taskId=null) {
 		$tbl=_dbTable("system_cronjobs",true);
 
 		$data=_db(true)->_selectQ($tbl,"*")->
-				_where(["id"=>$taskId,"retired"=>'false',"blocked"=>'false'])->_where("now()-last_completed>schedule")->_get();
-
+				_where(["retired"=>'false',"blocked"=>'false'])->_where("now()-last_completed>schedule");
+		
+		if($taskId!=null) {
+			$data=$data->_where(["id"=>$taskId]);
+		}
+		
+		$data=$data->_GET();
+		
 		$out = array();
 		foreach ($data as $key => $row) {
 			$out[$row["id"]] = $row;
 		}
-        return $out;
-    }
+		return $out;
+	}
     
-     public static function get_all_tasks() {
+	public static function get_all_tasks() {
 		$tbl=_dbTable("system_cronjobs",true);
 
-        $data=_db(true)->_selectQ($tbl,"*")->
-				_where(["id"=>$taskId,"retired"=>'false',"blocked"=>'false'])->_where("now()-last_completed>schedule")->
-				_orderby("site,id")->_get();
+		$data=_db(true)->_selectQ($tbl,"*")->
+		_where(["retired"=>'false',"blocked"=>'false'])->_where("now()-last_completed>schedule")->
+		_orderby("site,id")->_get();
 
 		$out = array();
 		foreach ($data as $key => $row) {
 			$out[$row["id"]] = $row;
 		}
-        return $out;
-    }
+		return $out;
+	}
     
-    public static function createTask($title, $desc, $schedule, $script, Array $params=array(), $method = 'GET', $run_only_once="false",$site=null) {
+	public static function createTask($title, $desc, $schedule, $script, $params=[], $method = 'GET', $run_only_once="false",$site=null) {
 		/*if(PCronQueue::taskExists($script,$params)) {
 			return "Task Exists";
 		}*/
 		$tbl=_dbTable("system_cronjobs",true);
-        $serialized_params = serialize($params);
-        $date=date("Y-m-d");
-        $user="guest";
-        if(isset($_SESSION["SESS_USER_ID"])) $user=$_SESSION["SESS_USER_ID"];
-        
-        $task_md5_hash=md5($script.$serialized_params);
-        if($site==null || strlen($site)<=0) {
+		$serialized_params = serialize($params);
+		$date=date("Y-m-d");
+		$user="guest";
+		if(isset($_SESSION["SESS_USER_ID"])) $user=$_SESSION["SESS_USER_ID"];
+    
+		$task_md5_hash=md5($script.$serialized_params);
+		if($site==null || strlen($site)<=0) {
 			if(defined("SITENAME")) $site=SITENAME;
 			elseif(isset($_SESSION['LGKS_SESS_SITE'])) $site=$_SESSION['LGKS_SESS_SITE'];
 			elseif(isset($_SESSION['SESS_LOGIN_SITE'])) $site=$_SESSION['SESS_LOGIN_SITE'];
 			else $site="*";
 		}
 		
-		$sql="INSERT INTO $tbl ( id, title, scriptpath, description, script_params, method, schedule, last_completed, run_only_once, task_md5_hash, tsoc, site, createdBy, retired) VALUES ";
-		$sql.="(0, '$title', '$script', '$desc', '$serialized_params', '$method', $schedule, now(), '$run_only_once', '$task_md5_hash', now(), '$site', '$user', 'false')";
-		
-		_dbQuery($sql,true);
-		return "Task Created "._db()->insert_id();
+		$cols=explode(",","site, title, scriptpath, description, script_params, method, schedule, last_completed, run_only_once, task_md5_hash, retired, created_by, edited_by");
+		_db(true)->_insertQ($tbl,$cols,[SITENAME, $title, $script, $desc, $serialized_params, $method, $schedule, date("Y-m-d H:i:s"), $run_only_once, $task_md5_hash, 'false', $user,  $user])->_RUN();
+
+		return "Task Created "._db(true)->get_insertid();
 	}
 	
 	public static function taskExists($run_script, Array $params) {
-        $tbl=_dbTable("system_cronjobs",true);
-        $serialized_params = serialize($params);
-        
-        $sql = "SELECT count(*) FROM $tbl WHERE task_md5_hash ='".md5($run_script.$serialized_params)."';";
-        $r=_dbQuery($sql,true);
-        if($r) {
-			$row = _db(true)->fetchData($r);
+			$tbl=_dbTable("system_cronjobs",true);
+			$serialized_params = serialize($params);
+
+			$sql = "SELECT count(*) FROM $tbl WHERE task_md5_hash ='".md5($run_script.$serialized_params)."';";
+			$r=_dbQuery($sql,true);
+			if($r) {
+				$row = _db(true)->fetchData($r);
 			if($row["count(*)"]>0) {
 				return true;
 			} else {
@@ -223,6 +245,6 @@ class PCronQueue {
 		} else {
 			return false;
 		}        
-    }
+	}
 }
 ?>

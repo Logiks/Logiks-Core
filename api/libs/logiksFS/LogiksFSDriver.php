@@ -37,7 +37,7 @@
 
  	public function pwd() {trigger_logikserror("Current FS Driver Does Not Support This");}
  	public function ls($path=null) {trigger_logikserror("Current FS Driver Does Not Support This");}
- 	public function cd($path) {trigger_logikserror("Current FS Driver Does Not Support This");}
+ 	public function cd($path,$autoCreate=true) {trigger_logikserror("Current FS Driver Does Not Support This");}
  	public function mkdir($path) {trigger_logikserror("Current FS Driver Does Not Support This");}
  	public function rm($path) {trigger_logikserror("Current FS Driver Does Not Support This");}
  	public function rename($path,$newName) {trigger_logikserror("Current FS Driver Does Not Support This");}

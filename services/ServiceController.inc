@@ -28,6 +28,8 @@ class ServiceController {
 				"privilege_model"=>array(),
 				"access_control"=>getConfig("DEFAULT_CTRL_ACCESS"),
 				"cache"=>getConfig("DEFAULT_CTRL_CACHE"),
+				"debug"=>"false",
+				"autoformat"=>"false",
 			);
 	}
 
@@ -40,9 +42,25 @@ class ServiceController {
 
 		$this->params=$params;
 
-		if($this->params['cache']=="false") $this->params['cache']=0;
-		elseif($this->params['cache']=="true") $this->params['cache']=1;
-
+		if($this->params['cache']==="false" || $this->params['cache']===0) $this->params['cache']=0;
+		else $this->params['cache']=1;
+		
+		if($this->params['debug']==="false" || $this->params['debug']===0) $this->params['debug']=0;
+		else $this->params['debug']=1;
+		
+		if($this->params['autoformat']==="false" || $this->params['autoformat']===0) $this->params['autoformat']=0;
+		else $this->params['autoformat']=1;
+		
+		$_REQUEST['format']=$this->params['format'];
+		$_REQUEST['autoformat']=$this->params['autoformat'];
+		$_REQUEST['debug']=$this->params['debug'];
+		
+		if(!defined("SERVICE_DEBUG_MODE")) {
+			if($this->params['debug']) {
+				define("SERVICE_DEBUG_MODE",true);
+			}
+		}
+		
 		return true;
 	}
 

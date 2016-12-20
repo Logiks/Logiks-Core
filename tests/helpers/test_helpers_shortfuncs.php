@@ -39,8 +39,8 @@ class test_helpers_shortfuncs extends LogiksTestCase {
 	}
 	
 	public function test_date() {
-		$actual = _date('12/11/2015');
-		$this->assertEquals($actual,'2015/11/12');
+		$actual = _date('12-11-2015');
+		$this->assertEquals($actual,'12/11/2015');
 	}
 	
 	public function test_pDate() {

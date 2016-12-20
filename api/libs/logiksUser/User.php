@@ -7,7 +7,6 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-
 if(!function_exists("getUserID")) {
 	loadHelpers("pwdhash");
 
@@ -20,7 +19,8 @@ if(!function_exists("getUserID")) {
 		return $user;
 	}
 
-	function getUserAvatar($params) {
+	function getUserAvatar($params=null) {
+		if($params==null) $params=$_SESSION['SESS_USER_ID'];
 		if(is_array($params)) {
 			if(isset($params['avatar'])) {
 				if(strpos("#".$params['avatar'], "http://") || strpos("#".$params['avatar'], "https://")) {
@@ -58,6 +58,7 @@ if(!function_exists("getUserID")) {
 
 	function getUserInfo($userid=null) {
 		if($userid==null) $userid=$_SESSION['SESS_USER_ID'];
+		
 		if(isset($_SESSION["USERINFO"][$userid])) {
 			return $_SESSION["USERINFO"][$userid];
 		}
@@ -70,7 +71,10 @@ if(!function_exists("getUserID")) {
 		if($res) {
 			$data=_dbData($res,true);
 			_dbFree($res,true);
-			if(isset($data[0])) $data=$data[0];
+			if(isset($data[0])) {
+				$data=$data[0];
+				unset($data['pwd']);unset($data['pwd_salt']);
+			}
 		}
 		$data['avatarlink']=getUserAvatar($data);
 		$_SESSION["USERINFO"][$userid]=$data;
@@ -83,7 +87,7 @@ if(!function_exists("getUserID")) {
 	}
 
 	//Alter User Informations
-	function getDefaultParams($userID="",$pwd="",$privilegeID="",$accessID="") {
+	function getDefaultParams($userID="",$pwd="",$privilegeID=0,$accessID=0,$groupid=1) {
 		$hashSalt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
 		
 		$pwdAns=getPWDHash($pwd,$hashSalt);
@@ -96,8 +100,8 @@ if(!function_exists("getUserID")) {
 				"pwd_salt"=>$hashSalt,
 				"privilegeid"=>$privilegeID,
 				"accessid"=>$accessID,
-				"groupid"=>1,
-				"name"=>toTitle($userID),
+				"groupid"=>$groupid,
+				"name"=>toTitle(current(explode("@",$userID))),
 				"dob"=>"",
 				"gender"=>"male",
 				"email"=>"",
@@ -116,9 +120,11 @@ if(!function_exists("getUserID")) {
 				"refid"=>"",
 				"registerd_site"=>SITENAME,
 				"privacy"=>"protected",
-				"avatar_type"=>"photoid",
-				"avatar"=>"",
+				"avatar_type"=>"email",
+				"avatar"=>$userID,
+				"created_by"=>$userID,
 				"created_on"=>date("Y-m-d H:i:s"),
+				"edited_by"=>$userID,
 				"edited_on"=>date("Y-m-d H:i:s"),
 			);
 	
@@ -199,11 +205,14 @@ if(!function_exists("getUserID")) {
 	}
 
 	function updateUser($attrs=array(),$userID=null,$site=SITENAME) {
-		if(!isset($_SESSION['SESS_PRIVILEGE_ID']) || $_SESSION['SESS_PRIVILEGE_ID']>ROLE_PRIME) {
+		if(!isset($_SESSION['SESS_PRIVILEGE_ID'])) {
+			return array("error"=>"Only logged in users can update user database.","field"=>$vx);
+		}
+		if($_SESSION['SESS_PRIVILEGE_ID']>ROLE_PRIME) {
 			$site=SITENAME;
 			$userID=$_SESSION['SESS_USER_ID'];
 		}
-		if($userID==null && isset($_SESSION['SESS_USER_ID'])) {
+		if($userID==null) {
 			$userID=$_SESSION['SESS_USER_ID'];
 		}
 
@@ -268,13 +277,14 @@ if(!function_exists("getUserID")) {
 	}
 
 	function updatePassword($pwd,$userID=null,$site=SITENAME) {
-		
-		if(!isset($_SESSION['SESS_PRIVILEGE_ID']) || $_SESSION['SESS_PRIVILEGE_ID']>ROLE_PRIME) {
+		if(!isset($_SESSION['SESS_PRIVILEGE_ID'])) {
+			return array("error"=>"Only logged in users can update user password.","field"=>$vx);
+		}
+		if($_SESSION['SESS_PRIVILEGE_ID']>ROLE_PRIME) {
 			$site=SITENAME;
 			$userID=$_SESSION['SESS_USER_ID'];
 		}
-	
-		if($userID==null && isset($_SESSION['SESS_USER_ID'])) {
+		if($userID==null) {
 			$userID=$_SESSION['SESS_USER_ID'];
 		}
 
@@ -289,7 +299,7 @@ if(!function_exists("getUserID")) {
 					"pwd_salt"=>$hashSalt,
 					"edited_on"=>date("Y-m-d H:i:s"),
 				);
-			$sql=_db(true)->_updateQ(_dbTable("users",true),$dataUser,array("userid"=>"$userID"));
+			$sql=_db(true)->_updateQ(_dbTable("users",true),$dataUser,array("userid"=>$userID));
 			
 			$res=_dbQuery($sql,true);
 			if($res) {

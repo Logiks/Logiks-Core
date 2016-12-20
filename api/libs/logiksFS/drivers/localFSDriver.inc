@@ -18,9 +18,17 @@
 
  	public function __construct($key,$params=null) {
  		parent::__construct($key,$params);
-
- 		$this->BASE_PATH=getcwd()."/";
- 		$this->CURRENT_PATH=getcwd()."/";
+		
+		if($params['basedir']==null || strlen($params['basedir'])<=1) {
+			if(defined("SERVICE_ROOT")) {
+				$params['basedir']=dirname(getcwd())."/";
+			} else {
+				$params['basedir']=getcwd()."/";
+			}
+		}
+		
+ 		$this->BASE_PATH=$params['basedir'];
+ 		$this->CURRENT_PATH=$this->BASE_PATH;
  	}
  	
  	public function __destruct() {
@@ -41,16 +49,21 @@
  		else
  			return scandir($path);
  	}
- 	public function cd($path) {
+ 	public function cd($path,$autoCreate=false) {
  		$newPath=str_replace("//", "/", $this->CURRENT_PATH.$path."/");
  		if(is_dir($newPath)) {
  			$this->CURRENT_PATH=$newPath;
- 			return true;
- 		} elseif(is_dir($path)) {
- 			$this->CURRENT_PATH=$path;
- 			return true;
+ 			return 1;
+ 		} elseif($autoCreate) {
+			mkdir($newPath,0777,true);
+			if(is_dir($newPath)) {
+				$this->CURRENT_PATH=$newPath;
+				return 1;
+			} else {
+				return 0;
+			}
  		} else {
-	 		return false;
+	 		return 0;
  		}
  	}
  	public function mkdir($fname,$mode=0777) {

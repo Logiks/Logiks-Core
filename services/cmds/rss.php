@@ -57,6 +57,7 @@ if(isset($_REQUEST['rss'])) {
 	}
 	exit();
 }
+loadHelpers("rssgen");
 RSSGen::printRSSHeader();
 echo RSSGen::generateErrorRSS("Wrong Command Structure","Please check the service command for errors.");
 exit();

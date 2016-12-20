@@ -22,10 +22,9 @@ function changePWD() {
 	$userid=$_SESSION["SESS_USER_ID"];
 	$tbl=_dbTable("users",true);
 	
-	$sql1="SELECT pwd FROM $tbl WHERE userid='{$userid}'";
-	$r=_dbQuery($sql1,true);
-	$ra=_dbData($r);
-	if(!isset($ra[0])) {
+	$data=_db(true)->_selectQ($tbl,"pwd",["userid"=>$userid])->_GET();
+	
+	if(count($data)<=0) {
 		$q=array(
 				"code"=>"1",
 				"msg"=>"Error In Changing Password (1).",
@@ -33,7 +32,8 @@ function changePWD() {
 		echo json_encode($q);
 		exit();
 	}
-	$ra=$ra[0];
+	
+	$ra=$data[0];
 	$_POST["old"]=getPWDHash($_POST["old"]); 
 	$_POST["new"]=getPWDHash($_POST["new"]);
 	

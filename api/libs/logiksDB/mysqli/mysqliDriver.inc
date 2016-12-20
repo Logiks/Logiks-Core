@@ -53,7 +53,9 @@ class mysqliDriver extends AbstractDBDriver {
 		$qArr=strtoupper($qArr[0]);
 		
 		if(!$this->checkQuery($qArr)) {
-			trigger_logikserror("Database ERROR, Restricted Query [{$qArr}] for ".$this->instanceName,E_USER_WARNING);
+			_log("Database is readonly","console");
+			//trigger_logikserror("Database ERROR, Restricted Query [{$qArr}] for ".$this->keyName,E_USER_WARNING);
+			return false;
 		}
 		
 		$r=mysqli_query($this->link, $q);

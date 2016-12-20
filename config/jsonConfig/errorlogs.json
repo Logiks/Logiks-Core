@@ -1,139 +1,165 @@
 {
-    "GLOBALS": {
-        "handler": {
-            "console":{
-                "Monolog\\Handler\\BrowserConsoleHandler":{
-                    "params1":null,
-                    "params2":null,
-                    "level":"NOTICE"
-                }
-            },
-            "activity": {
-                "Monolog\\Handler\\RotatingFileHandler":{
-                    "params1":"#logFilePath#/app.log",
-                    "params2":30,
-                    "level":"NOTICE",
-                    "formatter":{
-                        "class":"Monolog\\Formatter\\LineFormatter",
-                        "params1":"#LOG_FORMAT#\n",
-                        "params2":"#LOG_DATE# #LOG_TIME#"
-                    }
-                }
-            },
-            "error": {
-                "Monolog\\Handler\\RotatingFileHandler":{
-                    "params1":"#logFilePath#/data.log",
-                    "params2":30,
-                    "level":"NOTICE",
-                    "formatter":{
-                        "class":"Monolog\\Formatter\\LineFormatter",
-                        "params1":"#LOG_FORMAT#\n",
-                        "params2":"#LOG_DATE# #LOG_TIME#"
-                    }
-                }
-            },
-            "login": {
-                "Monolog\\Handler\\RotatingFileHandler":{
-                    "params1":"#logFilePath#/app.log",
-                    "params2":30,
-                    "level":"NOTICE",
-                    "formatter":{
-                        "class":"Monolog\\Formatter\\LineFormatter",
-                        "params1":"#LOG_FORMAT#\n",
-                        "params2":"#LOG_DATE# #LOG_TIME#"
-                    }
-                }
-            },
-            "pcron": {
-                "Monolog\\Handler\\RotatingFileHandler":{
-                    "params1":"#logFilePath#/app.log",
-                    "params2":30,
-                    "level":"NOTICE",
-                    "formatter":{
-                        "class":"Monolog\\Formatter\\LineFormatter",
-                        "params1":"#LOG_FORMAT#\n",
-                        "params2":"#LOG_DATE# #LOG_TIME#"
-                    }
-                }
-            },
-            "requests": {
-                "Monolog\\Handler\\RotatingFileHandler":{
-                    "params1":"#logFilePath#/app.log",
-                    "params2":30,
-                    "level":"NOTICE",
-                    "formatter":{
-                        "class":"Monolog\\Formatter\\LineFormatter",
-                        "params1":"#LOG_FORMAT#\n",
-                        "params2":"#LOG_DATE# #LOG_TIME#"
-                    }
-                }
-            },
-            "services": {
-                "Monolog\\Handler\\RotatingFileHandler":{
-                    "params1":"#logFilePath#/app.log",
-                    "params2":30,
-                    "level":"NOTICE",
-                    "formatter":{
-                        "class":"Monolog\\Formatter\\LineFormatter",
-                        "params1":"#LOG_FORMAT#\n",
-                        "params2":"#LOG_DATE# #LOG_TIME#"
-                    }
-                }
-            },
-            "system": {
-                "Monolog\\Handler\\RotatingFileHandler":{
-                    "params1":"#logFilePath#/app.log",
-                    "params2":30,
-                    "level":"NOTICE",
-                    "formatter":{
-                        "class":"Monolog\\Formatter\\LineFormatter",
-                        "params1":"#LOG_FORMAT#\n",
-                        "params2":"#LOG_DATE# #LOG_TIME#"
-                    }
-                }
-            },
-            "sql": {
-                "Monolog\\Handler\\RotatingFileHandler":{
-                    "params1":"#logFilePath#/app.log",
-                    "params2":30,
-                    "level":"NOTICE",
-                    "formatter":{
-                        "class":"Monolog\\Formatter\\LineFormatter",
-                        "params1":"#LOG_FORMAT#\n",
-                        "params2":"#LOG_DATE# #LOG_TIME#"
-                    }
-                }
-            },
-            "blackhole":{
-                "Monolog\\Handler\\NullHandler":{
-                }
-            }
-        },
-        "logger": {
-            "error": {
-                "handler": ["error","console"]
-            },
-            "console":{
-                "handler": "console"
-            },
-            "system":{
-                "handler": ["system"]
-            },
-            "login":{
-                "handler": "login"
-            },
-            "activity":{
-                "handler": ["activity"]
-            },
-            "pcron":{
-                "handler": "pcron"
-            },
-            "requests":{
-                "handler": "requests"
-            },
-            "services":{
-                "handler": "services"
-            }
-        }
-    }
+	"GLOBALS": {
+		"handler": {
+			"console": {
+				"Monolog\\Handler\\BrowserConsoleHandler": {
+					"params1": null,
+					"params2": null,
+					"level": "NOTICE"
+				}
+			},
+			"activity": {
+				"Monolog\\Handler\\RotatingFileHandler": {
+					"params1": "#logFilePath#/app.log",
+					"params2": 30,
+					"level": "NOTICE",
+					"formatter": {
+						"class": "Monolog\\Formatter\\LineFormatter",
+						"params1": "#LOG_FORMAT#\n",
+						"params2": "#LOG_DATE# #LOG_TIME#"
+					}
+				}
+			},
+			"error": {
+				"Monolog\\Handler\\RotatingFileHandler": {
+					"params1": "#logFilePath#/data.log",
+					"params2": 30,
+					"level": "NOTICE",
+					"formatter": {
+						"class": "Monolog\\Formatter\\LineFormatter",
+						"params1": "#LOG_FORMAT#\n",
+						"params2": "#LOG_DATE# #LOG_TIME#"
+					}
+				}
+			},
+			"login": {
+				"Monolog\\Handler\\RotatingFileHandler": {
+					"params1": "#logFilePath#/app.log",
+					"params2": 30,
+					"level": "NOTICE",
+					"formatter": {
+						"class": "Monolog\\Formatter\\LineFormatter",
+						"params1": "#LOG_FORMAT#\n",
+						"params2": "#LOG_DATE# #LOG_TIME#"
+					}
+				}
+			},
+			"pcron": {
+				"Monolog\\Handler\\RotatingFileHandler": {
+					"params1": "#logFilePath#/app.log",
+					"params2": 30,
+					"level": "NOTICE",
+					"formatter": {
+						"class": "Monolog\\Formatter\\LineFormatter",
+						"params1": "#LOG_FORMAT#\n",
+						"params2": "#LOG_DATE# #LOG_TIME#"
+					}
+				}
+			},
+			"requests": {
+				"Monolog\\Handler\\RotatingFileHandler": {
+					"params1": "#logFilePath#/app.log",
+					"params2": 30,
+					"level": "NOTICE",
+					"formatter": {
+						"class": "Monolog\\Formatter\\LineFormatter",
+						"params1": "#LOG_FORMAT#\n",
+						"params2": "#LOG_DATE# #LOG_TIME#"
+					}
+				}
+			},
+			"services": {
+				"Monolog\\Handler\\RotatingFileHandler": {
+					"params1": "#logFilePath#/app.log",
+					"params2": 30,
+					"level": "NOTICE",
+					"formatter": {
+						"class": "Monolog\\Formatter\\LineFormatter",
+						"params1": "#LOG_FORMAT#\n",
+						"params2": "#LOG_DATE# #LOG_TIME#"
+					}
+				}
+			},
+			"system": {
+				"Monolog\\Handler\\RotatingFileHandler": {
+					"params1": "#logFilePath#/app.log",
+					"params2": 30,
+					"level": "NOTICE",
+					"formatter": {
+						"class": "Monolog\\Formatter\\LineFormatter",
+						"params1": "#LOG_FORMAT#\n",
+						"params2": "#LOG_DATE# #LOG_TIME#"
+					}
+				}
+			},
+			"sql": {
+				"Monolog\\Handler\\RotatingFileHandler": {
+					"params1": "#logFilePath#/app.log",
+					"params2": 30,
+					"level": "NOTICE",
+					"formatter": {
+						"class": "Monolog\\Formatter\\LineFormatter",
+						"params1": "#LOG_FORMAT#\n",
+						"params2": "#LOG_DATE# #LOG_TIME#"
+					}
+				}
+			},
+			"files": {
+				"Monolog\\Handler\\RotatingFileHandler": {
+					"params1": "#logFilePath#/app.log",
+					"params2": 30,
+					"level": "NOTICE",
+					"formatter": {
+						"class": "Monolog\\Formatter\\LineFormatter",
+						"params1": "#LOG_FORMAT#\n",
+						"params2": "#LOG_DATE# #LOG_TIME#"
+					}
+				}
+			},
+			"blackhole": {
+				"Monolog\\Handler\\NullHandler": {}
+			}
+		},
+		"logger": {
+			"system": {
+				"handler": ["system"]
+			},
+			"activity": {
+				"handler": ["activity"]
+			},
+			"message": {
+				"handler": ["activity"]
+			},
+			"login": {
+				"handler": ["login"]
+			},
+			"requests": {
+				"handler": ["requests"]
+			},
+			"services": {
+				"handler": ["services"]
+			},
+			"pcron": {
+				"handler": ["pcron"]
+			},
+			"sql": {
+				"handler": ["sql"]
+			},
+			"files": {
+				"handler": ["files"]
+			},
+			"console": {
+				"handler": ["console"]
+			},
+			"error": {
+				"handler": ["error", "console"]
+			},
+			"warn": {
+				"handler": ["console"]
+			},
+			"info": {
+				"handler": ["console"]
+			}
+		}
+	}
 }

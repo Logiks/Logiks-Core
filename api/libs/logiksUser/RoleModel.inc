@@ -50,6 +50,8 @@ class RoleModel {
 	}
 
 	public static function checkRole($module,$activity,$actionType="ACCESS") {
+		if(!isset($_SESSION['SESS_GUID'])) $_SESSION['SESS_GUID']="guest";
+		
 		$actionType=strtoupper($actionType);
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]<=ROLE_PRIME) {
 			return true;
@@ -136,7 +138,8 @@ class RoleModel {
 								"allow"=>(getConfig("ROLEMODEL_DEFAULT_DENY")?"false":"true"),
 								"remarks"=>$privilegename,
 								"role_type"=>"auto",
-								"creator"=>$userid
+								"created_by"=>$userid,
+								"edited_by"=>$userid
 							];
 					}
 				} else {
@@ -151,7 +154,8 @@ class RoleModel {
 							"allow"=>(getConfig("ROLEMODEL_DEFAULT_DENY")?"false":"true"),
 							"remarks"=>$privilegename,
 							"role_type"=>"auto",
-							"creator"=>$userid
+							"created_by"=>$userid,
+							"edited_by"=>$userid
 						];
 				}
 			}
@@ -167,7 +171,8 @@ class RoleModel {
 					"allow"=>(getConfig("ROLEMODEL_DEFAULT_DENY")?"false":"true"),
 					"remarks"=>"guest",
 					"role_type"=>"auto",
-					"creator"=>$userid
+					"created_by"=>$userid,
+					"edited_by"=>$userid
 				];
 		return _db(true)->_insert_batchQ($roleTbl,$finalData)->_run();
 	}

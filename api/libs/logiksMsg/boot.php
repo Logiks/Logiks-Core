@@ -13,6 +13,10 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!function_exists("_message")) {
 	include_once dirname(__FILE__)."/LogiksMSGDriver.php";
 	
+	function _msg($msgKey="app",$params=null) {
+		return _message($msgKey,$params);
+	}
+	
 	function _message($msgKey="app",$params=null) {
 		//$msd=LogiksMsgDriver::findInstance($msgKey);
 		//if($msd) return $msd;

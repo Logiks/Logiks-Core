@@ -2,7 +2,6 @@ Logiks-Core :: Framework
 ------------------------
 
 [![GitHub version](https://badge.fury.io/gh/Logiks%2FLogiks-Core.svg)](https://badge.fury.io/gh/Logiks%2FLogiks-Core)
-[![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg)]()
 [![Build Status](https://travis-ci.org/Logiks/Logiks-Core.svg)](https://travis-ci.org/Logiks/Logiks-Core)
 [![codecov](https://codecov.io/gh/Logiks/Logiks-Core/branch/master/graph/badge.svg)](https://codecov.io/gh/Logiks/Logiks-Core)
 
@@ -54,5 +53,4 @@ These are plain source code of/part of the complete working project.
 + For a complete api documentation  visit <http://apidocs.openlogiks.org/>
 + For a complete working downloadable package please visit <http://openlogiks.org/downloads/>
 + Use Logiks Play to learn and explore Logiks, prototype parts of your app without installing anything <http://play.openlogiks.net>
-
 

@@ -43,27 +43,27 @@ if(isset($_REQUEST['file'])) {
 		} else {
 			$bpath="";
 		}
-		$sql="SELECT doclink FROM $dbtbl WHERE ID=".$_REQUEST['file'];
 		
-		$result=_db()->executeQuery($sql);
-		if($result) {
-			if(_db()->recordCount($result)>0) {
-				$record=_db()->fetchData($result);
-				$doc=$record["doclink"];
-				$doc=str_replace("./","",$doc);
-				$doc=$bpath.$doc;
-				$doc=findMedia($doc);				
-				if(is_readable($doc)) {
-					printHeader($doc,$type);
-					printVFile($doc);
-					exit();
-				} else {
-					displayLocalImage("images/forbidden.png","view");
-					exit();
-				}				
-			}
+		$data=_db()->_selectQ($dbtbl,"doclink",["id"=>$_REQUEST['file']])->_GET();
+		
+		if(count($data)>0) {
+			$record=$data[0];
+			
+			$doc=$record["doclink"];
+			$doc=str_replace("./","",$doc);
+			$doc=$bpath.$doc;
+			$doc=findMedia($doc);				
+			if(is_readable($doc)) {
+				printHeader($doc,$type);
+				printVFile($doc);
+				exit();
+			} else {
+				displayLocalImage("images/forbidden.png","view");
+				exit();
+			}		
+		} else {
+			displayLocalImage("images/warning.png","view");
 		}
-		displayLocalImage("images/warning.png","view");
 	} elseif(strtolower($_REQUEST['loc'])=="dbfile") {
 		$dbtbl="";
 		if(isset($_REQUEST['dbtbl'])) {
@@ -71,19 +71,18 @@ if(isset($_REQUEST['file'])) {
 		} else {
 			$dbtbl=_dbTable("files");
 		}
-		$sql="SELECT file_name,file_type,file_data,file_size FROM $dbtbl WHERE ID=".$_REQUEST['file'];
-		$result=_db()->executeQuery($sql);
-		if($result) {
-			if(_db()->recordCount($result)>0) {				
-				$record=_db()->fetchData($result);
-				$darr=explode(".",$record["file_name"]);
-				$ext=$darr[sizeOf($darr)-1];
-				printHeader($record["file_name"],$type);
-				echo $record["file_data"];
-				exit();
-			}
+		$data=_db()->_selectQ($dbtbl,"file_name,file_type,file_data,file_size",["id"=>$_REQUEST['file']])->_GET();
+		
+		if(count($data)>0) {
+			$record=$data[0];
+			
+			$darr=explode(".",$record["file_name"]);
+			$ext=$darr[sizeOf($darr)-1];
+			printHeader($record["file_name"],$type);
+			echo $record["file_data"];
+		} else {
+			displayLocalImage("images/warning.png","view");
 		}
-		displayLocalImage("images/warning.png","view");
 	} else {
 		displayLocalImage("images/forbidden.png","view");
 	}

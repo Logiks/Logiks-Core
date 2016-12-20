@@ -73,5 +73,37 @@ if(!function_exists("checkUserRoles")) {
 		setSettings($configKey,json_encode($configData));
 		return $_SESSION['USERCONFIG'][$configKey];
 	}
+	
+	function updateUserMetas() {
+		//SELECT count(*) as cnt FROM `lgks_users` WHERE guid NOT IN (SELECT guid FROM lgks_users_guid)
+		$data=_db(true)->_selectQ(_dbTable("users",true),"count(*) as cnt")->_whereRAW("guid NOT IN (SELECT guid FROM lgks_users_guid)")->_GET();
+		if($data[0]['cnt']>0) {
+			$sql=[
+				"INSERT INTO lgks_users_guid (guid,org_name,org_email) (SELECT guid, organization_name, organization_email FROM lgks_users WHERE guid NOT IN (SELECT guid FROM lgks_users_guid) GROUP BY guid)",
+				//"UPDATE lgks_users_guid,lgks_users SET lgks_users_guid.guid=lgks_users.guid, lgks_users_guid.org_name=lgks_users.organization_name, lgks_users_guid.org_email=lgks_users.organization_email WHERE lgks_users.guid=lgks_users_guid.guid",
+			];
+			foreach($sql as $q) {
+				_dbQuery($q,true);
+			}
+		}
+		
+		//$data=_db(true)->_selectQ(_dbTable("users_group",true),"count(*) as cnt")->_whereRAW("guid NOT IN (SELECT guid FROM lgks_users_guid)")->_GET();
+		//if($data[0]['cnt']>0) {
+			//INSERT INTO lgks_users_group (guid,group_name,group_manager) (SELECT guid,'hq')
+		//}
+		
+		if(isset($_ENV['FORMSUBMIT']) && isset($_ENV['FORMSUBMIT']['data']) && isset($_ENV['FORMSUBMIT']['where'])) {
+			$data=_db(true)->_selectQ(_dbTable("users",true),"*",$_ENV['FORMSUBMIT']['where'])->_GET();
+			if(count($data)>0) {
+				if($data[0]['guid']!="global") {
+					$orgData=[
+							"org_name"=>$data[0]['organization_name'],
+							"org_email"=>$data[0]['organization_email'],
+						];
+					_db(true)->_updateQ(_dbTable("users_guid",true),$orgData,["guid"=>$data[0]['guid']])->_RUN();
+				}
+			}
+		}
+	}
 }
 ?>

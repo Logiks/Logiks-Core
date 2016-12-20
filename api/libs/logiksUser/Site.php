@@ -88,7 +88,7 @@ if(!function_exists("getUserList")) {
 
 	function checkUserID($userid,$site=SITENAME) {
 		if($userid=="root") return true;
-		if(!isset($_SESSION['SESS_PRIVILEGE_ID']) || $_SESSION['SESS_PRIVILEGE_ID']>2) {
+		if(!isset($_SESSION['SESS_PRIVILEGE_ID']) || $_SESSION['SESS_PRIVILEGE_ID']>ROLE_PRIME) {
 			$site=SITENAME;
 		}
 

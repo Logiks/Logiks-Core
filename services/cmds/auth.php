@@ -312,7 +312,8 @@ function startNewSession($userid, $domain, $params=array()) {
 				"session_data"=>json_encode($_SESSION),
 				"global_data"=>json_encode($GLOBALS),
 				"client_ip"=>$_SERVER['REMOTE_ADDR'],
-				"creator"=>$_SESSION['SESS_USER_ID'],
+				"created_by"=>$_SESSION['SESS_USER_ID'],
+				"edited_by"=>$_SESSION['SESS_USER_ID'],
 			])->_RUN();
 	}
 }

@@ -63,12 +63,10 @@ if(!function_exists("deleteAttachments")) {
 			_dbQuery($deleteQuery,$sysDb1);
 			$cnt=_db($sysDb1)->affected_rows();
 			if($cnt<=0) {
-				$sql="SELECT count(*) as cnt FROM $storePath WHERE id='{$_POST['path']}'";
-				$res=_dbQuery($sql,$sysDb1);
-				if($res) {
-					$des=_dbData($res);
-					_dbFree($res,$sysDb1);
-					if(isset($des[0]['cnt']) && $des[0]['cnt']>0) {
+				$dxData=_db()->_selectQ($storePath,"count(*) as cnt",["id"=>$_POST['path']])->_GET();
+				
+				if(count($dxData)>0) {
+					if(isset($dxData[0]['cnt']) && $dxData[0]['cnt']>0) {
 						$error["Error:DataDelete"]="Source DBTable Failed To Update.";
 					}
 				} else {

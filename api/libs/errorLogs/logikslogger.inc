@@ -32,7 +32,7 @@ class LogiksLogger {
   private $logBook=[];
 
   //Reiniate MonoLog Logger constants Log Levels for being accessible through framework
-  const LOG_WARN=Logger::DEBUG;//100
+  const LOG_DEBUG=Logger::DEBUG;//100
   const LOG_INFO=Logger::INFO;//200
   const LOG_NOTICE=Logger::NOTICE;//250
   const LOG_WARNING=Logger::WARNING;//300

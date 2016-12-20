@@ -4,33 +4,36 @@
 
 CREATE TABLE `access` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
   `name` varchar(255) DEFAULT NULL,
   `sites` varchar(500) DEFAULT NULL,
   `blocked` enum('true','false') DEFAULT 'false',
-  `creator` varchar(155) NOT NULL,
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `edited_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
 CREATE TABLE `privileges` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `guid` varchar(64) NOT NULL DEFAULT 'global',
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
   `site` varchar(150) DEFAULT NULL,
   `name` varchar(35) DEFAULT NULL,
   `remarks` varchar(255) DEFAULT NULL,
   `blocked` enum('true','false') DEFAULT 'false',
-  `creator` varchar(155) NOT NULL,
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `edited_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
 CREATE TABLE `rolemodel` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `guid` varchar(64) NOT NULL DEFAULT 'global',
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
   `site` varchar(150) DEFAULT NULL,
   `category` varchar(100) NOT NULL DEFAULT 'SYSTEM',
   `module` varchar(100) NOT NULL,
@@ -39,16 +42,17 @@ CREATE TABLE `rolemodel` (
   `remarks` varchar(200) DEFAULT NULL,
   `allow` enum('true','false') NOT NULL DEFAULT 'false',
   `role_type` varchar(55) NOT NULL DEFAULT 'auto',
-  `creator` varchar(155) NOT NULL,
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `edited_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
 CREATE TABLE `cache_sessions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `guid` varchar(150) NOT NULL,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
   `userid` varchar(155) NOT NULL,
   `site` varchar(150) NOT NULL,
   `device` varchar(100) NOT NULL,
@@ -57,15 +61,16 @@ CREATE TABLE `cache_sessions` (
   `auth_key` varchar(100) NOT NULL,
   `session_data` longblob,
   `global_data` longblob,
-  `creator` varchar(150) NOT NULL,
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `edited_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE `security_apikeys` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `guid` varchar(100) NOT NULL,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
   `api_keys` varchar(150) NOT NULL,
   `api_secret` varchar(250) NOT NULL,
   `api_roles` text,
@@ -82,45 +87,39 @@ CREATE TABLE `security_apikeys` (
 
 CREATE TABLE `security_iplist` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
   `ipaddress` varchar(30) NOT NULL,
   `allow_type` enum('blacklist','whitelist') DEFAULT 'blacklist',
   `site` varchar(150) NOT NULL DEFAULT '*',
   `active` enum('true','false') DEFAULT 'true',
-  `creator` varchar(155) NOT NULL,
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `edited_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
 CREATE TABLE `settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `guid` varchar(64) NOT NULL DEFAULT 'global',
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
   `site` varchar(150) DEFAULT '*',
   `userid` varchar(155) NOT NULL,
   `name` varchar(155) NOT NULL,
   `settings` longblob,
   `scope` varchar(15) NOT NULL DEFAULT 'general',
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `edited_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE `system_queue` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `guid` varchar(64) NOT NULL DEFAULT 'global',
-  `site` varchar(150) NOT NULL,
-  `queue_key` varchar(255) NOT NULL,
-  `queue_data` longblob,
-  `expires` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `creator` varchar(150) NOT NULL,
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `edited_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 
 CREATE TABLE `system_cronjobs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
   `site` varchar(150) NOT NULL,
   `title` varchar(100) NOT NULL,
   `scriptpath` varchar(255) NOT NULL,
@@ -133,16 +132,17 @@ CREATE TABLE `system_cronjobs` (
   `task_md5_hash` varchar(32) NOT NULL,
   `retired` enum('true','false') DEFAULT 'false',
   `blocked` enum('true','false') DEFAULT 'false',
-  `creator` varchar(155) NOT NULL,
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `edited_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `guid` varchar(64) NOT NULL DEFAULT 'global',
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
   `userid` varchar(150) NOT NULL,
   `pwd` varchar(128) NOT NULL,
   `pwd_salt` varchar(128) DEFAULT NULL,
@@ -176,16 +176,17 @@ CREATE TABLE `users` (
   `refid` varchar(30) DEFAULT NULL,
   `security_policy` varchar(25) NOT NULL DEFAULT 'open',
   `last_login` datetime DEFAULT NULL,
-  `creator` varchar(155) NOT NULL,
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `edited_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid` (`userid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE `users_group` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `guid` varchar(100) NOT NULL,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
   `group_name` varchar(150) NOT NULL,
   `group_manager` varchar(155) DEFAULT NULL,
   `group_descs` varchar(255) DEFAULT NULL,
@@ -198,7 +199,7 @@ CREATE TABLE `users_group` (
 
 CREATE TABLE `users_guid` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `guid` varchar(64) NOT NULL DEFAULT 'global',
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
   `org_name` varchar(255) DEFAULT NULL,
   `org_email` varchar(255) DEFAULT NULL,
   `org_mobile` varchar(20) DEFAULT NULL,
@@ -212,9 +213,37 @@ CREATE TABLE `users_guid` (
   `account_expires` date DEFAULT NULL,
   `account_planid` varchar(155) DEFAULT NULL,
   `remarks` varchar(250) DEFAULT NULL,
-  `creator` varchar(155) NOT NULL,
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `edited_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `guid` (`guid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE `links` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
+  `menuid` varchar(25) DEFAULT NULL,
+  `title` varchar(150) DEFAULT NULL,
+  `mode` varchar(150) DEFAULT '*',
+  `category` varchar(255) DEFAULT NULL,
+  `menugroup` varchar(150) DEFAULT NULL,
+  `class` varchar(150) DEFAULT NULL,
+  `target` varchar(55) DEFAULT NULL,
+  `link` varchar(255) DEFAULT '#',
+  `iconpath` varchar(255) DEFAULT NULL,
+  `tips` varchar(255) DEFAULT NULL,
+  `site` varchar(150) DEFAULT '*',
+  `device` varchar(20) DEFAULT '*',
+  `privilege` varchar(1000) DEFAULT '*',
+  `weight` int(11) DEFAULT '10',
+  `onmenu` enum('true','false') DEFAULT 'true',
+  `blocked` enum('true','false') DEFAULT 'false',
+  `rules` text,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

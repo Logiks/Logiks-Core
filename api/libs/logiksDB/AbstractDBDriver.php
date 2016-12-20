@@ -28,11 +28,12 @@
 		if(is_array($params['block'])) $this->blockedStmnts=$params['block'];
 		else $this->blockedStmnts=explode(",", $params['block']); 
  		
- 		if(isset($params['readOnly'])) $this->readOnly=$params['readonly'];
+ 		if(isset($params['readonly'])) $this->readOnly=$params['readonly'];
  		if(isset($params['allowSQL'])) $this->allowSQL=$params['allowSQL'];
+		elseif(isset($params['allowsql'])) $this->allowSQL=$params['allowsql'];
 
  		unset($params['block']); unset($params['readonly']);
- 		unset($params['instance']); unset($params['allowSQL']);
+ 		unset($params['instance']); unset($params['allowSQL']); unset($params['allowsql']);
 
  		$this->dbParams=$params;
 		$this->keyName=$keyName;

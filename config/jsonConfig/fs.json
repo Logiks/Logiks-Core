@@ -1,31 +1,31 @@
 {
-    "GLOBALS": {
-        "params": {
-            "dotFiles": false,
-            "showNoAccess": false,
-            "fileMode": "0666",
-            "dirMode": "0777",
-            "mimeDetect": "auto",
-            "imgLib": "auto",
-            "fileURL": false,
-            "debug": false,
-            "tmbCleanProb": 1,
-            "tmbAtOnce": 5,
-            "tmbSize": 48
-        },
-        "dir_rules": {
-            "/^tmp/": {
-                "read": false,
-                "write": false,
-                "rm": false
-            }
-        },
-	"app":{
-            "driver":"local"
-        },
-        "upload":{
-            "driver":"local",
-            "basedir":"#APPROOT##APPS_USERDATA_FOLDER#"
-        }
-    }
+	"GLOBALS": {
+		"params": {
+			"dotFiles": false,
+			"showNoAccess": false,
+			"fileMode": "0666",
+			"dirMode": "0777",
+			"mimeDetect": "auto",
+			"imgLib": "auto",
+			"fileURL": false,
+			"debug": false,
+			"tmbCleanProb": 1,
+			"tmbAtOnce": 5,
+			"tmbSize": 48
+		},
+		"dir_rules": {
+			"/^tmp/": {
+				"read": false,
+				"write": false,
+				"rm": false
+			}
+		},
+		"app": {
+			"driver": "local"
+		},
+		"upload": {
+			"driver": "local",
+			"basedir": "#APPROOT##APPS_USERDATA_FOLDER#"
+		}
+	}
 }

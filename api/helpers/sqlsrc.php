@@ -66,15 +66,18 @@ if(!function_exists('getSQLSrc')) {
 			}
 		}
 		elseif($src=="dbtable") {
-			$sql="SELECT datatable_table,datatable_cols,datatable_where FROM $tbl where id=$sid";
-			$rs=_dbQuery($sql);
-			if($rs) {
-				$record=_db()->fetchData($rs);
+			$data=_db()->_selectQ($tbl,"datatable_table,datatable_cols,datatable_where",["id"=>$sid])->_GET();
+			
+			if(count($data)>0) {
+				$record=$data[0];
+				
 				$arr=array();
 				$arr["table"]=$record["datatable_table"];
 				$arr["cols"]=$record["datatable_cols"];
 				$arr["where"]=$record["datatable_where"];
 				return $arr;
+			} else {
+				return null;
 			}
 		}
 		else return null;
