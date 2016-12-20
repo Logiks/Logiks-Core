@@ -264,7 +264,7 @@ if(!function_exists("_ling")) {
 		}
 	}
 }
-if(!function_exists("_msg")) {
+if(!function_exists("_lingID")) {
 	function _lingID($msgID) {
 		if(strpos($msgID,"#")===0) {
 			$msg1=substr($msgID,1);

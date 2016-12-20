@@ -54,8 +54,8 @@ class test_helpers_shortfuncs extends LogiksTestCase {
 		$this->assertEquals('Hi',$actual);
 	}
 	
-	public function test_msg() {
-		$actual = _msg('some message');
+	public function test_lingID() {
+		$actual = _lingID('some message');
 		$this->assertEquals('some message',$actual);
 	}
 	
