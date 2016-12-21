@@ -59,9 +59,9 @@ if(!function_exists("deleteAttachments")) {
 			} else {
 				$sysDb1=false;
 			}
-			$deleteQuery="DELETE FROM $storePath WHERE id={$_POST['path']}";
-			_dbQuery($deleteQuery,$sysDb1);
-			$cnt=_db($sysDb1)->affected_rows();
+
+			$a=_db($sysDb1)=>_deleteQ($storePath,["id"=>$_POST['path']])->_RUN();
+			$cnt=_db($sysDb1)->get_affectedRows();
 			if($cnt<=0) {
 				$dxData=_db()->_selectQ($storePath,"count(*) as cnt",["id"=>$_POST['path']])->_GET();
 				
@@ -83,10 +83,8 @@ if(!function_exists("deleteAttachments")) {
 			}
 		}
 		if(strlen($forTable)>0 && strlen($forIDCol)>0 && strlen($forIDVal)>0 && strlen($targetCol)>0) {
-			$sqlUpdate="UPDATE {$forTable} SET {$targetCol}=replace(replace({$targetCol},'{$path}',''),',,',',') WHERE {$forIDCol}='{$forIDVal}'";
-			//echo $sqlUpdate;
-			_dbQuery($sqlUpdate,$sysDb);
-			$cnt=_db($sysDb)->affected_rows();
+			$a=_db($sysDb)->_updateQ($forTable,[$targetCol=>replace(replace({$targetCol},'{$path}',''),',,',',')],[$forIDCol=>$forIDVal])->_RUN();
+			$cnt=_db($sysDb)->get_affectedRows();
 			if($cnt<=0) {
 				$error["Error:UpdateTarget"]="Target DBTable Failed To Update";
 			}

@@ -54,9 +54,8 @@ function changePWD() {
 	$newPwd=$_POST["new"];
 	$date=date("Y-m-d");
 	
-	$q="UPDATE $tbl SET pwd = '$newPwd', doe = '$date' WHERE userid='$userid' and pwd='$oldPwd'";
-	_dbQuery($q,true);
-	if(_db(true)->affected_rows()<=0) {
+	$a=_db(true)->_updateQ($tbl,["pwd"=>$newPwd,"edited_on"=>$date],["userid"=>$userid])->_RUN();
+	if($a && _db(true)->get_affectedRows()<=0) {
 		$q=array(
 				"code"=>"0",
 				"msg"=>"Old Password Doesn't Match. Please Use Correct Credentials.(3)",
