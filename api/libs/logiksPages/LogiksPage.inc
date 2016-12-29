@@ -366,7 +366,7 @@ class LogiksPage {
 		
 		$page['CSS']=explode(",", str_replace(" ",",",trim($page['CSS'])));
 		$page['CSS'][]=$this->pageConfig['template'];
-		$page['CSS'][]="comps/{$this->pageConfig['pageName']}";
+		$page['CSS'][]="comps/".str_replace("/","-",$this->pageConfig['pageName']);
 		$page['CSS']=array_unique($page['CSS']);
 		//$page['CSS']=implode(",", $page['CSS']);
 		
@@ -374,7 +374,7 @@ class LogiksPage {
 		$page['JS_PRELOAD']=array_unique($page['JS_PRELOAD']);
 		$page['JS_PRELOAD']=implode(",", $page['JS_PRELOAD']);
 
-		$page['JS_POSTLOAD']=explode(",", str_replace(" ",",",trim($page['JS_POSTLOAD'].",comps/{$this->pageConfig['pageName']}")));
+		$page['JS_POSTLOAD']=explode(",", str_replace(" ",",",trim($page['JS_POSTLOAD'].",comps/".str_replace("/","-",$this->pageConfig['pageName']))));
 		$page['JS_POSTLOAD']=array_unique($page['JS_POSTLOAD']);
 		$page['JS_POSTLOAD']=implode(",", $page['JS_POSTLOAD']);
 

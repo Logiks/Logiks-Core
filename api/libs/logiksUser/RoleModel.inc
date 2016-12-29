@@ -122,7 +122,8 @@ class RoleModel {
 				$privilegename=$d['name'];
 
 				$sql=_db(true)->_selectQ($roleTbl,"count(*) as cnt")
-					->_where(array("site"=>$site,"category"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash));
+					->_where(array("site"=>$site,"category"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash))
+					->_where(['guid'=>$_SESSION['SESS_GUID']]);
 				$r=_dbQuery($sql,true);
 				if($r) {
 					$data=_dbData($r);
