@@ -138,6 +138,9 @@ if(!function_exists("getUserID")) {
 		if(checkUserID($userID,$site)) {
 			return array("error"=>"UserID Exists");
 		}
+		if(empty($privilegeID) || empty($accessID)) {
+			return array("error"=>"PrivilegeID or AccessID Is Empty");
+		}
 
 		//Check PrivilegeID
 		$sql=_db(true)->_selectQ(_dbTable("privileges",true),"count(*) as cnt")->_where(array(

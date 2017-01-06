@@ -1,30 +1,33 @@
 {
-    "name": "logiks/logiks-core",
-    "type": "project",
-    "description": "Logiks Framework Core",
-    "keywords": ["logiks","framework"],
-    "homepage": "https://openlogiks.org/",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Bismay K Mohapatra",
-            "email": "bismay4u@gmail.com",
-            "homepage": "https://openlogiks.org/",
-            "role": "Admin"
-        },
-        {
-            "name": "Kshyana Prava Hati",
-            "email": "kshyana23@gmail.com",
-            "homepage": "https://openlogiks.org/",
-            "role": "Admin"
-        }
-    ],
-    "require": {
-        "php": ">=5.6.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": ">=3.7"
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+	"name": "logiks/logiks-core",
+	"type": "project",
+	"description": "Logiks Framework Core",
+	"keywords": ["logiks", "framework", "php"],
+	"homepage": "https://openlogiks.org/",
+	"license": "MIT",
+	"authors": [{
+		"name": "Bismay K Mohapatra",
+		"email": "bismay4u@gmail.com",
+		"homepage": "https://openlogiks.org/",
+		"role": "Admin"
+	}, {
+		"name": "Kshyana Prava Hati",
+		"email": "kshyana23@gmail.com",
+		"homepage": "https://openlogiks.org/",
+		"role": "Admin"
+	}],
+	"config": {
+		"vendor-dir": "plugins/vendors/"
+	},
+	"require": {
+		
+	},
+	"require-dev": {
+		
+	},
+	"scripts": {
+		"post-autoload-dump":""
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true
 }

@@ -240,6 +240,11 @@ if(!function_exists("subtractDates")) {
 		}
     	return $string ? implode(', ', $string) . ' ago' : 'just now';
 	}
+	function secondsToTime($seconds) {
+	  $dt1 = new DateTime("@0");
+	  $dt2 = new DateTime("@$seconds");
+	  return $dt1->diff($dt2)->format('%a days, %h hours, %i minutes and %s seconds');
+	}
 }
 
 ?>
