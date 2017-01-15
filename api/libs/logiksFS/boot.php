@@ -42,9 +42,9 @@ if(!function_exists("_fs")) {
 
 		$fs=new $driverClass($fsKey, $params);
 
-		if(isset($params['basedir'])) {
-			$fs->cd($params['basedir']);
-		}
+		//if(isset($params['basedir']) && $params['basedir']!=$fs->pwd()) {
+		//	$fs->cd($params['basedir']);
+		//}
 
 		return $fs;
 	}

@@ -90,26 +90,15 @@
       switch (strtolower(PUBLISH_MODE)) {
         case 'blocked':
           trigger_logikserror(807);
-          exit();
           break;
         case 'restricted':
           trigger_logikserror(806);
-          exit();
           break;
-
-        case 'whitelist':
-          trigger_logikserror(806.1);
-          exit();
-          break;
-
         case 'maintainance':
           trigger_logikserror(804);
-          exit();
           break;
-
         case 'underconstruction':
           trigger_logikserror(805);
-          exit();
           break;
       }
    }

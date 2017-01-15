@@ -65,7 +65,7 @@ if(!function_exists("phpErrorLevelNames")) {
 				801 => 'Data Not Found',
 				802 => 'You have been blacklisted by/on server',
 				803 => 'Error At Source Or Parsing Script',
-				804 => 'Site <b>#site#</b>Is Down For Maintenance',
+				804 => 'Site <b>#site#</b> Is Down For Maintenance',
 				805 => 'Site <b>#site#</b> Is Under-Construction',
 				806 => 'Site <b>#site#</b> Is Currently In Restrictive Only Mode',
 				806.1 => 'Site <b>#site#</b> Is Currently In Whitelist Only Mode',

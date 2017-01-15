@@ -50,6 +50,7 @@
  			return scandir($path);
  	}
  	public function cd($path,$autoCreate=false) {
+		if($path==$this->CURRENT_PATH) return true;
  		$newPath=str_replace("//", "/", $this->CURRENT_PATH.$path."/");
  		if(is_dir($newPath)) {
  			$this->CURRENT_PATH=$newPath;
