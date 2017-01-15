@@ -41,12 +41,16 @@ class SMTPMSGDriver extends LogiksMSGDriver {
 			$fromMsg=$mailConfig['smtp_username'];
 		}
 
-		$mail->SMTPOptions = array(
-            'ssl' => array(
+		if(!isset($mailConfig['smtp_ssl'])) {
+			$mailConfig['smtp_ssl']=array(
                 'verify_peer' => false,
                 'verify_peer_name' => false,
                 'allow_self_signed' => true
-            )
+            );
+		}
+		
+		$mail->SMTPOptions = array(
+            'ssl' => $mailConfig['smtp_ssl']
         );
 
 		//Set the hostname of the mail server
