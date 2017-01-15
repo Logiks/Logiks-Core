@@ -41,6 +41,14 @@ class SMTPMSGDriver extends LogiksMSGDriver {
 			$fromMsg=$mailConfig['smtp_username'];
 		}
 
+		$mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
+
 		//Set the hostname of the mail server
 		$mail->Host = $mailConfig['smtp_host'];
 		//Set the SMTP port number - 587 for authenticated TLS, a.k.a. RFC4409 SMTP submission
