@@ -71,6 +71,7 @@ CREATE TABLE `cache_sessions` (
 CREATE TABLE `security_apikeys` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
+  `api_title` varchar(155) NOT NULL,
   `api_keys` varchar(150) NOT NULL,
   `api_secret` varchar(250) NOT NULL,
   `api_roles` text,
