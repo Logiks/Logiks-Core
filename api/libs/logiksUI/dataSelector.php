@@ -10,7 +10,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!function_exists("createDataSelector")) {
 
 	function createDataSelector($groupID, $orderBy=null,$dbKey="app") {
-		$sqlObj=_db($dbKey)->_selectQ("do_lists","title,value,class")
+		$sqlObj=_db($dbKey)->_selectQ(_dbTable("lists",$dbKey),"title,value,class")
 			->_where(array("groupid"=>$groupID,"blocked"=>"false"));
 
 		if(isset($_SESSION['SESS_PRIVILEGE_HASH'])) {
