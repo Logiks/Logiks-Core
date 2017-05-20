@@ -92,7 +92,7 @@
           trigger_logikserror(807);
           break;
         case 'restricted':
-          trigger_logikserror(806);
+          trigger_logikserror(401);
           break;
         case 'maintainance':
           trigger_logikserror(804);

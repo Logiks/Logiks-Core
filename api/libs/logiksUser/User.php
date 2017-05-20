@@ -56,11 +56,13 @@ if(!function_exists("getUserID")) {
 		return loadMedia("images/user.png");
 	}
 
-	function getUserInfo($userid=null) {
+	function getUserInfo($userid=null,$refetch=false) {
 		if($userid==null) $userid=$_SESSION['SESS_USER_ID'];
 		
-		if(isset($_SESSION["USERINFO"][$userid])) {
-			return $_SESSION["USERINFO"][$userid];
+		if(!$refetch) {
+			if(isset($_SESSION["USERINFO"][$userid])) {
+				return $_SESSION["USERINFO"][$userid];
+			}
 		}
 		$sql=_db(true)->_selectQ(_dbTable("users",true),"*")->_where(array(
 				"blocked"=>'false',

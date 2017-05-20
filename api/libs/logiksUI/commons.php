@@ -203,5 +203,22 @@ if(!function_exists("explodeTagData")) {
 
 		return $s;
 	}
+	function createPaginationArray($max, $page, $limit) {
+		$next=$page+1;$prev=$page-1;
+		if($next*$limit>$max) $next=$page;
+		if($prev<=0) $prev=0;
+
+		$data=[
+				"max"=>$max,
+				"page"=>$page,
+				"page_next"=>$next,
+				"page_prev"=>$prev,
+				"page_max"=>ceil($max/$limit),
+				"limit"=>$limit,
+				"index"=>$page*$limit
+			 ];
+
+	 return $data;
+  }
 }
 ?>

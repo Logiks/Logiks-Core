@@ -133,6 +133,11 @@
 
 		return $this;
 	}
+	public function _whereCOL($col1,$col2,$joinType="AND") {
+		//$this->_whereRAW("{$col1}={$col2}");
+		$this->obj['where'][]=array($joinType,"{$col1}={$col2}");
+		return $this;
+	}
 	public function _whereIN($col,$data,$joinType="AND") {
 		if(is_array($data)) {
 			foreach ($data as $key => $value) {
@@ -480,8 +485,8 @@
 		//$str=@mysql_real_escape_string($str);
 
 		$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a", ";");
-	    $replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z", "%3B");
-	    $str=str_replace($search, $replace, $str);
+	  	$replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z", "%3B");
+	 	$str=str_replace($search, $replace, $str);
 
 		return $str;
 	}

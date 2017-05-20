@@ -78,7 +78,7 @@ if(!function_exists("_dataURI")) {
 		return new LogiksData($cacheData,$cacheKey);
 	}
 
-	function _dataSQL($sqlObj,$reload=false) {
+	function _dataSQL($sqlObj,$reload=true) {
 		if(!is_a($sqlObj,"AbstractQueryBuilder")) {
 			trigger_logikserror("_dataSQL only accepts AbstractQueryBuilder objects.");
 			return false;

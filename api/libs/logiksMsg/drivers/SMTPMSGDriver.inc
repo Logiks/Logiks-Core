@@ -41,6 +41,7 @@ class SMTPMSGDriver extends LogiksMSGDriver {
 			$fromMsg=$mailConfig['smtp_username'];
 		}
 
+		
 		if(!isset($mailConfig['smtp_ssl'])) {
 			$mailConfig['smtp_ssl']=array(
                 'verify_peer' => false,

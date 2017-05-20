@@ -36,13 +36,14 @@ function lgksOverlayFrame(url, title) {
 	lgksMsg(msg, title, params);
 }
 
-function lgksOverlayURL(url, title) {
+function lgksOverlayURL(url, title, callBackFunc) {
 	processAJAXQuery(url,function(txt) {
 		params={
 			className: "overlayBox",
 			size: "large",
 		};
 		lgksMsg(txt, title, params);
+		callBackFunc();
 	},"TEXT");
 }
 

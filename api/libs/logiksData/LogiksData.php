@@ -88,6 +88,6 @@ class LogiksData {
 
  	public function __debugInfo() {
         return [];
-    }
+  }
 }
 ?>

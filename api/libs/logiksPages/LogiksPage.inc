@@ -208,7 +208,7 @@ class LogiksPage {
 			trigger_logikserror("Sorry, page $page is not available or accessible to you.",E_LOGIKS_ERROR,404);
 		}
 		if(!$pageConfig['enabled'] || $pageConfig['enabled']==="false") {
-			trigger_logikserror("Sorry, page $page is not enabled",E_LOGIKS_ERROR,403);
+			trigger_logikserror("Sorry, page $page is not available",E_LOGIKS_ERROR,403);
 		}
 		if(!$this->isAccessible()) {
 			trigger_logikserror("Sorry, page $page is not accessible to you. Needs Credentials",E_LOGIKS_ERROR,401);
