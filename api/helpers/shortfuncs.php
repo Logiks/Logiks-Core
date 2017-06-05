@@ -146,7 +146,7 @@ if(!function_exists("_date")) {
 		if($date=="0000-00-00") return "0000-00-00";
 		if($date==null || strlen($date)<=0) return "";
 		if(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$date)) {
-			return $date;
+		    return $date;
 		}
 		if($inFormat=="*" || $inFormat=="")  $inFormat=getConfig("DATE_FORMAT");
 

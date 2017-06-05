@@ -485,8 +485,8 @@
 		//$str=@mysql_real_escape_string($str);
 
 		$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a", ";");
-	  	$replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z", "%3B");
-	 	$str=str_replace($search, $replace, $str);
+		$replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z", "%3B");
+		$str=str_replace($search, $replace, $str);
 
 		return $str;
 	}

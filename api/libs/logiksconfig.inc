@@ -54,6 +54,12 @@ class LogiksConfig {
           return true;
         break;
       }
+    } else {
+      $arr['name']=$key;
+      $arr['value']=$value;
+      $this->evalConfig([$arr]);
+      $_ENV[$key]=$arr;
+      return true;
     }
     return false;
   }
@@ -267,6 +273,7 @@ class LogiksConfig {
     foreach ($cfgData as $key => $cfg) {
       $name=$cfg['name'];
       $value=$cfg['value'];
+      if(!isset($cfg['mode'])) $cfg['mode']="ENV";
       switch(strtoupper($cfg['mode'])) {
         case "DEFINE":
           if(!defined($name)) {
