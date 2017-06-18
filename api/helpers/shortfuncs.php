@@ -145,9 +145,9 @@ if(!function_exists("_date")) {
 	function _date($date=null, $inFormat="*", $outFormat="Y/m/d") {
 		if($date=="0000-00-00") return "0000-00-00";
 		if($date==null || strlen($date)<=0) return "";
-		if(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$date)) {
-		    return $date;
-		}
+		//if(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$date)) {
+    //    return $date;
+    //}
 		if($inFormat=="*" || $inFormat=="")  $inFormat=getConfig("DATE_FORMAT");
 
 		if($inFormat==$outFormat) return $date;
@@ -318,6 +318,20 @@ if(!function_exists("_slugify")) {
 		}
 
 		return $text;
+	}
+}
+if(!function_exists("_moduleName")) {
+	function _moduleName() {
+		$t = debug_backtrace();
+		if(isset($t[0]) && isset($t[0]['file'])) {
+			$fName=$t[0]['file'];
+			$fName=explode("plugins".DIRECTORY_SEPARATOR."modules".DIRECTORY_SEPARATOR,$fName);
+			if(isset($fName[1])) {
+				$fName=explode(DIRECTORY_SEPARATOR,$fName[1]);
+				return $fName[0];
+			}
+		}
+		return "";
 	}
 }
 ?>

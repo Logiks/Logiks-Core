@@ -208,10 +208,12 @@ class LogiksPage {
 			trigger_logikserror("Sorry, page $page is not available or accessible to you.",E_LOGIKS_ERROR,404);
 		}
 		if(!$pageConfig['enabled'] || $pageConfig['enabled']==="false") {
-			trigger_logikserror("Sorry, page $page is not enabled",E_LOGIKS_ERROR,403);
+			trigger_logikserror("Sorry, page $page is not available/enabled",E_LOGIKS_ERROR,403);
 		}
 		if(!$this->isAccessible()) {
-			trigger_logikserror("Sorry, page $page is not accessible to you. Needs Credentials",E_LOGIKS_ERROR,401);
+			header("Location:"._link("login"));
+			return;
+// 			trigger_logikserror("Sorry, page $page is not accessible to you. Needs Credentials",E_LOGIKS_ERROR,401);
 		}
 
 		//include ROOT."api/scripts.php";

@@ -42,7 +42,7 @@ if(!function_exists("_template")) {
 
 		$lt=new LogiksTemplate($engine);
 		
-		$sqlFile=str_replace(".tpl", ".sql", $file);
+		$sqlFile=$file.".sql";//str_replace(".tpl", ".sql", $file);
 		if(!file_exists($sqlFile)) $sqlFile=false;
 		$lt->loadSQL($sqlFile);
 		$lt->loadSQL($sqlQuerySet);
@@ -126,7 +126,7 @@ if(!function_exists("_template")) {
 
 		$lt=new LogiksTemplate($engine);
 		
-		$sqlFile=str_replace(".tpl", ".sql", $file);
+		$sqlFile=$file.".sql";//str_replace(".tpl", ".sql", $file);
 		if(!file_exists($sqlFile)) $sqlFile=false;
 		$lt->loadSQL($sqlFile);
 		$lt->loadSQL($sqlQuerySet);

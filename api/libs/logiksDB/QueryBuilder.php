@@ -176,13 +176,13 @@ class QueryBuilder extends AbstractQueryBuilder {
 		} else {
 			$valstr[] = $values;
 		}
-
+		//printArray($valstr);
 		$limit = ( ! $limit) ? '' : ' LIMIT '.$limit;
 
 		$orderby = (count($orderby) >= 1)?' ORDER BY '.implode(", ", $orderby):'';
 
 		$sql = "UPDATE ".$table." SET ".implode(', ', $valstr);
-		
+		//echo $sql;exit();
 		$this->sql=trim($sql);
 		
 		$this->_where($where);

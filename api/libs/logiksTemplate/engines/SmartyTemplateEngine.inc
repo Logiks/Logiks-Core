@@ -15,13 +15,17 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
 
   private $smartyEngine=null;
 
-  public function __construct() {
+  public function __construct($allowPHP=NULL) {
     $GLOBALS['classPath'][]=API_FOLDER."vendors/smarty/smarty/";
     $GLOBALS['classPath'][]=API_FOLDER."vendors/smarty/smarty/plugins/";
     $GLOBALS['classPath'][]=API_FOLDER."vendors/smarty/smarty/sysplugins/";
     $GLOBALS['classPath'][]=API_FOLDER."libs/logiksTemplate/plugins/smarty/";
 
-    if(getConfig("TEMPLATE_ALLOW_PHP")) {
+	
+    if($allowPHP==NULL) {
+        $allowPHP=getConfig("TEMPLATE_ALLOW_PHP");
+    }
+    if($allowPHP) {
       $sm=new SmartyBC();
     } else {
       $sm=new Smarty();

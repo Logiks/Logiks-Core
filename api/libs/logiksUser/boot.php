@@ -22,8 +22,8 @@ if(!function_exists("checkUserRoles")) {
 		unset($_SESSION["ROLEMODEL"]);
 	}
 	
-	function checkUserRoles($module,$activity) {
-		return RoleModel::checkRole($module,$activity);
+	function checkUserRoles($module,$activity,$actionType="ACCESS") {
+		return RoleModel::checkRole($module,$activity,$actionType);
 	}
 
 	function checkRoleScope($module) {

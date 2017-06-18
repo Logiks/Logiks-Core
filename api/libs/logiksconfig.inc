@@ -31,7 +31,7 @@ class LogiksConfig {
 
   public function getConfig($key) {
     if($key==null || strlen($key)<=0) return "";
-    if(isset($_ENV[$key])) {
+    if(isset($_ENV[$key]) && isset($_ENV[$key]['value'])) {
       return $_ENV[$key]['value'];
     } else {
       return false;
