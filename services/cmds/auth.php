@@ -169,7 +169,7 @@ function relink($msg,$domain) {
 	}
 	
 	if(strlen($onerror)==0 || $onerror=="*") {
-		$s=SiteLocation."login.php";
+		$s=SiteLocation."login";
 		if(strlen($domain)>0) $s.="?site=$domain";
 		$onerror=$s;
 	}

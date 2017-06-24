@@ -650,8 +650,7 @@
 			break;
 			
 			case "cn":case ":cn:":
-			
-			case "notbetween":
+			case "notbetween":case "notlike":
 				$s="{$col} NOT LIKE '%{$arr[0]}%'";
 			break;
 			

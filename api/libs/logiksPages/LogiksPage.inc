@@ -211,6 +211,7 @@ class LogiksPage {
 			trigger_logikserror("Sorry, page $page is not available/enabled",E_LOGIKS_ERROR,403);
 		}
 		if(!$this->isAccessible()) {
+			$_SESSION['SESS_ERROR_MSG']="Page Is not accessible to you";
 			header("Location:"._link("login"));
 			return;
 // 			trigger_logikserror("Sorry, page $page is not accessible to you. Needs Credentials",E_LOGIKS_ERROR,401);
@@ -493,6 +494,12 @@ class LogiksPage {
 
 					if(strlen($pageAccess[0])==0 || $pageAccess[0]=="public") {
 						return true;
+					} elseif($pageAccess[0]=="private") {
+						if(session_check(false,false)) {
+							return true;
+						} else {
+							return false;
+						}
 					} elseif(function_exists("checkUserRoles")) {
 						return checkUserRoles("PAGES",$this->pageConfig['pageName'],"PAGES");
 					} else {

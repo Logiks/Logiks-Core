@@ -171,7 +171,12 @@ class QueryBuilder extends AbstractQueryBuilder {
 			//$this->obj['where']=$where;
 
 			foreach($values as $key => $val) {
-				$valstr[] = $key." = '".parent::clean($val)."'";
+				if(substr($val,0,5)=="RAW:(") {
+					$val=substr($val,4);
+					$valstr[] = $key." = $val";
+				} else {
+					$valstr[] = $key." = '".parent::clean($val)."'";
+				}
 			}
 		} else {
 			$valstr[] = $values;
