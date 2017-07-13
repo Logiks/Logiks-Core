@@ -219,6 +219,9 @@ function initializeLogin($userid,$domain,$params=array()) {
 				"device"=>$_ENV['AUTH-DATA']['device'],
 				"client_ip"=>$_SERVER['REMOTE_ADDR']]);
 	
+	_db(true)->_updateQ(_dbTable("users",true),['last_login'=>date("Y-m-d H:i:s")],["guid"=>$_SESSION['SESS_GUID'],
+				"userid"=>$_SESSION['SESS_USER_ID']])->_RUN();
+	
 	gotoSuccessLink();
 }
 //All session functions

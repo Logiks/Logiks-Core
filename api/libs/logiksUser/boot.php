@@ -25,10 +25,26 @@ if(!function_exists("checkUserRoles")) {
 	function checkUserRoles($module,$activity,$actionType="ACCESS") {
 		return RoleModel::checkRole($module,$activity,$actionType);
 	}
-
-	function checkRoleScope($module) {
-		return RoleModel::checkScope($module,$activity);
+	
+	function checkUserScope($module) {
+		return RoleModel::checkScope($module);
 	}
+	
+	function checkUserPolicy($policyStr,$policyName=null) {
+		if($policyStr==null || strlen($policyStr)<=0) return true;
+		$policyStr=strtolower(str_replace(" ",".",$policyStr));
+		if($policyName==null || strlen($policyName)<=0) $policyName=toTitle(str_replace(".","_",$policyStr));
+		$policyArr=explode(".",$policyStr);
+		if(count($policyArr)==1) {
+			return checkRoleScope($policyArr[0]);
+		} elseif(count($policyArr)==2) {
+			return checkUserRoles($policyArr[0],$policyArr[1]);
+		} else {
+			return checkUserRoles($policyArr[0],$policyArr[1],$policyArr[2]);
+		}
+		return false;
+	}
+	
 
 	
 	//Returns the User Configuration for the scope

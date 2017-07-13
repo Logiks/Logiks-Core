@@ -211,10 +211,13 @@ class LogiksPage {
 			trigger_logikserror("Sorry, page $page is not available/enabled",E_LOGIKS_ERROR,403);
 		}
 		if(!$this->isAccessible()) {
-			$_SESSION['SESS_ERROR_MSG']="Page Is not accessible to you";
-			header("Location:"._link("login"));
-			return;
-// 			trigger_logikserror("Sorry, page $page is not accessible to you. Needs Credentials",E_LOGIKS_ERROR,401);
+			if(session_check(false)) {
+				trigger_logikserror("Sorry, page $page is not accessible to you.",E_LOGIKS_ERROR,401);
+			} else {
+				$_SESSION['SESS_ERROR_MSG']="Page Is not accessible to you";
+				header("Location:"._link("login"));
+				return;
+			}
 		}
 
 		//include ROOT."api/scripts.php";
@@ -495,27 +498,33 @@ class LogiksPage {
 					if(strlen($pageAccess[0])==0 || $pageAccess[0]=="public") {
 						return true;
 					} elseif($pageAccess[0]=="private") {
+						if(isset($this->pageConfig['privilege_model'])) {
+							if(!is_array($this->pageConfig['privilege_model'])) {
+								$this->pageConfig['privilege_model']=explode(",",$this->pageConfig['privilege_model']);
+							}
+							
+							if(in_array(RoleModel::getPrivilegeHash(),$this->pageConfig['privilege_model'])) {
+								return true;
+							} else {
+								return false;
+							}
+						} elseif(function_exists("checkUserRoles")) {
+							return checkUserRoles("PAGES",$this->pageConfig['pageName'],"ACCESS");
+						}
+					} elseif($pageAccess[0]=="protected" || $pageAccess[0]=="postlogin") {
 						if(session_check(false,false)) {
 							return true;
 						} else {
 							return false;
 						}
-					} elseif(function_exists("checkUserRoles")) {
-						return checkUserRoles("PAGES",$this->pageConfig['pageName'],"PAGES");
 					} else {
-						if(session_check(false,false)) {
-							if(in_array($_SESSION['SESS_USER_ID'], $pageAccess)) return true;
-							elseif(in_array(md5($_SESSION['SESS_PRIVILEGE_NAME'].$_SESSION['SESS_PRIVILEGE_ID']), $pageAccess)) return true;
-							else return false;
-						} else {
-							return false;
-						}
+						return true;
 					}
 				} else {
 					return true;
 				}
 			} else {
-				return checkUserRoles("PAGES",PAGE,"PAGES");
+				return checkUserRoles("PAGES",PAGE,"ACCESS");
 			}
 			return true;
   	}

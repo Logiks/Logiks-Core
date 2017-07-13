@@ -48,16 +48,17 @@ if(!function_exists("session_check")) {
 	}
 	//function session_login_check() {}
 	
-	function checkAccess($module,$activity,$actionType="view") {
-		$module=strtoupper($module);
-		$actionType=strtoupper($actionType);
-		if($module=="PAGE") {
-			//checkPageAccess
-		} else {
-			//checkRoleScope
-			//checkUserRoles
-		}
-	}
+	//DEPRECEATED : to be delated on Dec 2017
+// 	function checkAccess($module,$activity,$actionType="view") {
+// 		$module=strtoupper($module);
+// 		$actionType=strtoupper($actionType);
+// 		if($module=="PAGE") {
+// 			//checkPageAccess
+// 		} else {
+// 			//checkRoleScope
+// 			//checkUserRoles
+// 		}
+// 	}
 	
 	function isAdminSite($site=SITENAME) {
 		$adminSites=explode(",", DOMAIN_CONTROLS_ADMINAPP);

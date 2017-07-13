@@ -227,9 +227,35 @@ if(!function_exists("getServiceCMD")) {
 				break;
 		}
 	}
-	//DEPRECATED
-	function checkServiceSession($redirect=false) {
-		return session_check($redirect);
+	
+	function checkServiceSession($checkScope=true,$redirect=true) {
+		//$ls=new LogiksSecurity();
+		//$ls->checkUserSiteAccess($_REQUEST['forsite'],true);
+		
+		//trigger_logikserror("Accessing Forbidden Page",E_USER_ERROR,401);
+		
+		if(session_check(false,false)) {
+			if(!$checkScope) {
+				return true;
+			}
+			if(checkUserScope($_REQUEST["scmd"])) {
+				$acp=$_SESSION['SESS_ACCESS_SITES'];
+				if(!in_array(SITENAME,$acp)) {
+					printServiceErrorMsg(403, "{$_REQUEST['forsite']} is not available for you");
+					if($redirect) exit();
+					else return false;
+				}
+				return true;
+			} else {
+				printServiceErrorMsg(403, "Service Access Forbidden");
+				if($redirect) exit();
+				else return false;
+			}
+		} else {
+			printServiceErrorMsg(403, "Service Access Forbidden");
+			if($redirect) exit();
+			else return false;
+		}
 	}
 }
 ?>

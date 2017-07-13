@@ -120,7 +120,7 @@ if(!function_exists("getUserID")) {
 				"vcode"=>"",
 				"mauth"=>"",
 				"refid"=>"",
-				"registerd_site"=>SITENAME,
+				"registered_site"=>SITENAME,
 				"privacy"=>"protected",
 				"avatar_type"=>"email",
 				"avatar"=>$userID,

@@ -1,0 +1,28 @@
+{
+  "GLOBALS":{
+    "content":{
+      "access_control": "public"
+    },
+    "dashboard":{
+      "access_control": "public"
+    },
+    "datagrid":{
+      "access_control": "public"
+    },
+    "forms":{
+      "access_control": "public"
+    },
+    "infoview":{
+      "access_control": "public"
+    },
+    "navigator":{
+      "access_control": "public"
+    },
+    "pages":{
+      "access_control": "public"
+    },
+    "reports":{
+      "access_control": "public"
+    }
+  }
+}

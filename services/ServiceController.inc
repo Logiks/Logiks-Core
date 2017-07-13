@@ -76,14 +76,18 @@ class ServiceController {
 					if(in_array("private", $access)) {
 						if(session_check()) {
 							//Check Privilege Model
-							if(in_array(md5($_SESSION['SESS_PRIVILEGE_NAME'].$_SESSION['SESS_PRIVILEGE_ID']),$this->params['privilege_model']))
+							if(in_array(RoleModel::getPrivilegeHash(),$this->params['privilege_model']))
 								return true;
-							elseif(in_array(md5($_SESSION['SESS_USERID']),$this->params['privilege_model'])) 
+							elseif(in_array(md5($_SESSION['SESS_USER_ID']),$this->params['privilege_model'])) 
+								return true;
+							elseif(checkUserScope($_REQUEST["scmd"]))
 								return true;
 							else
 								return false;
 						}
 						return false;
+					} elseif(in_array("protected", $access)) {
+						return session_check();
 					} else {
 						return true;
 					}
@@ -98,9 +102,11 @@ class ServiceController {
 			} elseif(in_array("private", $access)) {
 				if(session_check()) {
 					//Check Privilege Model
-					if(in_array(md5($_SESSION['SESS_PRIVILEGE_NAME'].$_SESSION['SESS_PRIVILEGE_ID']),$this->params['privilege_model']))
+					if(in_array(RoleModel::getPrivilegeHash(),$this->params['privilege_model']))
 						return true;
-					elseif(in_array(md5($_SESSION['SESS_USERID']),$this->params['privilege_model'])) 
+					elseif(in_array(md5($_SESSION['SESS_USER_ID']),$this->params['privilege_model'])) 
+						return true;
+					elseif(checkUserScope($_REQUEST["scmd"]))
 						return true;
 					else
 						return false;
@@ -109,7 +115,7 @@ class ServiceController {
 			} elseif(in_array("development", $access)) {
 				if(session_check()) {
 					//Check Privilege Model for developer
-					return (in_array(md5($_SESSION['SESS_USERID']),$this->params['privilege_model']) &&
+					return (in_array(md5($_SESSION['SESS_USER_ID']),$this->params['privilege_model']) &&
 							$_SESSION['SESS_PRIVILEGE_ID']<=3);
 				}
 				return false;
