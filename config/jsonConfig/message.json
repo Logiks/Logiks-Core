@@ -1,0 +1,15 @@
+{
+	"GLOBALS": {
+		"app": {
+			"driver":"SMTP",
+			"engine": "simple",
+			"smtp_host": "smtp.test.com",
+			"smtp_port": 587,
+			"smtp_secure": "tls",
+			"smtp_auth": true,
+			"smtp_username": "noreply@test.com",
+			"smtp_password": "test",
+			"default_from": ""
+		}
+	}
+}
