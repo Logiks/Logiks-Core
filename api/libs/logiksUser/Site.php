@@ -94,8 +94,9 @@ if(!function_exists("getUserList")) {
 
 		$sql=_db(true)->_selectQ(_dbTable("users",true),"count(*) as cnt")->_where(array(
 				"blocked"=>'false',
-				"userid"=>$userid,
-			));
+// 			))->_whereMulti([["userid"=>$userid],["email"=>$userid]],"AND","OR");
+			))->_whereOR(["userid"=>$userid,"email"=>$userid]);
+		
 		$sql1=_db(true)->_selectQ(_dbTable("access",true),"id")->_where(array(
 			"blocked"=>'false',
 		))->_whereRAW(' (FIND_IN_SET("'.SITENAME.'",sites) OR sites="*")');

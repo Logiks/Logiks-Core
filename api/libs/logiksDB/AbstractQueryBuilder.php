@@ -118,19 +118,29 @@
 		
 		return $this;
 	}
-	public function _whereOR($col,$data) {
+	public function _whereOR($col,$data=null) {
 		if(!$col) return $this;
 		if(!is_array($this->obj['where'])) $this->obj['where']=[];
-
-		if(is_array($data)) {
-			$data=$this->cleanArr($data);
-			$str=[];
-			foreach ($data as $vx) {
-				$str[]=$this->parseRelation($col,$vx);
+		
+		if($data!=null) {
+			if(is_array($data)) {
+				$data=$this->cleanArr($data);
+				$str=[];
+				foreach ($data as $vx) {
+					$str[]=$this->parseRelation($col,$vx);
+				}
+				$this->obj['where'][]=array("AND","(".implode(" OR ", $str).")","OR");
 			}
-			$this->obj['where'][]=array("AND","(".implode(" OR ", $str).")","OR");
+		} else {
+			if(is_array($col)) {
+				$col=$this->cleanArr($col);
+				$str=[];
+				foreach ($col as $key=>$vx) {
+					$str[]=$this->parseRelation($key,$vx);
+				}
+				$this->obj['where'][]=array("AND","(".implode(" OR ", $str).")","OR");
+			}
 		}
-
 		return $this;
 	}
 	public function _whereCOL($col1,$col2,$joinType="AND") {
@@ -288,7 +298,6 @@
 	//@$sql	params	SQL Query to be set into QueryBuilder
 	public function _SQL($sql=null) {
 		//var_dump($this->obj);
-
 		$limit=$this->obj['limits']['limit'];
 		$offset=$this->obj['limits']['offset'];
 

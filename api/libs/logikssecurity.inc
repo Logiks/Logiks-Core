@@ -74,14 +74,14 @@
    }
 
    public function isBlacklisted($page,$site=SITENAME) {
-	$client=_server("REMOTE_ADDR");
-	$sqlData=_db(true)->_selectQ(_dbTable("security_iplist",true),"count(*) as max")
-		->_where(array("ipaddress"=>$client,"allow_type"=>"blacklist","active"=>"true"))
-		->_GET();
+		$client=_server("REMOTE_ADDR");
+		$sqlData=_db(true)->_selectQ(_dbTable("security_iplist",true),"count(*) as max")
+			->_where(array("ipaddress"=>$client,"allow_type"=>"blacklist","active"=>"true"))
+			->_GET();
 
-	if($sqlData[0]['max']>0) {
-		trigger_logikserror("Your IP has been blacklisted",E_USER_ERROR);
-	}
+		if($sqlData[0]['max']>0) {
+			trigger_logikserror("Your IP has been blacklisted",E_USER_ERROR);
+		}
    }
 
    public function checkSiteMode() {

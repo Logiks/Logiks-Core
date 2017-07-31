@@ -58,7 +58,7 @@ class RoleModel {
 			unset($_SESSION["ROLESGLOBAL"][SITENAME]);
 		}
 		$gScopes=RoleModel::getGlobalScopes();
-		
+
 		$policyStr=str_replace(".MAIN","",$policyStr);
 		$policyStr=str_replace(".MASTER","",$policyStr);
 		$policyStr=str_replace(".INDEX","",$policyStr);
@@ -117,22 +117,13 @@ class RoleModel {
 			return $_SESSION["ROLESCOPE"][$roleHash];
 		}
 
-// 		$sql=_db(true)->_selectQ(_dbTable("rolemodel",true),"count(*) as cnt")
-// 					->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module))
-// 					->_where(['guid'=>$_SESSION['SESS_GUID']]);
-
-// 		$r=_dbQuery($sql,true);
-// 		$d=_dbData($r,true);
-// 		_dbFree($r,true);
-
 		$_SESSION["ROLESCOPE"][$roleHash]=0;
 
-// 		if($d[0]['cnt']>0) {
 		$privilegehash=RoleModel::getPrivilegeHash();
 		$sql=_db(true)->_selectQ(_dbTable("rolemodel",true),"count(*) as cnt")
 				->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module,"allow"=>"true", "privilegehash"=>$privilegehash))
 				->_where(['guid'=>$_SESSION['SESS_GUID']]);
-
+// 		exit($sql->_SQL());
 		$r=_dbQuery($sql,true);
 		$d=_dbData($r,true);
 		_dbFree($r,true);
@@ -142,9 +133,7 @@ class RoleModel {
 		} else {
 			RoleModel::registerRole($module,"MAIN");
 			$_SESSION["ROLEMODEL"][$roleHash]=(getConfig("ROLEMODEL_DEFAULT_DENY")?false:true);
-// 			$_SESSION["ROLESCOPE"][$roleHash]=1;
 		}
-// 		}
 		
 		return $_SESSION["ROLESCOPE"][$roleHash];
 	}

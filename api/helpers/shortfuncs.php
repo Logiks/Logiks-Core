@@ -54,8 +54,8 @@ if(!function_exists("_url")) {
 		$url=_server('HTTP_HOST')."/"._server('REQUEST_URI');
 		$url=str_replace("//","/",$url);
 		$url=str_replace("//","/",$url);
-		if(_server("HTTPS") && strlen(_server("HTTPS"))>0) $url="https://$url";
-		elseif(_server("SERVER_PROTOCOL")=="HTTP/1.1")	$url="http://$url";
+		if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) $url="https://$url";
+		elseif(_server("SERVER_PROTOCOL")=="HTTP/1.1") $url="http://$url";
 		return $url;
 	}
 }
