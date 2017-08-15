@@ -279,7 +279,20 @@ if (!function_exists('printArray')) {
 		return $subject;
 	}
 	function getSysHash() {
-		return md5(session_id()._server('REMOTE_ADDR'));
+		if(isset($_SESSION['SYS_HASH'])) {
+			return $_SESSION['SYS_HASH'];
+		} else {
+			$hashStr=session_id();
+			if(getConfig("SECURE_IPLOCK")===true) {
+				$hashStr.=_server('REMOTE_ADDR');
+			}
+			if(isset($_SESSION['SESS_USER_ID'])) {
+				$hashStr.=$_SESSION['SESS_USER_ID'];
+			}
+			$hash=md5($hashStr);
+			$_SESSION['SYS_HASH']=$hash;
+			return $hash;
+		}
 	}
 }
 

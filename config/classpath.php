@@ -16,12 +16,14 @@ $GLOBALS['mediaPaths']=array(
 	);
 $GLOBALS['vendorPath']=array(
 		"#APPROOT#plugins/",
+		"#APPROOT#pluginsDev/",
 		"#ROOT#api/",
 		"#ROOT#plugins/",
 		"#ROOT#pluginsDev/",
 	);
 $GLOBALS['pluginPaths']=array(
 		"#APPROOT#plugins/",
+		"#APPROOT#pluginsDev/",
 		"#ROOT#pluginsDev/",
 		"#ROOT#plugins/",
 	);

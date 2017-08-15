@@ -8,14 +8,15 @@ function lgksConfirm(msg,title,callback) {
 	return bootbox.confirm(msg, callback);
 }
 
-function lgksOverlay(msg, title) {
+function lgksOverlay(msg, title, paramsXtra) {
 	params={
 		className: "overlayBox",
 		size: "large",
 	};
+	params=$.extend(params,paramsXtra);
 	lgksMsg(msg, title, params);
 }
-function lgksOverlayDiv(divID,title) {
+function lgksOverlayDiv(divID,title, paramsXtra) {
 	if(title==null) title=$(divID).attr('title');
 	msg=$(divID).html();
 	
@@ -23,25 +24,27 @@ function lgksOverlayDiv(divID,title) {
 		className: "overlayBox",
 		size: "large",
 	};
-	
+	params=$.extend(params,paramsXtra);
 	lgksMsg(msg, title, params);
 }
 
-function lgksOverlayFrame(url, title) {
+function lgksOverlayFrame(url, title, paramsXtra) {
 	msg="<iframe width=100% height=100% frameborder=0 style='border:0px;' class='overlayFrame' src='"+url+"'></iframe>";
 	params={
 		className: "overlayBox",
 		size: "large",
 	};
+	params=$.extend(params,paramsXtra);
 	lgksMsg(msg, title, params);
 }
 
-function lgksOverlayURL(url, title, callBackFunc) {
+function lgksOverlayURL(url, title, callBackFunc, paramsXtra) {
 	processAJAXQuery(url,function(txt) {
 		params={
 			className: "overlayBox",
 			size: "large",
 		};
+		params=$.extend(params,paramsXtra);
 		lgksMsg(txt, title, params);
 		callBackFunc();
 	},"TEXT");
