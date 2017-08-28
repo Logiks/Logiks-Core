@@ -135,6 +135,7 @@ if(!function_exists("_time")) {
 		$out=$outFormat;
 		
 		foreach($a as $w) {
+// 			if(strlen($w)<=0) continue;
 			$out=str_replace($w, $timeStore[$w], $out);
 		}
 		return $out;

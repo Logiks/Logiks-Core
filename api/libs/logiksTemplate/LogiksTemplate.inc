@@ -150,6 +150,7 @@ class LogiksTemplate {
     if(strlen($sqlData)<=0) return;
     if(is_file($sqlData)) {
       $sqlData=file_get_contents($sqlData);
+      if(strlen($sqlData)<=1) return;
       $sqlData=explode("\n", trim($sqlData));
     } elseif(!is_array($sqlData)) {
       $sqlData=explode("\n",$sqlData);
