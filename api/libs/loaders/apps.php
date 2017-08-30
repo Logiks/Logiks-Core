@@ -32,7 +32,14 @@ if(!function_exists('loadComponent')) {
 	}
 
 	function loadContent($file) {
+		$lang=getConfig("DEFAULT_LOCALE");
+		if($lang==null || strlen($lang)<=0) $lang="en";
+		if(isset($_SESSION['CURRENT_LANG']) && strlen($_SESSION['CURRENT_LANG'])>0) {
+			$lang=$_SESSION['CURRENT_LANG'];
+		}
 		$fs=[
+				APPROOT.APPS_MISC_FOLDER."contents/{$file}_{$lang}.htm",
+				APPROOT.APPS_PAGES_FOLDER."contents/{$file}_{$lang}.htm",
 				APPROOT.APPS_MISC_FOLDER."contents/{$file}.htm",
 				APPROOT.APPS_PAGES_FOLDER."contents/{$file}.htm"
 			];
