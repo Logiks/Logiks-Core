@@ -32,13 +32,17 @@ if (!function_exists('printArray')) {
 	}
 	function toTitle($s,$process=false) {
 		if($s==null || strlen($s)<=0) return "";
-		if($process) {
+		if($process && function_exists("_replace")) {
 			$s=_replace($s);
 		}
 		$s=str_replace("_"," ",$s);
-		$s=strtolower($s);
 		$s=trim($s);
-		$s=ucwords($s);
+		if(strlen($s)<=3) {
+			$s=strtoupper($s);
+		} else {
+			$s=strtolower($s);
+			$s=ucwords($s);
+		}
 		return $s;
 	}
 	function cleanSpecial($data) {
