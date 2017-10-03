@@ -42,9 +42,10 @@ function openInNewPopupWindow(mypage, myname, w, h, scroll,resize,menubar,status
 function lgksToast(msg,opts) {
 	var defOpts = {
             displayTime: 2000,
-			bodyclass: "",
+            bodyclass: "",
             inTime: 300,
             outTime: 200,
+            effects: true,
             inEffect:"fade",
             outEffect:"fade",
             maxWidth: 500,
@@ -109,10 +110,16 @@ function lgksToast(msg,opts) {
 			"border-radius":"4px",
 			"-moz-border-radius":"4px",
 			"-webkit-border-radius":"4px",
-			border:"2px solid #CCCCCC"
+			"border":"2px solid #CCCCCC"
         });
 	}
-    toast.show(opts.inEffect,opts.inTime).delay(opts.displayTime).hide(opts.outEffect,opts.outTime, function() {
+	if(opts.effects===true) {
+		toast.show(opts.inEffect,opts.inTime).delay(opts.displayTime).hide(opts.outEffect,opts.outTime, function() {
 					//toast.remove();
 				});
+	} else {
+		toast.show(opts.inTime).delay(opts.displayTime).hide(opts.outTime, function() {
+					//toast.remove();
+				});
+	}
 }

@@ -189,11 +189,18 @@
 		if(is_array($groupby)) {
 			if(isset($groupby['having'])) {
 				$having=$groupby["having"];
+			} else {
+				$having=false;
 			}
-			$groupby=$groupby["group"];
+			if(isset($groupby['group'])) {
+				$groupby=$groupby["group"];
+			} else {
+				$groupby=false;
+			}
 		}
-		$groupby=$this->clean($groupby);
-		$having=$this->clean($having);
+		if($groupby) $groupby=$this->clean($groupby);
+		if($having) $having=$this->clean($having);
+		
 
 		$this->obj['groupby']['group']=$groupby;
 		$this->obj['groupby']['having']=$having;
