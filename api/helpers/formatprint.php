@@ -2,7 +2,7 @@
 /*
  * Contains formating functions that formats the data in array into various formats
  * Supported Output Formats : table,select,list,text,xml,json
- * 
+ *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Author: Kshyana Prava kshyana23@gmail.com
  * Version: 1.0

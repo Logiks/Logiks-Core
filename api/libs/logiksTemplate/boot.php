@@ -90,7 +90,7 @@ if(!function_exists("_template")) {
 			}
 		}
 
-		$body=TemplateEngine::processTemplate($templateData,$dataArr,$editable);
+		$body=LogiksTemplate::processTemplate($templateData,$dataArr,$editable);
 
 		return $body;
 	}

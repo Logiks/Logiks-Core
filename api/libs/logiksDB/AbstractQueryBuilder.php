@@ -693,7 +693,11 @@
 				
 			case "range":
 				if(is_array($arr[0])) {
-					$s="$col BETWEEN {$arr[0][0]} AND {$arr[0][1]}";
+					if(is_numeric($arr[0][0]) || is_float($arr[0][0])) {
+					    $s="$col BETWEEN {$arr[0][0]} AND {$arr[0][1]}";
+					  } else {
+					    $s="$col BETWEEN '{$arr[0][0]}' AND '{$arr[0][1]}'";
+					  }
 				} else {
 					$s="$col BETWEEN {$arr[0]}";
 				}
