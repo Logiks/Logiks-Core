@@ -101,7 +101,17 @@ class RoleModel {
 	public static function checkScope($module,$actionType="ACCESS") {
 		$actionType=strtoupper($actionType);
 		
-		$policyStr=[$module,"MAIN",strtoupper($actionType)];
+		$activity="MAIN";
+		
+		$moduleArr=explode(".",$module);
+		if(count($moduleArr)>1) {
+			$module=$moduleArr[0];
+			array_shift($moduleArr);
+			$activity=strtoupper(implode(".",$moduleArr));
+		}
+		
+		$policyStr=[$module,$activity,strtoupper($actionType)];
+		
 		$policyStr=implode(".",$policyStr);
 		$globalStatus=RoleModel::checkGlobals($policyStr);
 // 		var_dump($globalStatus);
@@ -111,7 +121,7 @@ class RoleModel {
 		}
 		
 		$privilegehash=RoleModel::getPrivilegeHash();
-		$roleHash=md5(strtoupper($module."MAIN".$actionType.$privilegehash));
+		$roleHash=md5(strtoupper($module.$activity.$actionType.$privilegehash));
 		
 		if(isset($_SESSION["ROLESCOPE"][$roleHash])) {
 			return $_SESSION["ROLESCOPE"][$roleHash];
@@ -131,7 +141,7 @@ class RoleModel {
 		if($d[0]['cnt']>0) {
 			$_SESSION["ROLESCOPE"][$roleHash]=2;
 		} else {
-			RoleModel::registerRole($module,"MAIN");
+			RoleModel::registerRole($module,$activity);
 			$_SESSION["ROLEMODEL"][$roleHash]=(getConfig("ROLEMODEL_DEFAULT_DENY")?false:true);
 		}
 		
