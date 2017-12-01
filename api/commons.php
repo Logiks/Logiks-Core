@@ -36,6 +36,7 @@ if (!function_exists('printArray')) {
 			$s=_replace($s);
 		}
 		$s=str_replace("_"," ",$s);
+		$s=strtolower($s);
 		$s=trim($s);
 		if(strlen($s)<=3) {
 			$s=strtoupper($s);

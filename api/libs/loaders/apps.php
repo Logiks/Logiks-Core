@@ -40,8 +40,10 @@ if(!function_exists('loadComponent')) {
 		$fs=[
 				APPROOT.APPS_MISC_FOLDER."contents/{$file}_{$lang}.htm",
 				APPROOT.APPS_PAGES_FOLDER."contents/{$file}_{$lang}.htm",
+				APPROOT.APPS_MISC_FOLDER."contents/{$file}_gb.htm",
+				APPROOT.APPS_PAGES_FOLDER."contents/{$file}_gb.htm",
 				APPROOT.APPS_MISC_FOLDER."contents/{$file}.htm",
-				APPROOT.APPS_PAGES_FOLDER."contents/{$file}.htm"
+				APPROOT.APPS_PAGES_FOLDER."contents/{$file}.htm",
 			];
 		foreach ($fs as $f) {
 			if(file_exists($f)) {
