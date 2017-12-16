@@ -63,6 +63,26 @@ class LogiksError {
     if(ERROR_LOGGING & $severity) {
       $lr->log($errLogMsg,$errData,LogiksLogger::severityToLevel($severity));
     }
+    
+	$appStatus="dev";
+	if(defined("APPS_STATUS")) {
+		$appStatus=APPS_STATUS;
+	} elseif(defined("ENV_STATUS")) {
+		$appStatus=ENV_STATUS;
+	}
+	
+	switch(strtoupper($appStatus)) {
+		case "PRODUCTION":case "PRODS":
+			header("Location:".SiteLocation."error?code={$errorCode}");
+			exit($errMsg);
+			break;
+		case "STAGING":case "STAGE":
+			header("Location:".SiteLocation."error?code={$errorCode}");
+			exit($errMsg);
+			break;
+		default:
+			break;
+	}
 
     if($printError) {
       $lr->printPage($errData);
@@ -89,7 +109,7 @@ class LogiksError {
         "code"=>$errorCode,
         "level"=>$severity,
         "level_name"=>$levelName,
-				"level_class"=>$levelClass,
+		"level_class"=>$levelClass,
         "level_id"=>$errName,
         "file"=>$file,
         "line"=>$line,

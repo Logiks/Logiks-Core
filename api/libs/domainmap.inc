@@ -104,7 +104,7 @@ class DomainMap {
   }
   protected function setupAppSite($site) {
     define('SITENAME',$site);
-    setcookie('LGKS_SESS_SITE',SITENAME,time()+3600,"/");
+    setcookie('LGKS_SESS_SITE',SITENAME,time()+3600,"/",null, isHTTPS());
     $_REQUEST['site']=SITENAME;
     return SITENAME;
   }

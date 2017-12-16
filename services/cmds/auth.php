@@ -20,6 +20,26 @@ loadConfigs(ROOT . "config/auth.cfg");
 include ROOT."api/helpers/pwdhash.php";
 //include ROOT."api/security.php";
 
+if(!isset($_SESSION['LOGINSALT'])) {
+	if(SITENAME!="cms") {
+		relink("Sorry, Login must be done through the Login Page.",$domain);
+	}
+}
+
+if(isset($_SESSION['LOGINSALT']) && isset($_REQUEST['pubkey'])) {
+	$key = pack("H*", $_SESSION['LOGINSALT']);
+	$iv =  pack("H*", $_REQUEST['pubkey']);
+	
+	$encrypted = base64_decode($pwd);
+	$pwdFinal = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $encrypted, MCRYPT_MODE_CBC, $iv);
+	
+	$pwd=trim($pwdFinal);
+	
+// 	$encrypted = base64_decode($userid);
+// 	$useridFinal = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $encrypted, MCRYPT_MODE_CBC, $iv);
+	
+// 	$userid=trim($useridFinal);
+}
 /*
 CLEAR_OLD_SESSION=true
 @session_start();
@@ -291,10 +311,10 @@ function startNewSession($userid, $domain, $params=array()) {
 	header("SESSION-KEY:".$_SESSION['SESS_TOKEN'],false);
 	header("SESSION-MAUTH:".$_SESSION['MAUTH_KEY'],false);
 
-	setcookie("LOGIN", "true", time()+36000);
-	setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000);
-	setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000);
-	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000);
+	setcookie("LOGIN", "true", time()+36000,"/",null, isHTTPS());
+	setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000,"/",null, isHTTPS());
+	setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000,"/",null, isHTTPS());
+	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000,"/",null, isHTTPS());
 	
 	_db(true)->_deleteQ(_dbTable("cache_sessions",true),"created_on<DATE_SUB(NOW(), INTERVAL 1 MONTH)")->_RUN();
 	

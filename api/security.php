@@ -160,5 +160,44 @@ if(!function_exists("session_check")) {
 		unset($_REQUEST['deviceuuid']);
 		return $key;
 	}
+	
+	function generateCSRF($pgLevel=false) {
+		$arrCSRF=["KEY"=>base64_encode(openssl_random_pseudo_bytes(32)),"NAME"=>uniqid(SITENAME."_")];
+		
+		if($pgLevel!==false) {
+			$_SESSION['CSRF_TOKEN_KEY'][SITENAME][$pgLevel] = $arrCSRF['KEY'];
+			$_SESSION['CSRF_TOKEN_NAME'][SITENAME][$pgLevel] = $arrCSRF['NAME'];
+		} else {
+			$_SESSION['CSRF_TOKEN_KEY'][SITENAME] = $arrCSRF['KEY'];
+			$_SESSION['CSRF_TOKEN_NAME'][SITENAME] = $arrCSRF['NAME'];
+		}
+		
+		return $arrCSRF;
+	}
+	
+	function validateCSRF($pgLevel=false) {
+		$csrfKey="";
+		$csrfName="";
+		
+		if($pgLevel!==false) {
+			if(isset($_SESSION['CSRF_TOKEN_KEY'][SITENAME][$pgLevel]) && isset($_SESSION['CSRF_TOKEN_NAME'][SITENAME][$pgLevel])) {
+				$csrfKey=$_SESSION['CSRF_TOKEN_KEY'][SITENAME][$pgLevel];
+				$csrfName=$_SESSION['CSRF_TOKEN_NAME'][SITENAME][$pgLevel];
+			}
+		} else {
+			if(isset($_SESSION['CSRF_TOKEN_KEY'][SITENAME]) && isset($_SESSION['CSRF_TOKEN_NAME'][SITENAME])) {
+				$csrfKey=$_SESSION['CSRF_TOKEN_KEY'][SITENAME];
+				$csrfName=$_SESSION['CSRF_TOKEN_NAME'][SITENAME];
+			}
+		}
+		
+		if(strlen($csrfName)>2) {
+			if(isset($_POST[$csrfName]) && $_POST[$csrfName]==$csrfKey) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }
 ?>

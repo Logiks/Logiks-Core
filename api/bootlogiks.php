@@ -89,7 +89,7 @@ if(!function_exists("__cleanup")) {
 		}
 
 		$hostProtocol="http://";
-		if(_server('HTTPS')) {
+		if(isHTTPS()) {
 			$hostProtocol="https://";
 		}
 		_envData("SERVER",'SiteProtocol',str_replace("://","",$hostProtocol));

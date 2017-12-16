@@ -10,35 +10,58 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 class RoleModel {
 	
-	//Generates all role scopes for users, modules etc by default
-	protected static function getGlobalScopes() {
-		if(!isset($_SESSION["ROLESGLOBAL"][SITENAME])) {
-			$_SESSION["ROLESGLOBAL"][SITENAME]=[];
-			$scopeFiles=[
+	//Load all scoperules into Session
+	protected static function loadScopeRules() {
+		$_SESSION["ROLESGLOBAL"][SITENAME]=[];
+		$_SESSION["SCOPEMAP"][SITENAME]=[];
+		
+		$scopeFiles=[
 					ROOT.CFG_FOLDER."masters/roles.json"=>"GLOBALS",
 					ROOT.CFG_FOLDER."jsonConfig/roles.json"=>"GLOBALS",
 					APPROOT.APPS_CONFIG_FOLDER."roles.json"=>"SITE",
 				];
-			$scopeArr=[];
-			foreach($scopeFiles as $scf=>$typ) {
-				if(file_exists($scf)) {
-					try {
-						$scArr=json_decode(file_get_contents($scf),true);
-						if(is_array($scArr)) {
-							if(!isset($scArr['GLOBALS'])) $scArr['GLOBALS']=[];
-							if(!isset($scArr[SITENAME])) $scArr[SITENAME]=[];
-							
-							$scArr=array_merge($scArr['GLOBALS'],$scArr[SITENAME]);
-							
-							$scopeArr=array_merge($scopeArr,$scArr);
-						}
-					} catch(Exception $e) {
+		
+		$scopeArr=[];$scopeMap=[];
+		foreach($scopeFiles as $scf=>$typ) {
+			if(file_exists($scf)) {
+				try {
+					$scArr=json_decode(file_get_contents($scf),true);
+					if(is_array($scArr)) {
+						if(!isset($scArr['GLOBALS'])) $scArr['GLOBALS']=[];
+						if(!isset($scArr[SITENAME])) $scArr[SITENAME]=[];
 						
+						if(isset($scArr["scopemap"])) {
+							$scopeMap=array_merge($scopeMap,$scArr["scopemap"]);
+						}
+
+						$scArr=array_merge($scArr['GLOBALS'],$scArr[SITENAME]);
+
+						$scopeArr=array_merge($scopeArr,$scArr);
 					}
+				} catch(Exception $e) {
+
 				}
 			}
-
-			$_SESSION["ROLESGLOBAL"][SITENAME]=$scopeArr;
+		}
+		$_SESSION["SCOPEMAP"][SITENAME]=$scopeMap;
+		$_SESSION["ROLESGLOBAL"][SITENAME]=$scopeArr;
+	}
+	
+	//Gets the scope name for the given module
+	protected static function getScopeModule($module) {
+		if(!isset($_SESSION["SCOPEMAP"][SITENAME])) {
+			RoleModel::loadScopeRules();
+		}
+		if(isset($_SESSION["SCOPEMAP"][SITENAME][$module])) {
+			return $_SESSION["SCOPEMAP"][SITENAME][$module];
+		}
+		return $module;
+	}
+	
+	//Generates all role scopes for users, modules etc by default
+	protected static function getGlobalScopes() {
+		if(!isset($_SESSION["ROLESGLOBAL"][SITENAME])) {
+			RoleModel::loadScopeRules();
 		}
 		return $_SESSION["ROLESGLOBAL"][SITENAME];
 	}
@@ -66,6 +89,10 @@ class RoleModel {
 		$policyStr=str_replace(".ACCESS","",$policyStr);
 // 		$policyStr=str_replace(".PAGES","",$policyStr);
 		
+		if(isset($gScopes[strtolower($policyStr)])) {
+			$policyStr=strtolower($policyStr);
+		}
+
 		if(isset($gScopes[$policyStr])) {
 			if(!isset($gScopes[$policyStr]['access_control'])) {
 				$gScopes[$policyStr]['access_control']="public";
@@ -102,6 +129,15 @@ class RoleModel {
 		$actionType=strtoupper($actionType);
 		
 		$activity="MAIN";
+		$moduleOriginal=$module;
+		$module=RoleModel::getScopeModule($module);
+		$module=explode(".",$module);
+		if(count($module)>1) {
+			$activity=str_replace("{$moduleOriginal}.{$moduleOriginal}.","{$moduleOriginal}.",implode(".",array_slice($module,1)).".{$activity}");
+			$module=$module[0];
+		} else {
+			$module=implode(".",$module);
+		}
 		
 		$moduleArr=explode(".",$module);
 		if(count($moduleArr)>1) {
@@ -149,6 +185,15 @@ class RoleModel {
 	}
 
 	public static function checkRole($module,$activity,$actionType="ACCESS") {
+		$moduleOriginal=$module;
+		$module=RoleModel::getScopeModule($module);
+		$module=explode(".",$module);
+		if(count($module)>1) {
+			$activity=str_replace("{$moduleOriginal}.{$moduleOriginal}.","{$moduleOriginal}.",implode(".",array_slice($module,1)).".{$activity}");
+			$module=$module[0];
+		} else {
+			$module=implode(".",$module);
+		}
 		$actionType=strtoupper($actionType);
 		
 		$policyStr=[$module,strtoupper($activity),strtoupper($actionType)];

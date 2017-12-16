@@ -36,7 +36,7 @@ if(!function_exists("checkUserRoles")) {
 		if($policyName==null || strlen($policyName)<=0) $policyName=toTitle(str_replace(".","_",$policyStr));
 		$policyArr=explode(".",$policyStr);
 		if(count($policyArr)==1) {
-			return checkRoleScope($policyArr[0]);
+			return checkUserScope($policyArr[0]);
 		} elseif(count($policyArr)==2) {
 			return checkUserRoles($policyArr[0],$policyArr[1]);
 		} else {

@@ -21,16 +21,26 @@ if(!isset($initialized)) {
 	include_once 'syscheck.php';
 	include_once 'commons.php';
 
+	$currentCookieParams = session_get_cookie_params();
+	$sidvalue = session_id();  
+	setcookie(
+	    'PHPSESSID',//name
+	    $sidvalue,//value
+	    0,//expires at end of session
+	    $currentCookieParams['path'],//path
+	    $currentCookieParams['domain'],//domain
+	    isHTTPS() //secure
+	);
 	_envData("SESSION",'REQUEST_PAGE_START',$startTime);
 
 	$dirPath=str_replace(_server("DOCUMENT_ROOT"),'',dirname(_server("SCRIPT_FILENAME"))."/");
 	$dirPath=substr($dirPath, 1);
 	if(!defined("InstallFolder")) define('InstallFolder',$dirPath);
 
-	if(!defined("WEBROOT")) define ('WEBROOT', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
+	if(!defined("WEBROOT")) define ('WEBROOT', 'http' . (isHTTPS() ? 's' : '') . '://' . 
 			str_replace("//", "/", _server('HTTP_HOST').dirname(_server('SCRIPT_NAME'))."/"));
 	
-	if(!defined("SiteLocation")) define ('SiteLocation', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
+	if(!defined("SiteLocation")) define ('SiteLocation', 'http' . (isHTTPS() ? 's' : '') . '://' . 
 			str_replace("//", "/", _server('HTTP_HOST')."/".InstallFolder."/"));
 	
 	include_once ROOT. "config/classpath.php";

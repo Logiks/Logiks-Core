@@ -67,7 +67,7 @@ class RSSGen {
 		header("Content-Type: application/rss+xml; charset=".RSSGen::$encoding);
 	}
 	public static function generateFromDB($table,$rssID,$diplayTemplate=null,$embedImageInContent=null,$itemLimit=null) {
-		if(_server('HTTPS')) $host="https://"; else $host="http://";
+		if(isHTTPS()) $host="https://"; else $host="http://";
 		$host=$host._server("HTTP_HOST")."/";
 		
 		$sql="SELECT * FROM $table where rssid='$rssID' AND (site='".SITENAME."' OR site='*') AND blocked <> 'true'";
@@ -136,7 +136,7 @@ class RSSGen {
 			$descs="Sorry, the feed you are searching does not exist or has been removed.",
 			$imageLink="media/images/notfound/rss.png") {
 		
-		if(_server('HTTPS')) $host="https://"; else $host="http://";
+		if(isHTTPS()) $host="https://"; else $host="http://";
 		$host=$host._server("HTTP_HOST")."/";
 		$refLINK=SiteLocation.SITENAME."/";
 		$imageLink=SiteLocation.loadMedia($imageLink,true);

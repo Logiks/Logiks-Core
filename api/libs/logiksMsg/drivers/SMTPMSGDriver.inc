@@ -41,6 +41,7 @@ class SMTPMSGDriver extends LogiksMSGDriver {
 			$fromMsg=$mailConfig['smtp_username'];
 		}
 
+		$mail->CharSet = 'UTF-8';
 		
 		if(!isset($mailConfig['smtp_ssl'])) {
 			$mailConfig['smtp_ssl']=array(
@@ -87,6 +88,26 @@ class SMTPMSGDriver extends LogiksMSGDriver {
 		if(isset($params['msg_plain'])) $this->mailObj->AltBody = $params['msg_plain'];
 		else $this->mailObj->AltBody = strip_tags($msgBody);
 
+		if(isset($params['bcc'])) {
+			if(!is_array($params['bcc'])) $params['bcc']=explode(",",$params['bcc']);
+			foreach($params['bcc'] as $m) {
+				$this->mailObj->addBCC($m);
+			}
+		}
+		
+		if(isset($params['cc'])) {
+			if(!is_array($params['cc'])) $params['cc']=explode(",",$params['cc']);
+			foreach($params['cc'] as $m) {
+				$this->mailObj->addCC($m);
+			}
+		}
+		
+		if(isset($params['attachments'])) {
+			if(!is_array($params['attachments'])) $params['attachments']=explode(",",$params['attachments']);
+			foreach($params['attachments'] as $m) {
+				$this->mailObj->addAttachment($m);
+			}
+		}
  		if (!$this->mailObj->send()) {
 				$this->msgLog(false,$this->mailObj->ErrorInfo,$to,$subject,$msgBody,$params);
 		    return array("error"=>true,"msg"=>$this->mailObj->ErrorInfo,"type"=>"smtp");

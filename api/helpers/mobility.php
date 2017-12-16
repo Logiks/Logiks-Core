@@ -22,7 +22,7 @@ if(!function_exists("getUserDeviceType")) {
 			} else {
 				$device=$out[0];
 			}
-			setCookie("USER_DEVICE",$device,null,"/");
+			setCookie("USER_DEVICE",$device,null,"/",$_SERVER['SERVER_NAME'], isHTTPS());
 			return $device;
 		}
 	}
@@ -30,13 +30,13 @@ if(!function_exists("getUserDeviceType")) {
 	function switchUserDeviceType($device="pc") {
 		$device=strtolower($device);
 		if($device=="pc") {
-			setCookie("USER_DEVICE",$device,null,"/");
+			setCookie("USER_DEVICE",$device,null,"/",$_SERVER['SERVER_NAME'], isHTTPS());
 		} elseif($device=="mobile") {
-			setCookie("USER_DEVICE",$device,null,"/");
+			setCookie("USER_DEVICE",$device,null,"/",$_SERVER['SERVER_NAME'], isHTTPS());
 		} elseif($device=="tablet") {
-			setCookie("USER_DEVICE",$device,null,"/");
+			setCookie("USER_DEVICE",$device,null,"/",$_SERVER['SERVER_NAME'], isHTTPS());
 		} else {
-			setCookie("USER_DEVICE","pc",null,"/");
+			setCookie("USER_DEVICE","pc",null,"/",$_SERVER['SERVER_NAME'], isHTTPS());
 		}
 		return $device;
 	}

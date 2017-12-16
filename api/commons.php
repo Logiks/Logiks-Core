@@ -341,5 +341,11 @@ if(!function_exists("_session")) {
 	function _envData($key,$name,$value) {
 		LogiksSession::getInstance()->set(strtoupper($key),$name,$value);
 	}
+	function isHTTPS() {
+		if(isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) {
+			return true;
+		}
+		return false;
+	}
 }
 ?>

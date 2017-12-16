@@ -20,8 +20,8 @@ define('ROOT_RELATIVE',"../");
 define('SERVICE_ROOT',dirname(__FILE__) . "/");
 define('SERVICE_PATH',dirname(_server('SCRIPT_NAME'))."/");
 
-define ('SERVICE_HOST', 'http' . (_server('HTTPS') ? 's' : '') . '://' . _server('HTTP_HOST').dirname(_server('SCRIPT_NAME'))."/");
-define ('WEBROOT', 'http' . (_server('HTTPS') ? 's' : '') . '://' . _server('HTTP_HOST').dirname(dirname(_server('SCRIPT_NAME'))));
+define ('SERVICE_HOST', 'http' . (isHTTPS() ? 's' : '') . '://' . _server('HTTP_HOST').dirname(_server('SCRIPT_NAME'))."/");
+define ('WEBROOT', 'http' . (isHTTPS() ? 's' : '') . '://' . _server('HTTP_HOST').dirname(dirname(_server('SCRIPT_NAME'))));
 
 if(!_server("HTTP_REFERER")) _envData("SERVER","HTTP_REFERER","");
 
@@ -68,9 +68,9 @@ $dirPath=str_replace(_server("DOCUMENT_ROOT"),'',dirname(dirname(_server("SCRIPT
 $dirPath=substr($dirPath, 1);
 if(!defined("InstallFolder")) define('InstallFolder',$dirPath);
 
-if(!defined("WEBROOT")) define ('WEBROOT', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
+if(!defined("WEBROOT")) define ('WEBROOT', 'http' . (isHTTPS() ? 's' : '') . '://' . 
 			str_replace("//", "/", _server('HTTP_HOST').dirname(_server('SCRIPT_NAME'))."/"));
-if(!defined("SiteLocation")) define ('SiteLocation', 'http' . (_server('HTTPS') ? 's' : '') . '://' . 
+if(!defined("SiteLocation")) define ('SiteLocation', 'http' . (isHTTPS() ? 's' : '') . '://' . 
 		str_replace("//", "/", _server('HTTP_HOST')."/".InstallFolder."/"));
 
 require_once ROOT. "api/libs/errorLogs/boot.php";
