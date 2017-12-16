@@ -20,11 +20,12 @@ loadConfigs(ROOT . "config/auth.cfg");
 include ROOT."api/helpers/pwdhash.php";
 //include ROOT."api/security.php";
 
-if(!isset($_SESSION['LOGINSALT'])) {
+/*
+ if(!isset($_SESSION['LOGINSALT'])) {
 	if(SITENAME!="cms") {
 		relink("Sorry, Login must be done through the Login Page.",$domain);
 	}
-}
+}*/
 
 if(isset($_SESSION['LOGINSALT']) && isset($_REQUEST['pubkey'])) {
 	$key = pack("H*", $_SESSION['LOGINSALT']);
