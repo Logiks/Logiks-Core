@@ -371,8 +371,21 @@
 			}
 		}
 
+		if(function_exists("getAppWhereQuery")) {
+			$sqlWX=getAppWhereQuery();
+		} else {
+			$sqlWX="";
+		}
+		
 		if(count($whereFinal)>0) {
 			$sql.=" WHERE ".implode(" ", $whereFinal);
+			if(strlen($sqlWX)>0) {
+				$sql.=" AND ({$sqlWX})";
+			}
+		} else {
+			if(strlen($sqlWX)>0) {
+				$sql.=" WHERE ({$sqlWX})";
+			}
 		}
 
 		if($sqlType=="SELECT") {
