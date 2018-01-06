@@ -15,7 +15,7 @@ if(!function_exists("generateSelectOptions")) {
 		switch ($fieldinfo['type']) {
 			case 'select':
 				if(!isset($fieldinfo['options'])) $fieldinfo['options']=[];
-				
+
 				foreach ($fieldinfo['options'] as $key => $value) {
 					if(!$value) continue;
 					if(is_array($value)) {
@@ -33,7 +33,7 @@ if(!function_exists("generateSelectOptions")) {
 						} else {
 							$html.="<option value='$key' ".implode(" ", $cx).">"._ling($vx)."</option>";
 						}
-						
+
 					} else {
 						$vx=$value;
 						if($data==$key) {
@@ -47,7 +47,7 @@ if(!function_exists("generateSelectOptions")) {
 				break;
 			case 'selectAJAX':
 				$html.="<option value=''>Loading ...</option>";
-				
+
 				break;
 			case 'dataMethod':
 				if(isset($fieldinfo['method'])) {
@@ -67,11 +67,11 @@ if(!function_exists("generateSelectOptions")) {
 						$html.=call_user_func($fieldinfo['method']);
 					}
 				}
-				
+
 				break;
 			case 'dataSelector':
 				if(!isset($fieldinfo['orderBy'])) $fieldinfo['orderBy']=null;
-				
+
 				$noOption=_ling("No Selection");
 
 				/*if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
@@ -79,7 +79,7 @@ if(!function_exists("generateSelectOptions")) {
 				}*/
 
 				$html.=createDataSelector($fieldinfo['groupid'],$fieldinfo['orderBy'],$dbKey);
-				
+
 				break;
 			case 'dataSelectorFromUniques':
 				if(!isset($fieldinfo['col1'])) {
@@ -96,6 +96,15 @@ if(!function_exists("generateSelectOptions")) {
 				/*if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
 					$html.="<option value=''>{$noOption}</option>";
 				}*/
+				if(is_array($fieldinfo['where'])) {
+					foreach($fieldinfo['where'] as $a=>$b) {
+						if(is_string($b)) {
+							$fieldinfo['where'][$a]=_replace($b);
+						}
+					}
+				} else {
+					$fieldinfo['where']=_replace($fieldinfo['where']);
+				}
 
 				$html.=createDataSelectorFromUniques($fieldinfo['table'],$fieldinfo['col1'],$fieldinfo['col2'],$fieldinfo['where'],$fieldinfo['orderBy'],$dbKey);
 
@@ -109,9 +118,18 @@ if(!function_exists("generateSelectOptions")) {
 				/*if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
 					$html.="<option value=''>{$noOption}</option>";
 				}*/
+				if(is_array($fieldinfo['where'])) {
+					foreach($fieldinfo['where'] as $a=>$b) {
+						if(is_string($b)) {
+							$fieldinfo['where'][$a]=_replace($b);
+						}
+					}
+				} else {
+					$fieldinfo['where']=_replace($fieldinfo['where']);
+				}
 
 				$html.=createDataSelectorFromTable($fieldinfo['table'],$fieldinfo['columns'], $fieldinfo['where'],$fieldinfo['groupBy'],$fieldinfo['orderBy'],$dbKey);
-				
+
 				break;
 		}
 
