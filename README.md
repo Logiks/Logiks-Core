@@ -1,10 +1,10 @@
 Logiks-Core :: Framework
 ------------------------
 
-[![GitHub version](https://badge.fury.io/gh/Logiks%2FLogiks-Core.svg)](https://badge.fury.io/gh/Logiks%2FLogiks-Core)
+[![GitHub version](https://badge.fury.io/gh/Logiks%2FLogiks-Core.svg?style=for-the-badg)](https://badge.fury.io/gh/Logiks%2FLogiks-Core)
 [![GitHub issues](https://img.shields.io/github/issues/Logiks/Logiks-Core.svg?style=for-the-badge)](https://github.com/Logiks/Logiks-Core/issues)
-[![Build Status](https://travis-ci.org/Logiks/Logiks-Core.svg)](https://travis-ci.org/Logiks/Logiks-Core)
-[![codecov](https://codecov.io/gh/Logiks/Logiks-Core/branch/master/graph/badge.svg)](https://codecov.io/gh/Logiks/Logiks-Core)
+[![Build Status](https://travis-ci.org/Logiks/Logiks-Core.svg?style=for-the-badg)](https://travis-ci.org/Logiks/Logiks-Core)
+[![codecov](https://codecov.io/gh/Logiks/Logiks-Core/branch/master/graph/badge.svg?style=for-the-badg)](https://codecov.io/gh/Logiks/Logiks-Core)
 
 [![Software license](https://img.shields.io/github/license/Logiks/Logiks-Core.svg?style=for-the-badge)](https://github.com/Logiks/Logiks-Core/blob/master/license.txt)
 
