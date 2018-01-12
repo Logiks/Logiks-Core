@@ -18,7 +18,15 @@ if(!isset($initialized)) {
 	$startTime=microtime(true);
 	$_SESSION['REQUEST_PAGE_START']=$startTime;
 
-	include_once 'syscheck.php';
+	// Do System Check Once per Installation
+	if(!isset($_SESSION['SYSCHECK']) || !is_numeric($_SESSION['SYSCHECK']) || time()-$_SESSION['SYSCHECK']>36000) {
+		
+		include_once 'syscheck.php';
+		
+		//Set the current check time
+		$_SESSION['SYSCHECK']=time();
+	}
+	
 	include_once 'commons.php';
 
 	$currentCookieParams = session_get_cookie_params();

@@ -6,57 +6,118 @@
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Version: 1.0
  */
+	
+//Check Supported PHP Version
+if (!defined('PHP_VERSION_ID')) {
+		$version = explode('.', PHP_VERSION);
 
-if(!isset($_SESSION['SYSCHECK']) || !is_numeric($_SESSION['SYSCHECK']) || time()-$_SESSION['SYSCHECK']>36000) {
+		define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+}
 
-	//Check Supported PHP Version
-	if (!defined('PHP_VERSION_ID')) {
-	    $version = explode('.', PHP_VERSION);
+if(PHP_VERSION_ID < 50600) {
+	sysCheckPrint("PHP version 5.6 or above is required to run Logiks 4.0.","Please upgrade to continue.");
+}
 
-	    define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+//Check some important extensions.
+$checkExtensions=array(
+		"cURL PHP Extension is required"=>"func:curl_init",
+		"MCrypt PHP Extension is required"=>"library:mcrypt",
+		"Mbstring PHP Extension is required"=>"library:mbstring",
+		"OpenSSL PHP Extension is required"=>"library:openssl",
+		"ZipArchive PHP Library is required"=>"class:ZipArchive",
+// 		"GD PHP Library is required"=>"library:gd",
+	);
+$errorMsg=[];
+$noProceed=false;
+
+foreach ($checkExtensions as $msg=>$extension) {
+	$extension=explode(":",$extension);
+	switch($extension[0]) {
+		case "library":
+			if(!extension_loaded($extension[1])) {
+				$errorMsg[]=$msg;
+				$noProceed=true;
+			}
+			break;
+		case "class":
+			if(!class_exists($extension[1])) {
+				$errorMsg[]=$msg;
+				$noProceed=true;
+			}
+			break;
+		case "func":
+			if(!function_exists($extension[1])) {
+				$errorMsg[]=$msg;
+				$noProceed=true;
+			}
+			break;
 	}
+}
+if($noProceed) {
+	sysCheckPrint("Important extension missing in PHP, please install them before continuing.",$errorMsg);
+}
 
-	if(PHP_VERSION_ID < 50600) {
-	    echo "<h1 align=center style='color:#BF2E11'>PHP version 5.6 or above is required to run Logiks 4.0.</h1>";
-	   	echo "<h3 align=center style='color:#444;'>Please upgrade to continue</h3>";
-	    exit();
-	}
 
-	//Check Installation
-	$bpath=dirname(dirname(__FILE__));
-	if(!file_exists("$bpath/config/basic.cfg")) {
-		if(file_exists("$bpath/install/")) {
+//Check Installation for basic config files
+$bpath=dirname(dirname(__FILE__));
+if(!file_exists("$bpath/config/basic.cfg")) {
+	if(file_exists("$bpath/install/")) {
+		if(php_sapi_name() != 'cli' ) {
 			echo "Initiating Installation Sequence ...";
 			header("Location:install/");
 		} else {
-			echo "<h1 align=center style='color:#BF2E11'>Error In Logiks Installation Or Corrupt Installation.</h1>";
-			echo "<h3 align=center style='color:#444;'>Please Contact Admin.</h3>";
+			sysCheckPrint("Complete Installation First","");
 		}
-		exit();
+	} else {
+		sysCheckPrint("Error In Logiks Installation Or Corrupt Installation.","Please Contact Admin.");
 	}
+}
 
-	//Check tmp directories permissions
-	if(!is_writable("$bpath/tmp")) {
-		echo "<h1 align=center style='color:#BF2E11'>Error In Logiks TMP Directory, its not writable.</h1>";
-		exit();
+
+//Check tmp directories permissions
+if(!is_writable("$bpath/tmp")) {
+	sysCheckPrint("Error In Logiks TMP Directory, its not writable.","tmp/ directory");
+}
+
+
+//Check some important files.
+$checkFiles=array(
+		
+	);
+foreach ($checkFiles as $fx) {
+	if(!file_exists($fx)) {
+		sysCheckPrint("Important file missing, please check the installation.",basename($fx));
 	}
-
-	//Check some important files.
-	$checkFiles=array(
-			
-		);
-	foreach ($checkFiles as $fx) {
-		if(!file_exists($fx)) {
-			echo "<h1 align=center style='color:#BF2E11'>Important file missing, please check the installation.</h1>";
-			echo "<h3 align=center style='color:#444;'>Missing : ".basename($fx)."</h3>";
-			exit();
+}
+//sysCheckPrint("","");
+function sysCheckPrint($msg1,$msg2) {
+	$isCLI = (php_sapi_name() == 'cli' );
+	if($isCLI) {
+		echo "\n";
+		echo $msg1."\n";
+		if(is_array($msg2)) {
+			foreach($msg2 as $m) {
+				echo "\t+ ".$m."\n";
+			}
+		} else {
+			echo "\t".$msg2."\n";
+		}
+		echo "\n";
+	} else {
+		echo "<h1 align=center style='color:#BF2E11'>{$msg1}</h1>";
+		if(is_array($msg2)) {
+			echo "<hr>";
+			foreach($msg2 as $m) {
+				echo "<p align=center style='color:#444;'>{$m}</p>";
+			}
+		} else {
+			echo "<h3 align=center style='color:#444;'>Error : {$msg2}</h3>";
 		}
 	}
-
-
-
-	//Set the current check time
-	$_SESSION['SYSCHECK']=time();
-	//echo "DONE SYS CHECK<br><br>";
+	exit();
+}
+if(php_sapi_name() == 'cli' ) {
+	echo "\nInstallation is all done. Visit the site on browser to continue.\n\n";
+	exit();
 }
 ?>
