@@ -34,14 +34,35 @@ if(!function_exists("checkUserRoles")) {
 		if($policyStr==null || strlen($policyStr)<=0) return true;
 		$policyStr=strtolower(str_replace(" ",".",$policyStr));
 		if($policyName==null || strlen($policyName)<=0) $policyName=toTitle(str_replace(".","_",$policyStr));
-		$policyArr=explode(".",$policyStr);
-		if(count($policyArr)==1) {
-			return checkUserScope($policyArr[0]);
-		} elseif(count($policyArr)==2) {
-			return checkUserRoles($policyArr[0],$policyArr[1]);
+		
+		$policyData=explode(":",$policyStr);
+		if(count($policyData)<=1)  {
+			$policyArr=explode(".",$policyStr);
+			if(count($policyArr)==1) {
+				return checkUserScope($policyArr[0]);
+			} elseif(count($policyArr)==2) {
+				return checkUserRoles($policyArr[0],$policyArr[1]);
+			} else {
+				return checkUserRoles($policyArr[0],$policyArr[1],$policyArr[2]);
+			}
 		} else {
-			return checkUserRoles($policyArr[0],$policyArr[1],$policyArr[2]);
+			switch(strtolower($policyData[0])) {
+				case "scope":case "policy":
+					return checkUserPolicy($policyData[1],$policyName);
+					break;
+				case "privileges":
+					$privileges=explode(",",$policyData[1]);
+					if(count($privileges)<=0) return true;
+					if(in_array($_SESSION['SESS_PRIVILEGE_NAME'],$privileges) || in_array(RoleModel::getPrivilegeHash(),$privileges)) return true;
+					break;
+				case "users":
+					$users=explode(",",$policyData[1]);
+					if(count($users)<=0) return true;
+					if(in_array($_SESSION['SESS_USER_ID'],$users)) return true;
+					break;
+			}
 		}
+		
 		return false;
 	}
 	

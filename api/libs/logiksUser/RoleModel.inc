@@ -194,6 +194,9 @@ class RoleModel {
 		} else {
 			$module=implode(".",$module);
 		}
+		$activity=preg_replace("/{$module}./","",$activity);
+		if($activity==null || strlen($activity)<=0) $activity="MAIN";
+
 		$actionType=strtoupper($actionType);
 		
 		$policyStr=[$module,strtoupper($activity),strtoupper($actionType)];
@@ -235,6 +238,9 @@ class RoleModel {
 		return (!getConfig("ROLEMODEL_DEFAULT_DENY"));
 	}
 	public static function registerRole($module,$activity,$actionType="ACCESS") {
+		$activity=preg_replace("/".strtolower($module)."./","",strtolower($activity));
+		if($activity==null || strlen($activity)<=0) $activity="MAIN";
+
 		$activity=strtoupper($activity);
 		$actionType=strtoupper($actionType);
 		
