@@ -93,6 +93,10 @@ class RoleModel {
 			$policyStr=strtolower($policyStr);
 		}
 
+		if(isset($gScopes[current(explode(".",$policyStr))])) {
+			$policyStr=current(explode(".",$policyStr));
+		}
+
 		if(isset($gScopes[$policyStr])) {
 			if(!isset($gScopes[$policyStr]['access_control'])) {
 				$gScopes[$policyStr]['access_control']="public";
@@ -145,8 +149,15 @@ class RoleModel {
 			array_shift($moduleArr);
 			$activity=strtoupper(implode(".",$moduleArr));
 		}
+
+		$actionType=strtoupper($actionType);
+		$activity=strtoupper($activity);
+
+		if(explode(".",$activity)>1) {
+			$activity=str_replace(".MAIN","",$activity);
+		}
 		
-		$policyStr=[$module,$activity,strtoupper($actionType)];
+		$policyStr=[$module,$activity,$actionType];
 		
 		$policyStr=implode(".",$policyStr);
 		$globalStatus=RoleModel::checkGlobals($policyStr);
@@ -194,12 +205,17 @@ class RoleModel {
 		} else {
 			$module=implode(".",$module);
 		}
-		$activity=preg_replace("/{$module}./","",$activity);
+		$activity=preg_replace("/{$module}\./","",$activity);
 		if($activity==null || strlen($activity)<=0) $activity="MAIN";
 
 		$actionType=strtoupper($actionType);
-		
-		$policyStr=[$module,strtoupper($activity),strtoupper($actionType)];
+		$activity=strtoupper($activity);
+
+		if(explode(".",$activity)>1) {
+			$activity=str_replace(".MAIN","",$activity);
+		}
+
+		$policyStr=[$module,$activity,$actionType];
 		$policyStr=implode(".",$policyStr);
 		$globalStatus=RoleModel::checkGlobals($policyStr);
 // 		var_dump($globalStatus);
@@ -238,7 +254,7 @@ class RoleModel {
 		return (!getConfig("ROLEMODEL_DEFAULT_DENY"));
 	}
 	public static function registerRole($module,$activity,$actionType="ACCESS") {
-		$activity=preg_replace("/".strtolower($module)."./","",strtolower($activity));
+		$activity=preg_replace("/".strtolower($module)."\./","",strtolower($activity));
 		if($activity==null || strlen($activity)<=0) $activity="MAIN";
 
 		$activity=strtoupper($activity);
