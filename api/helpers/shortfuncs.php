@@ -335,4 +335,13 @@ if(!function_exists("_moduleName")) {
 		return "";
 	}
 }
+if(!function_exists("_settings")) {
+	function _settings($module, $key, $value=null, $defaultValue="") {
+		if($value==null) {
+			return getSettings("{$module}.{$key}",$defaultValue,"user");
+		} else {
+			return setSettings("{$module}.{$key}",$value,"user");
+		}
+	}
+}
 ?>
