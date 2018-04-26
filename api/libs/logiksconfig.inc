@@ -42,6 +42,8 @@ class LogiksConfig {
     if(isset($_ENV[$key])) {
       $arr=$_ENV[$key];
 
+      if(!isset($arr['mode'])) $arr['mode']="CONFIG";
+
       switch($arr['mode']) {
         case "DEFINE":
           return false;
@@ -168,6 +170,7 @@ class LogiksConfig {
     	$cfgData=LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName];
     } else {
     	$f=ROOT.CFG_FOLDER."/jsonConfig/{$configName}.json";
+    	$f=str_replace("//","/",$f);
 		if(file_exists($f)) {
 			$data=file_get_contents($f);
 			if(function_exists("_replace")) $data=_replace($data);
