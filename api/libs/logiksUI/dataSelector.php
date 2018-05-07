@@ -31,12 +31,15 @@ if(!function_exists("createDataSelector")) {
 		if(is_array($col2)) {
 			$col2=implode(",", $col2);
 		}
+	    if(!is_array($table)) $table0=current(explode(",",$table));
+	    else $table0=$table[0];
+    
 		if($col2!=null && strlen($col2)>0) {
 			$sqlObj=_db($dbKey)->_selectQ($table,"$col1,$col2")
-				->_where(array("blocked"=>"false"));
+				->_where(array("{$table0}.blocked"=>"false"));
 		} else {
 			$sqlObj=_db($dbKey)->_selectQ($table,"$col1")
-				->_where(array("blocked"=>"false"));
+				->_where(array("{$table0}.blocked"=>"false"));
 		}
 		if($where!=null) {
 			$sqlObj=$sqlObj->_where($where);
@@ -62,8 +65,11 @@ if(!function_exists("createDataSelector")) {
 	}
 
 	function createDataSelectorFromTable($table, $columns, $where=null, $groupBy=null,$orderBy=null,$dbKey="app") {
+	    if(!is_array($table)) $table0=current(explode(",",$table));
+	    else $table0=$table[0];
+    
 		$sqlObj=_db($dbKey)->_selectQ($table,$columns)
-				->_where(array("blocked"=>"false"));
+				->_where(array("{$table0}.blocked"=>"false"));
 
 		if($where!=null) {
 			$sqlObj=$sqlObj->_where($where);
@@ -84,3 +90,4 @@ if(!function_exists("createDataSelector")) {
 	}
 }
 ?>
+
