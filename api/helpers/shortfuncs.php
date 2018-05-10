@@ -81,8 +81,14 @@ if(!function_exists("_uri")) {
 /*Date And Time Functions*/
 if(!function_exists("_time")) {
 	//Used Generally To Convert UserFormatted Times To DB Formatted (H:i:s) times
-	function _time($time=null, $inFormat="*", $outFormat="H:i:s") {
-		if($inFormat=="*") $inFormat=getConfig("TIME_FORMAT");
+	function _time($time=null, $inFormat="*", $outFormat="*") {
+		if($inFormat=="*") {
+			$inFormat="H:i:s";
+		}
+		if($outFormat=="*") {
+			$outFormat=getConfig("TIME_FORMAT");
+		}
+
 		if($time=="00" || $time=="00:00" || $time=="00:00:00") return $time;
 		if(strlen($time)<=0 || $time==null) {
 			$time=date($inFormat);
@@ -144,7 +150,7 @@ if(!function_exists("_time")) {
 if(!function_exists("_date")) {
 	//Used Generally To Convert UserFormatted Dates To DB Formatted (Y/m/d) dates
 	function _date($date=null, $inFormat="*", $outFormat="Y/m/d") {
-		if($date=="0000-00-00") return "0000-00-00";
+		if($date=="0000-00-00") return "";
 		if($date==null || strlen($date)<=0) return "";
 		//if(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$date)) {
     //    return $date;
@@ -213,7 +219,7 @@ if(!function_exists("_date")) {
 if(!function_exists("_pDate")) {
 	//From Server Side To Client Side :: Print Date
 	function _pDate($date=null,$outFormat=null) {
-		if($date==null || strlen($date)<=0) $date="";//date("Y/m/d");
+		if($date==null || strlen($date)<=0 || $date=="0000-00-00") $date="";//date("Y/m/d");
 		$date=explode(" ", $date);
 		if(!isset($date[1])) $date[1]="";
 		if($outFormat==null) {
