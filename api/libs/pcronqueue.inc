@@ -22,7 +22,11 @@ class PCronQueue {
 		$xt=0;
 		$tots=count($this->taskToRun);
 		foreach ($this->taskToRun as $task) {
-			$tParam=unserialize($task['script_params']);
+      if(substr($task['script_params'],0,1)=="{") {
+        $tParam=json_decode($task['script_params'],true);
+      } else {
+        $tParam=unserialize($task['script_params']);
+      }
 			$tParam['appsite']=$task['site'];
 			$result = $this->execute_script($task['scriptpath'], $task['method'], $tParam);
 			if($result === true) {
@@ -67,13 +71,14 @@ class PCronQueue {
 	private function checkTasks($taskId=null) {
 		$data=_db(true)->_selectQ(_dbTable("system_cronjobs",true),
 						"id,guid,site,title,scriptpath,script_params,method,schedule,last_completed,run_only_once,task_md5_hash",
-					 ["retired"=>'false',"blocked"=>'false'])->_where("now()-last_completed>schedule");
+					 ["retired"=>'false',"blocked"=>'false'])->_where("(now()-last_completed>(schedule*60) OR last_completed IS NULL)");
 		
 		if($taskId!=null) {
 			$data=$data->_where(["id"=>$taskId]);
 		}
 		$data=$data->_get();
-
+    if(!$data) return [];
+    
 		$out = array();
 		foreach ($data as $key => $row) {
 			$out[$row["id"]] = $row;
@@ -112,7 +117,7 @@ class PCronQueue {
 			$query_string = http_build_query($param_array);
 			switch ($method) {
 				case 'POST': 
-					$urlConn = curl_init ($script);
+					$urlConn = curl_init($script);
 					curl_setopt ($urlConn, CURLOPT_POST, 1);
 					curl_setopt ($urlConn, CURLOPT_POSTFIELDS, $query_string);  //submitting an array did not work :(
 				break;
@@ -135,16 +140,31 @@ class PCronQueue {
 				return -1;
 			}
 		} else {
+      if(!file_exists($script)) {
+        if(file_exists(APPROOT.$script)) {
+          $script=APPROOT.$script;
+        } else {
+          return -1;
+        }
+      }
 			unset($_REQUEST["pcron_key"]);
 			foreach($param_array as $a=>$b) {
 				$_REQUEST[$a]=$b;
 			}
 			ob_start(); // prevent the buffer from being displayed
-			include $script;
+			$returned_response = include $script;
 			$raw_response = ob_get_contents();
-			ob_end_clean();			
-			
+			ob_end_clean();
+      
+      if($returned_response==null) $returned_response=[];
+      elseif(is_string($returned_response)) $returned_response=["msg"=>$returned_response];
+      
+      if($raw_response==null) $raw_response="{}";
+      
 			$result_array = json_decode($raw_response, true);
+      
+      $result_array=array_merge($result_array,$returned_response);
+      
 			if(isset($result_array['status'])) {
 				return $result_array['status']; 
 			} else {
