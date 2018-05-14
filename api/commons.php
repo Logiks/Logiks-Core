@@ -342,6 +342,9 @@ if(!function_exists("_session")) {
 		LogiksSession::getInstance()->set(strtoupper($key),$name,$value);
 	}
 	function isHTTPS() {
+		if(defined("FORCE_HTTPS")) {
+	      return (FORCE_HTTPS===true || FORCE_HTTPS==="true")?true:false;
+	    }
 		if(isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) {
 			return true;
 		}

@@ -26,6 +26,8 @@ if(!isset($initialized)) {
 		//Set the current check time
 		$_SESSION['SYSCHECK']=time();
 	}
+
+	// define("FORCE_HTTPS",true);
 	
 	include_once 'commons.php';
 
