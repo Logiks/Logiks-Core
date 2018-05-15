@@ -690,6 +690,11 @@
 				
 			case "in":case ":in:":
 				if(is_array($arr[0])) {
+					foreach($arr[0] as $a=>$b) {
+						if(is_string($b)) {
+						  $arr[0][$a]="'{$b}'";
+						}
+					}
 					$s="$col IN (".implode(",",$arr[0]).")";
 				} else {
 					$s="$col IN ({$arr[0]})";
@@ -698,6 +703,11 @@
 				
 			case "ni":case ":ni:":
 				if(is_array($arr[0])) {
+					foreach($arr[0] as $a=>$b) {
+						if(is_string($b)) {
+						  $arr[0][$a]="'{$b}'";
+						}
+					}
 					$s="$col NOT IN (".implode(",",$arr[0]).")";
 				} else {
 					$s="$col NOT IN ({$arr[0]})";
@@ -735,3 +745,4 @@
     }
 }
 ?>
+
