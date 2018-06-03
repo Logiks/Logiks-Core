@@ -312,10 +312,11 @@ function startNewSession($userid, $domain, $params=array()) {
 	header("SESSION-KEY:".$_SESSION['SESS_TOKEN'],false);
 	header("SESSION-MAUTH:".$_SESSION['MAUTH_KEY'],false);
 
-	setcookie("LOGIN", "true", time()+36000,"/",null, isHTTPS());
-	setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000,"/",null, isHTTPS());
-	setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000,"/",null, isHTTPS());
-	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000,"/",null, isHTTPS());
+	setcookie("LOGIN", "true", time()+36000,"/",$_SERVER['SERVER_NAME'], isHTTPS());
+	setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000,"/",$_SERVER['SERVER_NAME'], isHTTPS());
+	setcookie("USERNAME", $_SESSION['SESS_USER_NAME'], time()+36000,"/",$_SERVER['SERVER_NAME'], isHTTPS());
+	setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000,"/",$_SERVER['SERVER_NAME'], isHTTPS());
+	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000,"/",$_SERVER['SERVER_NAME'], isHTTPS());
 	
 	_db(true)->_deleteQ(_dbTable("cache_sessions",true),"created_on<DATE_SUB(NOW(), INTERVAL 1 MONTH)")->_RUN();
 	

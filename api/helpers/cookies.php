@@ -19,7 +19,7 @@ if(!function_exists("deleteCookie")) {
 			if(is_numeric($time)) $time=time()+$time;
 			else $time=time()+3600; //1 Hour
 		}
-		setcookie($name, $value, $time, $path);
+		setCookie($name, $value, $time, $path,$_SERVER['SERVER_NAME'], isHTTPS());
 		$_COOKIE[$name]=$value;
 	}
 	

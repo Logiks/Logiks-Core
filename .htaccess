@@ -20,6 +20,9 @@ Options +FollowSymLinks
 # Multiviews creates problems with aliased URLs and is not needed for Logiks.
 Options -Multiviews
 
+# Set Enviroment Variables
+#SetEnv HTTPS true
+
 # Set the default handler.
 DirectoryIndex index.php index.html index.htm
 

@@ -350,4 +350,24 @@ if(!function_exists("_settings")) {
 		}
 	}
 }
+if(!function_exists("_cookie")) {
+	function _cookie($cookieKey,$defaultValue=null,$expires=0,$path="/",$domainName=null) {
+		if($defaultValue==null) {
+			if(isset($_COOKIE[$cookieKey])) {
+				return $_COOKIE[$cookieKey];
+			} else {
+				return false;
+			}
+		} else {
+			if($domainName==null) $domainName=$_SERVER['SERVER_NAME'];
+			$a=setCookie($cookieKey,$defaultValue,$expires,$path,$domainName, isHTTPS());
+			if($a) {
+				$_COOKIE[$cookieKey]=$defaultValue;
+				return $defaultValue;
+			} else {
+				return false;
+			}
+		}
+	}
+}
 ?>
