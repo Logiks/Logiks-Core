@@ -474,6 +474,8 @@
 		
 		if(isset($arr['join'])) {
 			foreach($arr['join'] as $jn) {
+				$jn=array_merge(["as"=>"","type"=>"LEFT"],$jn);
+				
 				$query=$jn['query'];
 				$condition=$jn['condition'];
 				$as=$jn['as'];
