@@ -9,6 +9,6 @@
 
 function smarty_function_widget($params, Smarty_Internal_Template $template) {
 	$GLOBALS['PAGETMPL']=$template->smarty;
-	return loadWidget($params['src']);
+	return loadWidget($params['src'],$params);
 }
 ?>
