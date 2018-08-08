@@ -131,6 +131,7 @@ class ServiceController {
 	public function executeRequest() {
 		$this->params['file']=$this->findServiceFile();
 		
+    		ob_clean();
 		if($this->params['file']) {
 			if(file_exists($this->params['file']['src'])) {
 				if($this->params['cache'] && getConfig("SERVICE_CACHE_ENABLED")) {

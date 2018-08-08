@@ -4,6 +4,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!isset($_POST['mauth'])) {
 	echo "<h5>Securing Access Authentication ... </h5>";
 }
+//error_reporting(E_ERROR);
 
 runHooks("preAuth");
 

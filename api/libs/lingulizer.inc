@@ -8,7 +8,12 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 class Lingulizer {
-	private static $instance=null;
+	
+  private static $instance=null;
+  
+	var $lingCacheID = "LINGDATA";
+	var $sessCacheID=null;
+  
 	var $lang=array();
 	var $mismatch=null;
 	var $loadedLingFiles=array();
@@ -25,6 +30,14 @@ class Lingulizer {
 		}
 		if(defined("LING_AUTO_FIXCASE") && LING_AUTO_FIXCASE=="true") {
 			$this->autoFixCase=true;
+		}
+    
+		$this->sessCacheID=md5(SiteID.SITENAME.$this->lingCacheID);
+    
+		$cacheData = $this->getLingCache();
+		if($cacheData && isset($cacheData['files'])) {
+			$this->loadedLingFiles=$cacheData['files'];
+			$this->lang=$cacheData['data'];
 		}
 	}
 
@@ -54,14 +67,14 @@ class Lingulizer {
 	public function loadLingFile($file) {
 		if(strlen($file)<=0) return false;
 		if(!file_exists($file)) {
+      			if(file_exists(ROOT.LING_FOLDER.$file)) {
+				$file1=ROOT.LING_FOLDER.$file;
+				$this->loadDataFile($file1);
+			}
+      
 			if(defined("APPS_LING_FOLDER") && file_exists(APPROOT.APPS_LING_FOLDER.$file)) {
-				$file=APPROOT.APPS_LING_FOLDER.$file;
-				$this->loadDataFile($file);
-			} elseif(file_exists(ROOT.LING_FOLDER.$file)) {
-				$file=ROOT.LING_FOLDER.$file;
-				$this->loadDataFile($file);
-			} else {
-				return false;
+				$file1=APPROOT.APPS_LING_FOLDER.$file;
+				$this->loadDataFile($file1);
 			}
 		} else {
 			$this->loadDataFile($file);
@@ -94,6 +107,7 @@ class Lingulizer {
 		if(in_array($file, $this->loadedLingFiles)) {
 			return false;
 		}
+    
 		$fh=@fopen($file,"r");
 		if($fh){
 			while(($buffer = fgets($fh, 8192)) !== false){
@@ -109,10 +123,37 @@ class Lingulizer {
 				}
 			}
 			array_push($this->loadedLingFiles,$file);
+			
+			$this->updateLingCache();
+			
 			return true;
 		}
 		return false;
 	}
+  
+  protected function getLingCache() {
+    if(isset($_SESSION[$this->sessCacheID])) {
+      return $_SESSION[$this->sessCacheID];
+    }
+    $lingCache = _cache($this->lingCacheID);
+    if($lingCache && isset($lingCache['files'])) {
+      $cacheData=json_decode($lingCache,true);
+      $_SESSION[$this->sessCacheID]=$cacheData;
+      return $cacheData;
+    }
+    return false;
+  }
+  
+  protected function updateLingCache() {
+    _cache($this->lingCacheID,json_encode([
+				"files"=>$this->loadedLingFiles,
+				"data"=>$this->lang
+			]));
+    $_SESSION[$this->sessCacheID]=[
+				"files"=>$this->loadedLingFiles,
+				"data"=>$this->lang
+			];
+  }
 
 	public function toLing($str) {
 		//printArray($this->lang);

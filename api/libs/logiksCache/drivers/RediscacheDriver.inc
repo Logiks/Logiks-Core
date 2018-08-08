@@ -1,20 +1,21 @@
 <?php
 /*
- * Cache Driver With Memcached
+ * Cache Driver With Redis (php-redis)
+ * https://github.com/phpredis/phpredis#usage
  *
- * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 10/03/2015
+ * Author: Bismay Kumar Mohapatra bismay4u@gmail.com on 20/07/2018
  * Version: 1.0
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-class MemcachedDriver extends AbstractCacheDriver {
-
-	protected $cacheTag=null;
+class RediscacheDriver extends AbstractCacheDriver {
+  
+  protected $cacheTag=null;
 	protected $params=null;
 	protected $expires=86400;
 	protected $prefix="";
 
-	private $memcache=null;
+	private $redis=null;
 
 	public function __construct($srcTag,$params) {
 		parent::__construct();
@@ -30,63 +31,59 @@ class MemcachedDriver extends AbstractCacheDriver {
 			trigger_logikserror("MemcachedDriver needs Memcached Class to run.",E_USER_ERROR);
 		}
 
-		$this->memcache = new Memcached();
-		$this->memcache->addServer($this->params['host'],$this->params['port'],$this->params['weight']);
+		$this->redis = new Redis();
+    $this->redis->pconnect($this->params['host'],$this->params['port'],$this->params['weight']);
 
-		$statuses = $this->memcache->getStats();
-
-		if($statuses[$this->params['host'].":".$this->params['port']]['pid']<0) {
-			trigger_logikserror("MemcachedDriver could not access the memcache server for '$srcTag'.",E_USER_ERROR);
+		$statuses = $this->redis->info();
+  
+		if(!isset($statuses['redis_version'])) {
+			trigger_logikserror("RediscacheDriver could not access the redis server for '$srcTag'.",E_USER_ERROR);
 		}
 
 		$_ENV['SOFTHOOKS']['SHUTDOWN'][]=array("FUNC"=>"closeConnection","OBJ"=>$this);
 	}
 
 	public function closeConnection() {
-		$this->memcache->quit();
+		$this->redis->close();
 	}
-	
-	//Reads Cache from Local/Remote Sources
+  
+  //Reads Cache from Local/Remote Sources
 	public function cache_get($group,$key) {
 		$siteKey="core";
 		if(defined("SITENAME")) $siteKey=SITENAME;
-		return $this->memcache->get(md5($this->prefix.$siteKey.$group.$key));
+		return $this->redis->get(md5($this->prefix.$siteKey.$group.$key));
 	}
 
 	//Writes Cache to Local/Remote Sources
 	public function cache_set($group,$key,$data) {
 		$siteKey="core";
 		if(defined("SITENAME")) $siteKey=SITENAME;
-		if($this->memcache->add(md5($this->prefix.$siteKey.$group.$key),$data,$this->expires)) {
-			return true;
-		} else {
-			return $this->memcache->replace(md5($this->prefix.$siteKey.$group.$key),$data,$this->expires);
-		}
+		return $this->redis->set(md5($this->prefix.$siteKey.$group.$key),$data,$this->expires);
 	}
 
 	//Deletes Cache from/to Local/Remote Sources
 	public function cache_delete($group,$key) {
 		$siteKey="core";
 		if(defined("SITENAME")) $siteKey=SITENAME;
-		return $this->memcache->delete(md5($this->prefix.$siteKey.$group.$key));
+		return $this->redis->delete(md5($this->prefix.$siteKey.$group.$key));
 	}
 
 	//Immediately invalidates all existing items.
 	public function cache_purge($group=null) {
-		return $this->memcache->flush();
+		return $this->redis->flushDb();
 	}
 
 	//Is Cache Exists
 	public function cache_exists($group,$key) {
 		$siteKey="core";
 		if(defined("SITENAME")) $siteKey=SITENAME;
-		$a=$this->memcache->get(md5($this->prefix.$siteKey.$group.$key));
+		$a=$this->redis->get(md5($this->prefix.$siteKey.$group.$key));
 		return !($a===false);
 	}
 
 	//Gets the cache stats
 	public function cache_stats() {
-		return $this->memcache->getStats();
+		return $this->redis->info();
 	}
 
 	//Last Updated This Key On
@@ -99,4 +96,3 @@ class MemcachedDriver extends AbstractCacheDriver {
 		return false;
 	}
 }
-?>

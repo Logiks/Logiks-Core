@@ -162,7 +162,7 @@ class RoleModel {
 		$policyStr=implode(".",$policyStr);
 		$globalStatus=RoleModel::checkGlobals($policyStr);
 // 		var_dump($globalStatus);
-		if(getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development") {
+		if((getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development") && !defined("SERVICE_ROOT")) {
 			_log("RoleScope : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","console");
 		}
 		
