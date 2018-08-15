@@ -27,8 +27,10 @@ class test_helpers_shortfuncs extends LogiksTestCase {
 	
 	public function test_service() {
 		$actual = _service('test','action1','json',array('id' => 30),'default');
-		$expected = SiteLocation . 'services/test?site=default&syshash='.md5(session_id()._server('REMOTE_ADDR')).'&action=action1&format=json&id=30';
-		$this->assertEquals($actual,$expected);
+		$expected1 = SiteLocation . 'services/test?site=default&syshash='.md5(session_id()._server('REMOTE_ADDR')).'&action=action1&format=json&id=30';
+    	$expected2 = SiteLocation . 'services/test?site=default&syshash='.md5(session_id()).'&action=action1&format=json&id=30';
+    	$final = (md5($actual)==md5($expected1)) || (md5($actual)==md5($expected2));
+		$this->assertEquals($final,true);
 	}
 	
 	public function test_site() {
@@ -50,8 +52,8 @@ class test_helpers_shortfuncs extends LogiksTestCase {
 	}
 	
 	public function test_ling() {
-		$actual = _ling('Hello');
-		$this->assertEquals('Hi',$actual);
+		$actual = _ling('LogiksOrg');
+		$this->assertEquals('OpenLogiks',$actual);
 	}
 	
 	public function test_lingID() {
