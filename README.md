@@ -8,6 +8,9 @@ Logiks-Core :: Framework
 
 [![Software license](https://img.shields.io/github/license/Logiks/Logiks-Core.svg?style=for-the-badge)](https://github.com/Logiks/Logiks-Core/blob/master/license.txt)
 
+## Logiks 4.1 is now fully compatible with PHP 7.0
+
+
 Logiks Framework is an open source high-performance web application building platform. It applies RAD principles along with agile concepts for building and deploying web based PHP projects basically AppSites. Logiks is basically built around SRTP principle of project development with prime concern being Developer's ease of creating projects.
 
 Added the continuous testing and integration framework from Travis. Find the state above.

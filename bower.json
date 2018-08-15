@@ -1,0 +1,26 @@
+{
+  "name": "logiks/logiks-core",
+  "authors": [
+    "OpenLogiks <openlogiks@gmail.com",
+    "Bismay <bismay4u@gmail.com>",
+    "kshyana <kshyana23@gmail.com>"
+  ],
+  "description": "Logiks Framework Core",
+  "license": "MIT",
+  "keywords": [
+    "logiks",
+    "framework",
+    "php"
+  ],
+  "homepage": "https://openlogiks.org/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    
+  }
+}
