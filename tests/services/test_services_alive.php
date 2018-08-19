@@ -12,7 +12,7 @@ class test_helpers_alive extends LogiksTestCase {
 		//loadHelpers("browser");
 	}
 	
-	public function test_checkBrowser() {
+	public function test_alive() {
 	    $ans = $this->http_get("http://localhost/services/alive?site=cms");
 		$result = $ans[0];
 	    
