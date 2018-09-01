@@ -104,6 +104,8 @@ if(!function_exists("getServiceCMD")) {
 
 		if($format==null) $format=$_REQUEST['format'];
 
+		ob_clean();
+
 		if(getConfig("SERVICE_SHOW_REQUEST")) {
 			$arrData['Request']['uri']=SiteLocation._server('REQUEST_URI');
 			$arrData['Request']['site']=$_REQUEST['site'];

@@ -162,9 +162,9 @@ class RoleModel {
 		$policyStr=implode(".",$policyStr);
 		$globalStatus=RoleModel::checkGlobals($policyStr);
 // 		var_dump($globalStatus);
-		if((getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development") && !defined("SERVICE_ROOT")) {
-			_log("RoleScope : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","console");
-		}
+    if(getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development") {
+      _log("RoleScope : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","console");
+    }
 		
 		if($globalStatus>0) {
 			return true;
@@ -222,9 +222,9 @@ class RoleModel {
 		$policyStr=implode(".",$policyStr);
 		$globalStatus=RoleModel::checkGlobals($policyStr);
 // 		var_dump($globalStatus);
-		if(getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development") {
-			_log("RoleUser : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","console");
-		}
+    if(getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development") {
+      _log("RoleUser : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","console");
+    }
 		
 		if($globalStatus>0) {
 			return true;
@@ -260,7 +260,6 @@ class RoleModel {
 		return (!getConfig("ROLEMODEL_DEFAULT_DENY"));
 	}
 	public static function registerRole($module,$activity,$actionType="ACCESS") {
-		$activity=preg_replace("/".strtolower($module)."\./","",strtolower($activity));
 		if($activity==null || strlen($activity)<=0) $activity="MAIN";
 
 		$activity=strtoupper($activity);
@@ -292,7 +291,7 @@ class RoleModel {
 
 				$sql=_db(true)->_selectQ($roleTbl,"count(*) as cnt")
 					->_where(array("site"=>$site,"category"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash))
-					->_where(['guid'=>$_SESSION['SESS_GUID']]);
+					->_where(['guid'=>$guid]);
 				$r=_dbQuery($sql,true);
 				if($r) {
 					$data=_dbData($r);
@@ -344,8 +343,14 @@ class RoleModel {
 					"created_by"=>$userid,
 					"edited_by"=>$userid
 				];
+    
 		return _db(true)->_insert_batchQ($roleTbl,$finalData)->_run();
 	}
+  
+  protected function generateActivity($module, $activity) {
+    $activity=preg_replace("/".strtolower($module)."\./","",strtolower($activity));
+    return $activity;
+  }
 	
 	//Clears all the cache in session
 	public static function cleanRoleModelCache() {

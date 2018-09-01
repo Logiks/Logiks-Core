@@ -36,6 +36,10 @@
  *
  * @name $.cookie
  * @cat Plugins/Cookie
+ * @author Bismay [bismay4u@gmail.com]
+ *
+ * @name $.cookie
+ * @cat Plugins/Cookie
  * @author Klaus Hartl/klaus.hartl@stilbuero.de
  */
 
@@ -48,6 +52,11 @@
  * @param String name The name of the cookie.
  * @return The value of the cookie.
  * @type String
+ *
+ *
+ * @name $.cookie
+ * @cat Plugins/Cookie
+ * @author Bismay [bismay4u@gmail.com]
  *
  * @name $.cookie
  * @cat Plugins/Cookie
@@ -75,8 +84,9 @@ jQuery.cookie = function(name, value, options) {
         // in the following expressions, otherwise they evaluate to undefined
         // in the packed version for some reason...
         var path = options.path ? '; path=' + (options.path) : '';
-        var domain = options.domain ? '; domain=' + (options.domain) : '';
-        var secure = options.secure ? '; secure' : '';
+        var domain = options.domain ? '; domain=' + (options.domain) : '; domain=' + window.location.hostname;
+        var secure = options.secure ? '; secure' : ((window.location.protocol=="https:")?'; secure':'');
+
         document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('');
     } else { // only name given, get cookie
         var cookieValue = null;
