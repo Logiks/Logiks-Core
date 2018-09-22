@@ -331,13 +331,37 @@ if(!function_exists("_session")) {
 			return $value;
 		}
 	}
-	function _cookie($var) {
-		$data=LogiksSession::getInstance()->data('COOKIE');
-		if(isset($data[$var])) {
-			return $data[$var];
-		}
-		return false;
-	}
+	function _cookie($key,$val=null,$period=0) {
+	    if($val===false) {
+	      //delete cookie
+	      $currentCookieParams = session_get_cookie_params();
+	      setcookie(
+	          $key,//name
+	          "",//value
+	          time()-3600,//expires at end of session
+	          $currentCookieParams['path'],//path
+	          $currentCookieParams['domain'],//domain
+	          isHTTPS() //secure
+	      );
+	      return true;
+	    } elseif($val===null) {
+	      if(isset($_COOKIE[$key])) return $_COOKIE[$key];
+	      else return false;
+	    } else {
+	      $currentCookieParams = session_get_cookie_params();
+	      setcookie(
+	          $key,//name
+	          $val,//value
+	          $period,//expires at end of session
+	          $currentCookieParams['path'],//path
+	          $currentCookieParams['domain'],//domain
+	          isHTTPS() //secure
+	      );
+	      $_COOKIE[$key] = $val;
+	      _envData("COOKIE",$key,$val);
+	      return $val;
+	    }
+	  }
 	function _envData($key,$name,$value) {
 		LogiksSession::getInstance()->set(strtoupper($key),$name,$value);
 	}
