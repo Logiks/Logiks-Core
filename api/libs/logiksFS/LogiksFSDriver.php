@@ -11,11 +11,17 @@
  	protected $keyName=array();
  	protected $params=[];
 
+ 	protected $BASE_PATH=null;
+ 	protected $CURRENT_PATH=null;
+
  	protected static $register=[];
 
  	public function __construct($key,$params=null) {
  		$this->keyName=$key;
  		$this->params=$params;
+
+		$this->BASE_PATH=$params['basedir'];
+ 		$this->CURRENT_PATH=$this->BASE_PATH; 		
 
  		$this::$register[$key]=$this;
  	}
@@ -30,12 +36,15 @@
  	}
 
  	public function reset() {
- 		
+ 		$this->CURRENT_PATH=$this->BASE_PATH;
+ 	}
+
+ 	public function pwd() {
+ 		return $this->CURRENT_PATH;
  	}
 
  	public function info($path=null) {trigger_logikserror("Current FS Driver Does Not Support This");}
 
- 	public function pwd() {trigger_logikserror("Current FS Driver Does Not Support This");}
  	public function ls($path=null) {trigger_logikserror("Current FS Driver Does Not Support This");}
  	public function cd($path,$autoCreate=true) {trigger_logikserror("Current FS Driver Does Not Support This");}
  	public function mkdir($path) {trigger_logikserror("Current FS Driver Does Not Support This");}

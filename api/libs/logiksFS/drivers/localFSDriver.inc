@@ -10,39 +10,21 @@
  
  class localFSDriver extends LogiksFSDriver {
 
- 	protected $keyName=array();
- 	protected $params=[];
-
- 	protected $BASE_PATH=null;
- 	protected $CURRENT_PATH=null;
-
  	public function __construct($key,$params=null) {
- 		parent::__construct($key,$params);
-		
-		if($params['basedir']==null || strlen($params['basedir'])<=1) {
+ 		if($params['basedir']==null || strlen($params['basedir'])<=1) {
 			if(defined("SERVICE_ROOT")) {
 				$params['basedir']=dirname(getcwd())."/";
 			} else {
 				$params['basedir']=getcwd()."/";
 			}
 		}
-		
- 		$this->BASE_PATH=$params['basedir'];
- 		$this->CURRENT_PATH=$this->BASE_PATH;
+
+		parent::__construct($key,$params);
  	}
  	
  	public function __destruct() {
  	}
 
- 	public function reset() {
- 		$this->CURRENT_PATH=$this->BASE_PATH;
- 	}
-
- 	public function info($path=null) {trigger_logikserror("Current FS Driver Does Not Support This");}
-
- 	public function pwd() {
- 		return $this->CURRENT_PATH;
- 	}
  	public function ls($path=null) {
  		if($path==null)
  			return scandir($this->CURRENT_PATH);

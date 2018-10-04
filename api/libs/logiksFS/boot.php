@@ -31,7 +31,7 @@ if(!function_exists("_fs")) {
 		if(!isset($params['driver'])) {
 			trigger_logikserror("FS ERROR, Connection Configuration Could Not Be Found For {$fsKey}");	
 		}
-		$driver=$params['driver'];
+		$driver=strtolower($params['driver']);
 
 		$driverClass="{$driver}FSDriver";
 		$driverFile=__DIR__."/drivers/{$driverClass}.inc";
