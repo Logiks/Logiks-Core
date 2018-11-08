@@ -88,6 +88,10 @@ class SMTPMSGDriver extends LogiksMSGDriver {
 		if(isset($params['msg_plain'])) $this->mailObj->AltBody = $params['msg_plain'];
 		else $this->mailObj->AltBody = strip_tags($msgBody);
 
+		if(isset($params['from']) && strlen($params['from'])>0) {
+	    	$this->mailObj->setFrom($params['from']);
+	    }
+
 		if(isset($params['bcc'])) {
 			if(!is_array($params['bcc'])) $params['bcc']=explode(",",$params['bcc']);
 			foreach($params['bcc'] as $m) {
