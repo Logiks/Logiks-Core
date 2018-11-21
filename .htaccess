@@ -51,6 +51,9 @@ DirectoryIndex index.php index.html index.htm
 	Header append Vary User-Agent
 
 	Header set Access-Control-Allow-Origin "*"
+	Header set Access-Control-Max-Age 10000
+	Header set Access-Control-Allow-Methods POST,GET,PUT,DELETE,OPTIONS
+	Header set Access-Control-Allow-Headers Authorization,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,X-Mx-ReqToken,X-Forwarded-For,Keep-Alive,X-Requested-With,If-Modified-Since,jwt-token,client-token,token
 </IfModule>
 
 <IfModule mod_expires.c>
