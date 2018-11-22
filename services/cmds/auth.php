@@ -1,10 +1,9 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-if(!isset($_POST['mauth'])) {
+if(!isset($_REQUEST['mauth'])) {
 	echo "<h5>Securing Access Authentication ... </h5>";
 }
-//error_reporting(E_ERROR);
 
 runHooks("preAuth");
 
@@ -180,14 +179,20 @@ function relink($msg,$domain) {
 		if(isset($_REQUEST['onerror'])) $onerror=$_REQUEST['onerror'];
 	}
 	if(ALLOW_MAUTH) {
-		if(isset($_POST['mauth']) && $_POST['mauth']=="authkey") {
-			echo "ERROR:$msg";
-			exit();
-		} elseif(isset($_POST['mauth']) && $_POST['mauth']=="jsonkey") {
-			header("Content-Type:text/json");
-			echo json_encode(["ERROR"=>$msg]);
-			exit();
-		}
+    if(isset($_REQUEST['mauth'])) {
+      if($_REQUEST['mauth']=="jwt") {
+        header("Content-Type:text/json");
+        echo json_encode(["msg"=>$msg,"status"=>'failed']);
+      } elseif($_REQUEST['mauth']=="authkey") {
+        echo "ERROR:$msg";
+      } elseif($_REQUEST['mauth']=="jsonkey") {
+        header("Content-Type:text/json");
+        echo json_encode(["ERROR"=>$msg]);
+      } else {
+        echo "ERROR/$msg";
+      }
+      exit();
+    }
 	}
 	
 	if(strlen($onerror)==0 || $onerror=="*") {
@@ -313,15 +318,14 @@ function startNewSession($userid, $domain, $params=array()) {
 	header("SESSION-KEY:".$_SESSION['SESS_TOKEN'],false);
 	header("SESSION-MAUTH:".$_SESSION['MAUTH_KEY'],false);
 
-	setcookie("LOGIN", "true", time()+36000,"/",$_SERVER['SERVER_NAME'], isHTTPS());
-	setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000,"/",$_SERVER['SERVER_NAME'], isHTTPS());
-	setcookie("USERNAME", $_SESSION['SESS_USER_NAME'], time()+36000,"/",$_SERVER['SERVER_NAME'], isHTTPS());
-	setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000,"/",$_SERVER['SERVER_NAME'], isHTTPS());
-	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000,"/",$_SERVER['SERVER_NAME'], isHTTPS());
+	setcookie("LOGIN", "true", time()+36000,"/",null, isHTTPS());
+	setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000,"/",null, isHTTPS());
+	setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000,"/",null, isHTTPS());
+	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000,"/",null, isHTTPS());
 	
 	_db(true)->_deleteQ(_dbTable("cache_sessions",true),"created_on<DATE_SUB(NOW(), INTERVAL 1 MONTH)")->_RUN();
 	
-	if($data['persistant'] || (ALLOW_MAUTH && isset($_POST['mauth']))) {
+	if($data['persistant'] || (ALLOW_MAUTH && isset($_REQUEST['mauth']))) {
 		_db(true)->_deleteQ(_dbTable("cache_sessions",true),"edited_on<DATE_SUB(NOW(), INTERVAL 10 DAY)")
 				->_where([
 				"guid"=>$_SESSION['SESS_GUID'],
@@ -395,29 +399,61 @@ function gotoSuccessLink() {
 
 	$domain=$_SESSION['SESS_ACTIVE_SITE'];//ACTIVE
 	if(ALLOW_MAUTH) {
-		if(isset($_POST['mauth']) && $_POST['mauth']=="authkey") {
-			echo $_SESSION['MAUTH_KEY'];
-		} elseif(isset($_POST['mauth']) && $_POST['mauth']=="jsonkey") {
-			$arr=array(
-					"user"=>$_SESSION['SESS_USER_ID'],
-					"mobile"=>$_SESSION['SESS_USER_CELL'],
-					"email"=>$_SESSION['SESS_USER_EMAIL'],
-					"country"=>$_SESSION['SESS_USER_COUNTRY'],
-				
-					"authkey"=>$_SESSION['MAUTH_KEY'],
-					"date"=>date("Y-m-d"),
-					"time"=>date("H:i:s"),
-					"site"=>$domain,
-					"client"=>_server('REMOTE_ADDR'),
-					"token"=>$_SESSION['SESS_TOKEN'],
-				
-					"username"=>$_SESSION['SESS_USER_NAME'],
-					"avatar"=>$_SESSION['SESS_USER_AVATAR'],
-				);
-			header("Content-Type:text/json");
-			echo json_encode($arr);
-		} else {
-			echo "<h5>Securing Access Authentication ... </h5>";
+    if(isset($_REQUEST['mauth'])) {
+      if($_REQUEST['mauth']=="authkey") {
+        echo $_SESSION['MAUTH_KEY'];
+      } elseif($_REQUEST['mauth']=="jwt") {
+        $arr=array(
+            "guid"=>$_SESSION['SESS_GUID'],
+            "username"=>$_SESSION['SESS_USER_NAME'],
+
+            "user"=>$_SESSION['SESS_USER_ID'],
+            "mobile"=>$_SESSION['SESS_USER_CELL'],
+            "email"=>$_SESSION['SESS_USER_EMAIL'],
+            "country"=>$_SESSION['SESS_USER_COUNTRY'],
+
+            "privilegeid"=>$_SESSION['SESS_PRIVILEGE_ID'],
+            "privilege_name"=>$_SESSION['SESS_PRIVILEGE_NAME'],
+            "accessid"=>$_SESSION['SESS_ACCESS_ID'],
+            "groupid"=>$_SESSION['SESS_GROUP_ID'],
+            "access"=>$_SESSION['SESS_ACCESS_SITES'],
+
+            "timestamp"=>date("Y-m-d H:i:s"),
+            "site"=>$domain,
+            "client"=>_server('REMOTE_ADDR'),
+            "authkey"=>$_SESSION['MAUTH_KEY'],
+            //"token"=>$_SESSION['SESS_TOKEN'],
+
+            "avatar"=>$_SESSION['SESS_USER_AVATAR'],
+          );
+          $jwt = new LogiksJWT();
+          $jwtToken = $jwt->generateToken($arr);
+          header("Content-Type:text/json");
+          echo json_encode(["token"=>$jwtToken,"msg"=>"Login Success","status"=>'success']);
+      } elseif($_REQUEST['mauth']=="jsonkey") {
+        $arr=array(
+            "user"=>$_SESSION['SESS_USER_ID'],
+            "mobile"=>$_SESSION['SESS_USER_CELL'],
+            "email"=>$_SESSION['SESS_USER_EMAIL'],
+            "country"=>$_SESSION['SESS_USER_COUNTRY'],
+
+            "date"=>date("Y-m-d"),
+            "time"=>date("H:i:s"),
+            "site"=>$domain,
+            "client"=>_server('REMOTE_ADDR'),
+            "authkey"=>$_SESSION['MAUTH_KEY'],
+//             "token"=>$_SESSION['SESS_TOKEN'],
+
+            "username"=>$_SESSION['SESS_USER_NAME'],
+            "avatar"=>$_SESSION['SESS_USER_AVATAR'],
+          );
+        header("Content-Type:text/json");
+        echo json_encode($arr);
+      } else {
+        echo $_SESSION['MAUTH_KEY'];
+      }
+    } else {
+      echo "<h5>Securing Access Authentication ... </h5>";
 			if(strlen($onsuccess)==0 || $onsuccess=="*")
 				header("location: ".SiteLocation."?site=$domain");
 			else {
@@ -426,7 +462,7 @@ function gotoSuccessLink() {
 						header("location: $onsuccess");
 				}
 			}
-		}
+    }
 	} else {
 		//echo "<h5>Securing Access Authentication ... </h5>";
 		if(strlen($onsuccess)==0 || $onsuccess=="*") {
