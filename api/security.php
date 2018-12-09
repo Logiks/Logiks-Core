@@ -16,7 +16,7 @@ if(!function_exists("session_check")) {
 		
 		if(defined("SITENAME")) {
 			if(isset($_SESSION['SESS_USER_ID']) && isset($_SESSION['SESS_PRIVILEGE_ID']) && isset($_SESSION['SESS_ACCESS_ID']) &&
-				isset($_SESSION['SESS_TOKEN']) && isset($_SESSION['SESS_SITEID']) &&
+				isset($_SESSION['SESS_TOKEN']) && 
 				isset($_SESSION['SESS_LOGIN_SITE']) && isset($_SESSION['SESS_ACCESS_SITES']) &&
 				isset($_SESSION['SESS_SITEID']) && $_SESSION['SESS_SITEID'] == SiteID) {
 				if($_SESSION['SESS_TOKEN'] == session_id() ||

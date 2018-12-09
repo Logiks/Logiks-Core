@@ -72,7 +72,7 @@ class LogiksJWT {
                 "iss" => SiteLocation,
           //       "sub"=> "",
                 "aud" => SiteLocation,
-                "scope"=> "profile",
+                "scope"=> "*",
                 "iat" => time(),
                 "exp" => time()+3600,
                 "nbf" => time()+360000,
@@ -82,8 +82,9 @@ class LogiksJWT {
     $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
 
     // Encode Payload to Base64Url String
-    $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
-    $base64UrlPayload = $this->enc_dec("encrypt", $base64UrlPayload);
+//     $base64UrlPayload = base64_encode($payload);
+    $base64UrlPayload = $this->enc_dec("encrypt", $payload);
+    $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], $base64UrlPayload);
 
     // Create Signature Hash
     $signature = hash_hmac('sha256', $base64UrlHeader . "." . $base64UrlPayload, $this->secretKey, true);
@@ -102,8 +103,8 @@ class LogiksJWT {
     
     $header = json_decode(base64_decode($tokenArr[0]),true);
     
-    $payload= $this->enc_dec("decrypt", $tokenArr[1]);
-    $payload = json_decode(base64_decode($payload),true);
+    $payload = $this->enc_dec("decrypt", $tokenArr[1]);
+    $payload = json_decode($payload,true);
     
     $signature = $tokenArr[2];
     
