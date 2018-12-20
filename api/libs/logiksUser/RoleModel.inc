@@ -162,7 +162,7 @@ class RoleModel {
 		$policyStr=implode(".",$policyStr);
 		$globalStatus=RoleModel::checkGlobals($policyStr);
 // 		var_dump($globalStatus);
-    if(getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development") {
+    if(!defined("SERVICE_ROOT") &&  (getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development")) {
       _log("RoleScope : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","console");
     }
 		
@@ -222,7 +222,7 @@ class RoleModel {
 		$policyStr=implode(".",$policyStr);
 		$globalStatus=RoleModel::checkGlobals($policyStr);
 // 		var_dump($globalStatus);
-    if(getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development") {
+    if(!defined("SERVICE_ROOT") &&  (getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development")) {
       _log("RoleUser : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","console");
     }
 		
