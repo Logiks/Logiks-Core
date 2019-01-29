@@ -20,7 +20,7 @@ class mysqlDriver extends AbstractDBDriver {
 			return false;
 		}
 		
-		$this->link = mysql_connect($this->dbParams['host'],$this->dbParams['user'],$this->dbParams['pwd'],$this->dbParams['database']) or die("MySQL DB Connection Error [{$keyName}] Connection");
+		$this->link = @mysql_connect($this->dbParams['host'],$this->dbParams['user'],$this->dbParams['pwd'],$this->dbParams['database']) or die("MySQL DB Connection Error [{$keyName}] Connection");
 		
 		if (!$this->link) {
 			trigger_logikserror("Database ERROR, Connection Error For {$keyName}");
