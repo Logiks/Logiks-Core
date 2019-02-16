@@ -18,6 +18,8 @@ class Database {
 	private $objQBuilder=null;
 	
 	private $dbLink=null;
+  
+  private $metaQuery = false;
 	
 	//Static Utility Functions for connecting, closing, status checking and gettingConnection
 	public static function connect($key,$params=null) {
@@ -37,8 +39,7 @@ class Database {
 		//Setup Cache
 
 		//Setup Logging
-
-
+    
 		return $db;
 	}
 	//Get the instance name of the Query
@@ -183,9 +184,9 @@ class Database {
 		if($keyName==null && is_a($sql,"AbstractQueryBuilder")) {
 			$keyName=$sql->getInstanceName();
 		}
+    
 		$result=$this->objDriver->runQuery($sql);
-		if($result) return new QueryResult($keyName,$result);
-		else return false;
+		if($result) return new QueryResult($keyName,$result);else return false;
 	}
 	public function executeCommandQuery($sql) {
 		return $this->objDriver->runCommandQuery($sql);
@@ -260,6 +261,80 @@ class Database {
 		
 		return $this->executeQuery($sql);
 	}
+  
+  //Call hooks after certain query
+  protected function dbHooks($query, $calltype="PRE") {
+    if($this->metaQuery) return true;
+    
+    if(isset($this->connectionParams['hooks'])) {
+      if($query==null) return false;
+    
+      $qs = $query->_string();
+      if($qs==null || strlen($qs)<=0) return false;
+
+      $queryType = strtolower(trim(current(explode(" ",$qs))));
+      $calltype = strtolower($calltype);
+      $dbTable = $query->getTableName();
+      
+      //printArray([$dbTable,$calltype,$queryType]);
+      if(isset($this->connectionParams['hooks'][$queryType])) {
+        $hooks = $this->connectionParams['hooks'][$queryType];
+        
+        runHookFunctions($hooks,["type"=>"dbhook","dbtable"=>$dbTable,"calltype"=>$calltype,"querytype"=>$queryType]);
+        
+        return true;
+      }
+    }
+    
+    return true;
+  }
+  
+  //Call Meta Updating Subsystem
+  protected function dbUpdateMetaData($sql) {
+    $metaQuery = [];
+    if(isset($this->connectionParams['metaquery'])) {
+      $metaQuery = $this->connectionParams['metaquery'];
+    }
+    if(isset($_SESSION['DBMETAQUERY']) && is_array($_SESSION['DBMETAQUERY'])) {
+      $metaQuery = array_merge_recursive($metaQuery,$_SESSION['DBMETAQUERY']);
+    }
+    if(isset($_ENV['DBMETAQUERY']) && is_array($_ENV['DBMETAQUERY'])) {
+      $metaQuery = array_merge_recursive($metaQuery,$_ENV['DBMETAQUERY']);
+    }
+    
+    if($metaQuery && count($metaQuery)>0) {
+      $qs = $sql->_string();
+      if($qs==null || strlen($qs)<=0) return false;
+
+      $queryType = strtoupper(trim(current(explode(" ",$qs))));
+      
+      if(!in_array($queryType,["INSERT","UPDATE","DELETE"])) {
+        return false;
+      }
+      
+      $dbTable = $sql->getTableName();
+      
+      if(isset($metaQuery[$dbTable])) {
+        $metaQuery = $metaQuery[$dbTable];
+        
+        $this->metaQuery = true;
+        
+        $_REQUEST['DATED'] = date("Y-m-d");
+        $_REQUEST['DATETIME'] = date("Y-m-d H:i:s");
+        $_REQUEST['DATAID'] = $this->get_insertID();
+        
+        $_REQUEST['PROFILEID']=2;
+        
+        foreach($metaQuery as $sql) {
+          $sql = _replace($sql);println(_replace($sql));
+          $this->runQuery($sql);
+          echo $this->get_error();
+        }
+        
+        $this->metaQuery = false;
+      }
+    }
+  }
 
 	public function __call($method, $arguments) {
 		if(strpos($method,"_")===0) {
@@ -269,6 +344,8 @@ class Database {
 			return call_user_func_array(array($this->objDriver, $method), $arguments);
 		} elseif(strpos($method,"fetch")===0 || strpos($method,"free")===0 || strpos($method,"run")===0) {
 			return call_user_func_array(array($this->objDriver, $method), $arguments);
+    } elseif(strpos($method,"db")===0) {
+      return call_user_func_array(array($this, $method), $arguments);
 		} else {
 			trigger_logikserror("Database ERROR, [$method] Method Not Found [".$this->dbParams('driver')."]");
 		}

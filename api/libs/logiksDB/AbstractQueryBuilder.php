@@ -69,6 +69,10 @@
 	public function _decrement($table, $cols, $where) {return $this;}
 	
 
+  public function getTableName() {
+    return $this->obj['table'];
+  }
+   
 	public function _raw($sql) {
 		$this->sql=$sql; 
 		return $this;
@@ -413,6 +417,11 @@
 
 		return $sql;
 	}
+   
+  public function _string() {
+    return $this->_SQL();
+  }
+   
 	//GETS/SETS the sql data into a queryBuilder object
 	//@$sql	params	SQL Query to be set into QueryBuilder
 	public function _array() {

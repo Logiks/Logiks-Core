@@ -62,10 +62,12 @@ class mysqlDriver extends AbstractDBDriver {
 		}
 		
 		$r=mysql_query($q, $this->link);
+    $this->postQuery($sql,$r);
 		return $r;
 	}
 	public function runCommandQuery($q) {
 		$r=mysql_query($q, $this->link);
+    $this->postQuery($q,$r);
 		return $r;
 	}
 	public function freeResult($result) {

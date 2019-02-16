@@ -78,7 +78,8 @@
 
 
 	public function runQuery($sql) {
-		if(is_a($sql,"AbstractQueryBuilder")) {
+    if(is_a($sql,"AbstractQueryBuilder")) {
+      $sql->getInstance()->dbHooks($sql);
 			if(md5($sql->getInstanceName())==md5($this->keyName)) {
 				$this->qCount++;
 				return true;
@@ -88,7 +89,20 @@
 		}
 		return true;
 	}
-	public function runCommandQuery($sql) {$this->qCount++;return true;}
+	public function runCommandQuery($sql) {
+    if(is_a($sql,"AbstractQueryBuilder")) {
+      $sql->getInstance()->dbHooks($sql,"PRE");
+    }
+    $this->qCount++;
+    return true;
+  }
+   
+  protected function postQuery($sql) {
+    if(is_a($sql,"AbstractQueryBuilder")) {
+      $sql->getInstance()->dbHooks($sql,"POST");
+      $sql->getInstance()->dbUpdateMetaData($sql);
+    }
+  }
 	
 	//Resultset based functions
 	public function fetchAllData($result,$format="assoc") {

@@ -78,11 +78,14 @@ class sqlite3Driver extends AbstractDBDriver {
 		}
 		
 		$r=$this->link->query($q);
-
+    $this->postQuery($sql,$r);
+    
 		return $r;
 	}
 	public function runCommandQuery($q) {
-		return $this->link->exec($q);
+		$r = $this->link->exec($q);
+    $this->postQuery($q,$r);
+    return $r;
 	}
 
 	public function freeResult($result) {
