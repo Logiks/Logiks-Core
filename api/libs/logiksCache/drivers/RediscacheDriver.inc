@@ -27,8 +27,8 @@ class RediscacheDriver extends AbstractCacheDriver {
 
 		if(!isset($this->params['weight'])) $this->params['weight']=100;
 
-		if(!class_exists("Memcached")) {
-			trigger_logikserror("MemcachedDriver needs Memcached Class to run.",E_USER_ERROR);
+		if(!class_exists("Redis")) {
+			trigger_logikserror("RedisDriver needs Redis Class to run.",E_USER_ERROR);
 		}
 
 		$this->redis = new Redis();
@@ -88,7 +88,7 @@ class RediscacheDriver extends AbstractCacheDriver {
 
 	//Last Updated This Key On
 	public function cache_lastUpdated($group,$key) {
-		trigger_logikserror("MemcachedDriver could not support cache_lastUpdated.",E_USER_WARNING);
+		trigger_logikserror("RedisDriver could not support cache_lastUpdated.",E_USER_WARNING);
 	}
 
 	//Is Cache Expired

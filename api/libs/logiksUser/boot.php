@@ -18,20 +18,25 @@ include_once dirname(__FILE__)."/Settings.php";
 //SiteSettings
 
 if(!function_exists("checkUserRoles")) {
+  
+  //Reset entire Role Cache in Session
 	function resetRoleCache() {
 		unset($_SESSION["ROLEMODEL"]);
 	}
 	
-	function checkUserRoles($module,$activity,$actionType="ACCESS") {
-		return RoleModel::checkRole($module,$activity,$actionType);
+  //Checks access to a certain module or system
+  function checkUserScope($module) {
+		return RoleModel::getInstance()->checkScope($module);
 	}
 	
-	function checkUserScope($module) {
-		return RoleModel::checkScope($module);
+  //Checks specific permission
+	function checkUserRoles($module,$activity,$actionType="ACCESS") {
+		return RoleModel::getInstance()->checkRole($module,$activity,$actionType);
 	}
 	
 	function checkUserPolicy($policyStr,$policyName=null) {
 		if($policyStr==null || strlen($policyStr)<=0) return true;
+    
 		$policyStr=strtolower(str_replace(" ",".",$policyStr));
 		if($policyName==null || strlen($policyName)<=0) $policyName=toTitle(str_replace(".","_",$policyStr));
 		
@@ -53,7 +58,7 @@ if(!function_exists("checkUserRoles")) {
 				case "privileges":
 					$privileges=explode(",",$policyData[1]);
 					if(count($privileges)<=0) return true;
-					if(in_array($_SESSION['SESS_PRIVILEGE_NAME'],$privileges) || in_array(RoleModel::getPrivilegeHash(),$privileges)) return true;
+					if(in_array($_SESSION['SESS_PRIVILEGE_NAME'],$privileges) || in_array(RoleModel::getInstance()->getPrivilegeHash(),$privileges)) return true;
 					break;
 				case "users":
 					$users=explode(",",$policyData[1]);
