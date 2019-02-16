@@ -48,7 +48,7 @@ if(!function_exists("loadLogiksApp")) {
       loadConfigs(ROOT."config/masters/folders.cfg");
     }
 
-    if(defined("LINGUALIZER_DICTIONARIES")) Lingulizer::getInstance()->loadLocaleFile(LINGUALIZER_DICTIONARIES);
+    if(defined("LINGUALIZER_DICTIONARIES")) Lingualizer::getInstance()->loadLocaleFile(LINGUALIZER_DICTIONARIES);
 
     if(!defined("APPS_THEME")) define("APPS_THEME",getConfig("APPS_THEME"));
     if(!defined("APPS_TEMPLATEENGINE")) define("APPS_TEMPLATEENGINE",getConfig("APPS_TEMPLATEENGINE"));
@@ -83,7 +83,7 @@ if(!function_exists("loadLogiksApp")) {
       loadConfigs(ROOT."config/masters/folders.cfg");
     }
 
-    if(defined("LINGUALIZER_DICTIONARIES")) Lingulizer::getInstance()->loadLocaleFile(LINGUALIZER_DICTIONARIES);
+    if(defined("LINGUALIZER_DICTIONARIES")) Lingualizer::getInstance()->loadLocaleFile(LINGUALIZER_DICTIONARIES);
 
     if(!defined("APPS_THEME")) define("APPS_THEME",getConfig("APPS_THEME"));
     if(!defined("APPS_TEMPLATEENGINE")) define("APPS_TEMPLATEENGINE",getConfig("APPS_TEMPLATEENGINE"));

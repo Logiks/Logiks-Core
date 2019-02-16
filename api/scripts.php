@@ -20,7 +20,7 @@ UserDevice="<?=strtoupper(getUserDevice())?>";
 UserDeviceType="<?=strtoupper(getUserDeviceType())?>";
 LingData={};
 <?php
-	$ling=Lingulizer::getInstance();
+	$ling=Lingualizer::getInstance();
 	$json=json_encode($ling->lang);
 	if(strlen($json)>2) echo 'LingData='.$json.';';
 ?>

@@ -1,13 +1,24 @@
 <?php
 /*
  * This class contains the internationlization system for Logiks
- *
+ * 
+ * Usage:
+ * Lingualizer::reloadInstance();  Resets the loaded ling from Cache, and reloads fresh
+ * 
+ * $ling=new lingulizer();
+ * $arr=$ling->loadLingFile("language.ling");
+ * //print_r($arr);
+ * //$str=$ling->toLang("y");
+ * //print_r($str);
+ * $replaced=$ling->toLingContent("There is someone yet to come.Please add guest list by 1");
+ * print_r($replaced);
+ * 
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Version: 1.0
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-class Lingulizer {
+class Lingualizer {
 	
   private static $instance=null;
   
@@ -32,7 +43,7 @@ class Lingulizer {
 			$this->autoFixCase=true;
 		}
     
-		$this->sessCacheID=md5(SiteID.SITENAME.$this->lingCacheID);
+		$this->sessCacheID="LING-".md5(SiteID.SITENAME.$this->lingCacheID);
     
 		$cacheData = $this->getLingCache();
 		if($cacheData && isset($cacheData['files'])) {
@@ -45,14 +56,23 @@ class Lingulizer {
 		if(!isset(self::$instance)) {
 			$c=__CLASS__;
 			self::$instance=new $c;
-			self::reloadInstance();
+// 			self::reloadInstance();
 		}
 		return self::$instance;
 	}
 	public static function reloadInstance() {
-		if(defined("LINGUALIZER_DICTIONARIES")) Lingulizer::getInstance()->loadLocaleFile(LINGUALIZER_DICTIONARIES);
-		Lingulizer::getInstance()->loadLocaleFile(getConfig("DEFAULT_LOCALE"));
+    Lingualizer::getInstance()->reset();
 	}
+  
+  protected function reset() {
+    _cache(Lingualizer::getInstance()->lingCacheID,[]);
+    $this->loadedLingFiles = [];
+    $this->lang = [];
+    
+    if(defined("LINGUALIZER_DICTIONARIES")) Lingualizer::getInstance()->loadLocaleFile(LINGUALIZER_DICTIONARIES);
+		Lingualizer::getInstance()->loadLocaleFile(getConfig("DEFAULT_LOCALE"));
+  }
+  
 	public function loadLocaleFile($locale) {
 		if(strlen($locale)<=0) return false;
 		if(!is_array($locale)) {
@@ -67,7 +87,7 @@ class Lingulizer {
 	public function loadLingFile($file) {
 		if(strlen($file)<=0) return false;
 		if(!file_exists($file)) {
-      			if(file_exists(ROOT.LING_FOLDER.$file)) {
+      if(file_exists(ROOT.LING_FOLDER.$file)) {
 				$file1=ROOT.LING_FOLDER.$file;
 				$this->loadDataFile($file1);
 			}
@@ -221,13 +241,4 @@ class Lingulizer {
 		return $word;
 	}
 }
-/*
- $ling=new lingulizer();
-$arr=$ling->loadLingFile("language.ling");
-//print_r($arr);
-//$str=$ling->toLang("y");
-//print_r($str);
-$replaced=$ling->toLingContent("There is someone yet to come.Please add guest list by 1");
-print_r($replaced);
-*/
 ?>
