@@ -8,7 +8,7 @@ function lgksConfirm(msg,title,callback) {
 	return bootbox.confirm(msg, callback);
 }
 function lgksLoader(msg,title) {
-  if(title==null) title = "Loading ...";
+  if(title==null) title = "";
   
   if($(".loadingmodal").length>0) {
     $(".loadingmodal").modal("hide");
