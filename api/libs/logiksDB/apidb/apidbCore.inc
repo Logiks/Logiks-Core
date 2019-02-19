@@ -14,6 +14,10 @@ class APIDBCore {
 		
 	];
 
+	protected $apiHeaders = [
+		
+	];
+
     public function __construct($host, $params = []) {
 		$this->apiHOST = $host;
 
