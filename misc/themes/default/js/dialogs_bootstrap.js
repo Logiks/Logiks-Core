@@ -7,6 +7,23 @@ function lgksPrompt(msg,title,callback) {
 function lgksConfirm(msg,title,callback) {
 	return bootbox.confirm(msg, callback);
 }
+function lgksLoader(msg,title) {
+  if(title==null) title = "Loading ...";
+  
+  if($(".loadingmodal").length>0) {
+    $(".loadingmodal").modal("hide");
+  }
+  a = lgksMsg("<div class='clearfix'><i class='fa fa-spinner pull-left fa-4x fa-spin'></i><div style='line-height: 50px;'>"+msg+"</div></div>",title, {
+    onEscape: false,
+    className: "loadingmodal"
+  });
+  $(".loadingmodal .bootbox-close-button,.loadingmodal .close").detach();
+  
+  return a;
+}
+function lgksLoaderHide() {
+  $(".loadingmodal").modal("hide");
+}
 
 function lgksOverlay(msg, title, paramsXtra) {
 	params={

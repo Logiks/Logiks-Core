@@ -15,7 +15,10 @@ function lgksAlert(msg, title) {
 }
 function lgksPopup(divID,buttons, paramConfigs,type,title) {
 }
-
+function lgksLoader(msg, callback) {
+}
+function lgksLoaderHide() { 
+}
 
 function openInNewWindow(mypage, myname) {
 	win = window.open(mypage, myname);
