@@ -107,7 +107,11 @@ class PCronQueue {
 				$script="http://".PCRON_DIR_USERNAME.":".PCRON_DIR_PASSWORD."@"._server('HTTP_HOST').str_replace(_server('DOCUMENT_ROOT'),"",ROOT)."{$script}.php";
 			}
 		} else {
-			if(file_exists(ROOT.PCRON_FOLDER."{$script}.php")) {
+      if(file_exists(APPROOT.PCRON_FOLDER."{$script}.php")) {
+        $script=APPROOT.PCRON_FOLDER."{$script}.php";
+      } elseif(file_exists(APPROOT."{$script}.php")) {
+        $script=APPROOT."{$script}.php";
+      } elseif(file_exists(ROOT.PCRON_FOLDER."{$script}.php")) {
 				$script=ROOT.PCRON_FOLDER."{$script}.php";
 			} elseif(file_exists(ROOT."{$script}.php")) {
 				$script=ROOT."{$script}.php";
@@ -141,13 +145,10 @@ class PCronQueue {
 			}
 		} else {
       if(!file_exists($script)) {
-        if(file_exists(APPROOT.$script)) {
-          $script=APPROOT.$script;
-        } else {
-          return -1;
-        }
+        return -1;
       }
 			unset($_REQUEST["pcron_key"]);
+      
 			foreach($param_array as $a=>$b) {
 				$_REQUEST[$a]=$b;
 			}
