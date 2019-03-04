@@ -236,13 +236,13 @@ class PCronQueue {
 		$user="guest";
 		if(isset($_SESSION["SESS_USER_ID"])) $user=$_SESSION["SESS_USER_ID"];
     
-		$task_md5_hash=md5($script.$serialized_params);
 		if($site==null || strlen($site)<=0) {
 			if(defined("SITENAME")) $site=SITENAME;
 			elseif(isset($_SESSION['LGKS_SESS_SITE'])) $site=$_SESSION['LGKS_SESS_SITE'];
 			elseif(isset($_SESSION['SESS_LOGIN_SITE'])) $site=$_SESSION['SESS_LOGIN_SITE'];
 			else $site="*";
 		}
+		$task_md5_hash=md5($script.$serialized_params.$site);
 		
 		$cols=explode(",","site, title, scriptpath, description, script_params, method, schedule, last_completed, run_only_once, task_md5_hash, retired, created_by, edited_by");
 		_db(true)->_insertQ($tbl,$cols,[SITENAME, $title, $script, $desc, $serialized_params, $method, $schedule, date("Y-m-d H:i:s"), $run_only_once, $task_md5_hash, 'false', $user,  $user])->_RUN();
