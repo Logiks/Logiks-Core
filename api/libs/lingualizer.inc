@@ -150,30 +150,39 @@ class Lingualizer {
 		}
 		return false;
 	}
+
+	public function reloadLingCache() {
+  		$cacheData = $this->getLingCache();
+		if($cacheData && isset($cacheData['files'])) {
+			$this->loadedLingFiles=$cacheData['files'];
+			$this->lang=$cacheData['data'];
+		}
+  	}
+
   
-  protected function getLingCache() {
-    if(isset($_SESSION[$this->sessCacheID])) {
-      return $_SESSION[$this->sessCacheID];
-    }
-    $lingCache = _cache($this->lingCacheID);
-    if($lingCache && isset($lingCache['files'])) {
-      $cacheData=json_decode($lingCache,true);
-      $_SESSION[$this->sessCacheID]=$cacheData;
-      return $cacheData;
-    }
-    return false;
-  }
-  
-  protected function updateLingCache() {
-    _cache($this->lingCacheID,json_encode([
-				"files"=>$this->loadedLingFiles,
-				"data"=>$this->lang
-			]));
-    $_SESSION[$this->sessCacheID]=[
-				"files"=>$this->loadedLingFiles,
-				"data"=>$this->lang
-			];
-  }
+	protected function getLingCache() {
+		if(isset($_SESSION[$this->sessCacheID])) {
+		  return $_SESSION[$this->sessCacheID];
+		}
+		$lingCache = _cache($this->lingCacheID);
+		if($lingCache && isset($lingCache['files'])) {
+		  $cacheData=json_decode($lingCache,true);
+		  $_SESSION[$this->sessCacheID]=$cacheData;
+		  return $cacheData;
+		}
+		return false;
+	}
+
+	protected function updateLingCache() {
+		_cache($this->lingCacheID,json_encode([
+					"files"=>$this->loadedLingFiles,
+					"data"=>$this->lang
+				]));
+		$_SESSION[$this->sessCacheID]=[
+					"files"=>$this->loadedLingFiles,
+					"data"=>$this->lang
+				];
+	}
 
 	public function toLing($str) {
 		//printArray($this->lang);
