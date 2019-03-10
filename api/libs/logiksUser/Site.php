@@ -20,7 +20,7 @@ if(!function_exists("getUserList")) {
 			//$sql=$sql->_where(" (site='".SITENAME."' OR site='*')");
 			$sql1=_db(true)->_selectQ(_dbTable("access",true),"id")->_where(array(
 				"blocked"=>'false'
-			))->_where(" (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
+			))->_whereRAW(" (FIND_IN_SET('".SITENAME."',sites) OR sites='*')");
 			$sql=$sql->_query("accessid",$sql1);
 		}
 		if(strlen($where)>0) {
@@ -53,7 +53,7 @@ if(!function_exists("getUserList")) {
 				"blocked"=>'false'
 			));
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]>ROLE_PRIME) {
-			$sql=$sql->_where(" (site='".SITENAME."' OR site='*')");
+			$sql=$sql->_whereRAW(" (site='".SITENAME."' OR site='*')");
 		}
 		if(strlen($where)>0) {
 			$sql=$sql->_where(" ($where)");
@@ -74,7 +74,7 @@ if(!function_exists("getUserList")) {
 				"name"=>$privilageName,
 			));
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]>ROLE_PRIME) {
-			$sql=$sql->_where(" (site='".SITENAME."' OR site='*')");
+			$sql=$sql->_whereRAW(" (site='".SITENAME."' OR site='*')");
 		}
 
 		$res=_dbQuery($sql,true);
