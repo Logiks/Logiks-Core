@@ -26,7 +26,9 @@ class Database {
 		if($params==null || !is_array($params)) {
 			$cfg=loadJSONConfig("db");
 			if(!isset($cfg[$key])) {
-				trigger_logikserror("Database ERROR, Connection Configuration Could Not Be Found For {$key}");	
+				////trigger_logikserror("Database ERROR, Connection Configuration Could Not Be Found For {$key}");	
+				return false;
+				return false;
 			} else {
 				$params=$cfg[$key];
 			}
@@ -75,7 +77,8 @@ class Database {
 	public static function dbConnection($key) {
 		if(isset(Database::$connections[$key])) return Database::$connections[$key];
 		else {
-			trigger_logikserror("Database ERROR, Connection Could Not Be Found For {$key}");
+			//trigger_logikserror("Database ERROR, Connection Could Not Be Found For {$key}");
+			return false;
 		}
 	}
 	
@@ -344,8 +347,8 @@ class Database {
 			return call_user_func_array(array($this->objDriver, $method), $arguments);
 		} elseif(strpos($method,"fetch")===0 || strpos($method,"free")===0 || strpos($method,"run")===0) {
 			return call_user_func_array(array($this->objDriver, $method), $arguments);
-    } elseif(strpos($method,"db")===0) {
-      return call_user_func_array(array($this, $method), $arguments);
+    	} elseif(strpos($method,"db")===0) {
+      		return call_user_func_array(array($this, $method), $arguments);
 		} else {
 			trigger_logikserror("Database ERROR, [$method] Method Not Found [".$this->dbParams('driver')."]");
 		}
