@@ -45,7 +45,7 @@ if(!function_exists("trigger_logikserror")) {
     $file = "unknown file";
 		$line = 0;
     
-    if(in_array($severity,E_LOGIKS_NOERROR)) return;
+    if(in_array($severity,explode(",",E_LOGIKS_NOERROR))) return;
 
     if($caller !== NULL) {
       if(isset($caller['file'])) $file=$caller['file'];
@@ -62,7 +62,7 @@ if(!function_exists("trigger_logikserror")) {
   }
   //ERROR Handler Function
 	function errorHandler($severity, $errMsg, $file, $line) {
-    if(in_array($severity,E_LOGIKS_NOERROR)) return;
+    if(in_array($severity,explode(",",E_LOGIKS_NOERROR))) return;
     //LOGGING is done by LogiksError
     if(defined("SERVICE_ROOT")) {
       LogiksError::handleJSON($severity, $errMsg, $file, $line, 500);
@@ -86,7 +86,7 @@ if(!function_exists("trigger_logikserror")) {
 			$file = $error["file"];
 			$line = $error["line"];
       
-      if(in_array($severity,E_LOGIKS_NOERROR)) return;
+      if(in_array($severity,explode(",",E_LOGIKS_NOERROR))) return;
 
       //LOGGING is done by LogiksError
       if(defined("SERVICE_ROOT")) {
@@ -106,7 +106,7 @@ if(!function_exists("trigger_logikserror")) {
     $errData['file']=$exception->getFile();
     $errData['line']=$exception->getLine();
     
-    if(in_array($errData['severity'],E_LOGIKS_NOERROR)) return;
+    if(in_array($errData['severity'],explode(",",E_LOGIKS_NOERROR))) return;
 
     if(EXCEPTION_CONSOLE_TRACE) {
       $errData['trace']=$exception->getTrace();

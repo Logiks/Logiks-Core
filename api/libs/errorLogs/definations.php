@@ -5,7 +5,7 @@ if(!function_exists("phpErrorLevelNames")) {
 
 	define("E_EXCEPTION",32768);
 	define("E_LOGIKS_ERROR",65536);
-  define("E_LOGIKS_NOERROR",[8192]);
+  	define("E_LOGIKS_NOERROR","8192");
 
 	function getErrorList() {
 		return array (
