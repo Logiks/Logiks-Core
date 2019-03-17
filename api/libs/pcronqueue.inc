@@ -144,9 +144,9 @@ class PCronQueue {
 				return -1;
 			}
 		} else {
-      if(!file_exists($script)) {
-        return -1;
-      }
+		    if(!file_exists($script)) {
+		        return -1;
+		    }
 			unset($_REQUEST["pcron_key"]);
       
 			foreach($param_array as $a=>$b) {
@@ -157,14 +157,14 @@ class PCronQueue {
 			$raw_response = ob_get_contents();
 			ob_end_clean();
       
-      if($returned_response==null) $returned_response=[];
-      elseif(is_string($returned_response)) $returned_response=["msg"=>$returned_response];
+			if($returned_response==null) $returned_response=[];
+			elseif(!is_array($returned_response)) $returned_response = ["msg"=>$returned_response];
       
-      if($raw_response==null) $raw_response="{}";
+			if($raw_response==null) $raw_response="{}";
       
 			$result_array = json_decode($raw_response, true);
       
-      $result_array=array_merge($result_array,$returned_response);
+			$result_array=array_merge($result_array,$returned_response);
       
 			if(isset($result_array['status'])) {
 				return $result_array['status']; 
