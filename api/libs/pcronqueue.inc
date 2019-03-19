@@ -22,11 +22,11 @@ class PCronQueue {
 		$xt=0;
 		$tots=count($this->taskToRun);
 		foreach ($this->taskToRun as $task) {
-      if(substr($task['script_params'],0,1)=="{") {
-        $tParam=json_decode($task['script_params'],true);
-      } else {
-        $tParam=unserialize($task['script_params']);
-      }
+			if(substr($task['script_params'],0,1)=="{") {
+				$tParam=json_decode($task['script_params'],true);
+			} else {
+				$tParam=unserialize($task['script_params']);
+			}
 			$tParam['appsite']=$task['site'];
 			$result = $this->execute_script($task['scriptpath'], $task['method'], $tParam);
 			if($result === true) {
@@ -107,11 +107,11 @@ class PCronQueue {
 				$script="http://".PCRON_DIR_USERNAME.":".PCRON_DIR_PASSWORD."@"._server('HTTP_HOST').str_replace(_server('DOCUMENT_ROOT'),"",ROOT)."{$script}.php";
 			}
 		} else {
-      if(file_exists(APPROOT.PCRON_FOLDER."{$script}.php")) {
-        $script=APPROOT.PCRON_FOLDER."{$script}.php";
-      } elseif(file_exists(APPROOT."{$script}.php")) {
-        $script=APPROOT."{$script}.php";
-      } elseif(file_exists(ROOT.PCRON_FOLDER."{$script}.php")) {
+			if(file_exists(APPROOT.PCRON_FOLDER."{$script}.php")) {
+        		$script=APPROOT.PCRON_FOLDER."{$script}.php";
+			} elseif(file_exists(APPROOT."{$script}.php")) {
+        		$script=APPROOT."{$script}.php";
+			} elseif(file_exists(ROOT.PCRON_FOLDER."{$script}.php")) {
 				$script=ROOT.PCRON_FOLDER."{$script}.php";
 			} elseif(file_exists(ROOT."{$script}.php")) {
 				$script=ROOT."{$script}.php";
@@ -125,7 +125,7 @@ class PCronQueue {
 					curl_setopt ($urlConn, CURLOPT_POST, 1);
 					curl_setopt ($urlConn, CURLOPT_POSTFIELDS, $query_string);  //submitting an array did not work :(
 				break;
-				case 'GET':                 
+				case 'GET':
 					$urlConn = curl_init ("$script?$query_string");
 					curl_setopt ($urlConn, CURLOPT_HTTPGET, 1);
 				break;      
@@ -158,7 +158,7 @@ class PCronQueue {
 			ob_end_clean();
       
 			if($returned_response==null) $returned_response=[];
-			elseif(!is_array($returned_response)) $returned_response = ["msg"=>$returned_response];
+			elseif(!is_array($returned_response)) $returned_response = ["msg"=>$returned_response,"status"=>true];
       
 			if($raw_response==null) $raw_response="{}";
       

@@ -34,7 +34,9 @@ if(!function_exists("getPWDHash")) {
 						    'cost' => getConfig("HASH_COST"),
 						    'salt' => $salt,
 						];
-					$hash=password_hash($pwd, PASSWORD_BCRYPT, $options);
+					// $hash=password_hash($pwd, PASSWORD_BCRYPT, $options);
+					$hash=crypt($pwd, '$2a$'.$options['cost'].'$'.$salt.'$');
+
 					$options['hash']=$hash;
 					return $options;
 				} else {
@@ -42,7 +44,9 @@ if(!function_exists("getPWDHash")) {
 						    'cost' => getConfig("HASH_COST"),
 						    'salt' => $salt,
 						];
-					$hash=password_hash($pwd, PASSWORD_BCRYPT, $options);
+					//$hash=password_hash($pwd, PASSWORD_BCRYPT, $options);
+					$hash=crypt($pwd, '$2a$'.$options['cost'].'$'.$salt.'$');
+
 					$options['hash']=$hash;
 					return $options;
 				}
