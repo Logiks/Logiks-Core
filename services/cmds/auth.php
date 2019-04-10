@@ -424,6 +424,12 @@ function gotoSuccessLink() {
             "authkey"=>$_SESSION['MAUTH_KEY'],
             //"token"=>$_SESSION['SESS_TOKEN'],
 
+            "guid"=>$_SESSION['SESS_GUID'],
+            "privilegeid"=>$_SESSION['SESS_PRIVILEGE_ID'],
+            "privilege_name"=>$_SESSION['SESS_PRIVILEGE_NAME'],
+            "accessid"=>$_SESSION['SESS_ACCESS_ID'],
+            "groupid"=>$_SESSION['SESS_GROUP_ID'],
+
             "avatar"=>$_SESSION['SESS_USER_AVATAR'],
           );
           $jwt = new LogiksJWT();
