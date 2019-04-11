@@ -8,6 +8,39 @@ if(!function_exists("getServiceCMD")) {
 		return $scmd;
 	}
 
+	//Handle Action Method Invocations
+	function handleActionMethodCalls($defaultData = []) {
+	    if(strlen($_REQUEST['action'])<=0) {
+	      printServiceMsg($defaultData);
+	      return false;
+	    }
+
+	    $rmiMethod = generateActionMethodName($_REQUEST['action']);
+	    
+	    if($rmiMethod && function_exists($rmiMethod)) {
+	      $return = call_user_func($rmiMethod);
+	      if($return!==null) {
+	        printServiceMsg($return);
+	      }
+	    } else {
+	      printServiceErrorMsg(501,"Method Not Found for ".clean($_REQUEST['action']));
+	    }
+	}
+	  
+	//Generates a name for Remote Method Function, returns false if proposedMethodName is null or if rmi method function allready exists
+	function generateActionMethodName($proposedMethodName) {
+	    if($proposedMethodName==null || strlen($proposedMethodName)<=0) return false;
+	    
+	    $rmiFunc = str_replace(' ', '-', $proposedMethodName); // Replaces all spaces with hyphens.
+	    $rmiFunc = preg_replace('/[^A-Za-z0-9\-_.]/', '', $rmiFunc); // Removes special chars.
+	    $rmiFunc =  preg_replace('/-+/', '-', $rmiFunc);
+	    $rmiFunc = strtolower($rmiFunc);
+	    
+	    $rmiFunc = "_service_$rmiFunc";
+	    
+	    return $rmiFunc;
+	}
+
 	function isAjax() {
 		if(_server('HTTP_REFERER')) {
 			$x=_server('HTTP_X_REQUESTED_WITH');
