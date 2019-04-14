@@ -42,12 +42,13 @@ if(!function_exists('loadConfigs')) {
 	//For module level configuration system
 	function getFeature($key,$fname) {
 		$arrFeature=LogiksConfig::loadFeature($fname);
-		if(isset($arrFeature[$key])) {
-			return $arrFeature[$key];
+		if(isset($arrFeature["CONFIG-{$key}"])) {
+			return $arrFeature["CONFIG-{$key}"];
 		}
 		return "";
 	}
 	function setFeature($key,$value,$fname) {
+    	$key = "CONFIG-{$key}";
 		if(isset($GLOBALS['FEATURES']["{$fname}.cfg"]) && !$forceReload) {
 			$GLOBALS['FEATURES']["{$fname}.cfg"][$key]=$value;
 		} elseif(isset($GLOBALS['FEATURES']["{$fname}.json"]) && !$forceReload) {
