@@ -50,6 +50,19 @@ CREATE TABLE `rolemodel` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+CREATE TABLE `lgks_rolescope` (
+   `id` int(10) unsigned not null auto_increment,
+   `guid` varchar(64) not null default 'global',
+   `privilegeid` varchar(80) not null,
+   `module` varchar(100) NOT NULL,
+   `scope_params` text,
+   `remarks` varchar(200),
+   `created_by` varchar(155) not null,
+   `created_on` timestamp not null default CURRENT_TIMESTAMP,
+   `edited_by` varchar(155) not null,
+   `edited_on` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 CREATE TABLE `cache_sessions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
