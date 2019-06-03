@@ -1,6 +1,6 @@
 <?php
 if (!defined('ROOT')) exit('No direct script access allowed');
-checkServiceSession();
+// checkServiceSession();
 
 include ROOT."api/logout.php";
 ?>
