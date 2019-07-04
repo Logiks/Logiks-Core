@@ -41,6 +41,7 @@ CREATE TABLE `rolemodel` (
   `privilegehash` varchar(80) NOT NULL,
   `remarks` varchar(200) DEFAULT NULL,
   `allow` enum('true','false') NOT NULL DEFAULT 'false',
+  `role_type` varchar(25) NOT NULL DEFAULT 'auto',
   `policystr` varchar(90) not null,
   `rolehash` varchar(80) not null,
   `created_by` varchar(155) NOT NULL,
