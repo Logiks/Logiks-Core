@@ -184,7 +184,7 @@ CREATE TABLE `users` (
   `privacy` enum('private','public','protected') DEFAULT 'protected',
   `blocked` enum('true','false') DEFAULT 'false',
   `expires` date DEFAULT NULL,
-  `registerd_site` varchar(150) DEFAULT NULL,
+  `registered_site` varchar(150) DEFAULT NULL,
   `remarks` varchar(250) DEFAULT NULL,
   `vcode` varchar(65) DEFAULT NULL,
   `mauth` varchar(65) DEFAULT NULL,
