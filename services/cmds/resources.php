@@ -33,17 +33,21 @@ if(isset($_REQUEST['src'])) {
 		$themeEngine=new LogiksTheme($theme);
 		$htmlAsset=new HTMLAssets($themeEngine);
 
+		ob_clean();
 		switch ($_REQUEST['type']) {
 			case 'css':
 				header("Content-type: text/css");
 			break;
 			case 'js':
-				header('Content-type: text/javascript');
+				header('Content-type: application/javascript; charset=utf-8');
 			break;
 			default:
 				header('Content-type: text/plain');
 		}
-		//printArray($_REQUEST['src']);exit();
+		header('Pragma:cache');
+		header('Cache-Control: max-age='.(60*60*24*30));
+		// header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + (60 * 60 * 60)));
+		// printArray($_REQUEST['src']);exit();
 		
 		$type=$_REQUEST['type'];
 		foreach ($_REQUEST['src'] as $file) {
