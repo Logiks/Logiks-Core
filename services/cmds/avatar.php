@@ -63,7 +63,7 @@ function printAvatarPhoto($method) {
 			//r=  Maximum rating (inclusive) [ g | pg | r | x ]
 			$url="http://www.gravatar.com/avatar/";
 			$url .= md5( strtolower( trim( $_REQUEST['authorid'] ) ) );
-      $url .= "?s=120&d=identicon&r=g";
+      		$url .= "?s=120&d=identicon&r=g";
 			$data=file_get_contents($url);
 			printAvatar($data,"png");
 			//printDefaultAvatar();
@@ -120,6 +120,10 @@ function printAvatar($data,$format,$default="") {
 			if(file_exists($f)) {
 				$format=explode($default);
 				$format=$format[count($format)-1];
+
+				header('Pragma:cache');
+				header('Cache-Control: max-age='.(60*60));
+				// header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + (60 * 60 * 60)));
 				header("content-type:image/$format");
 				readfile($f);
 			} else {
@@ -134,6 +138,9 @@ function printAvatar($data,$format,$default="") {
 function printDefaultAvatar() {
 	$f=ROOT.loadMedia("images/avatar.png",true);
 	if(!file_exists($f)) $f=ROOT.loadMedia("images/user.png",true);
+	header('Pragma:cache');
+	header('Cache-Control: max-age='.(60*60));
+	// header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + (60 * 60 * 60)));
 	header("content-type:image/png");
 	readfile($f);
 	exit();
