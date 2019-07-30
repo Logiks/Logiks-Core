@@ -30,7 +30,7 @@ if(!function_exists('loadVendor')) {
   function checkVendor($vendor) {
     if(strlen($vendor)<=0) return false;
 
-    $vendor=strtolower($vendor);
+    // $vendor=strtolower($vendor);
 
     $cachePath=_metaCache("VENDORS",$vendor);
 
