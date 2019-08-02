@@ -76,6 +76,7 @@ if(!function_exists("checkUserRoles")) {
 	//Returns the User Configuration for the scope
 	function getUserConfig($configKey,$baseFolder=null,$reset=false) {
 		$configKey=strtolower($configKey);
+		$configKeyArr = explode("-", $configKey);
 		if($reset) {
 			if(isset($_SESSION['USERCONFIG'][$configKey])) {
 				unset($_SESSION['USERCONFIG'][$configKey]);
@@ -96,7 +97,9 @@ if(!function_exists("checkUserRoles")) {
 			$baseFolder=dirname($bt[0]['file'])."/";
 		}
 		$configArr=[
-				APPROOT.APPS_DATA_FOLDER."jsonData/".$configKey.".json",
+				APPROOT.APPS_CONFIG_FOLDER."jsonData/{$configKeyArr[0]}/{$_SESSION['SESS_PRIVILEGE_NAME']}.json",
+				APPROOT.APPS_CONFIG_FOLDER."jsonData/{$configKeyArr[0]}.json",
+				APPROOT.APPS_CONFIG_FOLDER."jsonData/{$configKey}.json",
 				$baseFolder."config.json",
 			];
 		foreach ($configArr as $f) {
