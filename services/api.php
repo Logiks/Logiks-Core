@@ -135,7 +135,10 @@ if(!function_exists("getServiceCMD")) {
 		if($statusCode==null || !is_numeric($statusCode)) $statusCode=200;
 		$envelop=getMsgEnvelop();
 
-		if($format==null) $format=$_REQUEST['format'];
+		if($format==null) {
+			if(isset($_GET['format'])) $format=$_GET['format'];
+			else $format=$_REQUEST['format'];
+		}
 
 		ob_clean();
 

@@ -455,8 +455,12 @@ class RoleModel {
 	protected function cleanActivity($module, $activity = null) {
 	    if($activity==null || strlen($activity)<=0) $activity="MAIN";
 	    
+	    $module = str_replace("modules/", "", str_replace("popup/", "", $module));
+	    $module = str_replace("/", "_", $module);
+	    
 	    //$activity=preg_replace("/{$module}\./","",$activity);
 		$activity=preg_replace("/".strtolower($module)."\./","",strtolower($activity));
+		//str_replace(strtolower($module),"",strtolower($activity))
 	    $activity = preg_replace("/\%[a-zA-Z0-9]{2}/","",$activity);
 	    
 	    return strtoupper($activity);
