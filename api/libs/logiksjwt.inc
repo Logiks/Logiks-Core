@@ -66,16 +66,21 @@ class LogiksJWT {
     // Create token header as a JSON string
     $header = json_encode(['typ' => 'JWT', 'alg' => $algo]);
 
+    $expTime = getConfig("AUTH_SESSION_EXPIRATION");
+    if($expTime==null || !is_numeric($expTime)) {
+        $expTime = 18000;//3600;
+    }
+
     // Create token payload as a JSON string
     $payload = json_encode(array_merge([
                 "jti"=>md5(rand().time().SiteLocation.SITENAME),
-                "iss" => SiteLocation,
-          //       "sub"=> "",
-                "aud" => SiteLocation,
-                "scope"=> "*",
-                "iat" => time(),
-                "exp" => time()+3600,
-                "nbf" => time()+360000,
+                "iss" => SiteLocation,                              //Identifies principal that issued the JWT.
+                "sub"=> "Login Authentication",                     //Identifies the subject of the JWT.
+                "aud" => SITENAME,                                  //Identifies the recipients that the JWT is intended for
+                "scope"=> "*",                                      //User Scope, $_SESSION['SESS_PRIVILEGE_NAME']
+                "iat" => time(),                                    //Issued at time
+                "exp" => time()+$expTime,                           //Identifies the expiration time
+                "nbf" => time()+1,                                  //Not Before time, 360000
                 ],$data));
 
     // Encode Header to Base64Url String
