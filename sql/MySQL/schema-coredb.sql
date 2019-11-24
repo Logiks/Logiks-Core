@@ -2,7 +2,7 @@
 -- MySQL 5.6+
 --
 
-CREATE TABLE `access` (
+CREATE TABLE `lgks_access` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `name` varchar(255) DEFAULT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE `access` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
-CREATE TABLE `privileges` (
+CREATE TABLE `lgks_privileges` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `site` varchar(150) DEFAULT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE `privileges` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
-CREATE TABLE `rolemodel` (
+CREATE TABLE `lgks_rolemodel` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `site` varchar(150) DEFAULT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE `rolemodel` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE `rolescope` (
+CREATE TABLE `lgks_rolescope` (
    `id` int(10) unsigned not null auto_increment,
    `guid` varchar(64) not null default 'global',
    `privilegeid` varchar(80) not null,
@@ -68,7 +68,7 @@ CREATE TABLE `rolescope` (
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
-CREATE TABLE `cache_sessions` (
+CREATE TABLE `lgks_cache_sessions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `userid` varchar(155) NOT NULL,
@@ -86,7 +86,7 @@ CREATE TABLE `cache_sessions` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE `security_apikeys` (
+CREATE TABLE `lgks_security_apikeys` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `api_title` varchar(155) NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE `security_apikeys` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
-CREATE TABLE `security_iplist` (
+CREATE TABLE `lgks_security_iplist` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `ipaddress` varchar(30) NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE `security_iplist` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
-CREATE TABLE `settings` (
+CREATE TABLE `lgks_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `site` varchar(150) DEFAULT '*',
@@ -136,7 +136,7 @@ CREATE TABLE `settings` (
 
 
 
-CREATE TABLE `system_cronjobs` (
+CREATE TABLE `lgks_system_cronjobs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `site` varchar(150) NOT NULL,
@@ -159,7 +159,7 @@ CREATE TABLE `system_cronjobs` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
-CREATE TABLE `users` (
+CREATE TABLE `lgks_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `userid` varchar(150) NOT NULL,
@@ -203,7 +203,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `userid` (`userid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE `users_group` (
+CREATE TABLE `lgks_users_group` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `group_parent` int NOT NULL DEFAULT 0,
@@ -217,7 +217,7 @@ CREATE TABLE `users_group` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE `users_guid` (
+CREATE TABLE `lgks_users_guid` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `org_name` varchar(255) DEFAULT NULL,
@@ -241,7 +241,7 @@ CREATE TABLE `users_guid` (
   UNIQUE KEY `guid` (`guid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE `links` (
+CREATE TABLE `lgks_links` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `menuid` varchar(25) DEFAULT NULL,
