@@ -51,13 +51,16 @@ CREATE TABLE `rolemodel` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE `lgks_rolescope` (
+CREATE TABLE `rolescope` (
    `id` int(10) unsigned not null auto_increment,
    `guid` varchar(64) not null default 'global',
    `privilegeid` varchar(80) not null,
-   `module` varchar(100) NOT NULL,
+   `scope_title` varchar(90) NOT NULL,
+   `scope_id` varchar(90) NOT NULL,
+   `scope_type` varchar(20) NOT NULL default 'generic',
    `scope_params` text,
    `remarks` varchar(200),
+   `blocked` enum('false','true') NOT NULL DEFAULT 'false',
    `created_by` varchar(155) not null,
    `created_on` timestamp not null default CURRENT_TIMESTAMP,
    `edited_by` varchar(155) not null,
@@ -203,6 +206,7 @@ CREATE TABLE `users` (
 CREATE TABLE `users_group` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
+  `group_parent` int NOT NULL DEFAULT 0,
   `group_name` varchar(150) NOT NULL,
   `group_manager` varchar(155) DEFAULT NULL,
   `group_descs` varchar(255) DEFAULT NULL,

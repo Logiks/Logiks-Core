@@ -142,7 +142,7 @@ if(!function_exists("_time")) {
 		
 		foreach($a as $w) {
 // 			if(strlen($w)<=0) continue;
-			$out=str_replace($w, $timeStore[$w], $out);
+			if(isset($timeStore[$w])) $out=str_replace($w, $timeStore[$w], $out);
 		}
 		return $out;
 	}
