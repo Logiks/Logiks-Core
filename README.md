@@ -17,6 +17,26 @@ Logiks has an active developer team and community, bringing great value to the p
 
 Instead of reinventing the wheel every time you begin a new project, check out a apps from <https://github.com/LogiksApps> and get started with the logic of your application.
 
+### Quick list of features:
+
++ Flexible MIT licensing
++ Compatible with versions PHP 5.6.0 and greater
++ API first approach, start by building and integrating great API
++ Integrated database interaction
++ Application scaffolding
++ Code Hooks, get under the skin fast
++ Page-Module-Service architecture
++ Request dispatcher with clean, custom URLs and routes
++ Built-in validation
++ Fast and flexible templating (PHP syntax, with helpers)
++ View helpers for AJAX, JavaScript, HTML forms and more
++ Email, cookie, security, session, and request handling Components
++ Flexible ACL
++ Data sanitization
++ Flexible caching
++ Localization
++ Works from any web site directory, with little Apache configuration involved
+
 ### Server Requirments
 + PHP 7.0+
 + Supported Servers : Apache/Web Server with .htaccess capabilities
