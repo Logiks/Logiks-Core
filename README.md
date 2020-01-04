@@ -16,11 +16,11 @@ Logiks Framework is an open source high-performance web application building pla
 Added the continuous testing and integration framework from Travis. Find the state above.
 
 ### Server Requirments
-+ PHP 5.6+
++ PHP 7.0+
 + Supported Servers : Apache/Web Server with .htaccess capabilities
 + Supported OS : Windows 2000/XP/Vista/Server, CentOS, Any Linux 
-+ Supported DBs: Mysql, SQLite
-+ Memcached	For caching (Optional)
++ Supported DBs: Mysql, SQLite, APIDB
++ Memcached/Redis/File System	For caching (Optional)
 
 ### PHP Extensions Required
 + Curl Libs
@@ -41,6 +41,7 @@ Added the continuous testing and integration framework from Travis. Find the sta
 + SQLite3 Libs
 + GD Libs
 + Memcached Libs
++ Redis Libs
 
 ### More ...
 + Plugins Found At <https://github.com/LogiksPlugins>
@@ -63,5 +64,5 @@ These are plain source code of/part of the complete working project.
 + For more details visit <http://openlogiks.org/>
 + For a complete api documentation  visit <http://apidocs.openlogiks.org/>
 + For a complete working downloadable package please visit <http://openlogiks.org/downloads/>
-+ Use Logiks Play to learn and explore Logiks, prototype parts of your app without installing anything <http://play.openlogiks.net>
++ Use Logiks Play to learn and explore Logiks, prototype parts of your app without installing anything <http://play.openlogiks.net> (We are currently restructuring the app, will be back soon)
 
