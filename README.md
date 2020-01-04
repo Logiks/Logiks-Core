@@ -13,7 +13,9 @@ Logiks-Core :: Framework
 
 Logiks Framework is an open source high-performance web application building platform. It applies RAD principles along with agile concepts for building and deploying web based PHP projects basically AppSites. Logiks is basically built around SRTP principle of project development with prime concern being Developer's ease of creating projects.
 
-Added the continuous testing and integration framework from Travis. Find the state above.
+Logiks has an active developer team and community, bringing great value to the project. In addition to keeping you from wheel-reinventing, using Logiks means your application’s core is well tested and is being constantly improved. 
+
+Instead of reinventing the wheel every time you begin a new project, check out a apps from <https://github.com/LogiksApps> and get started with the logic of your application.
 
 ### Server Requirments
 + PHP 7.0+
