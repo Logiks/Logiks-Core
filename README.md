@@ -35,13 +35,15 @@ Instead of reinventing the wheel every time you begin a new project, check out a
 + Data sanitization
 + Flexible caching
 + Localization
++ Great 3rd Party Integration
++ Multi Development Language Supported : NodeJS, Python for extendibility
 + Works from any web site directory, with little Apache configuration involved
 
 ### Server Requirments
 + PHP 7.0+
 + Supported Servers : Apache/Web Server with .htaccess capabilities
 + Supported OS : Windows 2000/XP/Vista/Server, CentOS, Any Linux 
-+ Supported DBs: Mysql, SQLite, APIDB
++ Supported DBs: Mysql, MariaDB, SQLite, APIDB (MongoDB, ElasticSearch, many more)
 + Memcached/Redis/File System	For caching (Optional)
 
 ### PHP Extensions Required
