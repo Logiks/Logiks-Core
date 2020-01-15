@@ -118,7 +118,7 @@ if(!function_exists("getServiceCMD")) {
 		printServiceData($arr,null,$errCode);
 	}
 
-	function printServiceMsg($msgData,$msgCode=200,$msgImage="") {
+	function printServiceMsg($msgData,$msgCode=200,$msgRootData=[]) {
 		// if($msgImage!=null && strlen($msgImage)>0) {
 		// 	$msgImage=loadMedia($msgImage);
 		// }
@@ -127,6 +127,10 @@ if(!function_exists("getServiceCMD")) {
 		$arr['MessageCode']=$msgCode;
 		$arr['Data']=$msgData;
 		//$arr['MessageIcon']=$msgImage;
+		
+		if(is_array($msgRootData)) {
+			$arr = array_merge($msgRootData, $arr);
+		}
 
 		printServiceData($arr,null,$msgCode);
 	}
