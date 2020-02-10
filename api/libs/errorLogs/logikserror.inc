@@ -64,25 +64,32 @@ class LogiksError {
       $lr->log($errLogMsg,$errData,LogiksLogger::severityToLevel($severity));
     }
     
-	$appStatus="dev";
-	if(defined("APPS_STATUS")) {
-		$appStatus=APPS_STATUS;
-	} elseif(defined("ENV_STATUS")) {
-		$appStatus=ENV_STATUS;
-	}
-	
-	switch(strtoupper($appStatus)) {
-		case "PRODUCTION":case "PRODS":
-			header("Location:".SiteLocation."error?code={$errorCode}");
-			exit($errMsg);
-			break;
-		case "STAGING":case "STAGE":
-			header("Location:".SiteLocation."error?code={$errorCode}");
-			exit($errMsg);
-			break;
-		default:
-			break;
-	}
+  	$appStatus="dev";
+  	if(defined("APPS_STATUS")) {
+  		$appStatus=APPS_STATUS;
+  	} elseif(defined("ENV_STATUS")) {
+  		$appStatus=ENV_STATUS;
+  	}
+  	
+  	if(SITENAME==WEBDOMAIN) {
+      $sitePath = "";
+    } else {
+      $sitePath = "&site=".SITENAME;
+    }
+    
+    //exit(_link("error/404","code={$errorCode}"));
+    switch(strtoupper($appStatus)) {
+      case "PRODUCTION":case "PRODS":
+        header("Location:".SiteLocation."error?code={$errorCode}{$sitePath}");
+        exit($errMsg);
+        break;
+      case "STAGING":case "STAGE":
+        header("Location:".SiteLocation."error?code={$errorCode}{$sitePath}");
+        exit($errMsg);
+        break;
+      default:
+        break;
+    }
 
     if($printError) {
       $lr->printPage($errData);
