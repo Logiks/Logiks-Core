@@ -202,8 +202,8 @@
 				$groupby=false;
 			}
 		}
-		if($groupby) $groupby=$this->clean($groupby);
-		if($having) $having=$this->clean($having);
+		if($groupby) $groupby=$groupby;//$this->clean($groupby);
+		if($having) $having=$having;//$this->clean($having);
 		
 
 		$this->obj['groupby']['group']=$groupby;
@@ -216,7 +216,7 @@
 		if(is_array($orderby)) {
 			$orderby=$this->cleanArr($orderby);
 		} else {
-			$orderby=$this->clean($orderby);
+			$orderby=$orderby;//$this->clean($orderby);
 		}
 		$this->obj['orderby']=$orderby;
 		return $this;
@@ -573,7 +573,7 @@
 		if(!is_array($arr)) {
 			if(in_array($arr[0], ["~","!","@","#"])) {
 				switch ($arr[0]) {
-					case '~':
+					case '^':
 							$arr=[
 									"OP"=>"SW",
 									"VALUE"=>substr($arr, 1)
@@ -581,7 +581,7 @@
 						break;
 					case '!':
 							$arr=[
-									"OP"=>"EW",
+									"OP"=>"NE",
 									"VALUE"=>substr($arr, 1)
 								];
 						break;
@@ -680,7 +680,7 @@
 			break;
 
 			case "ln":case ":ln:":
-			case "ew":case ":ew:":
+			case "en":case ":en:":
 				$s="{$col} NOT LIKE '%{$arr[0]}'";
 			break;
 			

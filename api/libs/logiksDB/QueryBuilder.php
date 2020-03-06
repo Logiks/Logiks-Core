@@ -173,9 +173,9 @@ class QueryBuilder extends AbstractQueryBuilder {
 			foreach($values as $key => $val) {
 				if(substr($val,0,5)=="RAW:(") {
 					$val=substr($val,4);
-					$valstr[] = $key." = $val";
+					$valstr[] = "`{$key}` = $val";
 				} else {
-					$valstr[] = $key." = '".parent::clean($val)."'";
+					$valstr[] = "`{$key}` = '".parent::clean($val)."'";
 				}
 			}
 		} else {

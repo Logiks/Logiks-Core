@@ -99,7 +99,7 @@ class LogiksError {
 
   public static function handleJSON($severity, $errMsg, $file, $line, $errorCode=500) {
     //This error code is not included in error_reporting
-    if(!(error_reporting() & $severity)) { return true; }     //Test PHP settings allows printing error (will be removed in future)
+    if(!(error_reporting() & $severity) && $severity!=256) { return true; }     //Test PHP settings allows printing error (will be removed in future)
     if(!(SERVICE_ERROR_REPORTING & $severity)) { return true; }       //Test Logiks settings allows printing error
 
     $lr=new LogiksError();

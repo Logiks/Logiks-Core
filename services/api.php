@@ -93,7 +93,7 @@ if(!function_exists("getServiceCMD")) {
 		}
 	}
 
-	function printServiceErrorMsg($errCode,$errMsg=null,$errorImg="") {
+	function printServiceErrorMsg($errCode,$errMsg=null,$errorImg="",$msgRootData=[]) {
 		if($errCode==null) $errCode=500;
 		if(is_numeric($errCode)) {
 		  $errorMessage=getErrorTitle($errCode);
@@ -114,6 +114,10 @@ if(!function_exists("getServiceCMD")) {
 		$arr['Data']=$errMsg;
 		$arr['ErrorDescs']=_replace($errorMessage);
 		$arr['ErrorIcon']=$errorImg;
+
+		if(is_array($msgRootData)) {
+			$arr = array_merge($msgRootData, $arr);
+		}
 
 		printServiceData($arr,null,$errCode);
 	}

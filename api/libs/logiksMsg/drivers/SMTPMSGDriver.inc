@@ -113,10 +113,11 @@ class SMTPMSGDriver extends LogiksMSGDriver {
 			}
 		}
  		if (!$this->mailObj->send()) {
-				$this->msgLog(false,$this->mailObj->ErrorInfo,$to,$subject,$msgBody,$params);
+			$this->msgLog(false,$this->mailObj->ErrorInfo,$to,$subject,$msgBody,$params);
 		    return array("error"=>true,"msg"=>$this->mailObj->ErrorInfo,"type"=>"smtp");
 		} else {
-				$this->msgLog(true,"Mail send successfully to {$to} with subject {$subject}",$to,$subject,$msgBody,$params);
+			if(is_array($to)) $to = implode(",", $to);
+			$this->msgLog(true,"Mail send successfully to {$to} with subject {$subject}",$to,$subject,$msgBody,$params);
 		    return true;
 		}
  	}
