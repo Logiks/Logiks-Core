@@ -244,7 +244,7 @@ if(!function_exists("getServiceCMD")) {
 				echo json_encode($arrData);
 				break;
 
-			case 'txt':
+			case 'txt':case 'text':
 				if(is_array($msgData)) {
 					trigger_logikserror(900, E_USER_ERROR);
 				} else {
