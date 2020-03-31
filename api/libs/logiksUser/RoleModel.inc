@@ -67,7 +67,7 @@ class RoleModel {
 	//  0	Global scope is found, but no matching condition, so not allowed
 	//  1	Allowed in global policy
 	public function checkGlobals($policyStr,$reloadScopes=false) {
-    if(!isset($_SESSION['SESS_GUID'])) $_SESSION['SESS_GUID']="guest";
+    	if(!isset($_SESSION['SESS_GUID'])) $_SESSION['SESS_GUID']="guest";
 		
 		if(isset($_SESSION["SESS_PRIVILEGE_ID"]) && $_SESSION["SESS_PRIVILEGE_ID"]<=ROLE_PRIME) {
 			return 1;
@@ -142,14 +142,14 @@ class RoleModel {
   	public function checkRole($module,$activity,$actionType="ACCESS") {
     	$moduleOriginal=$module;
 
-      $module=$this->getScopeModule($module);
-      $module=explode(".",$module);
-      if(count($module)>1) {
-        $activity=str_replace("{$moduleOriginal}.{$moduleOriginal}.","{$moduleOriginal}.",implode(".",array_slice($module,1)).".{$activity}");
-        $module=$module[0];
-      } else {
-        $module=implode(".",$module);
-      }
+		$module=$this->getScopeModule($module);
+		$module=explode(".",$module);
+		if(count($module)>1) {
+			$activity=str_replace("{$moduleOriginal}.{$moduleOriginal}.","{$moduleOriginal}.",implode(".",array_slice($module,1)).".{$activity}");
+			$module=$module[0];
+		} else {
+			$module=implode(".",$module);
+		}
     
 	    $module = trim(preg_replace("/\%[a-zA-Z0-9]{2}/","",$module));
 	    
@@ -165,7 +165,7 @@ class RoleModel {
 	      _log("RoleUser : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","console");
 	    }
     
-      $globalStatus=RoleModel::checkGlobals($policyStr);
+  		$globalStatus=RoleModel::checkGlobals($policyStr);
 // 		var_dump($globalStatus);
     	if($globalStatus>0) {
     	  return true;
@@ -173,7 +173,7 @@ class RoleModel {
     	
     	$privilegehash=RoleModel::getPrivilegeHash();
     	$roleHash=md5(strtoupper($policyStr.$privilegehash));
-      //printArray([$policyStr,$activity,$roleHash,$privilegehash]);
+      	//printArray([$policyStr,$activity,$roleHash,$privilegehash]);
       
 	    if($activity=="*") {
 			  if(isset($_SESSION["ROLESCOPE"][$roleHash])) {
@@ -212,7 +212,7 @@ class RoleModel {
 		        return $_SESSION["ROLEMODEL"][$roleHash];
 		      }
 
-          $sql=_db(true)->_selectQ($this->roleTable,"id,allow,count(*) as cnt")
+          	  $sql=_db(true)->_selectQ($this->roleTable,"id,allow,count(*) as cnt")
 		          ->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash))
 		          ->_where(['guid'=>$_SESSION['SESS_GUID']])
 		          ->_orderby("id desc");
@@ -285,26 +285,26 @@ class RoleModel {
   
   //Generate and Registers Roles wise permissions
 	public function registerRole($module,$activity = "MAIN",$actionType = "ACCESS",$site = SITENAME,$userid = false, $guid = false) {
-    if($activity==null || strlen($activity)<=0) $activity="MAIN";
+	    if($activity==null || strlen($activity)<=0) $activity="MAIN";
 
-    $activity = $this->cleanActivity($module, $activity);
-    
-    $actionType=strtoupper($actionType);
-    
-    $policyStr=[$module,$activity,$actionType];
-    $policyStr=implode(".",$policyStr);
-    $policyStr = $this->cleanScopePolicy($policyStr);
-    //printArray([$module,$activity,$actionType,$policyStr]);
-    
-    if(!$userid) $userid=$_SESSION['SESS_USER_ID'];
+	    $activity = $this->cleanActivity($module, $activity);
+	    
+	    $actionType=strtoupper($actionType);
+	    
+	    $policyStr=[$module,$activity,$actionType];
+	    $policyStr=implode(".",$policyStr);
+	    $policyStr = $this->cleanScopePolicy($policyStr);
+	    //printArray([$module,$activity,$actionType,$policyStr]);
+	    
+	    if(!$userid) $userid=$_SESSION['SESS_USER_ID'];
 
-    if(!$guid) {
-      if(isset($_SESSION['SESS_GUID'])) {
-        $guid=$_SESSION['SESS_GUID'];
-      } else {
-        $guid="global";
-      }
-    }
+	    if(!$guid) {
+	      if(isset($_SESSION['SESS_GUID'])) {
+	        $guid=$_SESSION['SESS_GUID'];
+	      } else {
+	        $guid="global";
+	      }
+	    }
 
 		$finalData=[];
 
