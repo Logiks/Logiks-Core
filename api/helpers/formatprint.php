@@ -21,10 +21,17 @@ if(!function_exists("printFormattedArray")) {
 		if($format=="select") {
 			if(!array_is_associative($arr)) {
 				foreach($arr as $a=>$b) {
-					if($autoTitle) {
-						echo "<option title='$b' value='$b'>".toTitle(_ling($b))."</option>\n";
+					if(is_array($b)) {
+						if(isset($b['title'])) {
+							if(!isset($b['value'])) $b['value'] = $b['title'];
+							echo "<option title='{$b['title']}' value='{$b['value']}'>"._ling($b['title'])."</option>\n";
+						}
 					} else {
-						echo "<option title='$b' value='$b'>"._ling($b)."</option>\n";
+						if($autoTitle) {
+							echo "<option title='$b' value='$b'>".toTitle(_ling($b))."</option>\n";
+						} else {
+							echo "<option title='$b' value='$b'>"._ling($b)."</option>\n";
+						}
 					}
 				}
 			} else {
