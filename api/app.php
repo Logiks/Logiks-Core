@@ -100,16 +100,16 @@ if(!function_exists("loadLogiksApp")) {
   }
 
   function configureAppLinking() {
-      if(defined("PARENT_APPNAME")) {
-          $parentApps = explode(",",PARENT_APPNAME);
+      if(defined("LINKED_APPS")) {
+          $parentApps = explode(",",LINKED_APPS);
           if(getConfig("APPS_STATUS")=="production") {
-              foreach($parentApps as $a) {
-                  $GLOBALS['pluginPaths'][] = "#ROOT#apps/".PARENT_APPNAME."/plugins/";
+              foreach($parentApps as $app) {
+                  $GLOBALS['pluginPaths'][] = "#ROOT#apps/{$app}/plugins/";
               }
           } else {
-              foreach($parentApps as $a) {
-                  $GLOBALS['pluginPaths'][] = "#ROOT#apps/".PARENT_APPNAME."/plugins/";
-                  $GLOBALS['pluginPaths'][] = "#ROOT#apps/".PARENT_APPNAME."/pluginsDev/";
+              foreach($parentApps as $app) {
+                  $GLOBALS['pluginPaths'][] = "#ROOT#apps/{$app}/plugins/";
+                  $GLOBALS['pluginPaths'][] = "#ROOT#apps/{$app}/pluginsDev/";
               }
           }
       }
