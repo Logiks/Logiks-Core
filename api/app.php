@@ -105,13 +105,20 @@ if(!function_exists("loadLogiksApp")) {
           if(getConfig("APPS_STATUS")=="production") {
               foreach($parentApps as $app) {
                   $GLOBALS['pluginPaths'][] = "#ROOT#apps/{$app}/plugins/";
+                  $GLOBALS['vendorPath'][] = "#ROOT#apps/{$app}/plugins/";
               }
           } else {
               foreach($parentApps as $app) {
                   $GLOBALS['pluginPaths'][] = "#ROOT#apps/{$app}/plugins/";
                   $GLOBALS['pluginPaths'][] = "#ROOT#apps/{$app}/pluginsDev/";
+
+                  $GLOBALS['vendorPath'][] = "#ROOT#apps/{$app}/plugins/";
+                  $GLOBALS['vendorPath'][] = "#ROOT#apps/{$app}/pluginsDev/";
               }
           }
+
+          $GLOBALS['mediaPaths'][] = "#ROOT#apps/{$app}/usermedia/";
+          $GLOBALS['mediaPaths'][] = "#ROOT#apps/{$app}/userdata/";
       }
   }
 }
