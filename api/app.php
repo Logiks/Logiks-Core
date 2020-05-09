@@ -98,5 +98,21 @@ if(!function_exists("loadLogiksApp")) {
     if(file_exists($cfgPath)) return LogiksConfig::parseConfigFile($cfgPath);
     return false;
   }
+
+  function configureAppLinking() {
+      if(defined("PARENT_APPNAME")) {
+          $parentApps = explode(",",PARENT_APPNAME);
+          if(getConfig("APPS_STATUS")=="production") {
+              foreach($parentApps as $a) {
+                  $GLOBALS['pluginPaths'][] = "#ROOT#apps/".PARENT_APPNAME."/plugins/";
+              }
+          } else {
+              foreach($parentApps as $a) {
+                  $GLOBALS['pluginPaths'][] = "#ROOT#apps/".PARENT_APPNAME."/plugins/";
+                  $GLOBALS['pluginPaths'][] = "#ROOT#apps/".PARENT_APPNAME."/pluginsDev/";
+              }
+          }
+      }
+  }
 }
 ?>

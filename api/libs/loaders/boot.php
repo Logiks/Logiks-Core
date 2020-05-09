@@ -16,6 +16,7 @@ include_once dirname(__FILE__)."/widgets.php";
 include_once dirname(__FILE__)."/apps.php";
 
 if(!function_exists('getLoaderFolders')) {
+	
 	function getLoaderFolders($loaderType,$addPath="",$site=null) {
 		$src="LOADERS_".strtoupper($loaderType);
 		if(isset($_ENV[$src]) && isset($_ENV[$src][$addPath])) return $_ENV[$src][$addPath];

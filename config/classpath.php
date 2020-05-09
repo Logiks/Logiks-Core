@@ -7,6 +7,7 @@ $GLOBALS['classPath']=array(
 		"plugins/modules/",
 	);
 $GLOBALS['mediaPaths']=array(
+		"#APPROOT#usermedia/",
 		"#APPROOT#userdata/",
 		"#APPROOT#media/",
 		"#APPROOT#css/",
