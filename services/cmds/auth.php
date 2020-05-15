@@ -96,7 +96,7 @@ if(!matchPWD($data['pwd'],$pwd, $data['pwd_salt'])) {
 	relink("UserID/Password Wrong/Mismatch",$domain);
 }
 if($data['blocked']=="true") {
-	relink("Sorry, you are currently blocked by system admin.",$domain);
+	relink("Sorry your account may not have been activated",$domain);
 }
 
 $accessData=_db(true)->_selectQ(_dbTable("access",true),"sites,name as access_name")->_where([
