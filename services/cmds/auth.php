@@ -165,7 +165,7 @@ initializeLogin($userid, $domain);
 
 //All Functions Required By Authentication System
 function relink($msg,$domain) {
-	_log("Login Attempt Failed","login",LogiksLogger::LOG_ALERT,[
+	_log("Login Attempt Failed - {$_POST['userid']}","login",LogiksLogger::LOG_ALERT,[
 				"userid"=>$_POST['userid'],
 				"site"=>$domain,
 				"device"=>getUserDeviceType(),
