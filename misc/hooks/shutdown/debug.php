@@ -7,7 +7,6 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 // Queries per second: 1419.8999227128
 // Longest query length: 0.0047740936279297
 // Longest query: 
-// SELECT `main_table`.* FROM `m_seo_url` AS `main_table` WHERE (`main_table`.`schema_id` = '1') AND ((`main_table`.`is_parameter` = 1)) AND (`status` IN('active', 'obsolete')) ORDER BY `status` ASC
 
 if(getConfig("APPS_STATUS")!="production" && getConfig("APPS_STATUS")!="prod") {
 	if(!defined("SERVICE_ROOT") && !defined("TEST_ROOT")) {
