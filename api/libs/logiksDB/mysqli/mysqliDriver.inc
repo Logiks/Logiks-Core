@@ -24,8 +24,10 @@ class mysqliDriver extends AbstractDBDriver {
 		}
 		
 		$db = mysqli_select_db($this->link,$this->dbParams['database']) or die("MySQL Database Selection Error For [{$keyName}] Connection");
-		mysqli_set_charset($this->link,"utf8");
 		
+		if(!isset($this->dbParams['charset'])) $this->dbParams['charset'] = "utf8";
+		mysqli_set_charset($this->link, $this->dbParams['charset']);
+
 		if(!$db) {
 			trigger_logikserror("Database ERROR, Database Selection Error For {$keyName}");
 		}
