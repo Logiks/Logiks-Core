@@ -44,6 +44,8 @@ if(!defined("BASEPATH")) {
 
       runHooks("startup");
 
+      configureAppLinking();
+
       include_once $rfile;
       
       break;

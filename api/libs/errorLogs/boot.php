@@ -52,7 +52,11 @@ if(!function_exists("trigger_logikserror")) {
       if(isset($caller['line'])) $line=$caller['line'];
 
       if(defined("SERVICE_ROOT")) {
-        LogiksError::handleJSON($severity, $message, $file, $line, $errorCode);
+        if(isset($_REQUEST['format']) && in_array($_REQUEST['format'], ["html","text","raw"])) {
+          LogiksError::handle($severity, $message, $file, $line, $errorCode);
+        } else {
+          LogiksError::handleJSON($severity, $message, $file, $line, $errorCode);
+        }
       } else {
         LogiksError::handle($severity, $message, $file, $line, $errorCode);
       }

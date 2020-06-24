@@ -386,7 +386,7 @@ class LogiksPage {
 
 		//printArray($page);exit();
 			
-  	$favicon=getConfig("APPS_ICON");
+  		$favicon=getConfig("APPS_ICON");
 		if(strlen($favicon)>0) {
 			$favicon="<link rel='shortcut icon' type='image/x-icon' href='$favicon' />";
 		}

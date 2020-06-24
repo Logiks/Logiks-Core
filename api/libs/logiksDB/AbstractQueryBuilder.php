@@ -549,6 +549,7 @@
 			//$s1=strtolower($s);
 			if($s=="TRUE" || $s=="FALSE") return strtoupper($s);
 			elseif($s===true || $s===false) return ($s===true)?"TRUE":"FALSE";
+			elseif(substr($s, 0, 1) == "0") return "'$s'";
 			elseif(is_numeric($s)) return $s;
 			elseif(is_float($s)) return $s;
 			elseif(is_null($s)) return $s;
