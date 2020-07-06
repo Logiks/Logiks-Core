@@ -5,7 +5,7 @@
  * Usage:
  * Lingualizer::reloadInstance();  Resets the loaded ling from Cache, and reloads fresh
  * 
- * $ling=new lingulizer();
+ * $ling=new Lingualizer();
  * $arr=$ling->loadLingFile("language.ling");
  * //print_r($arr);
  * //$str=$ling->toLang("y");
