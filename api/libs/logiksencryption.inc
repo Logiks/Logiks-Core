@@ -11,11 +11,11 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 class LogiksEncryption {
     private $skey = "asd4564asd5as44e";//session_id();
 
-	public function __construct($skey=null) {
-		if($skey==null) {
-			$this->skey=md5(session_id());
-		}
-	}
+    public function __construct($skey=null) {
+        if($skey==null) {
+            $this->skey=md5(session_id());
+        }
+    }
 
     public function safe_b64encode($string) {
         $data = base64_encode($string);
@@ -32,24 +32,24 @@ class LogiksEncryption {
         return base64_decode($data);
     }
 
-    public function encode($text){
+    public function encode($data, $password){
         $iv = substr(sha1(mt_rand()), 0, 16);
-        $password = sha1($text);
+        $password = sha1($password);
 
         $salt = sha1(mt_rand());
         $saltWithPassword = hash('sha256', $password.$salt);
 
         $encrypted = openssl_encrypt(
-          "$data", 'aes-256-cbc', $saltWithPassword, null, $iv
+          "$data", 'aes-256-cbc', "$saltWithPassword", null, $iv
         );
         $msg_encrypted_bundle = "$iv:$salt:$encrypted";
         return $msg_encrypted_bundle;
     }
 
-    public function decode($value, $password){
+    public function decode($msg_encrypted_bundle, $password){
         $password = sha1($password);
 
-        $components = explode( ':', $value );
+        $components = explode( ':', $msg_encrypted_bundle );
         $iv            = $components[0];
         $salt          = hash('sha256', $password.$components[1]);
         $encrypted_msg = $components[2];
@@ -61,7 +61,7 @@ class LogiksEncryption {
         if ( $decrypted_msg === false )
             return false;
 
-        $msg = substr( $decrypted_msg, 41 );
+        // $msg = substr( $decrypted_msg, 41 );
         return $decrypted_msg;
     }
 
@@ -69,9 +69,9 @@ class LogiksEncryption {
         if(!$value){return false;}
         $text = $value;
         if(function_exists("mcrypt_get_iv_size")) {
-        	$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-	        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-	        $text = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $this->skey, $text, MCRYPT_MODE_ECB, $iv);
+            $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+            $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+            $text = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $this->skey, $text, MCRYPT_MODE_ECB, $iv);
         }
         return trim($this->safe_b64encode($text));
     }
@@ -80,9 +80,9 @@ class LogiksEncryption {
         if(!$value){return false;}
         $crypttext = $this->safe_b64decode($value);
         if(function_exists("mcrypt_get_iv_size")) {
-        	$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-	        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-	        $crypttext = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $this->skey, $crypttext, MCRYPT_MODE_ECB, $iv);
+            $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+            $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+            $crypttext = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $this->skey, $crypttext, MCRYPT_MODE_ECB, $iv);
         }
         return trim($crypttext);
     }
