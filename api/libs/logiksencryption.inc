@@ -18,6 +18,7 @@ class LogiksEncryption {
     }
 
     public static function generateSalt() {
+        //$salt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
         return strtr(base64_encode(substr(sha1(mt_rand()), 0, 16)), '+', '.');
     }
 
