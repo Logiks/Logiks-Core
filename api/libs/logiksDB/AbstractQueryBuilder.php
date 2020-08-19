@@ -308,11 +308,19 @@
 	//GETS/SETS the sql data into a queryBuilder object
 	//@$sql	params	SQL Query to be set into QueryBuilder
 	public function _SQL($sql=null) {
-		//var_dump($this->obj);
-		$limit=$this->obj['limits']['limit'];
-		$offset=$this->obj['limits']['offset'];
+		if($this->obj['limits']) {
+			$limit=$this->obj['limits']['limit'];
+			$offset=$this->obj['limits']['offset'];
+		} else {
+			$limit=null;
+			$offset=0;
+		}
 
-		$orderby=$this->obj['orderby'];
+		if($this->obj['orderby']) {
+			$orderby = $this->obj['orderby'];
+		} else {
+			$orderby = false;
+		}
 
 		$group=null;
 		$having=null;
