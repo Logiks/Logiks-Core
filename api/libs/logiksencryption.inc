@@ -17,6 +17,10 @@ class LogiksEncryption {
         }
     }
 
+    public static generateSalt() {
+        return strtr(base64_encode(substr(sha1(mt_rand()), 0, 16)), '+', '.');
+    }
+
     public function safe_b64encode($string) {
         $data = base64_encode($string);
         $data = str_replace(array('+','/','='),array('-','_',''),$data);
