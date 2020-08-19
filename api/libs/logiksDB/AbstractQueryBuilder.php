@@ -555,7 +555,7 @@
 			elseif(is_null($s)) return $s;
 			elseif(is_bool($s)) return $s;
 			elseif(preg_match("/\d{2}\-\d{2}-\d{4}/",str_replace("/","-",$s))) return "'"._date($s)."'"; 
-			//elseif(strpos($s, "()")>1)  return $s;
+			elseif(strpos($s, "()")>1)  return $s;
 			else return "'$s'";
 		} elseif($sqlType=="int" || $sqlType=="float" || $sqlType=="bool") {
 			if(strlen($s)<=0) return "0";
