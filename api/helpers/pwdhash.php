@@ -28,7 +28,7 @@ if(!function_exists("getPWDHash")) {
 				break;*/
 			default:
 				if($salt==null || strlen($salt)<=0 || $salt===false) {
-					$salt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
+					$salt = strtr(base64_encode(substr(sha1(mt_rand()), 0, 16)), '+', '.');
 
 					$options = [
 						    'cost' => getConfig("HASH_COST"),

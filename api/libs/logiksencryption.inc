@@ -32,7 +32,40 @@ class LogiksEncryption {
         return base64_decode($data);
     }
 
-    public function encode($value){
+    public function encode($text){
+        $iv = substr(sha1(mt_rand()), 0, 16);
+        $password = sha1($text);
+
+        $salt = sha1(mt_rand());
+        $saltWithPassword = hash('sha256', $password.$salt);
+
+        $encrypted = openssl_encrypt(
+          "$data", 'aes-256-cbc', $saltWithPassword, null, $iv
+        );
+        $msg_encrypted_bundle = "$iv:$salt:$encrypted";
+        return $msg_encrypted_bundle;
+    }
+
+    public function decode($value, $password){
+        $password = sha1($password);
+
+        $components = explode( ':', $value );
+        $iv            = $components[0];
+        $salt          = hash('sha256', $password.$components[1]);
+        $encrypted_msg = $components[2];
+
+        $decrypted_msg = openssl_decrypt(
+          $encrypted_msg, 'aes-256-cbc', $salt, null, $iv
+        );
+
+        if ( $decrypted_msg === false )
+            return false;
+
+        $msg = substr( $decrypted_msg, 41 );
+        return $decrypted_msg;
+    }
+
+    public function encode1($value){
         if(!$value){return false;}
         $text = $value;
         if(function_exists("mcrypt_get_iv_size")) {
@@ -43,7 +76,7 @@ class LogiksEncryption {
         return trim($this->safe_b64encode($text));
     }
 
-    public function decode($value){
+    public function decode1($value, $password){
         if(!$value){return false;}
         $crypttext = $this->safe_b64decode($value);
         if(function_exists("mcrypt_get_iv_size")) {

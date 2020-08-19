@@ -90,7 +90,7 @@ if(!function_exists("getUserID")) {
 
 	//Alter User Informations
 	function getDefaultParams($userID="",$pwd="",$privilegeID=0,$accessID=0,$groupid=1) {
-		$hashSalt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
+		$hashSalt = strtr(base64_encode(substr(sha1(mt_rand()), 0, 16)), '+', '.');
 		
 		$pwdAns=getPWDHash($pwd,$hashSalt);
 		if(is_array($pwdAns)) $pwdAns=$pwdAns['hash'];
@@ -294,7 +294,7 @@ if(!function_exists("getUserID")) {
 		}
 
 		if(checkUserID($userID,$site)) {
-			$hashSalt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
+			$hashSalt = strtr(base64_encode(substr(sha1(mt_rand()), 0, 16)), '+', '.');
 
 			$pwdAns=getPWDHash($pwd,$hashSalt);
 			if(is_array($pwdAns)) $pwdAns=$pwdAns['hash'];

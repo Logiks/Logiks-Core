@@ -21,8 +21,8 @@ if(PHP_VERSION_ID < 50600) {
 //Check some important extensions.
 $checkExtensions=array(
 		"cURL PHP Extension is required"=>"func:curl_init",
-		"MCrypt PHP Extension is required"=>"library:mcrypt",
-		"Mbstring PHP Extension is required"=>"library:mbstring",
+		// "MCrypt PHP Extension is required"=>"library:mcrypt",
+		// "Mbstring PHP Extension is required"=>"library:mbstring",
 		"OpenSSL PHP Extension is required"=>"library:openssl",
 		"ZipArchive PHP Library is required"=>"class:ZipArchive",
 // 		"GD PHP Library is required"=>"library:gd",
