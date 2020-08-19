@@ -48,10 +48,12 @@ class LogiksEncryption {
           "$data", 'aes-256-cbc', "$saltWithPassword", null, $iv
         );
         $msg_encrypted_bundle = "$iv:$salt:$encrypted";
-        return $msg_encrypted_bundle;
+        
+        return trim($this->safe_b64encode($msg_encrypted_bundle));
     }
 
     public function decode($msg_encrypted_bundle, $password){
+        $msg_encrypted_bundle = $this->safe_b64decode($msg_encrypted_bundle);
         $password = sha1($password);
 
         $components = explode( ':', $msg_encrypted_bundle );
