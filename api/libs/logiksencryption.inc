@@ -17,7 +17,7 @@ class LogiksEncryption {
         }
     }
 
-    public static generateSalt() {
+    public static function generateSalt() {
         return strtr(base64_encode(substr(sha1(mt_rand()), 0, 16)), '+', '.');
     }
 
