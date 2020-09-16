@@ -61,10 +61,16 @@ class ServiceAPI {
 	}
 
 	protected function checkKeyWithEngine() {
-		if(!isset($_REQUEST['APIKEY'])) {
-			return false;
+		$headers = getallheaders();
+		if(!isset($headers['apikey'])) {
+			if(isset($_REQUEST['APIKEY'])) {
+				$headers['apikey'] = $_REQUEST['APIKEY'];
+			} else {
+				return false;
+			}
 		}
-		$apiKey=$_REQUEST['APIKEY'];
+
+		$apiKey = $headers['apikey'];
 		$a=false;
 
 		switch ($this->API_ENGINE) {
@@ -72,7 +78,7 @@ class ServiceAPI {
 				return true;
 				break;
 			case 'static':
-				if(strlen(getConfig("APIKEY_STATIC"))>0 && getConfig("APIKEY_STATIC")==$apiKey) {
+				if(strlen(getConfig("APIKEY_STATIC"))>0 && md5(getConfig("APIKEY_STATIC"))==md5($apiKey)) {
 					return true;
 				}
 				break;
