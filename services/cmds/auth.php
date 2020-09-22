@@ -96,7 +96,7 @@ if(!matchPWD($data['pwd'],$pwd, $data['pwd_salt'])) {
 	relink("UserID/Password Wrong/Mismatch",$domain);
 }
 if($data['blocked']=="true") {
-	relink("Sorry your account may not have been activated",$domain);
+	relink("Sorry, you are currently blocked by system admin.",$domain);
 }
 
 $accessData=_db(true)->_selectQ(_dbTable("access",true),"sites,name as access_name")->_where([
@@ -144,6 +144,22 @@ if(!in_array($domain,$allSites)) {
 $_ENV['AUTH-DATA']=array_merge($data,$accessData);
 $_ENV['AUTH-DATA']=array_merge($_ENV['AUTH-DATA'],$privilegeData);
 
+$roleScopeData=_db(true)->_selectQ(_dbTable("rolescope",true),"*")->_where([
+		// "blocked"=>"false"
+	])->_whereRAW("(privilegeid='{$privilegeData['privilege_name']}' OR privilegeid='*')")
+		->_GET();
+if(!$roleScopeData) $roleScopeData = [];
+
+$finalScope = [];
+foreach($roleScopeData as $row) {
+	if(!isset($finalScope[$row["module"]])) $finalScope[$row["module"]] = [];
+	$scopeData = json_decode($row['scope_params'], true);
+	if($scopeData) {
+		$finalScope[$row["module"]] = array_merge($finalScope[$row["module"]], $scopeData);
+	}
+}
+$_ENV['AUTH-DATA']['policies'] = $finalScope;
+
 loadHelpers("mobility");
 
 $_ENV['AUTH-DATA']['device']=getUserDeviceType();
@@ -165,7 +181,7 @@ initializeLogin($userid, $domain);
 
 //All Functions Required By Authentication System
 function relink($msg,$domain) {
-	_log("Login Attempt Failed - {$_POST['userid']}","login",LogiksLogger::LOG_ALERT,[
+	_log("Login Attempt Failed","login",LogiksLogger::LOG_ALERT,[
 				"userid"=>$_POST['userid'],
 				"site"=>$domain,
 				"device"=>getUserDeviceType(),
@@ -293,6 +309,12 @@ function startNewSession($userid, $domain, $params=array()) {
 	
 	$_SESSION['SESS_USER_AVATAR'] = $data['avatar_type']."::".$data['avatar'];
 
+	if(isset($data['policies'])) {
+		$_SESSION['SESS_POLICY'] = $data['policies'];
+	} else {
+		$_SESSION['SESS_POLICY'] = [];
+	}
+
 	$_SESSION['SESS_LOGIN_SITE'] = $domain;
 	$_SESSION['SESS_ACTIVE_SITE'] = $domain;
 	$_SESSION['SESS_TOKEN'] = session_id();
@@ -418,6 +440,8 @@ function gotoSuccessLink() {
             "groupid"=>$_SESSION['SESS_GROUP_ID'],
             "access"=>$_SESSION['SESS_ACCESS_SITES'],
 
+            "policies"=>isset($_SESSION['SESS_POLICY'])?$_SESSION['SESS_POLICY']:[],
+
             "timestamp"=>date("Y-m-d H:i:s"),
             "site"=>$domain,
             "client"=>_server('REMOTE_ADDR'),
@@ -452,6 +476,8 @@ function gotoSuccessLink() {
 
             "username"=>$_SESSION['SESS_USER_NAME'],
             "avatar"=>$_SESSION['SESS_USER_AVATAR'],
+
+            "policies"=>isset($_SESSION['SESS_POLICY'])?$_SESSION['SESS_POLICY']:[],
           );
         header("Content-Type:text/json");
         echo json_encode($arr);
