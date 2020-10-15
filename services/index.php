@@ -6,7 +6,6 @@
  *				php, py, perl, ruby, js (node) via engines
  *
  *
- *
  * Service Handler For Logiks 4.0+
  * Commands : scmd, action, format
  * Output Formats : table,list,select, json, xml, raw, txt, css,js
@@ -30,10 +29,11 @@ define('ROOT',dirname(dirname(__FILE__)) . '/');
 // }
 
 require_once (ROOT. "api/commons.php");
-require_once (ROOT . 'services/initialize.php');
+require_once (ROOT. "services/initialize.php");
 
-if(!isset($_REQUEST['scmd'])) {
-	trigger_logikserror(901, E_USER_ERROR);
+if(!isset($_REQUEST['scmd']) || strlen($_REQUEST['scmd'])<=0) {
+	// trigger_logikserror(901, E_USER_ERROR);
+	printServiceErrorMsg(400, "Illegal Service Command Format");
 	exit();
 }
 
@@ -54,7 +54,12 @@ if($ctrl->checkRequest()) {
 	//checks cache and if required executes the scmd and prints the output
 	$ctrl->executeRequest();
 } else {
-	trigger_logikserror(905, E_USER_ERROR);
+	//trigger_logikserror(905, E_USER_ERROR);
+	if(!isset($_SERVER['HTTP_REFERER']) || $_SERVER['HTTP_REFERER']=="mapp") {
+		printServiceErrorMsg(400, "CrossSite Request With Out Key Not Allowed");
+	} else {
+		header("Location:/"._link(""));
+	}
 }
 
 runHooks("serviceStop");
