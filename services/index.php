@@ -33,7 +33,7 @@ require_once (ROOT. "services/initialize.php");
 
 if(!isset($_REQUEST['scmd']) || strlen($_REQUEST['scmd'])<=0) {
 	// trigger_logikserror(901, E_USER_ERROR);
-	printServiceErrorMsg(400, "Illegal Service Command Format");
+	printServiceErrorMsg(901, "Illegal Service Command Format");
 	exit();
 }
 
@@ -56,7 +56,7 @@ if($ctrl->checkRequest()) {
 } else {
 	//trigger_logikserror(905, E_USER_ERROR);
 	if(!isset($_SERVER['HTTP_REFERER']) || $_SERVER['HTTP_REFERER']=="mapp") {
-		printServiceErrorMsg(400, "CrossSite Request With Out Key Not Allowed");
+		printServiceErrorMsg(905, "CrossSite Request With Out Key Not Allowed");
 	} else {
 		header("Location:/"._link(""));
 	}
