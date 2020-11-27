@@ -11,6 +11,8 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 //CurrentUser="(isset($_SESSION['SESS_USER_ID']))?$_SESSION['SESS_USER_ID']:"" ";
 //CurrentRole="(isset($_SESSION['SESS_PRIVILEGE_NAME']))?$_SESSION['SESS_PRIVILEGE_NAME']:"" ";
 
+$refPath = strip_tags(_server('REQUEST_PATH'));
+$refPath = preg_replace("/<script.*?\/script>/s", "", $refPath);
 ?>
 <script language='javascript'>
 SiteLocation="<?=SiteLocation?>";
@@ -51,7 +53,7 @@ function _service(cmd,action,format,q) {
 	return sxx;	
 }
 function _link(href) {
-	if(href==null) href="<?=_server('REQUEST_PATH')?>";
+	if(href==null) href="<?=$refPath?>";
 	if(href.indexOf("http")>=0) {
 	} else if(href.indexOf("ftp")>=0) {
 	} else if(href.indexOf("/")===0) {
