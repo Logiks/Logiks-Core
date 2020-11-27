@@ -39,7 +39,8 @@ if(!isset($initialized)) {
 	    0,//expires at end of session
 	    $currentCookieParams['path'],//path
 	    $currentCookieParams['domain'],//domain
-	    isHTTPS() //secure
+	    isHTTPS(), //secure
+	    isHTTPS()?false:true //httponly
 	);
 	_envData("SESSION",'REQUEST_PAGE_START',$startTime);
 

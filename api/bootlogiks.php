@@ -116,6 +116,7 @@ if(!function_exists("__cleanup")) {
 			_envData("SERVER",'REQUEST_PATH',SiteProtocol."://"._server('HTTP_HOST')._server('REQUEST_URI'));
 
 			$page=PageIndex::findPageFromURL(SITENAME);
+			$page = strip_tags($page);
 			_envData("SERVER","PAGE",$page);
 			define("PAGE",$page);
 

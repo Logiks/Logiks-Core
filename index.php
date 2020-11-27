@@ -12,6 +12,13 @@ define ('ROOT', dirname(__FILE__) . '/');
 ini_set('display_errors', 'On');
 error_reporting('On');
 
+session_set_cookie_params (3600, 
+		"/",//path
+	    null,//domain
+	    false, //secure 
+	    false //httponly
+	);
+
 //Start the flow
 require_once ('api/initialize.php');
 

@@ -23,6 +23,10 @@ Options -Multiviews
 # Set Enviroment Variables
 #SetEnv HTTPS true
 
+#Header unset Server
+#Header set X-Frame-Options SAMEORIGIN
+#Header set X-Content-Type-Options nosniff
+
 # Set the default handler.
 DirectoryIndex index.php index.html index.htm
 
