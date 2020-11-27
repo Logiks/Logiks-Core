@@ -117,6 +117,7 @@ if(!function_exists("__cleanup")) {
 
 			$page=PageIndex::findPageFromURL(SITENAME);
 			$page = strip_tags($page);
+			$page = preg_replace("/<script.*?\/script>/s", "", $page);
 			_envData("SERVER","PAGE",$page);
 			define("PAGE",$page);
 
