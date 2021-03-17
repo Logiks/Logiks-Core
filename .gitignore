@@ -9,3 +9,8 @@
 .project
 .DS_STORE
 temp.txt
+todos.txt
+
+socksServer/
+
+
