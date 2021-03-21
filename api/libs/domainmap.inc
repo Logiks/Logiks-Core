@@ -129,6 +129,7 @@ class DomainMap {
     foreach ($siteServerList as $domainURI) {
       $domainURI = strtoupper($domainURI);
       if(array_key_exists($domainURI,$this->domainList)) {
+        define("DOMAINURI") = $domainURI;
         $dsite=$this->domainList[$domainURI]["appsite"];
         return $dsite;
       }
@@ -137,6 +138,7 @@ class DomainMap {
     //printArray([$uri,_server("REQUEST_URI"), $siteServerList,$this->domainList]);
 
     if(array_key_exists($server,$this->domainList)) {
+      define("DOMAINURI") = $server;
       $dsite=$this->domainList[$server]["appsite"];
       return $dsite;
     } else {
