@@ -126,19 +126,22 @@ class DomainMap {
       $siteServerList = array_reverse($siteServerList);
     }
 
+    $dsite = false;
+
     foreach ($siteServerList as $domainURI) {
       $domainURI = strtoupper($domainURI);
       if(array_key_exists($domainURI,$this->domainList)) {
         define("DOMAINURI") = $domainURI;
         $dsite=$this->domainList[$domainURI]["appsite"];
-        return $dsite;
+        break;
       }
     }
+    if($dsite) return $dsite;
 
     //printArray([$uri,_server("REQUEST_URI"), $siteServerList,$this->domainList]);
 
+    define("DOMAINURI") = $server;
     if(array_key_exists($server,$this->domainList)) {
-      define("DOMAINURI") = $server;
       $dsite=$this->domainList[$server]["appsite"];
       return $dsite;
     } else {
