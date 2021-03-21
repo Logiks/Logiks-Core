@@ -95,7 +95,7 @@ class DomainMap {
     $siteServerList = [];
 
     $server=strtoupper(_server("HTTP_HOST"));
-		$server=str_replace("WWW.","",$server);
+    $server=str_replace("WWW.","",$server);
     $siteServerList[] = $server;
 
     $uri = _server("REQUEST_URI");
@@ -129,15 +129,17 @@ class DomainMap {
     foreach ($siteServerList as $domainURI) {
       $domainURI = strtoupper($domainURI);
       if(array_key_exists($domainURI,$this->domainList)) {
-        define("DOMAINURI", $domainURI);
-        $dsite=$this->domainList[$domainURI]["appsite"];
+        define("DOMAIN_URI", strtolower(str_replace($server, "", $domainURI)));
+        define("DOMAIN_LINK", strtolower($domainURI));
+        $dsite = $this->domainList[$domainURI]["appsite"];
         return $dsite;
       }
     }
 
     //printArray([$uri,_server("REQUEST_URI"), $siteServerList,$this->domainList]);
 
-    define("DOMAINURI", $server);
+    define("DOMAIN_URI", "");
+    define("DOMAIN_LINK", strtolower($server));
     if(array_key_exists($server,$this->domainList)) {
       $dsite=$this->domainList[$server]["appsite"];
       return $dsite;
