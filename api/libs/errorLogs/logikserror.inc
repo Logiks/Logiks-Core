@@ -71,10 +71,14 @@ class LogiksError {
   		$appStatus=ENV_STATUS;
   	}
   	
-  	if(SITENAME==WEBDOMAIN) {
-      $sitePath = "";
+    if(defined("SITENAME")) {
+      if(SITENAME==WEBDOMAIN) {
+        $sitePath = "";
+      } else {
+        $sitePath = "&site=".SITENAME;
+      }
     } else {
-      $sitePath = "&site=".SITENAME;
+      $sitePath = "";
     }
     
     //exit(_link("error/404","code={$errorCode}"));
