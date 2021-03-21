@@ -92,8 +92,49 @@ class DomainMap {
     return $this->setupAppSite($site);
   }
   protected function detectDomainApp() {
+    $siteServerList = [];
+
     $server=strtoupper(_server("HTTP_HOST"));
 		$server=str_replace("WWW.","",$server);
+    $siteServerList[] = $server;
+
+    $uri = _server("REQUEST_URI");
+    $uri = explode("/", $uri);
+    array_shift($uri);
+
+    if(count($uri)>=4) {
+      $siteServerList[] = $server."/".$uri[0];
+      $siteServerList[] = $server."/".$uri[0]."/".$uri[1];
+      $siteServerList[] = $server."/".$uri[0]."/".$uri[1]."/".$uri[2];
+      $siteServerList[] = $server."/".$uri[0]."/".$uri[1]."/".$uri[2]."/".$uri[3];
+
+      $siteServerList = array_reverse($siteServerList);
+    } elseif(count($uri)>=3) {
+      $siteServerList[] = $server."/".$uri[0];
+      $siteServerList[] = $server."/".$uri[0]."/".$uri[1];
+      $siteServerList[] = $server."/".$uri[0]."/".$uri[1]."/".$uri[2];
+
+      $siteServerList = array_reverse($siteServerList);
+    } elseif(count($uri)>=2) {
+      $siteServerList[] = $server."/".$uri[0];
+      $siteServerList[] = $server."/".$uri[0]."/".$uri[1];
+
+      $siteServerList = array_reverse($siteServerList);
+    } elseif(count($uri)>=1) {
+      $siteServerList[] = $server."/".$uri[0];
+
+      $siteServerList = array_reverse($siteServerList);
+    }
+
+    foreach ($siteServerList as $domainURI) {
+      $domainURI = strtoupper($domainURI);
+      if(array_key_exists($domainURI,$this->domainList)) {
+        $dsite=$this->domainList[$domainURI]["appsite"];
+        return $dsite;
+      }
+    }
+
+    //printArray([$uri,_server("REQUEST_URI"), $siteServerList,$this->domainList]);
 
     if(array_key_exists($server,$this->domainList)) {
       $dsite=$this->domainList[$server]["appsite"];
