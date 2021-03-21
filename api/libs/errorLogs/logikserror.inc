@@ -35,7 +35,7 @@ class LogiksError {
     if($errorCode==null || !is_numeric($errorCode)) $errorCode=500;
 
     $errData=[
-        "site"=>SITENAME,
+        "site"=>defined("SITENAME")?SITENAME:"PRERROR",
         "domain"=>$_SERVER['HTTP_HOST'],
         "userid"=>"",
         "code"=>$errorCode,
