@@ -38,7 +38,13 @@ if(!function_exists("getQueryParams")) {
 	}
 
 	function getPrettyLink($page=PAGE, $site=SITENAME,$query=null) {
+		if(substr($page, 0,1)=="/") $page = substr($page, 1);
+
 		$url=SiteLocation.$page;
+		
+		if(defined("DOMAIN_URI") && strlen(DOMAIN_URI)>1) {
+			$url=SiteLocation.substr(DOMAIN_URI, 1)."/".$page;
+		}
 
 		// if($query==null && !is_array($query)) {
 		// 	$query=_session('QUERY');
