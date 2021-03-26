@@ -38,6 +38,8 @@ function _service(cmd,action,format,q) {
 	<?php
 		if(isset($_REQUEST["forsite"]) && strlen($_REQUEST["forsite"])>0) {
 			echo "sxx+='&forsite={$_REQUEST["forsite"]}';";
+		} elseif(defined("DOMAIN_URI") && strlen(DOMAIN_URI)>1) {
+			echo "sxx+='&forsite="+SITENAME+"';";
 		}
 	?>
 	
@@ -53,13 +55,26 @@ function _service(cmd,action,format,q) {
 	return sxx;	
 }
 function _link(href) {
+	<?php
+		if(defined("DOMAIN_URI") && strlen(DOMAIN_URI)>1) {
+	?>
+	var SITELINK = "<?=SiteLocation.substr(DOMAIN_URI, 1)?>/";
+	<?php
+		} else {
+	?>
+	var SITELINK = "<?=SiteLocation?>";
+	<?php
+		}
+	?>
+	
 	if(href==null) href="<?=$refPath?>";
-	if(href.indexOf("http")>=0) {
-	} else if(href.indexOf("ftp")>=0) {
+	if(href.indexOf("http")>=0 ||
+			href.indexOf("https")>=0 ||
+			href.indexOf("ftp")>=0) {
 	} else if(href.indexOf("/")===0) {
-		href="<?=SiteLocation?>"+href.substr(1);
+		href=SITELINK+href.substr(1);
 	} else {
-		href="<?=SiteLocation?>"+href;
+		href=SITELINK+href;
 	}
 	<?php
 		if(SITENAME!=WEBDOMAIN) {
