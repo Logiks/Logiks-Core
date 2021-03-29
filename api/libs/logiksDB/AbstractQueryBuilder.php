@@ -562,7 +562,7 @@
 			elseif(is_float($s)) return $s;
 			elseif(is_null($s)) return $s;
 			elseif(is_bool($s)) return $s;
-			elseif(preg_match("/\d{2}\-\d{2}-\d{4}/",str_replace("/","-",$s)) && strlen($s)=="10") return "'"._date($s)."'"; 
+			elseif(strlen($s)==10 && preg_match("/\d{2}\-\d{2}-\d{4}/",str_replace("/","-",$s)) && strlen($s)=="10") return "'"._date($s)."'"; 
 			elseif(strpos($s, "()")>1)  return $s;
 			else return "'$s'";
 		} elseif($sqlType=="int" || $sqlType=="float" || $sqlType=="bool") {
