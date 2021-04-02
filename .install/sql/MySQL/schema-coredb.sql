@@ -57,7 +57,7 @@ CREATE TABLE `lgks_rolescope` (
    `privilegeid` varchar(80) not null,
    `scope_title` varchar(90) NOT NULL,
    `scope_id` varchar(90) NOT NULL,
-   `scope_type` varchar(20) NOT NULL default 'generic',
+   `scope_type` varchar(20) NOT NULL default 'general',
    `scope_params` text,
    `remarks` varchar(200),
    `blocked` enum('false','true') NOT NULL DEFAULT 'false',
