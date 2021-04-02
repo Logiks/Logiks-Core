@@ -480,6 +480,7 @@ function gotoSuccessLink() {
 					
 					  "guid"=>$_SESSION['SESS_GUID'],
             "privilege_name"=>$_SESSION['SESS_PRIVILEGE_NAME'],
+					  "group_name"=>$_SESSION['SESS_GROUP_NAME'],
 
             "policies"=>isset($_SESSION['SESS_POLICY'])?$_SESSION['SESS_POLICY']:[],
           );
