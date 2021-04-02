@@ -477,6 +477,9 @@ function gotoSuccessLink() {
 
             "username"=>$_SESSION['SESS_USER_NAME'],
             "avatar"=>$_SESSION['SESS_USER_AVATAR'],
+					
+					  "guid"=>$_SESSION['SESS_GUID'],
+            "privilege_name"=>$_SESSION['SESS_PRIVILEGE_NAME'],
 
             "policies"=>isset($_SESSION['SESS_POLICY'])?$_SESSION['SESS_POLICY']:[],
           );
