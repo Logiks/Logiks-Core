@@ -145,17 +145,18 @@ $_ENV['AUTH-DATA']=array_merge($data,$accessData);
 $_ENV['AUTH-DATA']=array_merge($_ENV['AUTH-DATA'],$privilegeData);
 
 $roleScopeData=_db(true)->_selectQ(_dbTable("rolescope",true),"*")->_where([
-		// "blocked"=>"false"
+		"blocked"=>"false",
+		"scope_id"=> $_POST['policy_scope']
 	])->_whereRAW("(privilegeid='{$privilegeData['privilege_name']}' OR privilegeid='*')")
 		->_GET();
 if(!$roleScopeData) $roleScopeData = [];
 
 $finalScope = [];
 foreach($roleScopeData as $row) {
-	if(!isset($finalScope[$row["module"]])) $finalScope[$row["module"]] = [];
+	if(!isset($finalScope[$row["scope_type"]])) $finalScope[$row["scope_type"]] = [];
 	$scopeData = json_decode($row['scope_params'], true);
 	if($scopeData) {
-		$finalScope[$row["module"]] = array_merge($finalScope[$row["module"]], $scopeData);
+		$finalScope[$row["scope_type"]] = array_merge($finalScope[$row["scope_type"]], $scopeData);
 	}
 }
 $_ENV['AUTH-DATA']['policies'] = $finalScope;
