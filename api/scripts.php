@@ -39,7 +39,7 @@ function _service(cmd,action,format,q) {
 		if(isset($_REQUEST["forsite"]) && strlen($_REQUEST["forsite"])>0) {
 			echo "sxx+='&forsite={$_REQUEST["forsite"]}';";
 		} elseif(defined("DOMAIN_URI") && strlen(DOMAIN_URI)>1) {
-			echo "sxx+='&forsite="+SITENAME+"';";
+			echo "sxx+='&forsite=".SITENAME."';";
 		}
 	?>
 	
