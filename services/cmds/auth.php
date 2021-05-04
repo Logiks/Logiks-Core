@@ -144,12 +144,16 @@ if(!in_array($domain,$allSites)) {
 $_ENV['AUTH-DATA']=array_merge($data,$accessData);
 $_ENV['AUTH-DATA']=array_merge($_ENV['AUTH-DATA'],$privilegeData);
 
-$roleScopeData=_db(true)->_selectQ(_dbTable("rolescope",true),"*")->_where([
-		"blocked"=>"false",
-		"scope_id"=> $_POST['policy_scope']
-	])->_whereRAW("(privilegeid='{$privilegeData['privilege_name']}' OR privilegeid='*')")
-		->_GET();
-if(!$roleScopeData) $roleScopeData = [];
+if(isset($_POST['policy_scope'])) {
+	$roleScopeData=_db(true)->_selectQ(_dbTable("rolescope",true),"*")->_where([
+			"blocked"=>"false",
+			"scope_id"=> $_POST['policy_scope']
+		])->_whereRAW("(privilegeid='{$privilegeData['privilege_name']}' OR privilegeid='*')")
+			->_GET();
+	if(!$roleScopeData) $roleScopeData = [];
+} else {
+	$roleScopeData = [];
+}
 
 $finalScope = [];
 foreach($roleScopeData as $row) {
