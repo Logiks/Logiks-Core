@@ -367,8 +367,8 @@ if(!function_exists("_session")) {
 	}
 	function isHTTPS() {
 		if(defined("FORCE_HTTPS")) {
-			if(FORCE_HTTPS===true || FORCE_HTTPS==="true") return true;
-	    }
+			return (FORCE_HTTPS===true || FORCE_HTTPS==="true" || FORCE_HTTPS==="1")?true:false;
+	  }
 		if(isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) {
 			return true;
 		}
