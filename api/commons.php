@@ -36,6 +36,11 @@ if (!function_exists('printArray')) {
 			$s=_replace($s);
 		}
 		$s=str_replace("_"," ",$s);
+		
+		if(strtoupper($s)!=$s || strtolower($s)!=$s) {
+			$s = preg_replace("([A-Z])", " $0", $s);
+		}
+		
 		$s=strtolower($s);
 		$s=trim($s);
 		if(strlen($s)<=3) {
