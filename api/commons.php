@@ -37,7 +37,7 @@ if (!function_exists('printArray')) {
 		}
 		$s=str_replace("_"," ",$s);
 		
-		if(strtoupper($s)!=$s || strtolower($s)!=$s) {
+		if(strtoupper($s)!=$s && strtolower($s)!=$s) {
 			$s = preg_replace("([A-Z])", " $0", $s);
 		}
 		
