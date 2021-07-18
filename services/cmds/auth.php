@@ -472,7 +472,12 @@ function gotoSuccessLink() {
           $jwt = new LogiksJWT();
           $jwtToken = $jwt->generateToken($arr);
           header("Content-Type:text/json");
-          echo json_encode(["token"=>$jwtToken,"msg"=>"Login Success","status"=>'success']);
+          echo json_encode([
+          	"token"=>$jwtToken,
+          	"msg"=>"Login Success",
+          	"status"=>'success',
+          	"token-refresh"=>_service("auth-refresh",false,false,false,SITENAME,false)
+          ]);
       } elseif($_REQUEST['mauth']=="jsonkey" || $_REQUEST['mauth']=="json") {
         $arr=array(
         		"guid"=>$_SESSION['SESS_GUID'],

@@ -33,12 +33,16 @@ if(!function_exists("_link")) {
 }
 if(!function_exists("_service")) {
 	//Gets the service cmd link
-	function _service($scmd, $action="", $format="json", $params=array(), $site=SITENAME) {
+	function _service($scmd, $action="", $format="json", $params=array(), $site=SITENAME, $syshash = true) {
 		//$s=SiteLocation."services/{$scmd}?site={$site}";
-		$s=SiteLocation."services/{$scmd}?site={$site}&syshash=".getSysHash();
-		if(strlen($action)>0) $s.="&action={$action}";
-		if(strlen($format)>0) $s.="&format={$format}";
-		if(is_array($params)) foreach($params as $a=>$b) $s.="&{$a}={$b}";
+		$s=SiteLocation."services/{$scmd}?site={$site}";
+
+		if($syshash) $s.="&syshash=".getSysHash();
+		if($action && strlen($action)>0) $s.="&action={$action}";
+		if($format && strlen($format)>0) $s.="&format={$format}";
+		
+		if($params && is_array($params)) foreach($params as $a=>$b) $s.="&{$a}={$b}";
+
 		return $s;
 	}
 }
