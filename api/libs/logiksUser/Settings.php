@@ -10,12 +10,12 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 
 if(!function_exists("getSettings")) {
-	function getSettings($name,$defaultValue="",$scope="system") {//,$type="string",$editParams="",$class=""
+	function getSettings($name,$defaultValue="",$scope="system",$systemOwner = false) {//,$type="string",$editParams="",$class=""
 		if(strlen($name)<=0 || !isset($_SESSION['SESS_USER_ID'])) return $defaultValue;
 
 		$sql=_db(true)->_selectQ(_dbTable("settings",true),"name,settings")->_where(array(
 				"guid"=>$_SESSION['SESS_GUID'],
-				"userid"=>$_SESSION['SESS_USER_ID'],
+				"userid"=>$systemOwner?"*":$_SESSION['SESS_USER_ID'],
 				"site"=>SITENAME,
 				"scope"=>$scope,
 				"name"=>$name,
@@ -27,20 +27,20 @@ if(!function_exists("getSettings")) {
 			if(isset($data[0])) {
 				return $data[0]['settings'];
 			} else {
-				registerSettings($name,$defaultValue,$scope);
+				registerSettings($name,$defaultValue,$scope,$systemOwner);
 			}
 		}
 		return $defaultValue;
 	}
 	
-	function setSettings($name,$value="",$scope="system") {
+	function setSettings($name,$value="",$scope="system",$systemOwner = false) {
 		if(is_file($value)) $value=json_decode(file_get_contents($value),true);
 
 		if(strlen($name)<=0 || !isset($_SESSION['SESS_USER_ID'])) return $value;
 
 		$sql=_db(true)->_selectQ(_dbTable("settings",true),"name,settings")->_where(array(
 				"guid"=>$_SESSION['SESS_GUID'],
-				"userid"=>$_SESSION['SESS_USER_ID'],
+				"userid"=>$systemOwner?"*":$_SESSION['SESS_USER_ID'],
 				"site"=>SITENAME,
 				"scope"=>$scope,
 				"name"=>$name,
@@ -55,7 +55,7 @@ if(!function_exists("getSettings")) {
 					);
 				$q=_db(true)->_updateQ(_dbTable("settings",true),$data,array(
 						"guid"=>$_SESSION['SESS_GUID'],
-						"userid"=>$_SESSION['SESS_USER_ID'],
+						"userid"=>$systemOwner?"*":$_SESSION['SESS_USER_ID'],
 						"site"=>SITENAME,
 						"scope"=>strtolower($scope),
 						"name"=>$name,
@@ -65,15 +65,15 @@ if(!function_exists("getSettings")) {
 				return $value;
 			}
 		}
-		if(registerSettings($name,$value,$scope)) return $value;
+		if(registerSettings($name,$value,$scope,$systemOwner)) return $value;
 		return false;
 	}
 	
-	function registerSettings($name,$value="",$scope="system") {
+	function registerSettings($name,$value="",$scope="system",$systemOwner = false) {
 		if(is_file($value)) $value=json_decode(file_get_contents($value),true);
 		$data=array(
 				"guid"=>$_SESSION['SESS_GUID'],
-				"userid"=>$_SESSION['SESS_USER_ID'],
+				"userid"=>$systemOwner?"*":$_SESSION['SESS_USER_ID'],
 				"site"=>SITENAME,
 				"scope"=>strtolower($scope),
 				"name"=>$name,
