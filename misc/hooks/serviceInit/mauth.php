@@ -78,11 +78,13 @@ switch($authToken[0]) {
       //   return false;
       // }
     } else {
-      return false;
+      printServiceErrorMsg(401,"Auth Token expired or is invalid");
+      exit();
     }
   break;
   default:
-    return false;
+    printServiceErrorMsg(401,"Authorization not supported");
+    exit();
 }
 
 //printArray($_SESSION);exit();

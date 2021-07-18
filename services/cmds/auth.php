@@ -1,8 +1,11 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-if(!isset($_REQUEST['mauth'])) {
+if(!isset($_REQUEST['mauth']) && !isset($_REQUEST['auth-policy'])) {
 	echo "<h5>Securing Access Authentication ... </h5>";
+}
+if(isset($_REQUEST['auth-policy'])) {
+	$_REQUEST['mauth'] = $_REQUEST['auth-policy'];
 }
 
 runHooks("preAuth");
@@ -15,6 +18,7 @@ $pwd=clean($_POST['password']);
 if(isset($_POST['site'])) $domain=$_POST['site']; 
 elseif(isset($_REQUEST['site'])) $domain=$_REQUEST['site']; 
 else $domain=SITENAME;
+
 
 loadConfigs(ROOT . "config/auth.cfg");
 include ROOT."api/helpers/pwdhash.php";
@@ -206,9 +210,9 @@ function relink($msg,$domain) {
         echo json_encode(["msg"=>$msg,"status"=>'failed']);
       } elseif($_REQUEST['mauth']=="authkey") {
         echo "ERROR:$msg";
-      } elseif($_REQUEST['mauth']=="jsonkey") {
+      } elseif($_REQUEST['mauth']=="jsonkey" || $_REQUEST['mauth']=="json") {
         header("Content-Type:text/json");
-        echo json_encode(["ERROR"=>$msg]);
+        echo json_encode(["msg"=>$msg,"status"=>'failed']);
       } else {
         echo "ERROR/$msg";
       }
@@ -350,7 +354,10 @@ function startNewSession($userid, $domain, $params=array()) {
 	setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000,"/",null, isHTTPS());
 	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000,"/",null, isHTTPS());
 	
-	_db(true)->_deleteQ(_dbTable("cache_sessions",true),"created_on<DATE_SUB(NOW(), INTERVAL 1 MONTH)")->_RUN();
+	$cnt = _db(true)->_selectQ(_dbTable("cache_sessions",true),"count(*) as cnt","created_on<DATE_SUB(NOW(), INTERVAL 1 MONTH)")->_GET();
+	if($cnt[0]['cnt']>10000) {
+		_db(true)->_selectQ(_dbTable("cache_sessions",true),"created_on<DATE_SUB(NOW(), INTERVAL 1 MONTH)")->_RUN();
+	}
 	
 	if($data['persistant'] || (ALLOW_MAUTH && isset($_REQUEST['mauth']))) {
 		_db(true)->_deleteQ(_dbTable("cache_sessions",true),"edited_on<DATE_SUB(NOW(), INTERVAL 10 DAY)")
@@ -438,6 +445,8 @@ function gotoSuccessLink() {
             "mobile"=>$_SESSION['SESS_USER_CELL'],
             "email"=>$_SESSION['SESS_USER_EMAIL'],
             "country"=>$_SESSION['SESS_USER_COUNTRY'],
+            "zipcode"=>$_SESSION['SESS_USER_ZIPCODE'],
+            "geolocation"=>$_SESSION['SESS_USER_GEOLOC'],
 
             "privilegeid"=>$_SESSION['SESS_PRIVILEGE_ID'],
             "privilege_name"=>$_SESSION['SESS_PRIVILEGE_NAME'],
@@ -453,7 +462,6 @@ function gotoSuccessLink() {
             "authkey"=>$_SESSION['MAUTH_KEY'],
             //"token"=>$_SESSION['SESS_TOKEN'],
 
-            "guid"=>$_SESSION['SESS_GUID'],
             "privilegeid"=>$_SESSION['SESS_PRIVILEGE_ID'],
             "privilege_name"=>$_SESSION['SESS_PRIVILEGE_NAME'],
             "accessid"=>$_SESSION['SESS_ACCESS_ID'],
@@ -465,24 +473,29 @@ function gotoSuccessLink() {
           $jwtToken = $jwt->generateToken($arr);
           header("Content-Type:text/json");
           echo json_encode(["token"=>$jwtToken,"msg"=>"Login Success","status"=>'success']);
-      } elseif($_REQUEST['mauth']=="jsonkey") {
+      } elseif($_REQUEST['mauth']=="jsonkey" || $_REQUEST['mauth']=="json") {
         $arr=array(
+        		"guid"=>$_SESSION['SESS_GUID'],
+        		"username"=>$_SESSION['SESS_USER_NAME'],
+
             "user"=>$_SESSION['SESS_USER_ID'],
             "mobile"=>$_SESSION['SESS_USER_CELL'],
             "email"=>$_SESSION['SESS_USER_EMAIL'],
             "country"=>$_SESSION['SESS_USER_COUNTRY'],
+            "zipcode"=>$_SESSION['SESS_USER_ZIPCODE'],
+            "geolocation"=>$_SESSION['SESS_USER_GEOLOC'],
 
             "date"=>date("Y-m-d"),
             "time"=>date("H:i:s"),
             "site"=>$domain,
             "client"=>_server('REMOTE_ADDR'),
             "authkey"=>$_SESSION['MAUTH_KEY'],
-//             "token"=>$_SESSION['SESS_TOKEN'],
+            //"token"=>$_SESSION['SESS_TOKEN'],
 
-            "username"=>$_SESSION['SESS_USER_NAME'],
+            
             "avatar"=>$_SESSION['SESS_USER_AVATAR'],
 					
-					  "guid"=>$_SESSION['SESS_GUID'],
+					  
             "privilege_name"=>$_SESSION['SESS_PRIVILEGE_NAME'],
 					  "group_name"=>$_SESSION['SESS_GROUP_NAME'],
 
