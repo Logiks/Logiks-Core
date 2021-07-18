@@ -52,6 +52,7 @@ switch($authToken[0]) {
       $_SESSION['SESS_USER_AVATAR']=$tokenData["avatar"];
 
       $_SESSION['SESS_POLICY'] = $tokenData['policies'];
+      $_SESSION["SESS_ROLE_LIST"] = $tokenData['rolelist'];
 
       $_SESSION['SESS_LOGIN_SITE']=$tokenData["site"];
       $_SESSION['SESS_ACTIVE_SITE']=$tokenData["site"];

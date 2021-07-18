@@ -80,9 +80,17 @@ if(CASE_SENSITIVE_AUTH) {
 	}
 }
 
-$sql=_db(true)->_selectQ(_dbTable("users",true),"id, guid, userid, pwd, pwd_salt, privilegeid, accessid, groupid, name, email, mobile, region, country, zipcode, geolocation, geoip, tags, blocked, avatar, avatar_type")->_whereOR("expires",[
+$userColumns = _db(true)->get_columnList(_dbTable("users",true));
+
+if(in_array("roles",$userColumns)) {
+	$sql=_db(true)->_selectQ(_dbTable("users",true),"id, guid, userid, pwd, pwd_salt, privilegeid, accessid, groupid, name, email, mobile, region, country, zipcode, geolocation, geoip, tags, blocked, avatar, avatar_type, roles")->_whereOR("expires",[
 			"0000-00-00",["NULL","NU"],["now()","GT"]
 		])->_where($userFields,"AND","OR");
+} else {
+	$sql=_db(true)->_selectQ(_dbTable("users",true),"id, guid, userid, pwd, pwd_salt, privilegeid, accessid, groupid, name, email, mobile, region, country, zipcode, geolocation, geoip, tags, blocked, avatar, avatar_type")->_whereOR("expires",[
+			"0000-00-00",["NULL","NU"],["now()","GT"]
+		])->_where($userFields,"AND","OR");
+}
 
 $result=$sql->_get();
 
@@ -90,6 +98,17 @@ if(!empty($result)) {
 	$data=$result[0];
 } else {
 	relink("Sorry, you have not yet joined us or your userid has expired.",$domain);
+}
+
+if(!isset($data['roles']) || strlen($data['roles'])<=0) $data['roles'] = $data['privilegeid'];
+else {
+	$data['roles'] = explode(",", $data['roles']);
+	$data['roles'][] = $data['privilegeid'];
+	
+	if(strlen($data['roles'][0])<=0) unset($data['roles'][0]);
+
+	$data['roles'] = array_unique($data['roles']);
+	$data['roles'] = implode(",", $data['roles']);
 }
 
 // echo "{$data['pwd']} >>> $pwd >>> {$data['pwd_salt']}\n\n<br>";
@@ -324,6 +343,8 @@ function startNewSession($userid, $domain, $params=array()) {
 		$_SESSION['SESS_POLICY'] = [];
 	}
 
+	$_SESSION["SESS_ROLE_LIST"] = getUserRoleList($data['roles']);
+
 	$_SESSION['SESS_LOGIN_SITE'] = $domain;
 	$_SESSION['SESS_ACTIVE_SITE'] = $domain;
 	$_SESSION['SESS_TOKEN'] = session_id();
@@ -453,6 +474,7 @@ function gotoSuccessLink() {
             "accessid"=>$_SESSION['SESS_ACCESS_ID'],
             "groupid"=>$_SESSION['SESS_GROUP_ID'],
             "access"=>$_SESSION['SESS_ACCESS_SITES'],
+            "rolelist"=>$_SESSION["SESS_ROLE_LIST"],
 
             "policies"=>isset($_SESSION['SESS_POLICY'])?$_SESSION['SESS_POLICY']:[],
 
@@ -461,11 +483,6 @@ function gotoSuccessLink() {
             "client"=>_server('REMOTE_ADDR'),
             "authkey"=>$_SESSION['MAUTH_KEY'],
             //"token"=>$_SESSION['SESS_TOKEN'],
-
-            "privilegeid"=>$_SESSION['SESS_PRIVILEGE_ID'],
-            "privilege_name"=>$_SESSION['SESS_PRIVILEGE_NAME'],
-            "accessid"=>$_SESSION['SESS_ACCESS_ID'],
-            "groupid"=>$_SESSION['SESS_GROUP_ID'],
 
             "avatar"=>$_SESSION['SESS_USER_AVATAR'],
           );

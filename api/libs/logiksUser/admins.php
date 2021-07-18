@@ -71,7 +71,6 @@ if(!function_exists("whoami")) {
 			}
 		}
 
-		
 		//Setup the User Session
 		$_SESSION['SESS_GUID']=$userInfo["guid"];
 	    $_SESSION['SESS_USER_NAME']=$userInfo["name"];
@@ -90,12 +89,16 @@ if(!function_exists("whoami")) {
 	    //$_SESSION['SESS_ACCESS_SITES']=$accessData["access"];
 	    $_SESSION['SESS_USER_AVATAR']=$userInfo["avatarlink"];
 
+	    $_SESSION["SESS_PRIVILEGE_LIST"] = getUserRoleList($userInfo['roles']);
+
 	    $_SESSION['SESS_POLICY'] = $finalScope;
 
 	    $_SESSION['SESS_LOGIN_SITE']=SITENAME;
 	    $_SESSION['SESS_ACTIVE_SITE']=SITENAME;
 	    
 	    $_SESSION["SESS_PRIVILEGE_HASH"]=md5($userInfo["privilegeid"].$privilegeData["privilege_name"]);
+
+	    RoleModel::cleanRoleModelCache();
 
 		return true;
 	}

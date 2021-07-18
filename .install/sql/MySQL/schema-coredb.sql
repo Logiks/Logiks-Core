@@ -30,6 +30,19 @@ CREATE TABLE `lgks_privileges` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+CREATE TABLE `lgks_roles` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
+  `site` varchar(150) DEFAULT NULL,
+  `name` varchar(35) DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
+  `blocked` enum('true','false') DEFAULT 'false',
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE `lgks_rolemodel` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -168,6 +181,7 @@ CREATE TABLE `lgks_users` (
   `privilegeid` int(11) NOT NULL DEFAULT '7',
   `accessid` int(11) NOT NULL DEFAULT '1',
   `groupid` int(11) NOT NULL DEFAULT '0',
+  `roles` varchar(155) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL,
   `dob` date DEFAULT NULL,
   `gender` enum('male','female','other') DEFAULT 'male',

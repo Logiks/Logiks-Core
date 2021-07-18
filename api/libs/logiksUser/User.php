@@ -79,8 +79,28 @@ if(!function_exists("getUserID")) {
 			}
 		}
 		$data['avatarlink']=getUserAvatar($data);
+
+		if(isset($userInfo['roles'])) $userInfo['roles'] = explode(",", $userInfo['roles']);
+		else $userInfo['roles'] = [];
+
 		$_SESSION["USERINFO"][$userid]=$data;
 		return $data;
+	}
+
+	function getUserRoleList($roleList = []) {
+		if(is_string($roleList)) $roleList = explode(",", $roleList);
+
+		$tables = _db(true)->get_tableList();
+
+		if(!in_array(_dbTable("roles",true), $tables)) return [];
+
+		$roleData=_db(true)->_selectQ(_dbTable("roles",true),"id,name as role_name")->_where([
+			"id"=>[$roleList, "IN"],
+			"blocked"=>"false"
+		])->_get();
+		if(!$roleData) return [];
+		
+		return $roleData;
 	}
 
 	function getMyInfo() {

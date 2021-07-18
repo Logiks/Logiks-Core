@@ -110,9 +110,9 @@ class RoleModel {
 						} elseif(in_array(RoleModel::getPrivilegeHash(),$gScopes[$policyStr]['privileges'])) {
 							return 1;
 						} else {
-							$priArr = RoleModel::getPrivilegesList();
-							foreach($priArr as $p) {
-								if(in_array($p,$gScopes[$policyStr]['privileges'])) {
+							$priArr = RoleModel::getRoleList();
+							foreach($priArr as $row) {
+								if(in_array($row['role_name'],$gScopes[$policyStr]['privileges'])) {
 									return 1;
 								}
 							}
@@ -148,16 +148,26 @@ class RoleModel {
 	function preloadRoleModelData() {
 		// println("RoleModel - preloadRoleModelData");
 
-		$privilegehash=RoleModel::getPrivilegeHash();
+		$privilegehash = RoleModel::getPrivilegeHash();
+		$privilegeArr = RoleModel::getRoleList();
+
+		$finalPrivilegeList = [$privilegehash];
+		foreach($privilegeArr as $row) {
+			if(!in_array($row['role_name'], $finalPrivilegeList)) {
+				$finalPrivilegeList[] = $row['role_name'];
+			}
+		}
+
 		$sql=_db(true)->_selectQ($this->roleTable,"*")
 			      ->_where([
 		      			"site"=>SITENAME,
 		      			'guid'=>$_SESSION['SESS_GUID'],
-		      			"privilegehash"=>[[$privilegehash], "IN"]
-		      		]);
+		      			"privilegehash"=>[$finalPrivilegeList, "IN"]
+		      		])->_orderby("allow desc");
 			      //->_groupBy("allow");
 
 	  $roleData=$sql->_GET();
+	  // echo $roleData;exit();
 	  //"category"=>$actionType,"module"=>$module,"activity"=>$activity
 
 	  $finalRoleData = [];
@@ -172,11 +182,19 @@ class RoleModel {
 	  	if(!isset($finalRoleData[$row['module']])) $finalRoleData[$row['module']] = [];
 	  	if(!isset($finalRoleData[$row['module']][$row['activity']])) $finalRoleData[$row['module']][$row['activity']] = [];
 	  	
-	  	$finalRoleData[$row['module']][$row['activity']][$row['category']] = $row['allow'];
+	  	if(!isset($finalRoleData[$row['module']][$row['activity']][$row['category']]) ||
+	  		$finalRoleData[$row['module']][$row['activity']][$row['category']]!="true") {
+	  		
+	  		$finalRoleData[$row['module']][$row['activity']][$row['category']] = $row['allow'];
+	  	}
 
-	  	$finalRoleStr[strtolower("{$row['module']}.{$row['activity']}.{$row['category']}")] = $row['allow'];
-	  	if($row['category']=="access") {
-	  		$finalRoleStr[strtolower("{$row['module']}.{$row['activity']}")] = $row['allow'];
+	  	if(!isset($finalRoleStr[strtolower("{$row['module']}.{$row['activity']}.{$row['category']}")]) ||
+	  			$finalRoleStr[strtolower("{$row['module']}.{$row['activity']}.{$row['category']}")]!="true") {
+
+	  		$finalRoleStr[strtolower("{$row['module']}.{$row['activity']}.{$row['category']}")] = $row['allow'];
+		  	if($row['category']=="access") {
+		  		$finalRoleStr[strtolower("{$row['module']}.{$row['activity']}")] = $row['allow'];
+		  	}
 	  	}
 	  }
 
@@ -195,7 +213,7 @@ class RoleModel {
   
   //Check privilege specific task. This is the main function for all validation purpose
   //Uses poolicy string to process requests
-	public function checkRole($module,$activity,$actionType="ACCESS", $defaultValue = false) {
+	public function checkRole($module,$activity,$actionType="ACCESS", $defaultValue = "false") {
 		// println("XXXX->$module,$activity,$actionType");
 
 		if(!isset($_SESSION["ROLEMODEL2"])) {
@@ -249,11 +267,11 @@ class RoleModel {
 
   	//printArray($_SESSION["ROLEMODEL2"]);
   	if(isset($_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr])) {
-  		return $_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr];
+  		return ($_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr]=="true");
   	} else {
   		$this->registerRole($roleParams[0], $roleParams[1], $roleParams[2], SITENAME, false, $_SESSION['SESS_GUID'], $defaultValue);
   		$_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr] = $defaultValue;
-  		return $defaultValue;
+  		return ($defaultValue=="true");
   	}
 	}
 
@@ -407,6 +425,8 @@ class RoleModel {
 			
 			if($defaultValue==-1) $defaultValue = getConfig("ROLEMODEL_DEFAULT_DENY");
 
+			if(!in_array($defaultValue, ["true", "false"])) $defaultValue = "false";
+
 	    if($activity==null || strlen($activity)<=0) $activity="MAIN";
 
 	    $activity = $this->cleanActivity($module, $activity);
@@ -489,6 +509,62 @@ class RoleModel {
 				}
 			}
 		}
+
+		$tables = _db(true)->get_tableList();
+
+		if(in_array(_dbTable("roles",true), $tables)) {
+			$sql=_db(true)->_selectQ(_dbTable("roles",true),"id,name")
+							->_whereOR("site",[$site,"*"]);
+			$r=$sql->_GET();
+
+			if($r) {
+				foreach($r as $d) {
+					$x1=_db(true)->_selectQ($this->roleTable,"count(*) as cnt")
+						->_where(array("site"=>$site,"category"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$d['name']))
+						->_where(['guid'=>$guid])
+						->_GET();
+
+					if($x1[0]['cnt']===0) {
+						$finalData[]=[
+								//"id"=>"",
+								"guid"=>$guid,
+								"site"=>$site,
+								"category"=>$actionType,
+								"module"=>$module,
+								"activity"=>$activity,
+								"privilegehash"=>$d['name'],
+								"allow"=>$defaultValue,
+								"remarks"=>$d['name'],
+								"created_by"=>$userid,
+								"edited_by"=>$userid
+							];
+						if($this->version=="2.0") {
+							$finalData[count($finalData)-1]['policystr'] = strtolower($policyStr);
+							$finalData[count($finalData)-1]['rolehash'] = md5($policyStr.$d['name'].$site.$guid);
+						}
+					} else {
+						$finalData[]=[
+							//"id"=>"",
+							"guid"=>$guid,
+							"site"=>$site,
+							"category"=>$actionType,
+							"module"=>$module,
+							"activity"=>$activity,
+							"privilegehash"=>$d['name'],
+							"allow"=>$defaultValue,
+							"remarks"=>$d['name'],
+							"created_by"=>$userid,
+							"edited_by"=>$userid
+						];
+						if($this->version=="2.0") {
+							$finalData[count($finalData)-1]['policystr'] = strtolower($policyStr);
+							$finalData[count($finalData)-1]['rolehash'] = md5($policyStr.$d['name'].$site.$guid);
+						}
+					}
+				}
+			}
+		}
+
 		$finalData[]=[
 					//"id"=>"",
 					"guid"=>$guid,
@@ -497,7 +573,7 @@ class RoleModel {
 					"module"=>$module,
 					"activity"=>$activity,
 					"privilegehash"=>md5("0guest"),
-					"allow"=>(getConfig("ROLEMODEL_DEFAULT_DENY")?"false":"true"),
+					"allow"=>$defaultValue,
 					"remarks"=>"guest",
 					"created_by"=>$userid,
 					"edited_by"=>$userid
@@ -506,6 +582,8 @@ class RoleModel {
 				$finalData[count($finalData)-1]['policystr'] = $policyStr;
 				$finalData[count($finalData)-1]['rolehash'] = md5($policyStr.md5("0guest").$site.$guid);
 		}
+
+		// printArray($finalData);exit();
 
 		$a = _db(true)->_insert_batchQ($this->roleTable,$finalData)->_run();
 		return $a;
@@ -546,13 +624,11 @@ class RoleModel {
 		return $_SESSION["SESS_PRIVILEGE_HASH"];
 	}
 
-	public static function getPrivilegesList() {
-		if(isset($_SESSION["SESS_PRIVILEGE_LIST"])) {
-			$priArr = explode(",", $_SESSION["SESS_PRIVILEGE_LIST"]);
-
-			return $priArr;
+	public static function getRoleList() {
+		if(isset($_SESSION["SESS_ROLE_LIST"])) {
+			return $_SESSION["SESS_ROLE_LIST"];
 		} else {
-			return [$_SESSION["SESS_PRIVILEGE_NAME"]];
+			return [];
 		}
 	}
   
