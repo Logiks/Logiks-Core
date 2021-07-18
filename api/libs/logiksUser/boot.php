@@ -77,6 +77,9 @@ if(!function_exists("checkUserRoles")) {
 		return false;
 	}
 	
+	function whoami() {
+		return getUserInfo();
+	}
 
 	function updateUserMetas() {
 		//SELECT count(*) as cnt FROM `lgks_users` WHERE guid NOT IN (SELECT guid FROM lgks_users_guid)
