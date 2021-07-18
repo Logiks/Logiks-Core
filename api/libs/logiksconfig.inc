@@ -165,6 +165,7 @@ class LogiksConfig {
     if($forceReload && isset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName])) {
     	unset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName]);
     }
+		//println ("A1 $configName ".isset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName]). defined("SITENAME"));
 
     if(isset(LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName])) {
     	$cfgData=LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName];
@@ -177,6 +178,7 @@ class LogiksConfig {
     		];
     		
     		foreach($fs as $f) {
+    			// println ("A1 $f");
     			if(file_exists($f)) {
 						$data=file_get_contents($f);
 						if(function_exists("_replace")) $data=_replace($data);
@@ -193,13 +195,13 @@ class LogiksConfig {
 							for ($i=1; $i <count($fData) ; $i++) {
 								$fData[0]=array_merge($fData[0],$fData[$i]);
 							}
-							$cfgData=$fData[0];
-							LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName]=$cfgData;
+							$cfgData=array_merge($cfgData, $fData[0]);
 						}
 					} else {
 			      //trigger_logikserror("$configName configuration not found, Error In Installation.", E_USER_ERROR);
 			    }
     		}
+    		LogiksConfig::$CONFIGPARAMS['JSONCONFIG'][$configName]=$cfgData;
     	} else {
 				$f=ROOT.CFG_FOLDER."/jsonConfig/{$configName}.json";
 	    	$f=str_replace("//","/",$f);
