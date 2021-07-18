@@ -9,7 +9,7 @@
  * activity -> $activity
  * 
  * Policy String => {$module}.{$actionType}.{$activity}
- * 
+ * Function Flow => checkUserPolicy->checkUserScope->checkUserRoles
  * 
  * Version Details
  * 1.0    Basic Table
@@ -109,6 +109,13 @@ class RoleModel {
 							return 1;
 						} elseif(in_array(RoleModel::getPrivilegeHash(),$gScopes[$policyStr]['privileges'])) {
 							return 1;
+						} else {
+							$priArr = RoleModel::getPrivilegesList();
+							foreach($priArr as $p) {
+								if(in_array($p,$gScopes[$policyStr]['privileges'])) {
+									return 1;
+								}
+							}
 						}
 					} else {
 						return 0;
@@ -119,28 +126,83 @@ class RoleModel {
 		} else {
 			return -1;
 		}
-    }
+  }
   
-  	//Checks if a single activity exists for the provided scope/module
+  //Checks if a single activity exists for the provided scope/module
 	//ie if the scope is required
 	public function checkScope($module,$actionType="ACCESS") {
     	$actionType=strtoupper($actionType);
 		
-		$moduleArr=explode(".",$module);
-		if(count($moduleArr)>1) {
-			$module=$moduleArr[0];
-			array_shift($moduleArr);
-			$activity=strtoupper(implode(".",$moduleArr));
-		} else {
+			$moduleArr=explode(".",$module);
+			if(count($moduleArr)>1) {
+				$module=$moduleArr[0];
+				array_shift($moduleArr);
+				$activity=strtoupper(implode(".",$moduleArr));
+			} else {
       		$activity="*";
     	}
 
     	return $this->checkRole($module,$activity,$actionType);
-  	}
+	}
+
+	function preloadRoleModelData() {
+		// println("RoleModel - preloadRoleModelData");
+
+		$privilegehash=RoleModel::getPrivilegeHash();
+		$sql=_db(true)->_selectQ($this->roleTable,"*")
+			      ->_where([
+		      			"site"=>SITENAME,
+		      			'guid'=>$_SESSION['SESS_GUID'],
+		      			"privilegehash"=>[[$privilegehash], "IN"]
+		      		]);
+			      //->_groupBy("allow");
+
+	  $roleData=$sql->_GET();
+	  //"category"=>$actionType,"module"=>$module,"activity"=>$activity
+
+	  $finalRoleData = [];
+	  $finalRoleStr = [];
+	  foreach($roleData as $row) {
+	  	$row['module'] = strtolower($row['module']);
+	  	$row['activity'] = strtolower($row['activity']);
+	  	$row['category'] = strtolower($row['category']);
+
+	  	if($row['activity']=="*") $row['activity'] = "main";
+
+	  	if(!isset($finalRoleData[$row['module']])) $finalRoleData[$row['module']] = [];
+	  	if(!isset($finalRoleData[$row['module']][$row['activity']])) $finalRoleData[$row['module']][$row['activity']] = [];
+	  	
+	  	$finalRoleData[$row['module']][$row['activity']][$row['category']] = $row['allow'];
+
+	  	$finalRoleStr[strtolower("{$row['module']}.{$row['activity']}.{$row['category']}")] = $row['allow'];
+	  	if($row['category']=="access") {
+	  		$finalRoleStr[strtolower("{$row['module']}.{$row['activity']}")] = $row['allow'];
+	  	}
+	  }
+
+	  $_SESSION["ROLEMODEL2"] = [
+	  	//"TREE"=>$finalRoleData,
+	  	"POLICIES"=>$finalRoleStr
+	  ];
+
+	  // printArray($roleData);
+	  // printArray([
+	  // 	$finalRoleData,
+	  // 	$finalRoleStr
+	  // ]);
+	  return true;
+	}
   
-  	//Check privilege specific task. This is the main function for all validation purpose
-  	public function checkRole($module,$activity,$actionType="ACCESS") {
-    	$moduleOriginal=$module;
+  //Check privilege specific task. This is the main function for all validation purpose
+  //Uses poolicy string to process requests
+	public function checkRole($module,$activity,$actionType="ACCESS", $defaultValue = false) {
+		// println("XXXX->$module,$activity,$actionType");
+
+		if(!isset($_SESSION["ROLEMODEL2"])) {
+			$this->preloadRoleModelData();
+		}
+
+		$moduleOriginal=$module;
 
 		$module=$this->getScopeModule($module);
 		$module=explode(".",$module);
@@ -150,6 +212,63 @@ class RoleModel {
 		} else {
 			$module=implode(".",$module);
 		}
+  
+    $module = trim(preg_replace("/\%[a-zA-Z0-9]{2}/","",$module));
+    
+    $activity = $this->cleanActivity($module, $activity);
+    
+    $actionType=strtoupper($actionType);
+    
+    $policyStr=[$module,$activity,$actionType];
+		$policyStr=implode(".",$policyStr);
+    $policyStr = $this->cleanScopePolicy($policyStr);
+    $policyStr = strtolower($policyStr);
+
+    $roleParams = explode(".", $policyStr);
+		if(count($roleParams)<2) {
+			$roleParams[1] = "main";
+			$roleParams[2] = "access";
+			$policyStr = "{$policyStr}.main.access";
+		} elseif(count($roleParams)<3) {
+			$roleParams[2] = "access";
+			$policyStr = "{$policyStr}.access";
+		}
+
+    //println("XXXX->$module,$activity,$actionType->$policyStr");
+
+    if(!defined("SERVICE_ROOT") &&  (getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development")) {
+      _log("RoleUser : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","console");
+    }
+
+    //Check Globals
+    $globalStatus=RoleModel::checkGlobals($policyStr);
+		//var_dump($globalStatus);
+  	if($globalStatus>0) {
+  	  return true;
+  	}
+
+  	//printArray($_SESSION["ROLEMODEL2"]);
+  	if(isset($_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr])) {
+  		return $_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr];
+  	} else {
+  		$this->registerRole($roleParams[0], $roleParams[1], $roleParams[2], SITENAME, false, $_SESSION['SESS_GUID'], $defaultValue);
+  		$_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr] = $defaultValue;
+  		return $defaultValue;
+  	}
+	}
+
+	//Check privilege specific task. This is the main function for all validation purpose
+	public function checkRole_old($module,$activity,$actionType="ACCESS") {
+    	$moduleOriginal=$module;
+
+			$module=$this->getScopeModule($module);
+			$module=explode(".",$module);
+			if(count($module)>1) {
+				$activity=str_replace("{$moduleOriginal}.{$moduleOriginal}.","{$moduleOriginal}.",implode(".",array_slice($module,1)).".{$activity}");
+				$module=$module[0];
+			} else {
+				$module=implode(".",$module);
+			}
     
 	    $module = trim(preg_replace("/\%[a-zA-Z0-9]{2}/","",$module));
 	    
@@ -212,7 +331,7 @@ class RoleModel {
 		        return $_SESSION["ROLEMODEL"][$roleHash];
 		      }
 
-          	  $sql=_db(true)->_selectQ($this->roleTable,"id,allow,count(*) as cnt")
+      	  $sql=_db(true)->_selectQ($this->roleTable,"id,allow,count(*) as cnt")
 		          ->_where(array("site"=>SITENAME,"category"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash))
 		          ->_where(['guid'=>$_SESSION['SESS_GUID']])
 		          ->_orderby("id desc");
@@ -266,8 +385,8 @@ class RoleModel {
 						if(!isset($scArr['GLOBALS'])) $scArr['GLOBALS']=[];
 						if(!isset($scArr[SITENAME])) $scArr[SITENAME]=[];
 						
-						if(isset($scArr["ROLEscopemap"])) {
-							$ROLEscopeMap=array_merge($ROLEscopeMap,$scArr["ROLEscopemap"]);
+						if(isset($scArr["ROLESCOPEMAP"])) {
+							$ROLEscopeMap=array_merge($ROLEscopeMap,$scArr["ROLESCOPEMAP"]);
 						}
 
 						$scArr=array_merge($scArr['GLOBALS'],$scArr[SITENAME]);
@@ -284,7 +403,10 @@ class RoleModel {
 	}
   
   //Generate and Registers Roles wise permissions
-	public function registerRole($module,$activity = "MAIN",$actionType = "ACCESS",$site = SITENAME,$userid = false, $guid = false) {
+	public function registerRole($module, $activity = "MAIN", $actionType = "ACCESS", $site = SITENAME,$userid = false, $guid = false, $defaultValue = -1) {
+			
+			if($defaultValue==-1) $defaultValue = getConfig("ROLEMODEL_DEFAULT_DENY");
+
 	    if($activity==null || strlen($activity)<=0) $activity="MAIN";
 
 	    $activity = $this->cleanActivity($module, $activity);
@@ -336,13 +458,13 @@ class RoleModel {
 								"module"=>$module,
 								"activity"=>$activity,
 								"privilegehash"=>$privilegehash,
-								"allow"=>(getConfig("ROLEMODEL_DEFAULT_DENY")?"false":"true"),
+								"allow"=>$defaultValue,
 								"remarks"=>$privilegename,
 								"created_by"=>$userid,
 								"edited_by"=>$userid
 							];
 						if($this->version=="2.0") {
-							$finalData[count($finalData)-1]['policystr'] = $policyStr;
+							$finalData[count($finalData)-1]['policystr'] = strtolower($policyStr);
 							$finalData[count($finalData)-1]['rolehash'] = md5($policyStr.$privilegehash.$site.$guid);
 						}
 					}
@@ -355,13 +477,13 @@ class RoleModel {
 							"module"=>$module,
 							"activity"=>$activity,
 							"privilegehash"=>$privilegehash,
-							"allow"=>(getConfig("ROLEMODEL_DEFAULT_DENY")?"false":"true"),
+							"allow"=>$defaultValue,
 							"remarks"=>$privilegename,
 							"created_by"=>$userid,
 							"edited_by"=>$userid
 						];
 					if($this->version=="2.0") {
-						$finalData[count($finalData)-1]['policystr'] = $policyStr;
+						$finalData[count($finalData)-1]['policystr'] = strtolower($policyStr);
 						$finalData[count($finalData)-1]['rolehash'] = md5($policyStr.$privilegehash.$site.$guid);
 					}
 				}
@@ -397,6 +519,9 @@ class RoleModel {
 		if(isset($_SESSION["ROLEMODEL"])) {
 			unset($_SESSION["ROLEMODEL"]);
 		}
+		if(isset($_SESSION["ROLEMODEL2"])) {
+			unset($_SESSION["ROLEMODEL2"]);
+		}
 		if(isset($_SESSION["ROLESCOPE"])) {
 			unset($_SESSION["ROLESCOPE"]);
 		}
@@ -419,6 +544,16 @@ class RoleModel {
 		}
 		//trigger_logikserror("Role access error");
 		return $_SESSION["SESS_PRIVILEGE_HASH"];
+	}
+
+	public static function getPrivilegesList() {
+		if(isset($_SESSION["SESS_PRIVILEGE_LIST"])) {
+			$priArr = explode(",", $_SESSION["SESS_PRIVILEGE_LIST"]);
+
+			return $priArr;
+		} else {
+			return [$_SESSION["SESS_PRIVILEGE_NAME"]];
+		}
 	}
   
   	//Gets the scope name for the given module

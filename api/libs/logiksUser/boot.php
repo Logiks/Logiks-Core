@@ -2,6 +2,8 @@
 /*
  * This bootstraps the user management system along with role model and acess system.
  *
+ * Function Flow => checkUserPolicy->checkUserScope->checkUserRoles
+ *
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Author: Kshyana Prava kshyana23@gmail.com
  * Version: 2.0
@@ -13,15 +15,19 @@ include_once dirname(__FILE__)."/User.php";
 include_once dirname(__FILE__)."/Site.php";
 include_once dirname(__FILE__)."/RoleModel.inc";
 include_once dirname(__FILE__)."/Settings.php";
-
-//UserSettings
-//SiteSettings
+include_once dirname(__FILE__)."/SiteSettings.php";
+include_once dirname(__FILE__)."/UserSettings.php";
 
 if(!function_exists("checkUserRoles")) {
   
   //Reset entire Role Cache in Session
-	function resetRoleCache() {
-		unset($_SESSION["ROLEMODEL"]);
+	function resetRoleCache($totalClear = false) {
+		if($totalClear) {
+			RoleModel::cleanRoleModelCache();
+		} else {
+			if(!isset($_SESSION["ROLEMODEL"])) unset($_SESSION["ROLEMODEL"]);
+			if(!isset($_SESSION["ROLEMODEL2"])) unset($_SESSION["ROLEMODEL2"]);
+		}
 	}
 	
   //Checks access to a certain module or system
@@ -72,53 +78,6 @@ if(!function_exists("checkUserRoles")) {
 	}
 	
 
-	
-	//Returns the User Configuration for the scope
-	function getUserConfig($configKey,$baseFolder=null,$reset=false) {
-		$configKey=strtolower($configKey);
-		$configKeyArr = explode("-", $configKey);
-		if($reset) {
-			if(isset($_SESSION['USERCONFIG'][$configKey])) {
-				unset($_SESSION['USERCONFIG'][$configKey]);
-			}
-		}
-		if(isset($_SESSION['USERCONFIG']) && isset($_SESSION['USERCONFIG'][$configKey])) {
-			return $_SESSION['USERCONFIG'][$configKey];
-		}
-
-		$configData=getSettings($configKey);
-		if(strlen($configData)>2) {
-			$_SESSION['USERCONFIG'][$configKey]=json_decode($configData,true);
-
-			return $_SESSION['USERCONFIG'][$configKey];
-		}
-		if($baseFolder==null) {
-			$bt =  debug_backtrace();
-			$baseFolder=dirname($bt[0]['file'])."/";
-		}
-		$configArr=[
-				APPROOT.APPS_CONFIG_FOLDER."jsonData/{$configKeyArr[0]}/{$_SESSION['SESS_PRIVILEGE_NAME']}.json",
-				APPROOT.APPS_CONFIG_FOLDER."jsonData/{$configKeyArr[0]}.json",
-				APPROOT.APPS_CONFIG_FOLDER."jsonData/{$configKey}.json",
-				$baseFolder."config.json",
-			];
-		foreach ($configArr as $f) {
-			if(file_exists($f)) {
-				$configData=file_get_contents($f);
-				$_SESSION['USERCONFIG'][$configKey]=json_decode($configData,true);
-				setSettings($configKey,$configData);
-				return $_SESSION['USERCONFIG'][$configKey];
-			}
-		}
-		return false;
-	}
-	function setUserConfig($configKey,$configData) {
-		$configKey=strtolower($configKey);
-		$_SESSION['USERCONFIG'][$configKey]=$configData;
-		setSettings($configKey,json_encode($configData));
-		return $_SESSION['USERCONFIG'][$configKey];
-	}
-	
 	function updateUserMetas() {
 		//SELECT count(*) as cnt FROM `lgks_users` WHERE guid NOT IN (SELECT guid FROM lgks_users_guid)
 		$data=_db(true)->_selectQ(_dbTable("users",true),"count(*) as cnt")->_whereRAW("guid NOT IN (SELECT guid FROM lgks_users_guid)")->_GET();
