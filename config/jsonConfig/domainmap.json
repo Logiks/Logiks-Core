@@ -1,7 +1,7 @@
 {
     "GLOBALS": {
         "localhost": {
-            "appsite": "default",
+            "appsite": "cms",
             "node": "",
             "active": true,
             "doc": "2015-04-30",

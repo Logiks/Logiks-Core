@@ -1,30 +1,30 @@
 {
-	"GLOBALS": {
-		"ping": {
-			"access_control": "public"
-		},
-		"alive": {
-			"access_control": "public"
-		},
-		"auth": {
-			"access_control": "public"
-		},
-		"mauth": {
-			"access_control": "public"
-		},
-		"resources": {
-			"access_control": "public"
-		},
-		"avatar": {
-			"format": "raw",
-			"access_control": "public"
-		},
-		"rss": {
-			"privilege_model": [],
-			"access_control": "apikey"
-		},
-		"pcron": {
-			"access_control": "public"
-		}
-	}
+    "GLOBALS": {
+        "ping": {
+            "access_control": "public"
+        },
+        "alive": {
+            "access_control": "public"
+        },
+        "auth": {
+            "access_control": "public"
+        },
+        "mauth": {
+            "access_control": "public"
+        },
+        "resources": {
+            "access_control": "public"
+        },
+        "avatar": {
+            "format": "raw",
+            "access_control": "public"
+        },
+        "rss": {
+            "privilege_model": [],
+            "access_control": "apikey"
+        },
+        "pcron": {
+            "access_control": "public"
+        }
+    }
 }

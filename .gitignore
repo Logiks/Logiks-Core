@@ -5,6 +5,9 @@
 /todo.txt
 /data/sqlite/testdata.db
 /config/jsonConfig/
+/misc/hooks/
+
+config/jsonConfig/
 
 .project
 .DS_STORE

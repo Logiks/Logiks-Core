@@ -3,7 +3,7 @@
 		"core": {
 			"driver": "mysqli",
 			"host": "localhost",
-			"port": "",
+			"port": "3306",
 			"database": "coredb",
 			"user": "coredb",
 			"pwd": "",
