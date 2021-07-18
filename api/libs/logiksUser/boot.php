@@ -17,6 +17,7 @@ include_once dirname(__FILE__)."/RoleModel.inc";
 include_once dirname(__FILE__)."/Settings.php";
 include_once dirname(__FILE__)."/SiteSettings.php";
 include_once dirname(__FILE__)."/UserSettings.php";
+include_once dirname(__FILE__)."/admins.php";
 
 if(!function_exists("checkUserRoles")) {
   
@@ -77,10 +78,6 @@ if(!function_exists("checkUserRoles")) {
 		return false;
 	}
 	
-	function whoami() {
-		return getUserInfo();
-	}
-
 	function updateUserMetas() {
 		//SELECT count(*) as cnt FROM `lgks_users` WHERE guid NOT IN (SELECT guid FROM lgks_users_guid)
 		$data=_db(true)->_selectQ(_dbTable("users",true),"count(*) as cnt")->_whereRAW("guid NOT IN (SELECT guid FROM lgks_users_guid)")->_GET();
