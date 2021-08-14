@@ -3,7 +3,7 @@
 #
 
 # Protect files and directories from prying eyes.
-<FilesMatch "\.(yaml|lst|lic|dat|db|cfg|frm|json|rpt|page|dgn|engine|inc|info|install|make|module|profile|test|po|sh|sql|theme|tpl(\.php)?|xtmpl)$|^(\..*|Entries.*|Repository|Root|Tag|Template)$">
+<FilesMatch "\.(yaml|lst|lic|dat|db|cfg|frm|rpt|page|dgn|engine|inc|info|install|make|module|profile|test|po|sh|sql|theme|tpl(\.php)?|xtmpl)$|^(\..*|Entries.*|Repository|Root|Tag|Template)$">
   Order allow,deny
 </FilesMatch>
 
