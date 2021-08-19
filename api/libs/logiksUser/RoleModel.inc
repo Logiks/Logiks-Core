@@ -300,6 +300,7 @@ class RoleModel {
 
 	    if(!defined("SERVICE_ROOT") &&  (getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development")) {
 	      _log("RoleUser : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","console");
+	      //staff/staff.main-MAIN.BANK_DETAILS :: staff.bank_details.create
 	    }
     
   		$globalStatus=RoleModel::checkGlobals($policyStr);
@@ -647,7 +648,8 @@ class RoleModel {
   	protected function cleanScopePolicy($policyStr) {
 	    if(!$policyStr || strlen($policyStr)<=0) return "";
 	    
-	    $policyStr=str_replace(".MAIN","",$policyStr);
+	    // $policyStr=str_replace(".MAIN","",$policyStr);
+	    $policyStr=str_replace(".main-MAIN",".MAIN",$policyStr);
 			$policyStr=str_replace(".MASTER","",$policyStr);
 			$policyStr=str_replace(".INDEX","",$policyStr);
 			$policyStr=str_replace(".CORE","",$policyStr);
