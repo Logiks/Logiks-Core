@@ -14,7 +14,7 @@ INSERT INTO `lgks_privileges` (`id`, `guid`, `site`, `name`, `remarks`, `blocked
 (8, 'global', '*', 'user', 'user', 'false', 'auto', 'auto');
 
 INSERT INTO `lgks_users` (`id`, `guid`, `userid`, `pwd`, `pwd_salt`, `privilegeid`, `accessid`, `groupid`, `name`, `dob`, `gender`, `organization_name`, `organization_position`, `organization_email`, `email`, `mobile`, `address`, `region`, `country`, `zipcode`, `geolocation`, `geoip`, `tags`, `avatar_type`, `avatar`, `privacy`, `blocked`, `expires`, `registered_site`, `remarks`, `vcode`, `mauth`, `refid`, `security_policy`, `last_login`, `created_by`, `edited_by`) VALUES
-(1, 'global', 'root', '', '', 1, 1, 0, 'Root User', '0000-00-00', 'male', NULL, NULL, NULL, 'admin@demo.com', '', '', '', '', '', '', '', '', 'photoid', '', 'public', 'false', '0000-00-00', '', '', '', '', '', 'open', NULL, 'auto', 'auto');
+(1, 'global', 'root', '', '', 1, 1, 0, 'Root User', '1985-01-01', 'male', NULL, NULL, NULL, 'admin@demo.com', '', '', '', '', '', '', '', '', 'photoid', '', 'public', 'false', '2200-01-01', '', '', '', '', '', 'open', NULL, 'auto', 'auto');
 
 INSERT INTO `lgks_users_group` (`id`, `guid`, `group_name`, `group_manager`, `group_descs`, `created_by`, `edited_by`) VALUES
 (1, 'globals', 'Default', NULL, 'No description available', 'auto', 'auto');
