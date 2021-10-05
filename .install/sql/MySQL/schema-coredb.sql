@@ -9,7 +9,7 @@ CREATE TABLE `lgks_access` (
   `sites` varchar(500) DEFAULT NULL,
   `blocked` enum('true','false') DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -24,7 +24,7 @@ CREATE TABLE `lgks_privileges` (
   `remarks` varchar(255) DEFAULT NULL,
   `blocked` enum('true','false') DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -38,7 +38,7 @@ CREATE TABLE `lgks_roles` (
   `remarks` varchar(255) DEFAULT NULL,
   `blocked` enum('true','false') DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -58,7 +58,7 @@ CREATE TABLE `lgks_rolemodel` (
   `policystr` varchar(90) not null,
   `rolehash` varchar(80) not null,
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -93,7 +93,7 @@ CREATE TABLE `lgks_cache_sessions` (
   `session_data` longblob,
   `global_data` longblob,
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -110,7 +110,7 @@ CREATE TABLE `lgks_security_apikeys` (
   `api_whitelist` text NOT NULL,
   `blocked` enum('false','true') NOT NULL DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -125,7 +125,7 @@ CREATE TABLE `lgks_security_iplist` (
   `site` varchar(150) NOT NULL DEFAULT '*',
   `active` enum('true','false') DEFAULT 'true',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -141,7 +141,7 @@ CREATE TABLE `lgks_settings` (
   `settings` longblob,
   `scope` varchar(15) NOT NULL DEFAULT 'general',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -165,7 +165,7 @@ CREATE TABLE `lgks_system_cronjobs` (
   `retired` enum('true','false') DEFAULT 'false',
   `blocked` enum('true','false') DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -210,7 +210,7 @@ CREATE TABLE `lgks_users` (
   `security_policy` varchar(25) NOT NULL DEFAULT 'open',
   `last_login` datetime DEFAULT NULL,
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -225,7 +225,7 @@ CREATE TABLE `lgks_users_group` (
   `group_manager` varchar(155) DEFAULT NULL,
   `group_descs` varchar(255) DEFAULT NULL,
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -248,7 +248,7 @@ CREATE TABLE `lgks_users_guid` (
   `account_planid` varchar(155) DEFAULT NULL,
   `remarks` varchar(250) DEFAULT NULL,
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -276,7 +276,7 @@ CREATE TABLE `lgks_links` (
   `blocked` enum('true','false') DEFAULT 'false',
   `rules` text,
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL,
+  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
