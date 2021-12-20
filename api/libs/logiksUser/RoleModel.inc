@@ -243,7 +243,12 @@ class RoleModel {
     $policyStr = strtolower($policyStr);
 
     $roleParams = explode(".", $policyStr);
-		if(count($roleParams)<2) {
+		if(count($roleParams)>3) {
+    			$roleParams[1] = implode("_", array_slice($roleParams,1,count($roleParams)-2));
+			$roleParams[2] = $roleParams[count($roleParams)-1];
+			$roleParams = array_slice($roleParams, 0, 3);
+    			$policyStr = "{$roleParams[0]}.{$roleParams[1]}.{$roleParams[2]}";
+	    	} elseif(count($roleParams)<2) {
 			$roleParams[1] = "main";
 			$roleParams[2] = "access";
 			$policyStr = "{$policyStr}.main.access";
