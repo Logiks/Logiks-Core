@@ -131,7 +131,7 @@ class ServiceController {
 	public function executeRequest() {
 		$this->params['file']=$this->findServiceFile();
 		
-    		ob_clean();
+		ob_clean();
 		if($this->params['file']) {
 			if(file_exists($this->params['file']['src'])) {
 				if($this->params['cache'] && getConfig("SERVICE_CACHE_ENABLED")) {
@@ -164,7 +164,19 @@ class ServiceController {
 	}
 	public function findServiceFile() {
 		$scmd=$this->params['scmd'];
-		return checkService($scmd,$this->serviceCmds);
+		$found = checkService($scmd,$this->serviceCmds);
+		if(!$found) {
+			if(checkModule($scmd) && strlen($this->params['slugpath'])>0) {
+				$serviceCmdPath2 = dirname(checkModule($scmd))."/actions/".$this->params['slugpath'].".php";
+				if(file_exists($serviceCmdPath2)) {
+					return array(
+						"src"=>$serviceCmdPath2,
+						"ext"=>"php2",
+					);
+				}
+			}
+		}
+		return $found;
 	}
 }
 ?>
