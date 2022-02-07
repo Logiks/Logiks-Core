@@ -363,6 +363,10 @@ function startNewSession($userid, $domain, $params=array()) {
 	if(strlen($_SESSION['SESS_USER_NAME'])<=0) {
 		$_SESSION['SESS_USER_NAME']=$_SESSION['SESS_USER_ID'];
 	}
+	
+	if(isset($_POST['geolocation'])) {
+		$_SESSION['SESS_GEOLOCATION']=$_POST['geolocation'];
+	}
 
 	LogiksSession::getInstance(true);
 
