@@ -84,11 +84,11 @@ $userColumns = _db(true)->get_columnList(_dbTable("users",true));
 
 if(in_array("roles",$userColumns)) {
 	$sql=_db(true)->_selectQ(_dbTable("users",true),"id, guid, userid, pwd, pwd_salt, privilegeid, accessid, groupid, name, email, mobile, region, country, zipcode, geolocation, geoip, tags, blocked, avatar, avatar_type, roles")->_whereOR("expires",[
-			["NULL","NU"],["0000-00-00","EQ"],["now()","GT"]//"0000-00-00",
+			["NULL","NU"],["now()","GT"]//"0000-00-00",["0000-00-00","EQ"],
 		])->_where($userFields,"AND","OR");
 } else {
 	$sql=_db(true)->_selectQ(_dbTable("users",true),"id, guid, userid, pwd, pwd_salt, privilegeid, accessid, groupid, name, email, mobile, region, country, zipcode, geolocation, geoip, tags, blocked, avatar, avatar_type")->_whereOR("expires",[
-			["NULL","NU"],["0000-00-00","EQ"],["now()","GT"]//"0000-00-00",
+			["NULL","NU"],["now()","GT"]//"0000-00-00",["0000-00-00","EQ"],
 		])->_where($userFields,"AND","OR");
 }
 
