@@ -255,6 +255,13 @@ class RoleModel {
 		} elseif(count($roleParams)<3) {
 			$roleParams[2] = "access";
 			$policyStr = "{$policyStr}.access";
+		} elseif(count($roleParams)>3) {//4+
+				$temp = array_slice($roleParams, 1, count($roleParams)-2);
+				$roleParams[2] = $roleParams[count($roleParams)-1];
+				$roleParams[1] = implode("_", $temp);
+				array_splice($roleParams, 3);
+
+				$policyStr = implode(".", $roleParams);
 		}
 
     //println("XXXX->$module,$activity,$actionType->$policyStr");
