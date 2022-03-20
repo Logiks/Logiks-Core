@@ -24,9 +24,16 @@ if(!function_exists("_css")) {
 
 		if($themeName=="*" || $themeName==null) $themeName=APPS_THEME;
 
-		$lx=_service("resources","","raw")."&type=css&src=".implode(",", $cssLnk)."&theme=$themeName";
+		$lx=_service("resources","","raw")."&type=css&src=".implode(",", $cssLnk)."&theme={$themeName}";
 
 		return $lx;
+	}
+	function _cssAssets($css,$themeName=null,$browser="",$media="") {
+		$lx = _cssLink($css,$themeName);
+		$html="<link href='{$lx}' rel='stylesheet' type='text/css'";
+		if($media!=null && strlen($media)>0) $html.=" media='$media'";
+		$html.=" />\n";
+		return $html;
 	}
 	function _css($css,$themeName=null,$browser="",$media="") {
 		if(!is_array($css)) $css=explode(",", $css);
@@ -62,9 +69,13 @@ if(!function_exists("_css")) {
 
 		if($themeName=="*" || $themeName==null) $themeName=APPS_THEME;
 
-		$lx=_service("resources","","raw")."&type=js&src=".implode(",", $jsLnk)."&theme=$themeName";
+		$lx=_service("resources","","raw")."&type=js&src=".implode(",", $jsLnk)."&theme={$themeName}";
 
 		return $lx;
+	}
+	function _jsAssets($js,$themeName=null,$browser="") {
+		$lx = _jsLink($js,$themeName);
+		return "<script src='{$lx}' type='text/javascript' language='javascript'></script>\n";
 	}
 	function _js($js,$themeName=null,$browser="") {
 		if(!is_array($js)) $js=explode(",", $js);

@@ -8,6 +8,10 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
+if(!class_exists("JavaScriptPacker")) {
+	require __DIR__.'/class.JavaScriptPacker.php';
+}
+
 class HTMLAssets {
 
 	protected $themeEngine=null;
@@ -142,9 +146,11 @@ class HTMLAssets {
 		return false;
 	}
 
-	public function printAsset($assetName,$assetType="css",$params=array()) {
+	public function printAsset($assetName,$assetType="css",$params=array(), $minify = false) {
 		if($assetType==null || strlen($assetType)<=0) return  false;
 
+		$minify = false;
+		
 		$path=$this->getAssetPath($assetName,$assetType,$params);
 
 		if(substr($path, 0,7)=="http://" || substr($path, 0,8)=="https://" || substr($path, 0,6)=="ftp://") {
@@ -153,10 +159,17 @@ class HTMLAssets {
 			echo "\n/*************END***$assetName****************/\n\n";
 		} else {
 			echo "/*************Start***$assetName****************/\n";
-			if(file_exists($path)) readfile($path);
-			else echo "/*No Asset Found*/";
+			// if(file_exists($path)) readfile($path);
+			if(file_exists($path)) {
+				if($minify) {
+					echo $this->minify_js(file_get_contents($path));
+				} else {
+					echo file_get_contents($path);
+				}
+			} else echo "/*No Asset Found*/";
 			echo "\n/*************END***$assetName****************/\n\n";
 		}
+
 	}
 	// public function printAssetTag($assetName,$assetType="css",$params=array()) {
 	// 	if($assetType==null || strlen($assetType)<=0) return  false;
@@ -190,6 +203,13 @@ class HTMLAssets {
 		if(isset($this->loadedAssets[$assetType])) {
 			var_dump($this->loadedAssets[$assetType]);
 		}
+	}
+
+	public function minify_js($jsContent) {
+		$packer = new JavaScriptPacker($jsContent, 'Normal', true, false);
+		$packed = $packer->pack();
+
+		return "try {{$packed}} catch(e) {console.error(e);}";
 	}
 
 }

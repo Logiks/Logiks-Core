@@ -67,7 +67,11 @@ class LogiksClassLoader {
 
 		if(!isset($GLOBALS['classPath'])) $GLOBALS['classPath']=array();
 		if(!isset($GLOBALS['vendorPath'])) $GLOBALS['vendorPath']=array();
-
+// printArray([
+// 	$GLOBALS['classPath'],
+// 	$GLOBALS['vendorPath']
+// ]);
+		//Search across ClassPath
 		$classpath=$GLOBALS['classPath'];
 		foreach($classpath as $p) {
 			$pths=array(
@@ -97,10 +101,13 @@ class LogiksClassLoader {
 	    $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className);
 		$fileName=current(explode(DIRECTORY_SEPARATOR, $fileName)).DIRECTORY_SEPARATOR.$fileName;
 
+		//Search across Vendors and Plugins
 		$vendorpath=$GLOBALS['vendorPath'];
-		foreach($vendorpath as $p) {
+		foreach($vendorpath as $p1) {
+			$p = $p1;
+
 			if(function_exists("logiks_replace")) {
-				$p=logiks_replace($p)."vendors/";
+				$p=logiks_replace($p1)."vendors/";
 			}
 			$pths=array(
 					$p.$fileName . '.php',
@@ -108,6 +115,24 @@ class LogiksClassLoader {
 					$p.strtolower($fileName) . '.php',
 					$p.strtolower($fileName) . '.inc',
 				);
+			foreach ($pths as $f) {
+				//println($f);
+				if(file_exists($f)) {
+					$this->addToCache($cls, $f);
+					return $f;
+				}
+			}
+
+			if(function_exists("logiks_replace")) {
+				$p=logiks_replace($p1)."modules/";
+			}
+			$pths=array(
+					$p.$fileName . '/controller.inc',
+					$p.strtolower($fileName) . '/controller.inc',
+					$p.$className . '/controller.inc',
+					$p.strtolower($className) . '/controller.inc',
+				);
+			
 			foreach ($pths as $f) {
 				//println($f);
 				if(file_exists($f)) {

@@ -48,6 +48,15 @@ if(isset($_REQUEST['src'])) {
 		header('Cache-Control: max-age='.(60*60*24*30));
 		// header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + (60 * 60 * 60)));
 		// printArray($_REQUEST['src']);exit();
+
+		$noMinifyCSS = [];
+		$noMinifyJS = [];
+		if(getConfig("NO_MINIFY_CSS")) {
+			$noMinifyCSS = explode(",", getConfig("NO_MINIFY_CSS"));
+		}
+		if(getConfig("NO_MINIFY_JS")) {
+			$noMinifyJS = explode(",", getConfig("NO_MINIFY_JS"));
+		}
 		
 		$type=$_REQUEST['type'];
 		foreach ($_REQUEST['src'] as $file) {
@@ -61,8 +70,27 @@ if(isset($_REQUEST['src'])) {
 			} else {
 				$fname=$file;
 			}
-
-			$htmlAsset->printAsset($fname,$type,array("theme"=>$theme));
+			
+			if(strpos(strtolower($file), ".min")) {
+				$htmlAsset->printAsset($fname,$type,array("theme"=>$theme), false);
+			} else {
+				switch ($_REQUEST['type']) {
+					case 'css':
+						if(in_array($file, $noMinifyCSS)) {
+							$htmlAsset->printAsset($fname,$type,array("theme"=>$theme), false);
+						} else {
+							$htmlAsset->printAsset($fname,$type,array("theme"=>$theme), false);
+						}
+					break;
+					case 'js':
+						if(in_array($file, $noMinifyJS)) {
+							$htmlAsset->printAsset($fname,$type,array("theme"=>$theme), false);
+						} else {
+							$htmlAsset->printAsset($fname,$type,array("theme"=>$theme), true);
+						}
+					break;
+				}
+			}
 		}
 	}
 }
