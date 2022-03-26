@@ -14,6 +14,8 @@ if(!defined("BASEPATH")) {
     trigger_logikserror("Site <b>'{$_GET['site']}'</b> does not exist.",E_ERROR);
   }
 
+  include_once ROOT.API_FOLDER."libs/routers/boot.php";
+
   //Load the app.cfg and app Config Folder
   loadLogiksApp(SITENAME);
 
