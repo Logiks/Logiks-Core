@@ -8,7 +8,7 @@
  */
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-if(!function_exists('')) {
+if(!function_exists('autoModuleRoute')) {
 
 	//To use just call this from module's index.php - autoModuleRoute(__DIR__);
 	function autoModuleRoute($modulePath, $params = [], $allowListing = false) {
