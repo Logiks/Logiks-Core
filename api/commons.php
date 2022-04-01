@@ -130,7 +130,11 @@ if (!function_exists('printArray')) {
 		return false;
 	}
 	function array_implode_associative ($glueWord, $glueMiddle,$array) {
-		array_walk($array, create_function('&$i,$k','$i=" $k'.$glueMiddle.'\"$i\"";'));
+		//array_walk($array, create_function('&$i,$k','$i=" $k'.$glueMiddle.'\"$i\"";'));
+		array_walk($array, function(&$i,$k) {
+			global $glueMiddle;
+			return $i="{$k}{$glueMiddle}\"{$i}\"";
+		});
 		return implode($glueWord,$array);
 
 	}

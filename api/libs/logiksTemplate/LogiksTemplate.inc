@@ -138,8 +138,10 @@ class LogiksTemplate {
 			}
 			$txt=preg_replace_callback("/#[a-zA-Z0-9-_]+#/",array("LogiksTemplate","replaceFromEnviroment"),$txt);
 			if($editable) {
-				$txt=preg_replace_callback("/[_]{3}+/",
-					create_function('$in', 'return "<span class=editable>{$in[0]}</span>";'),$txt);
+				//$txt=preg_replace_callback("/[_]{3}+/", create_function('$in', 'return "<span class=editable>{$in[0]}</span>";'),$txt);
+        $txt=preg_replace_callback("/[_]{3}+/", function($in) {
+              return "<span class=editable>{$in[0]}</span>";
+            },$txt);
 			}
 		}
 		return $txt;
