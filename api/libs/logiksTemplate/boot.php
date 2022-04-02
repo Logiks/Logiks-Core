@@ -13,7 +13,7 @@ include_once dirname(__FILE__)."/LogiksTemplate.inc";
 if(!function_exists("_template")) {
 	function _template($file,$dataArr=null,$sqlQuerySet=null,$tmplID=null) {
 		//$file=str_replace(".","/",$file);
-		if(strtolower(strstr($file,"."))!=".tpl") {
+		if(strtolower(strrchr($file,"."))!=".tpl") {
 			$file.=".tpl";
 		}
 		if(!file_exists($file)) {
