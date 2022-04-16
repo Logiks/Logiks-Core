@@ -11,7 +11,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!function_exists('autoModuleRoute')) {
 
 	//To use just call this from module's index.php - autoModuleRoute(__DIR__);
-	function autoModuleRoute($modulePath, $params = [], $allowListing = false) {
+	function autoModuleRoute($modulePath, $params = [], $allowListing = false, $baseURL = "modules") {
         $slug = _slug("a/subpage/c/d");
         //printArray($slug);
         
@@ -19,6 +19,8 @@ if(!function_exists('autoModuleRoute')) {
         $apiFile = $modulePath."/api.php";
         $routeFile = $modulePath."/route.php";
         $routeJSONFile = $modulePath."/route.json";
+
+        $moduleName = basename($modulePath);
         
         if(file_exists($apiFile)) include_once $apiFile;
 
@@ -30,7 +32,7 @@ if(!function_exists('autoModuleRoute')) {
                 echo "<ul class='list-group' style='width: 800px;margin:auto;margin-top:50px;'>";
                 foreach($dir as $a=>$b) {
                     $t = toTitle(str_replace("_", " ", str_replace(".php", "", $b)));
-                    $l = _link("singlepage/uiPages/".str_replace(".php", "", $b));
+                    $l = _link("{$baseURL}/{$moduleName}/".str_replace(".php", "", $b));
                     println("<li class='list-group-item'><a href='{$l}'>{$t}</a></li>");
                 }
                 echo "</ul>";
@@ -45,7 +47,7 @@ if(!function_exists('autoModuleRoute')) {
                 echo "<ul class='list-group' style='width: 800px;margin:auto;margin-top:50px;'>";
                 foreach($dir as $a=>$b) {
                     $t = toTitle(str_replace("_", " ", str_replace(".php", "", $b)));
-                    $l = _link("singlepage/uiPages/".str_replace(".php", "", $b));
+                    $l = _link("{$baseURL}/{$moduleName}/".str_replace(".php", "", $b));
                     println("<li class='list-group-item'><a href='{$l}'>{$t}</a></li>");
                 }
                 echo "</ul>";
@@ -78,7 +80,7 @@ if(!function_exists('autoModuleRoute')) {
 	                echo "<ul class='list-group' style='width: 800px;margin:auto;margin-top:50px;'>";
 	                foreach($dir as $a=>$b) {
 	                    $t = toTitle(str_replace("_", " ", str_replace(".php", "", $b)));
-	                    $l = _link("singlepage/uiPages/".str_replace(".php", "", $b));
+	                    $l = _link("{$baseURL}/{$moduleName}/".str_replace(".php", "", $b));
 	                    println("<li class='list-group-item'><a href='{$l}'>{$t}</a></li>");
 	                }
 	                echo "</ul>";
@@ -93,7 +95,7 @@ if(!function_exists('autoModuleRoute')) {
 	                include_once $file0;
 	            } elseif($allowListing) {
 	                echo "<h1 align=center><br><br>Requested Page Not Found</h1>";
-	                //header("Location:"._link("singlepage/".basename($modulePath)));
+	                //header("Location:"._link("{$baseURL}/".basename($modulePath)));
 	            } else {
 	                echo "<h1 align=center><br><br>Error opening Module</h1>";
 	            }

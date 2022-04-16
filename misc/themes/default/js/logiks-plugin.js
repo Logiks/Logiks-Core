@@ -22,26 +22,26 @@
 *   jQuery UI v1.8+
 */
 
-var lgksPlugin={
+const logiksPlugin={
 	pluginLoader:{},
 	init:function() {
 		$(function() {
-			lgksPlugin.loadPlugins("onload");
+			logiksPlugin.loadPlugins("onload");
 		});
 	},
 	registerPluginLoader:function(func,pageState) {
 		if(pageState==null) pageState="onload";
-		if(lgksPlugin.pluginLoader[pageState]==null) lgksPlugin.pluginLoader[pageState]=[];
-		lgksPlugin.pluginLoader[pageState].push(func);
+		if(logiksPlugin.pluginLoader[pageState]==null) logiksPlugin.pluginLoader[pageState]=[];
+		logiksPlugin.pluginLoader[pageState].push(func);
 	},
 	loadPlugins:function(params,pageState) {
 		if(pageState==null) pageState="onload";
-		if(lgksPlugin.pluginLoader[pageState]==null) return false;
-		$(lgksPlugin.pluginLoader[pageState]).each(function(k,func) {
+		if(logiksPlugin.pluginLoader[pageState]==null) return false;
+		$(logiksPlugin.pluginLoader[pageState]).each(function(k,func) {
 				if(func==null) return;
 				if(typeof(func)=='function') func(params);
 				else window[func](params);
 			});
 	}
 }
-//lgksPlugin.init()
+//logiksPlugin.init()
