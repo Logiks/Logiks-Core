@@ -182,15 +182,13 @@ if(!function_exists("__cleanup")) {
 			}
 
 			$cmdFormat=explode(",",SUPPORTED_OUTPUT_FORMATS);
-			if(!isset($_REQUEST['format'])) {
-				$_REQUEST['format']=strtolower(getConfig("DEFAULT_OUTPUT_FORMAT"));
+			if(!isset($_GET['format'])) {
+				$_GET['format']=strtolower(getConfig("DEFAULT_OUTPUT_FORMAT"));
 			} else {
-				$_REQUEST['format']=strtolower($_REQUEST['format']);
+				$_GET['format']=strtolower($_GET['format']);
 			}
-			if(!in_array($_REQUEST['format'], $cmdFormat)) {
+			if(!in_array($_GET['format'], $cmdFormat)) {
 				trigger_logikserror(902, E_USER_ERROR);
-			} else {
-				$_GET['format']=$_REQUEST['format'];
 			}
 		}
 	}
