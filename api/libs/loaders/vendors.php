@@ -30,9 +30,14 @@ if(!function_exists('loadVendor')) {
   function checkVendor($vendor) {
     if(strlen($vendor)<=0) return false;
 
+    $cacheKey = "VENDORS";
+    if(defined("CMS_SITENAME")) {
+      $cacheKey = CMS_SITENAME."_{$cacheKey}";
+    }
+
     // $vendor=strtolower($vendor);
 
-    $cachePath=_metaCache("VENDORS",$vendor);
+    $cachePath=_metaCache($cacheKey,$vendor);
 
     if(!$cachePath || !file_exists($cachePath)) {
       $vendorPath=getLoaderFolders('vendorPath',"vendors");
@@ -52,7 +57,7 @@ if(!function_exists('loadVendor')) {
 				}
 			}
       if(strlen($fpath)>0) {
-				_metaCacheUpdate("VENDORS",$vendor,$fpath);
+				_metaCacheUpdate($cacheKey,$vendor,$fpath);
 				return $fpath;
 			} else {
 				return false;

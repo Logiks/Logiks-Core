@@ -14,7 +14,12 @@ if(!function_exists('loadAllMedia')) {
 		if(strlen($linkedApps)<=0) return loadMedia($media,$relativeOnly);
 		$linkedApps=explode(",",$linkedApps);
 
-		$cachePath=_metaCache("MEDIA:ALL",$media);
+		$cacheKey = "MEDIA:ALL";
+		if(defined("CMS_SITENAME")) {
+			$cacheKey = CMS_SITENAME."_{$cacheKey}";
+		}
+
+		$cachePath=_metaCache($cacheKey,$media);
 		if(!$cachePath) {
 			$paths=getLoaderFolders('mediaPaths',"");
 
@@ -24,7 +29,7 @@ if(!function_exists('loadAllMedia')) {
 					foreach($mediaPaths as $mp) {
 						$f=$appDir.$mp.$media;
 						if(file_exists(ROOT.$f)) {
-							_metaCacheUpdate("MEDIA:ALL",$media,$f);
+							_metaCacheUpdate($cacheKey,$media,$f);
 							if(!$relativeOnly)
 								return SiteLocation.$f;
 							else
@@ -44,14 +49,19 @@ if(!function_exists('loadAllMedia')) {
 	function loadMedia($name,$relativeOnly=false,$defaultMedia=null) {
 		if(strlen($name)<=0) return "";
 
-		$cachePath=_metaCache("MEDIA:SITE",$name);
+		$cacheKey = "MEDIA:SITE";
+		if(defined("CMS_SITENAME")) {
+			$cacheKey = CMS_SITENAME."_{$cacheKey}";
+		}
+
+		$cachePath=_metaCache($cacheKey,$name);
 		if(!$cachePath) {
 			$paths=getLoaderFolders('mediaPaths',"");
 
 			if(count($paths)>0) {
 				foreach($paths as $a) {
 					if(file_exists(ROOT.$a.$name)) {
-						_metaCacheUpdate("MEDIA:SITE",$name,$a.$name);
+						_metaCacheUpdate($cacheKey,$name,$a.$name);
 						if(!$relativeOnly)
 							return SiteLocation.$a.$name;
 						else

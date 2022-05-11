@@ -81,7 +81,12 @@ if(!function_exists('loadModule')) {
 	function checkModule($module) {
 		if(strlen($module)<=0) return false;
 
-		$cachePath=_metaCache("MODULES",$module);
+		$cacheKey = "MODULES";
+		if(defined("CMS_SITENAME")) {
+			$cacheKey = CMS_SITENAME."_{$cacheKey}";
+		}
+
+		$cachePath=_metaCache($cacheKey,$module);
 		if(!$cachePath || !file_exists($cachePath)) {
 			$modulespath=getLoaderFolders('pluginPaths',"modules");
 			$fpath="";
@@ -95,7 +100,7 @@ if(!function_exists('loadModule')) {
 				}
 			}
 			if(strlen($fpath)>0) {
-				_metaCacheUpdate("MODULES",$module,$fpath);
+				_metaCacheUpdate($cacheKey,$module,$fpath);
 				return $fpath;
 			} else {
 				return false;

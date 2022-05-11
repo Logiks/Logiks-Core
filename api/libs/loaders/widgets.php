@@ -23,9 +23,14 @@ if(!function_exists('loadAllWidgets')) {
 		if(strlen($widget)<=0) return;
 		if(!Widgets::isEnabled($widget)) return;
 
+		$cacheKey = "WIDGETS";
+		if(defined("CMS_SITENAME")) {
+			$cacheKey = CMS_SITENAME."_{$cacheKey}";
+		}
+
 		$widget=str_replace(".","/",str_replace("/", "", $widget));
 
-		$cachePath=_metaCache("WIDGETS",$widget);
+		$cachePath=_metaCache($cacheKey,$widget);
 		if(!$cachePath) {
 			$path=getAllWidgetsFolders();
 
@@ -33,11 +38,11 @@ if(!function_exists('loadAllWidgets')) {
 				$f1=ROOT . $a . $widget . "/index.php";
 				$f2=ROOT . $a . $widget . ".php";
 				if(file_exists($f1)) {
-					_metaCacheUpdate("WIDGETS",$widget,$f1);
+					_metaCacheUpdate($cacheKey,$widget,$f1);
 					Widgets::printWidget($widget,$f1,$params);
 					return false;
 				} elseif(file_exists($f2)) {
-					_metaCacheUpdate("WIDGETS",$widget,$f2);
+					_metaCacheUpdate($cacheKey,$widget,$f2);
 					Widgets::printWidget($widget, $f2, $params);
 					return false;
 				}
@@ -53,17 +58,23 @@ if(!function_exists('loadAllWidgets')) {
 	}
 	function checkWidget($widget) {
 		if(strlen($widget)<=0) return false;
-		$cachePath=_metaCache("WIDGETS",$widget);
+
+		$cacheKey = "WIDGETS";
+		if(defined("CMS_SITENAME")) {
+			$cacheKey = CMS_SITENAME."_{$cacheKey}";
+		}
+
+		$cachePath=_metaCache($cacheKey,$widget);
 		if(!$cachePath) {
 			$path=getAllWidgetsFolders();
 			foreach($path as $a) {
 				$f1=ROOT . $a . $widget . "/index.php";
 				$f2=ROOT . $a . $widget . ".php";
 				if(file_exists($f1)) {
-					_metaCacheUpdate("WIDGETS",$widget,$f1);
+					_metaCacheUpdate($cacheKey,$widget,$f1);
 					return $f1;
 				} elseif(file_exists($f2)) {
-					_metaCacheUpdate("WIDGETS",$widget,$f2);
+					_metaCacheUpdate($cacheKey,$widget,$f2);
 					return $f2;
 				}
 			}
