@@ -37,7 +37,7 @@ if(!function_exists("checkUserRoles")) {
 	}
 	
   //Checks specific permission
-	function checkUserRoles($module,$activity,$actionType="ACCESS") {
+	function checkUserRoles($module,$activity="MAIN",$actionType="ACCESS") {
 		return RoleModel::getInstance()->checkRole($module,$activity,$actionType);
 	}
 	
@@ -55,6 +55,7 @@ if(!function_exists("checkUserRoles")) {
 			} elseif(count($policyArr)==2) {
 				return checkUserRoles($policyArr[0],$policyArr[1]);
 			} else {
+				$policyArr[2] = implode(".", array_slice($policyArr, 2, count($policyArr)-2));
 				return checkUserRoles($policyArr[0],$policyArr[1],$policyArr[2]);
 			}
 		} else {
