@@ -192,10 +192,16 @@ class LogiksConfig {
 							if(isset($json[SITENAME])) {
 								$fData[]=$json[SITENAME];
 							}
-							for ($i=1; $i <count($fData) ; $i++) {
-								$fData[0]=array_merge($fData[0],$fData[$i]);
+							if(isset($json["app"])) {
+								$fData[]=array_merge($fData, $json["app"]);
 							}
-							$cfgData=array_merge($cfgData, $fData[0]);
+							if(isset($fData[0])) {
+								for ($i=1; $i<count($fData); $i++) {
+									$fData[0]=array_merge($fData[0],$fData[$i]);
+								}
+
+								$cfgData=array_merge($cfgData, $fData[0]);
+							}
 						}
 					} else {
 			      //trigger_logikserror("$configName configuration not found, Error In Installation.", E_USER_ERROR);
