@@ -158,5 +158,25 @@ if(!function_exists("getRequestTime")) {
 		printMimeHeader($format);
 		if($dataContent!=null) echo $dataContent;
 	}
+
+	//Load Logiks System & App Composer Installer Autoloader
+	function loadComposerAutoloaders() {
+		$vendorPath=getLoaderFolders('vendorPath',"vendors");
+
+		if(isAdminSite()) {
+			if(isset($_REQUEST['forsite'])) {
+				$forSite = _slugify($_REQUEST['forsite']);
+				array_unshift($vendorPath, "apps/{$forSite}/plugins/vendors/");
+				array_unshift($vendorPath, "apps/{$forSite}/pluginsDev/vendors/");
+			}
+		}
+
+		foreach($vendorPath as $a) {
+			$f1=ROOT . $a . "autoload.php";
+			if(file_exists($f1)) {
+				include_once $f1;
+			}
+		}
+	}
 }
 ?>

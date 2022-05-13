@@ -98,6 +98,8 @@ if(!isset($initialized)) {
 
 	loadHelpers(array("urltools","hooks","mobility","outputbuffer","shortfuncs"));
 
+	loadComposerAutoloaders();
+
 	$initialized=true;
 	runHooks("postinit");
 
