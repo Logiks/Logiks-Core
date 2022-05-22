@@ -259,8 +259,8 @@ class Database {
 		$sqlSelect=$this->_selectQ($table,$cols,$where);
 		$sql=$this->_insertQ($table,$cols,$sqlSelect);
 		
-		//$sql=$sql->_sql();
-		//$sql=str_replace(") VALUES (",") (",$sql);
+		$sql=$sql->_sql();
+		$sql=str_replace(") VALUES (",") (",$sql);
 		
 		return $this->executeQuery($sql);
 	}
