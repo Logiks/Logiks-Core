@@ -7,6 +7,7 @@ if(!isset($_REQUEST['mauth']) && !isset($_REQUEST['auth-policy'])) {
 if(isset($_REQUEST['auth-policy'])) {
 	$_REQUEST['mauth'] = $_REQUEST['auth-policy'];
 }
+if(!isset($_REQUEST['mauth'])) $_REQUEST['mauth'] = "session";
 
 runHooks("preAuth");
 
@@ -458,7 +459,7 @@ function gotoSuccessLink() {
 
 	$domain=$_SESSION['SESS_ACTIVE_SITE'];//ACTIVE
 	if(ALLOW_MAUTH) {
-    if(isset($_REQUEST['mauth'])) {
+    if(isset($_REQUEST['mauth']) && $_REQUEST['mauth']!="session") {
       if($_REQUEST['mauth']=="authkey") {
         echo $_SESSION['MAUTH_KEY'];
       } elseif($_REQUEST['mauth']=="jwt") {
