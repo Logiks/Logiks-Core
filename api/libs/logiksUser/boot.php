@@ -44,7 +44,8 @@ if(!function_exists("checkUserRoles")) {
 	function checkUserPolicy($policyStr,$policyName=null) {
 		if($policyStr==null || strlen($policyStr)<=0) return true;
     
-		$policyStr=strtolower(str_replace(" ",".",$policyStr));
+    $policyStrOriginal = $policyStr;
+		$policyStr=(str_replace(" ",".",$policyStr));//strtolower
 		if($policyName==null || strlen($policyName)<=0) $policyName=toTitle(str_replace(".","_",$policyStr));
 		
 		$policyData=explode(":",$policyStr);

@@ -60,6 +60,11 @@ if(!function_exists("session_check")) {
 // 		}
 // 	}
 	
+	function get_client_ip() {
+		if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        return $_SERVER['REMOTE_ADDR'];
+	}
+
 	function isAdminSite($site=SITENAME) {
 		$adminSites=explode(",", DOMAIN_CONTROLS_ADMINAPP);
 		if(in_array($site, $adminSites)) return true;

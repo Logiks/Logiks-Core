@@ -1,6 +1,21 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
 
+// $_HEADERS = getallheaders();
+
+// if(isset($_HEADERS['mauth-appkey'])) {
+// 	if(!APIKeys::getInstance()->is_valid_request()) {
+// 		echo "A";exit();
+// 	} else {
+// 		echo "B";exit();
+// 	}
+// } else {
+
+// }
+// printArray(getallheaders());exit("ZZZ");
+
+
+
 if(!isset($_REQUEST['mauth']) && !isset($_REQUEST['auth-policy'])) {
 	echo "<h5>Securing Access Authentication ... </h5>";
 }
@@ -104,7 +119,7 @@ if(!empty($result)) {
 if(!isset($data['roles']) || strlen($data['roles'])<=0) $data['roles'] = $data['privilegeid'];
 else {
 	$data['roles'] = explode(",", $data['roles']);
-	$data['roles'][] = $data['privilegeid'];
+	// $data['roles'][] = $data['privilegeid'];
 	
 	if(strlen($data['roles'][0])<=0) unset($data['roles'][0]);
 
@@ -228,15 +243,17 @@ function relink($msg,$domain) {
       if($_REQUEST['mauth']=="jwt") {
         header("Content-Type:text/json");
         echo json_encode(["msg"=>$msg,"status"=>'failed']);
+        exit();
       } elseif($_REQUEST['mauth']=="authkey") {
         echo "ERROR:$msg";
+        exit();
       } elseif($_REQUEST['mauth']=="jsonkey" || $_REQUEST['mauth']=="json") {
         header("Content-Type:text/json");
         echo json_encode(["msg"=>$msg,"status"=>'failed']);
+        exit();
       } else {
         echo "ERROR/$msg";
       }
-      exit();
     }
 	}
 	
@@ -291,7 +308,7 @@ function initializeLogin($userid,$domain,$params=array()) {
 				"device"=>$_ENV['AUTH-DATA']['device'],
 				"client_ip"=>$_SERVER['REMOTE_ADDR']]);
 	
-	_db(true)->_updateQ(_dbTable("users",true),['last_login'=>date("Y-m-d H:i:s")],["guid"=>$_SESSION['SESS_GUID'],
+	_db(true)->_updateQ(_dbTable("users",true),['last_login'=>date("Y-m-d H:i:s"), 'last_login_ip'=>get_client_ip()],["guid"=>$_SESSION['SESS_GUID'],
 				"userid"=>$_SESSION['SESS_USER_ID']])->_RUN();
 	
 	gotoSuccessLink();

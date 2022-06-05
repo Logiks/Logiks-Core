@@ -27,6 +27,8 @@ class RoleModel {
   private $version = "1.0";//1.0,2.0
   
   private $roleTable = null;
+
+  private $USE_PRIVILEGE_FOR_PERMISSIONS = false;
 	
   public static function getInstance() {
     if(RoleModel::$instance==null) {
@@ -68,6 +70,17 @@ class RoleModel {
     if(!isset($_SESSION["ROLESGLOBAL"][SITENAME])) {
       $this->loadScopeRules();
     }
+
+    $tables = _db(true)->get_tableList();
+		if(in_array(_dbTable("roles",true), $tables)) {
+			if($_SESSION["ROLEMODEL_VERSION"]>=3) {
+    		if(getConfig("USE_PRIVILEGE_FOR_PERMISSIONS")) {
+	    		$USE_PRIVILEGE_FOR_PERMISSIONS = true;
+	    	}
+	    }
+		} else {
+			$USE_PRIVILEGE_FOR_PERMISSIONS = true;
+		}
   }
   
   //Checks the global policy that came with application and returns
@@ -161,10 +174,12 @@ class RoleModel {
 
 		$finalPrivilegeList = [$privilegehash];
 		foreach($privilegeArr as $row) {
-			if(!in_array($row['role_name'], $finalPrivilegeList)) {
-				$finalPrivilegeList[] = $row['role_name'];
+			if(!in_array(_slugify("{$row['id']}_{$row['role_name']}"), $finalPrivilegeList)) {
+				$finalPrivilegeList[] = _slugify("{$row['id']}_{$row['role_name']}");
 			}
 		}
+
+		//printArray([$privilegeArr,$privilegehash, $finalPrivilegeList]);exit();
 
 		$sql=_db(true)->_selectQ($this->roleTable,"*")
 			      ->_where([
@@ -176,6 +191,7 @@ class RoleModel {
 
 	  $roleData=$sql->_GET();
 	  // echo $roleData;exit();
+	  // printArray($roleData);exit();
 	  //"action"=>$actionType,"module"=>$module,"activity"=>$activity
 
 	  $finalRoleData = [];
@@ -257,7 +273,7 @@ class RoleModel {
   	  return true;
   	}
 
-  	//printArray($_SESSION["ROLEMODEL2"]);
+  	// printArray($_SESSION["ROLEMODEL2"]);exit();
   	if(isset($_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr])) {
   		return ($_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr]=="true");
   	} else {
@@ -415,8 +431,39 @@ class RoleModel {
 		$_SESSION["ROLESGLOBAL"][SITENAME]=$scopeArr;
 	}
   
+  //$module, $activity = "MAIN", $actionType = "ACCESS"
+  //Generate and Registers Roles wise permissions for Policy String
+	public function registerPolicy($policyStr, $site = SITENAME, $userid = false, $guid = false, $defaultValue = -1) {
+		$policyArr = explode(".", $policyStr);
+
+		$module = "";
+		$activity = "MAIN";
+		$actionType = "ACCESS";
+
+		if(count($policyArr)==1) {
+			$module = $policyArr[0];
+		} elseif(count($policyArr)==2) {
+			$module = $policyArr[0];
+			$activity = $policyArr[1];
+		} elseif(count($policyArr)==3) {
+			$module = $policyArr[0];
+			$activity = $policyArr[1];
+			$actionType = $policyArr[2];
+		} else {
+			$module = $policyArr[0];
+			$activity = implode("_", array_slice($policyArr, 1, count($policyArr)-2));
+			$actionType = $policyArr[count($policyArr)-1];
+		}
+
+		$module = preg_replace("/(?<=[a-z])(?=[A-Z])/", "_$0", str_replace("_", " ", $module));
+		$activity = preg_replace("/(?<=[a-z])(?=[A-Z])/", "_$0", str_replace("_", " ", $activity));
+		$actionType = preg_replace("/(?<=[a-z])(?=[A-Z])/", "_$0", str_replace("_", " ", $actionType));
+
+		return $this->registerRole($module, $activity, $actionType, $site, $userid, $guid, $defaultValue);
+	}
+
   //Generate and Registers Roles wise permissions
-	public function registerRole($module, $activity = "MAIN", $actionType = "ACCESS", $site = SITENAME,$userid = false, $guid = false, $defaultValue = -1) {
+	public function registerRole($module, $activity = "MAIN", $actionType = "ACCESS", $site = SITENAME, $userid = false, $guid = false, $defaultValue = -1) {
 		if($defaultValue==-1) $defaultValue = getConfig("ROLEMODEL_DEFAULT_DENY");
 
 		if(!in_array($defaultValue, ["true", "false"])) $defaultValue = "false";
@@ -442,27 +489,48 @@ class RoleModel {
 		$finalData=[];
 		$dated = date("Y-m-d H:i:s");
 
-		//For Privileges
-		$sql=_db(true)->_selectQ(_dbTable("privileges",true),"id,name", ["guid"=>[["global", $guid],"IN"]])
-							->_whereOR("site",[$site,"*"]);
-		$r=_dbQuery($sql,true);
-		if($r) {
-			$data=_dbData($r,true);
-			_dbFree($r,true);
-			foreach($data as $d) {
-				if($d['id']<=ROLE_PRIME) continue;
+		if($this->USE_PRIVILEGE_FOR_PERMISSIONS) {
+			//For Privileges
+			$sql=_db(true)->_selectQ(_dbTable("privileges",true),"id,name", ["guid"=>[["global", $guid],"IN"]])
+								->_whereOR("site",[$site,"*"]);
+			$r=_dbQuery($sql,true);
+			if($r) {
+				$data=_dbData($r,true);
+				_dbFree($r,true);
+				foreach($data as $d) {
+					if($d['id']<=ROLE_PRIME) continue;
 
-				$pid=$d['id'];
-				$privilegehash=RoleModel::generatePrivilegeHash($d['id'], $d['name']);
-				$privilegename=$d['name'];
+					$pid=$d['id'];
+					$privilegehash=RoleModel::generatePrivilegeHash($d['id'], $d['name']);
+					$privilegename=$d['name'];
 
-				$sql=_db(true)->_selectQ($this->roleTable,"count(*) as cnt")
-					->_where(array("site"=>$site,"action"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash))
-					->_where(["guid"=>[["global", $guid], "IN"]]);
-				$r=_dbQuery($sql,true);
-				if($r) {
-					$data=_dbData($r);
-					if($data[0]['cnt']==0) {
+					$sql=_db(true)->_selectQ($this->roleTable,"count(*) as cnt")
+						->_where(array("site"=>$site,"action"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$privilegehash))
+						->_where(["guid"=>[["global", $guid], "IN"]]);
+					$r=_dbQuery($sql,true);
+					if($r) {
+						$data=_dbData($r);
+						if($data[0]['cnt']==0) {
+							$finalData[]=[
+									//"id"=>"",
+									"guid"=>$guid,
+									"site"=>$site,
+									"category"=>"privileges",
+									"module"=>$module,
+									"activity"=>$activity,
+									"action"=>$actionType,
+									"allow"=>$defaultValue,
+									"remarks"=>$privilegename,
+									"policystr"=>$policyStr,
+									"privilegehash"=>$privilegehash,
+									"rolehash"=>md5($policyStr.$privilegehash.$site.$guid),
+									"created_by"=>$userid,
+									"edited_by"=>$userid,
+									"created_on"=>$dated,
+									"edited_on"=>$dated
+								];
+						}
+					} else {
 						$finalData[]=[
 								//"id"=>"",
 								"guid"=>$guid,
@@ -482,25 +550,6 @@ class RoleModel {
 								"edited_on"=>$dated
 							];
 					}
-				} else {
-					$finalData[]=[
-							//"id"=>"",
-							"guid"=>$guid,
-							"site"=>$site,
-							"category"=>"privileges",
-							"module"=>$module,
-							"activity"=>$activity,
-							"action"=>$actionType,
-							"allow"=>$defaultValue,
-							"remarks"=>$privilegename,
-							"policystr"=>$policyStr,
-							"privilegehash"=>$privilegehash,
-							"rolehash"=>md5($policyStr.$privilegehash.$site.$guid),
-							"created_by"=>$userid,
-							"edited_by"=>$userid,
-							"created_on"=>$dated,
-							"edited_on"=>$dated
-						];
 				}
 			}
 		}
@@ -514,8 +563,9 @@ class RoleModel {
 
 			if($r) {
 				foreach($r as $d) {
+					$privilegehash = $d['id'];
 					$x1=_db(true)->_selectQ($this->roleTable,"count(*) as cnt")
-						->_where(array("site"=>$site,"action"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$d['name']))
+						->_where(array("site"=>$site,"action"=>$actionType,"module"=>$module,"activity"=>$activity,"privilegehash"=>$d['id']))
 						->_where(["guid"=>[["global", $guid], "IN"]])
 						->_GET();
 
@@ -532,7 +582,7 @@ class RoleModel {
 								"remarks"=>$d['name'],
 								"policystr"=>$policyStr,
 								"rolehash"=>md5($policyStr.$privilegehash.$site.$guid),
-								"privilegehash"=>$d['name'],
+								"privilegehash"=>_slugify("{$d['id']}_{$d['name']}"),
 								"created_by"=>$userid,
 								"edited_by"=>$userid,
 								"created_on"=>$dated,
@@ -551,7 +601,7 @@ class RoleModel {
 							"remarks"=>$d['name'],
 							"policystr"=>$policyStr,
 							"rolehash"=>md5($policyStr.$privilegehash.$site.$guid),
-							"privilegehash"=>$d['name'],
+							"privilegehash"=>_slugify("{$d['id']}_{$d['name']}"),
 							"created_by"=>$userid,
 							"edited_by"=>$userid,
 							"created_on"=>$dated,
@@ -562,25 +612,28 @@ class RoleModel {
 			}
 		}
 
-		$finalData[]=[
-					//"id"=>"",
-					"guid"=>$guid,
-					"site"=>$site,
-					"category"=>"general",
-					"module"=>$module,
-					"activity"=>$activity,
-					"action"=>$actionType,
-					"allow"=>$defaultValue,
-					"remarks"=>"guest",
-					"policystr"=>$policyStr,
-					"rolehash"=>md5($policyStr.$privilegehash.$site.$guid),
-					"privilegehash"=>md5("0guest"),
-					"created_by"=>$userid,
-					"edited_by"=>$userid,
-					"created_on"=>$dated,
-					"edited_on"=>$dated
-				];
-
+		if($this->USE_PRIVILEGE_FOR_PERMISSIONS) {
+			$privilegehash = "guest";
+			$finalData[]=[
+						//"id"=>"",
+						"guid"=>$guid,
+						"site"=>$site,
+						"category"=>"general",
+						"module"=>$module,
+						"activity"=>$activity,
+						"action"=>$actionType,
+						"allow"=>$defaultValue,
+						"remarks"=>"guest",
+						"policystr"=>$policyStr,
+						"rolehash"=>md5($policyStr.$privilegehash.$site.$guid),
+						"privilegehash"=>"0_guest",
+						"created_by"=>$userid,
+						"edited_by"=>$userid,
+						"created_on"=>$dated,
+						"edited_on"=>$dated
+					];
+		}
+		
 		// printArray($finalData);exit();
 		//echo _db(true)->_insert_batchQ($this->roleTable,$finalData)->_SQL();exit();
 		$a = _db(true)->_insert_batchQ($this->roleTable,$finalData)->_run();
@@ -678,11 +731,19 @@ class RoleModel {
 	}
 
 	public static function generatePrivilegeHash($privilegeID, $privilegeName) {
-		return md5($privilegeID.$privilegeName);
+		return _slugify("{$privilegeID}_{$privilegeName}");
+	}
+
+	public function getVersion() {
+		return $this->version;
 	}
 
 	public function generatePolicyString($module,$activity="MAIN",$actionType="ACCESS") {
 		//Generate Policy String
+		$module = preg_replace("/(?<=[a-z])(?=[A-Z])/", "_$0", str_replace("_", " ", $module));
+		$activity = preg_replace("/(?<=[a-z])(?=[A-Z])/", "_$0", str_replace("_", " ", $activity));
+		$actionType = preg_replace("/(?<=[a-z])(?=[A-Z])/", "_$0", str_replace("_", " ", $actionType));
+
 		$policyStr=[$module,$activity,$actionType];
 		$policyStr=implode(".",$policyStr);
     $policyStr = $this->cleanScopePolicy($policyStr);

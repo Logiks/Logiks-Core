@@ -33,8 +33,8 @@ CREATE TABLE `lgks_privileges` (
 CREATE TABLE `lgks_roles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
-  `site` varchar(150) DEFAULT NULL,
-  `name` varchar(35) DEFAULT NULL,
+  `site` varchar(50) NOT NULL DEFAULT '*',
+  `name` varchar(150) DEFAULT NULL,
   `remarks` varchar(255) DEFAULT NULL,
   `blocked` enum('true','false') DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
@@ -62,7 +62,8 @@ CREATE TABLE `lgks_rolemodel` (
   `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `rolehash` (`rolehash`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE `lgks_rolescope` (
@@ -104,11 +105,12 @@ CREATE TABLE `lgks_security_apikeys` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `api_title` varchar(155) NOT NULL,
+  `api_access` VARCHAR(25) NOT NULL DEFAULT 'multi' COMMENT 'multi,user'
   `api_keys` varchar(150) NOT NULL,
   `api_secret` varchar(250) NOT NULL,
   `api_roles` text,
   `api_userid` varchar(155) NOT NULL,
-  `api_whitelist` text NOT NULL,
+  `api_whitelist` varchar(255) NOT NULL,
   `blocked` enum('false','true') NOT NULL DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
   `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
@@ -210,6 +212,7 @@ CREATE TABLE `lgks_users` (
   `refid` varchar(30) DEFAULT NULL,
   `security_policy` varchar(25) NOT NULL DEFAULT 'open',
   `last_login` datetime DEFAULT NULL,
+  `last_login_ip` VARCHAR(25) NOT NULL,
   `created_by` varchar(155) NOT NULL,
   `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
@@ -225,6 +228,7 @@ CREATE TABLE `lgks_users_group` (
   `group_name` varchar(150) NOT NULL,
   `group_manager` varchar(155) DEFAULT NULL,
   `group_descs` varchar(255) DEFAULT NULL,
+  `blocked` ENUM('false','true') NOT NULL DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
   `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
