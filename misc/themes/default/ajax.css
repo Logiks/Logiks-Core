@@ -8,59 +8,59 @@
 }
 
 .ajaxloading0 {
-	background: transparent url(images/ajax/loading.gif) no-repeat;
+	background: transparent url(images/loaders/loading.gif) no-repeat;
 	background-position:center;
 	padding-top:35px;
 }
 
 .ajaxloading1 {
-	background: transparent url(images/ajax/loading1.gif) no-repeat;
+	background: transparent url(images/loaders/loading1.gif) no-repeat;
 	background-position:center;
 	padding-top:75px;
 }
 
 .ajaxloading2 {
-	background: transparent url(images/ajax/loading2.gif) no-repeat;
+	background: transparent url(images/loaders/loading2.gif) no-repeat;
 	background-position:center;
 	padding-top:35px;
 }
 
 .ajaxloading3 {
-	background: transparent url(images/ajax/loading3.gif) no-repeat top center;
+	background: transparent url(images/loaders/loading3.gif) no-repeat top center;
 	background-position:center;
 	padding-top:75px;
 }
 
 .ajaxloading4 {
-	background: transparent url(images/ajax/loading4.gif) no-repeat;
+	background: transparent url(images/loaders/loading4.gif) no-repeat;
 	background-position:left;
 	padding-top:15px;
 }
 
 .ajaxloading5 {
-	background: transparent url(images/ajax/loading5.gif) no-repeat;
+	background: transparent url(images/loaders/loading5.gif) no-repeat;
 	background-position:center;
 	padding-top:110px;
 }
 
 .ajaxloading6 {
-	background: transparent url(images/ajax/loading6.gif) no-repeat;
+	background: transparent url(images/loaders/loading6.gif) no-repeat;
 	background-position:center;
 	padding-top:35px;
 }
 .ajaxloading7 {
-	background: transparent url(images/ajax/loading7.gif) no-repeat;
+	background: transparent url(images/loaders/loading7.gif) no-repeat;
 	background-position:center;
 	padding-top:35px;
 }
 .ajaxloading8 {
-	background: transparent url(images/ajax/loading8.gif) no-repeat;
+	background: transparent url(images/loaders/loading8.gif) no-repeat;
 	background-position:center;
 	padding-top:45px;
 }
 
 .ajaxerror {
-	background: transparent url(images/ajax/error.png) no-repeat;
+	background: transparent url(images/loaders/error.png) no-repeat;
 	background-position:center;
 	text-align:center;
 	padding-left:auto;
@@ -70,7 +70,7 @@
 	color:#777;
 }
 .ajaxbug {
-	background: transparent url(images/ajax/bug.png) no-repeat;
+	background: transparent url(images/loaders/bug.png) no-repeat;
 	background-position:center;
 	text-align:center;
 	padding-left:auto;
