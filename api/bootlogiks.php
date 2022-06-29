@@ -252,7 +252,7 @@ if(!function_exists("__cleanup")) {
 		$logiksOptional=explode(",", $logiksOptional);
 		foreach ($logiksOptional as $comp) {
 			$comp=trim($comp);
-			if(strlen($comp)>0) continue;
+			if(strlen($comp)<=0) continue;
 			$f=ROOT."api/libs/{$comp}/boot.php";
 			if(strlen($comp)>1 && file_exists($f)) {
 				include_once $f;
