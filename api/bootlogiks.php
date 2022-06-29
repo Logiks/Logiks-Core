@@ -231,14 +231,28 @@ if(!function_exists("__cleanup")) {
 		loadModule("core",true);
 		loadModule(SITENAME,true);
 
+		$appCoreModules=getConfig("APP_CORE_MODULES");
+		if($appCoreModules) {
+			$appCoreModules = explode(",",$appCoreModules);
+			foreach($appCoreModules as $mod) {
+				$mod=trim($mod);
+				if(strlen($mod)>0) {
+					loadModule($mod,true);
+				}
+			}
+		}
+
 		if(function_exists("runHooks")) runHooks("enginesRunning");
 	}
 
 	function loadLogiksOptional() {
 		$logiksOptional=getConfig("LOGIKS_OPTIONAL_COMPONENTS");
+		if(!$logiksOptional) return;
+
 		$logiksOptional=explode(",", $logiksOptional);
 		foreach ($logiksOptional as $comp) {
 			$comp=trim($comp);
+			if(strlen($comp)>0) continue;
 			$f=ROOT."api/libs/{$comp}/boot.php";
 			if(strlen($comp)>1 && file_exists($f)) {
 				include_once $f;
