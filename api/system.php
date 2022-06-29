@@ -37,6 +37,27 @@ if(!function_exists("getRequestTime")) {
 		elseif($server=="localhost" || $server=="127.0.0.1") return true;
 		else return false;
 	}
+
+	//Gets the current Request URI
+	function getRequestURI() {
+        if (isHTTPS())
+            $link = "https";
+        else $link = "http";
+          
+        // Here append the common URL characters.
+        $link .= "://";
+          
+        // Append the host(domain name, ip) to the URL.
+        $link .= $_SERVER['HTTP_HOST'];
+          
+        // Append the requested resource location to the URL
+        $link .= $_SERVER['REQUEST_URI'];
+
+        $link = current(explode("?", $link));
+          
+        // Print the link
+        return $link;
+    }
 	
 	//Used for converting filepath to direct webpath, $refs :: __FILE__
 	function getLocation($refs) {

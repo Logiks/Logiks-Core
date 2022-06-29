@@ -8,6 +8,18 @@
 					"level": "NOTICE"
 				}
 			},
+			"activity_roles": {
+				"Monolog\\Handler\\RotatingFileHandler": {
+					"params1": "#logFilePath#/app.log",
+					"params2": 30,
+					"level": "NOTICE",
+					"formatter": {
+						"class": "Monolog\\Formatter\\LineFormatter",
+						"params1": "#LOG_FORMAT#\n",
+						"params2": "#LOG_DATE# #LOG_TIME#"
+					}
+				}
+			},
 			"activity": {
 				"Monolog\\Handler\\RotatingFileHandler": {
 					"params1": "#logFilePath#/app.log",
@@ -123,6 +135,9 @@
 		"logger": {
 			"system": {
 				"handler": ["system"]
+			},
+			"activity_roles": {
+				"handler": ["activity_roles"]
 			},
 			"activity": {
 				"handler": ["activity"]

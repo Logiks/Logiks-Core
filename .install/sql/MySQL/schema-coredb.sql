@@ -19,6 +19,7 @@ CREATE TABLE `lgks_access` (
 CREATE TABLE `lgks_privileges` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
+  `parent` INT NOT NULL DEFAULT '1'
   `site` varchar(150) DEFAULT NULL,
   `name` varchar(35) DEFAULT NULL,
   `remarks` varchar(255) DEFAULT NULL,

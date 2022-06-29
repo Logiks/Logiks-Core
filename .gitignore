@@ -1,19 +1,22 @@
 /apps/
 /tmp/
+/logs/
 /tests/tmp/
 /pluginsDev/
-/todo.txt
 /data/sqlite/testdata.db
 /config/jsonConfig/
 /misc/hooks/
+node_modules/
 
 config/jsonConfig/
+
+all_keys.cfg
+*keys.cfg
+keys_*.cfg
 
 .project
 .DS_STORE
 temp.txt
 todos.txt
-
-socksServer/
-
+*.log
 

@@ -263,9 +263,10 @@ class RoleModel {
 
 		//println("XXXX->$module,$activity,$actionType->$policyStr");
     //if(!defined("SERVICE_ROOT") &&  (getConfig("APPS_STATUS")=="dev" || getConfig("APPS_STATUS")=="development")) {
-		if(!defined("SERVICE_ROOT") &&  getConfig("DEBUG_MODE")=="true") {
-      _log("RoleUser : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","console");
+		if(getConfig("DEBUG_MODE")=="true" || getConfig("DEBUG_MODE")==="1") {
+      _log("RoleUser : {$module}/{$moduleOriginal}-{$activity} :: {$policyStr}","system");
     }
+		
 
     //Check Globals
     $globalStatus=RoleModel::checkGlobals($policyStr);
