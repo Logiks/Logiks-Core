@@ -212,12 +212,12 @@ class RoleModel {
 	  		$finalRoleData[$row['module']][$row['activity']][$row["action"]] = $row['allow'];
 	  	}
 
-	  	if(!isset($finalRoleStr[strtolower("{$row['module']}.{$row['activity']}.{$row["action"]}")]) ||
-	  			$finalRoleStr[strtolower("{$row['module']}.{$row['activity']}.{$row["action"]}")]!="true") {
+	  	if(!isset($finalRoleStr[$this->generatePolicyString($row['module'], $row['activity'], $row["action"])]) ||
+	  			$finalRoleStr[$this->generatePolicyString($row['module'], $row['activity'], $row["action"])]!="true") {
 
-	  		$finalRoleStr[strtolower("{$row['module']}.{$row['activity']}.{$row["action"]}")] = $row['allow'];
+	  		$finalRoleStr[$this->generatePolicyString($row['module'], $row['activity'], $row["action"])] = $row['allow'];
 		  	if($row["action"]=="access") {
-		  		$finalRoleStr[strtolower("{$row['module']}.{$row['activity']}")] = $row['allow'];
+		  		$finalRoleStr[$this->generatePolicyString($row['module'], $row['activity'], "")] = $row['allow'];
 		  	}
 	  	}
 	  }
@@ -773,7 +773,7 @@ class RoleModel {
 				$policyStr = implode(".", $roleParams);
 		}
 
-		return strtolower($policyStr);
+		return strtolower(str_replace(" ", "_", $policyStr));
 	}
 }
 ?>
