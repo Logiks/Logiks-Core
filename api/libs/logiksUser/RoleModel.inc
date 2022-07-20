@@ -473,7 +473,7 @@ class RoleModel {
 
     $activity = $this->cleanActivity($module, $activity);
     
-    $actionType=strtolower($actionType);
+    $actionType=strtolower(str_replace(" ", "_", $actionType));
     
     $policyStr = $this->generatePolicyString($module,$activity,$actionType);
 
