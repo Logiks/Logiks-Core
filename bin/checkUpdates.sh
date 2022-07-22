@@ -1,8 +1,27 @@
 #!/bin/sh
 
+git pull origin master
+echo ""
+
+if [ -d "pluginsDev" ] 
+then
+    cd pluginsDev/modules/
+    find . -maxdepth 1 -mindepth 1 -type d -exec sh -c '(echo {} && cd {} && pwd && git pull origin master && echo)' \;
+    cd ../
+    
+    cd vendors/
+    find . -maxdepth 1 -mindepth 1 -type d -exec sh -c '(echo {} && cd {} && pwd && git pull origin master && echo)' \;
+
+    cd ../../
+fi
+
 cd pluginsDev/modules/
-find . -type d  -maxdepth 1 -exec git --git-dir={}/.git --work-tree=$PWD/{} pull origin master \;
+find . -maxdepth 1 -mindepth 1 -type d -exec sh -c '(echo {} && cd {} && pwd && git pull origin master && echo)' \;
+cd ../
 
-cd ../vendors/
-find . -type d  -maxdepth 1 -exec git --git-dir={}/.git --work-tree=$PWD/{} pull origin master \;
+cd vendors/
+find . -maxdepth 1 -mindepth 1 -type d -exec sh -c '(echo {} && cd {} && pwd && git pull origin master && echo)' \;
+cd ../../
 
+echo "Updates Checking Complete";
+echo ""
