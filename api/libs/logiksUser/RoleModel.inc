@@ -492,7 +492,7 @@ class RoleModel {
 
 		if($this->USE_PRIVILEGE_FOR_PERMISSIONS) {
 			//For Privileges
-			$sql=_db(true)->_selectQ(_dbTable("privileges",true),"id,name", ["guid"=>[["global", $guid],"IN"]])
+			$sql=_db(true)->_selectQ(_dbTable("privileges",true),"id,name", ["guid"=>[["global", $guid],"IN"], "blocked"=>"false"])
 								->_whereOR("site",[$site,"*"]);
 			$r=_dbQuery($sql,true);
 			if($r) {
@@ -558,7 +558,7 @@ class RoleModel {
 		//For Roles
 		$tables = _db(true)->get_tableList();
 		if(in_array(_dbTable("roles",true), $tables)) {
-			$sql=_db(true)->_selectQ(_dbTable("roles",true),"id,name", ["guid"=>[["global", $guid], "IN"]])
+			$sql=_db(true)->_selectQ(_dbTable("roles",true),"id,name", ["guid"=>[["global", $guid], "IN"], "blocked"=>"false"])
 							->_whereOR("site",[$site,"*"]);
 			$r=$sql->_GET();
 
