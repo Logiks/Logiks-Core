@@ -26,7 +26,7 @@ class Database {
 		if($params==null || !is_array($params)) {
 			$cfg=loadJSONConfig("db");
 			if(!isset($cfg[$key])) {
-				////trigger_logikserror("Database ERROR, Connection Configuration Could Not Be Found For {$key}");	
+				//trigger_logikserror("Database ERROR, Connection Configuration Could Not Be Found For {$key}");	
 				return false;
 				return false;
 			} else {
@@ -118,8 +118,23 @@ class Database {
 		$this->connectionParams=$params;
 		Database::$connections[$name]=$this;
 		
-		//println($name);
-		//printArray($this->connectionParams);
+		$dbParams = loadJSONConfig("db_params", getConfig("APPS_STATUS"));
+		if(!$dbParams) $dbParams = [];
+
+		if(isset($dbParams["driver"])) unset($dbParams["driver"]);
+    if(isset($dbParams["host"])) unset($dbParams["host"]);
+    if(isset($dbParams["port"])) unset($dbParams["port"]);
+    if(isset($dbParams["database"])) unset($dbParams["database"]);
+    if(isset($dbParams["user"])) unset($dbParams["user"]);
+    if(isset($dbParams["pwd"])) unset($dbParams["pwd"]);
+
+		$this->connectionParams = array_merge($this->connectionParams, $dbParams);
+
+		// printArray([
+		// 		// $name,$params,
+		// 		$this->connectionParams,
+		// 		$dbParams
+		// ]);exit();
 	}
 	
 	//Closes the current connection
@@ -267,8 +282,8 @@ class Database {
   
   //Call hooks after certain query
   protected function dbHooks($query, $calltype="PRE") {
-    if($this->metaQuery) return true;
-    
+  	if(strtolower(getConfig("APPS_STATUS"))!="production") _log("SQLQUERY::".$query->_string(), "sql");
+  	//_log(">HOOK-{$calltype}-".$query->_string(), "console");
     if(isset($this->connectionParams['hooks'])) {
       if($query==null) return false;
     
@@ -280,12 +295,22 @@ class Database {
       $dbTable = $query->getTableName();
       
       //printArray([$dbTable,$calltype,$queryType]);
-      if(isset($this->connectionParams['hooks'][$queryType])) {
+      if(isset($this->connectionParams['hooks']["${calltype}-{$queryType}"])) {
+      	$hooks = $this->connectionParams['hooks']["${calltype}-{$queryType}"];
+
+      	if(strtolower(getConfig("APPS_STATUS"))!="production") _log("DBHOOKQUERY::{$dbTable}-{$calltype}-{$queryType}::".$query->_string(), "sql");
+      	runHookFunctions($hooks,["type"=>"dbhook","dbtable"=>$dbTable,"calltype"=>$calltype,"querytype"=>$queryType]);
+        
+        return true;
+      } elseif(isset($this->connectionParams['hooks'][$queryType])) {
         $hooks = $this->connectionParams['hooks'][$queryType];
         
+        if(strtolower(getConfig("APPS_STATUS"))!="production") _log("DBHOOKQUERY::{$dbTable}-{$queryType}::".$query->_string(), "sql");
         runHookFunctions($hooks,["type"=>"dbhook","dbtable"=>$dbTable,"calltype"=>$calltype,"querytype"=>$queryType]);
         
         return true;
+      } else {
+      	return false;
       }
     }
     
@@ -294,6 +319,8 @@ class Database {
   
   //Call Meta Updating Subsystem
   protected function dbUpdateMetaData($sql) {
+  	// printArray($this->connectionParams);exit();
+  	//_log(">DBMeta-".$sql->_string(), "console");
     $metaQuery = [];
     if(isset($this->connectionParams['metaquery'])) {
       $metaQuery = $this->connectionParams['metaquery'];
@@ -309,32 +336,28 @@ class Database {
       $qs = $sql->_string();
       if($qs==null || strlen($qs)<=0) return false;
 
-      $queryType = strtoupper(trim(current(explode(" ",$qs))));
+      $queryType = strtolower(trim(current(explode(" ",$qs))));
       
-      if(!in_array($queryType,["INSERT","UPDATE","DELETE"])) {
+      if(!in_array($queryType,["select","insert","update","delete", "replace"])) {
         return false;
       }
       
       $dbTable = $sql->getTableName();
-      
-      if(isset($metaQuery[$dbTable])) {
-        $metaQuery = $metaQuery[$dbTable];
+      if(isset($metaQuery[$dbTable]) && isset($metaQuery[$dbTable][$queryType])) {
+        $metaQuery = $metaQuery[$dbTable][$queryType];
         
-        $this->metaQuery = true;
-        
-        $_REQUEST['DATED'] = date("Y-m-d");
-        $_REQUEST['DATETIME'] = date("Y-m-d H:i:s");
-        $_REQUEST['DATAID'] = $this->get_insertID();
-        
-        $_REQUEST['PROFILEID']=2;
+        $_REQUEST['CURRENT_DATE'] = date("Y-m-d");
+        $_REQUEST['CURRENT_TIME'] = date("H:i:s");
+        $_REQUEST['CURRENT_DATETIME'] = date("Y-m-d H:i:s");
+        $_REQUEST['DATA_REFID'] = $this->get_insertID();
+        $_REQUEST['DATA_HASHID'] = md5($this->get_insertID());
         
         foreach($metaQuery as $sql) {
-          $sql = _replace($sql);println(_replace($sql));
+          $sql = _replace(str_replace("{", "#", str_replace("}", "#", $sql)));
+          if(strtolower(getConfig("APPS_STATUS"))!="production") _log("METAQUERY::{$sql}", "sql");
           $this->runQuery($sql);
-          echo $this->get_error();
+          //echo $this->get_error();
         }
-        
-        $this->metaQuery = false;
       }
     }
   }
@@ -355,7 +378,7 @@ class Database {
 	}
 
 	public function __debugInfo() {
-        	return ["dbkey"=>$this->instanceName,"database"=>$this->connectionParams['database']];
-    	}
+  	return ["dbkey"=>$this->instanceName,"database"=>$this->connectionParams['database']];
+	}
 }
 ?>

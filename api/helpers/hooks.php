@@ -38,6 +38,10 @@ if(!function_exists("runHooks")) {
     
     $_ENV['HOOKPARAMS'] = $params;
     
+    if(!$params && isset($_ENV['FORM-HOOK-PARAMS'])) {
+      $_ENV['HOOKPARAMS'] = $_ENV['FORM-HOOK-PARAMS'];
+    }
+
     if(isset($hooks['modules'])) {
       loadModules($hooks['modules']);
     }
@@ -52,7 +56,9 @@ if(!function_exists("runHooks")) {
     }
     if(isset($hooks['method'])) {
       if(!is_array($hooks['method'])) $hooks['method']=explode(",",$hooks['method']);
-      foreach($hooks['method'] as $m) call_user_func($m,$_ENV['FORM-HOOK-PARAMS']);
+      foreach($hooks['method'] as $m) {
+        if(function_exists($m)) call_user_func($m, $_ENV['HOOKPARAMS']);//$_ENV['FORM-HOOK-PARAMS']
+      }
     }
     if(isset($hooks['file'])) {
       if(!is_array($hooks['file'])) $hooks['file']=explode(",",$hooks['file']);

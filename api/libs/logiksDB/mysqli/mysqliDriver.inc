@@ -62,13 +62,13 @@ class mysqliDriver extends AbstractDBDriver {
 		}
 		
 		$r=mysqli_query($this->link, $q);
-    $this->postQuery($sql,$r);
+    	$this->postQuery($sql,$r);
     
 		return $r;
 	}
 	public function runCommandQuery($q) {
 		$r=mysqli_query($this->link, $q);
-    $this->postQuery($sql,$r);
+    	$this->postQuery($sql,$r);
     
 		return $r;
 	}

@@ -634,7 +634,7 @@ class RoleModel {
 						"edited_on"=>$dated
 					];
 		}
-		
+		if(count($finalData)<=0) return true;
 		// printArray($finalData);exit();
 		//echo _db(true)->_insert_batchQ($this->roleTable,$finalData)->_SQL();exit();
 		$a = _db(true)->_insert_batchQ($this->roleTable,$finalData)->_run();

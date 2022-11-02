@@ -79,7 +79,7 @@
 
 	public function runQuery($sql) {
     if(is_a($sql,"AbstractQueryBuilder")) {
-      $sql->getInstance()->dbHooks($sql);
+      $sql->getInstance()->dbHooks($sql, "PRE");
 			if(md5($sql->getInstanceName())==md5($this->keyName)) {
 				$this->qCount++;
 				return true;
