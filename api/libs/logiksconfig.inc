@@ -98,7 +98,7 @@ class LogiksConfig {
 
     $outputData=array();
     if(is_array($pathParam)) {
-		foreach($pathParam as $file) {
+			foreach($pathParam as $file) {
 	        $cfgData=$this->parseConfigFile($file);
 	        $outputData=array_merge($outputData,$cfgData);
 	    }
@@ -367,6 +367,10 @@ class LogiksConfig {
     return $outArr;
   }
   public static function parseConfigFile($path) {
+  	$ext = explode(".", $path);
+  	$ext = strtolower(end($ext));
+  	if(!in_array($ext,["cfg"])) return [];
+
 		$mode="CONFIG";
 		$outArr=array();
 		if(file_exists($path))	{
