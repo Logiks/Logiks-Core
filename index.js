@@ -123,10 +123,10 @@ app.post('/run', (req, res) => {
   var ext = script.split(".");
   ext = ext[ext.length -1];
 
-  var scriptFile = _CONFIG.SCRIPT_PATH+script;
+  var scriptFile = script;//_CONFIG.SCRIPT_PATH+
   
-  console.log(base_path, scriptFile, ext, req.body);
-
+  // console.log(base_path, scriptFile, ext, script, req.body);
+  // res.send(scriptFile);return;
 
   try {
     const data = fs.readFileSync(scriptFile, 'utf8');
