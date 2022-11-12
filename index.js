@@ -10,6 +10,7 @@
 
 const os = require("os");
 const fs = require("fs");
+const nodeDiskInfo = require('node-disk-info');
 const path = require("path")
 const axios = require('axios');
 const moment = require('moment');
@@ -65,6 +66,21 @@ app.get('/', (req, res) => {
 })
 
 app.get('/stats', (req, res) => {
+  var disks = nodeDiskInfo.getDiskInfoSync();
+  disks = disks.filter(a=>a.mounted=="/");
+  if(!disks || disks==undefined || disks.length<=0) {
+    disks = [
+        {
+          _filesystem: "-",
+          _blocks: "-",
+          _used: "-",
+          _available: "-",
+          _capacity: '-',
+          _mounted: '/'
+        }
+      ];
+  }
+  // console.log("XXXX", disks);
   res.send({
     "server": _PACKAGE.name,
     "server_version": _PACKAGE.version,
@@ -80,6 +96,10 @@ app.get('/stats', (req, res) => {
     "MEM_FREE": Math.floor((os.freemem() / (1024 * 1024))) + " MB",
     "MEM_PROCESS": Math.floor(process.memoryUsage().heapUsed / (1024 * 1024)) + " MB",
     
+    "DISK_CAPACITY": disks[0]._capacity,
+    // "DISK_AVAILABLE": (disks[0]._available / (1024 * 1024)) + " MB",
+    // "DISK_USED": (disks[0]._used / (1024 * 1024)) + " MB",
+
     "OS_LOADAVG": os.loadavg(),
     "OS_UPTIME": os.uptime(),
     "HOST": os.hostname(),
