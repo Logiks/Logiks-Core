@@ -19,7 +19,7 @@ CREATE TABLE `lgks_access` (
 CREATE TABLE `lgks_privileges` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
-  `parent` INT NOT NULL DEFAULT '1'
+  `parent` INT NOT NULL DEFAULT '1',
   `site` varchar(150) DEFAULT NULL,
   `name` varchar(35) DEFAULT NULL,
   `remarks` varchar(255) DEFAULT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE `lgks_security_apikeys` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `api_title` varchar(155) NOT NULL,
-  `api_access` VARCHAR(25) NOT NULL DEFAULT 'multi' COMMENT 'multi,user'
+  `api_access` VARCHAR(25) NOT NULL DEFAULT 'multi' COMMENT 'multi,user',
   `api_keys` varchar(150) NOT NULL,
   `api_secret` varchar(250) NOT NULL,
   `api_roles` text,
