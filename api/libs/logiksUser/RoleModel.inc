@@ -75,11 +75,11 @@ class RoleModel {
 		if(in_array(_dbTable("roles",true), $tables)) {
 			if($_SESSION["ROLEMODEL_VERSION"]>=3) {
     		if(getConfig("USE_PRIVILEGE_FOR_PERMISSIONS")) {
-	    		$USE_PRIVILEGE_FOR_PERMISSIONS = true;
+	    		$this->USE_PRIVILEGE_FOR_PERMISSIONS = true;
 	    	}
 	    }
 		} else {
-			$USE_PRIVILEGE_FOR_PERMISSIONS = true;
+			$this->USE_PRIVILEGE_FOR_PERMISSIONS = true;
 		}
   }
   
@@ -471,9 +471,15 @@ class RoleModel {
 
     if($activity==null || strlen($activity)<=0) $activity="MAIN";
 
+    // $module=strtolower(str_replace(" ", "_", $module));
+    // $activity=strtolower(str_replace(" ", "_", $activity));
+    // $actionType=strtolower(str_replace(" ", "_", $actionType));
+
+    $module = preg_replace("/(?<=[a-z])(?=[A-Z])/", "_$0", str_replace("_", " ", $module));
+		$activity = preg_replace("/(?<=[a-z])(?=[A-Z])/", "_$0", str_replace("_", " ", $activity));
+		$actionType = preg_replace("/(?<=[a-z])(?=[A-Z])/", "_$0", str_replace("_", " ", $actionType));
+
     $activity = $this->cleanActivity($module, $activity);
-    
-    $actionType=strtolower(str_replace(" ", "_", $actionType));
     
     $policyStr = $this->generatePolicyString($module,$activity,$actionType);
 
