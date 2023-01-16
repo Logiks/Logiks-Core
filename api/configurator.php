@@ -32,10 +32,12 @@ if(!function_exists('loadConfigs')) {
 	}
 
 	//For getting output of config system.
-	function getConfig($name,$context="/") {
-		return LogiksConfig::getInstance()->getConfig($name);
+	function getConfig($name,$defaultValue = false) {
+		$val = LogiksConfig::getInstance()->getConfig($name);
+		if($val===false) return $defaultValue;
+		return $val;
 	}
-	function setConfig($name, $value, $context="/") {
+	function setConfig($name, $value) {
 		return LogiksConfig::getInstance()->setConfig($name,$value);
 	}
 
