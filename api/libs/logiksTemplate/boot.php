@@ -90,6 +90,8 @@ if(!function_exists("_template")) {
 			}
 		}
 
+		$templateData = str_replace("{", "#", str_replace("}", "#", $templateData));
+
 		$body=LogiksTemplate::processTemplate($templateData,$dataArr,$editable);
 
 		return $body;

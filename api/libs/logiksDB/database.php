@@ -23,6 +23,9 @@ class Database {
 	
 	//Static Utility Functions for connecting, closing, status checking and gettingConnection
 	public static function connect($key,$params=null) {
+		if(defined("ALLOW_ROOTDB_ACCESS") && ALLOW_ROOTDB_ACCESS===false) {
+			if($key===true || $key == "core") return false;
+		}
 		if($params==null || !is_array($params)) {
 			$cfg=loadJSONConfig("db");
 			if(!isset($cfg[$key])) {
@@ -75,6 +78,9 @@ class Database {
 	}
 	//Gets the database object for the named db connection
 	public static function dbConnection($key) {
+		if(defined("ALLOW_ROOTDB_ACCESS") && ALLOW_ROOTDB_ACCESS===false) {
+			if($key===true || $key == "core") return false;
+		}
 		if(isset(Database::$connections[$key])) return Database::$connections[$key];
 		else {
 			//trigger_logikserror("Database ERROR, Connection Could Not Be Found For {$key}");
@@ -83,6 +89,9 @@ class Database {
 	}
 	
 	public static function checkConnection($key="app") {
+		if(defined("ALLOW_ROOTDB_ACCESS") && ALLOW_ROOTDB_ACCESS===false) {
+			if($key===true || $key == "core") return 0;
+		}
 		if(isset(Database::$connections[$key])) {
 			if(Database::$connections[$key]->isAlive()) {
 				return 2;
