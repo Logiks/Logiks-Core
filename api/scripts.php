@@ -115,4 +115,13 @@ function _ling(txt,forceWord,toLang) {
 	if(LingData[txtTemp]!=null) return LingData[txtTemp];
 	else return txt;
 }
+function _replace(str, dataObj, regex) {
+    if(regex==null) regex = /[^{}]+(?=})/gm;
+    if(dataObj==null) dataObj = {};
+    
+    return str.replace(regex, function(matched) {
+        if(dataObj[matched]!=null) return dataObj[matched];
+        return "";
+    });
+}
 </script>
