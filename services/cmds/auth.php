@@ -55,7 +55,7 @@ if(isset($_SESSION["SESS_AUTH_OTP"]) && is_array($_SESSION["SESS_AUTH_OTP"])) {
 		], $_SESSION["SESS_AUTH_OTP"]);
 
 	if(!isset($_POST['otp']) || strlen($_POST['otp'])<=0) {
-		relink("Sorry, missing OTP, you will need a valid OTP to login",$domain);
+		relink("Sorry, OTP Missing , you will need a valid OTP to login",$domain);
 	}
 	if(strlen($_SESSION["SESS_AUTH_OTP"]['OTP'])==32) {
 		if(md5($_POST['otp']) == $_SESSION["SESS_AUTH_OTP"]['OTP']) {
