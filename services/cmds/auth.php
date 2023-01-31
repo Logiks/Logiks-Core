@@ -47,6 +47,39 @@ include ROOT."api/helpers/pwdhash.php";
 	}
 }*/
 
+if(isset($_SESSION["SESS_AUTH_OTP"]) && is_array($_SESSION["SESS_AUTH_OTP"])) {
+	$_SESSION["SESS_AUTH_OTP"] = array_merge([
+			"OTP"=>"1234", 
+			"timestamp"=>time(), 
+			"timeout"=>300
+		], $_SESSION["SESS_AUTH_OTP"]);
+
+	if(!isset($_POST['otp'])) {
+		relink("Sorry, missing OTP, you will need a valid OTP to login",$domain);
+	}
+	if(strlen($_SESSION["SESS_AUTH_OTP"]['OTP'])==32) {
+		if(md5($_POST['otp']) == $_SESSION["SESS_AUTH_OTP"]['OTP']) {
+			if(time()-$_SESSION["SESS_AUTH_OTP"]['timestamp']<$_SESSION["SESS_AUTH_OTP"]['timeout']) {
+				//Valid OTP
+			} else {
+				relink("Sorry, OTP Timeout, please enter valid OTP",$domain);
+			}
+		} else {
+			relink("Sorry, OTP Mismatch, please enter correct OTP",$domain);
+		}
+	} else {
+		if(md5($_POST['otp']) == md5($_SESSION["SESS_AUTH_OTP"]['OTP'])) {
+			if(time()-$_SESSION["SESS_AUTH_OTP"]['timestamp']<$_SESSION["SESS_AUTH_OTP"]['timeout']) {
+				//Valid OTP
+			} else {
+				relink("Sorry, OTP Timeout, please enter valid OTP",$domain);
+			}
+		} else {
+			relink("Sorry, OTP Mismatch, please enter correct OTP",$domain);
+		}
+	}
+}
+
 if(isset($_SESSION['LOGINSALT']) && isset($_REQUEST['pubkey'])) {
 	$key = pack("H*", $_SESSION['LOGINSALT']);
 	$iv =  pack("H*", $_REQUEST['pubkey']);
