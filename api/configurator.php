@@ -67,4 +67,53 @@ if(!function_exists('loadConfigs')) {
 		return true;
 	}
 }
+
+if(!function_exists("getUserConfig")) {
+
+    //Returns the App Configuration for the scope
+    function getAppConfig($configKey, $scope = "system", $reset=false) {
+        $configKey=strtolower($configKey);
+        $configKeyArr = explode("-", $configKey);
+        if($reset) {
+            if(isset($_SESSION['USERCONFIG'][$configKey])) {
+                unset($_SESSION['USERCONFIG'][$configKey]);
+            }
+        }
+        if(isset($_SESSION['USERCONFIG']) && isset($_SESSION['USERCONFIG'][$configKey])) {
+            return $_SESSION['USERCONFIG'][$configKey];
+        }
+
+        $configData=getSettings($configKey, "", $scope);
+        if(strlen($configData)>2) {
+            $_SESSION['USERCONFIG'][$configKey]=json_decode($configData,true);
+
+            return $_SESSION['USERCONFIG'][$configKey];
+        }
+        // if($baseFolder==null) {
+        //     $bt =  debug_backtrace();
+        //     $baseFolder=dirname($bt[0]['file'])."/";
+        // }
+        $configArr=[
+                APPROOT.APPS_CONFIG_FOLDER."jsonData/{$configKeyArr[0]}/{$_SESSION['SESS_PRIVILEGE_NAME']}.json",
+                APPROOT.APPS_CONFIG_FOLDER."jsonData/{$configKeyArr[0]}.json",
+                APPROOT.APPS_CONFIG_FOLDER."jsonData/{$configKey}.json",
+                //$baseFolder."config.json",
+            ];
+        foreach ($configArr as $f) {
+            if(file_exists($f)) {
+                $configData=file_get_contents($f);
+                $_SESSION['USERCONFIG'][$configKey]=json_decode($configData,true);
+                setSettings($configKey,$configData, $scope);
+                return $_SESSION['USERCONFIG'][$configKey];
+            }
+        }
+        return false;
+    }
+    function setAppConfig($configKey,$configData,$scope = "system") {
+        $configKey=strtolower($configKey);
+        $_SESSION['USERCONFIG'][$configKey]=$configData;
+        setSettings($configKey,json_encode($configData), $scope);
+        return $_SESSION['USERCONFIG'][$configKey];
+    }
+}
 ?>
