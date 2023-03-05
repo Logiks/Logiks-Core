@@ -68,7 +68,7 @@ if(!function_exists('loadConfigs')) {
 	}
 }
 
-if(!function_exists("getUserConfig")) {
+if(!function_exists("getAppConfig")) {
 
     //Returns the App Configuration for the scope
     function getAppConfig($configKey, $scope = "system", $reset=false) {
