@@ -16,7 +16,6 @@ include_once dirname(__FILE__)."/Site.php";
 include_once dirname(__FILE__)."/RoleModel.inc";
 include_once dirname(__FILE__)."/Settings.php";
 include_once dirname(__FILE__)."/SiteSettings.php";
-include_once dirname(__FILE__)."/UserSettings.php";
 include_once dirname(__FILE__)."/admins.php";
 
 if(!function_exists("checkUserRoles")) {
