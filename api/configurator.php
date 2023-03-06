@@ -68,6 +68,18 @@ if(!function_exists('loadConfigs')) {
 	}
 }
 
+//For backward compatibility
+if(!function_exists("getUserConfig")) {
+
+	function getUserConfig($configKey, $scope = "system", $reset=false) {
+		return getAppConfig($configKey, $scope, $reset);
+	}
+
+	function setUserConfig($configKey,$configData,$scope = "system") {
+		return setAppConfig($configKey,$configData,$scope);
+	}
+}
+
 if(!function_exists("getAppConfig")) {
 
     //Returns the App Configuration for the scope
