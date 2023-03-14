@@ -15,7 +15,7 @@ then
     cd ../../
 fi
 
-cd pluginsDev/modules/
+cd plugins/modules/
 find . -maxdepth 1 -mindepth 1 -type d -exec sh -c '(echo {} && cd {} && pwd && git pull origin $(git rev-parse --abbrev-ref HEAD) && echo)' \;
 cd ../
 
