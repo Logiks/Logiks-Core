@@ -82,8 +82,9 @@ This project uses some other open source projects, please find their description
 
 ### Notes 
 These are plain source code of/part of the complete working project. (We are currently restructuring our websites, will be back soon)
-+ For more details visit <http://openlogiks.org/>
-+ For a complete api documentation  visit <http://apidocs.openlogiks.org/>
-+ For a complete working downloadable package please visit <http://openlogiks.org/downloads/>
-+ Use Logiks Play to learn and explore Logiks, prototype parts of your app without installing anything <http://play.openlogiks.net>
++ For more details visit <https://openlogiks.org/>
++ For a complete api documentation, please visit <https://kms.openlogiks.org/>
++ For a Docker based installation, please visit <https://github.com/Logiks/Logiks-Docker>
++ For CLI based installation, please visit <https://github.com/Logiks/Logiks-Installer-Cli>
++ Use Logiks Play to learn and explore Logiks, prototype parts of your app without installing anything <https://play.openlogiks.org>
 
