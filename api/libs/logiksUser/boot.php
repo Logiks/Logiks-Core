@@ -73,6 +73,9 @@ if(!function_exists("checkUserRoles")) {
 					if(count($users)<=0) return true;
 					if(in_array($_SESSION['SESS_USER_ID'],$users)) return true;
 					break;
+				case "method":
+					return call_user_func($policyData[1], isset($policyData[2])?$policyData[2]:"na");
+					break;
 			}
 		}
 		
