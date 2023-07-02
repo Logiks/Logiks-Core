@@ -237,7 +237,10 @@ class RoleModel {
 
 	//Check privilege specific task. This is the main function for all validation purpose
   //Uses poolicy string to process requests
-	public function checkRole($module,$activity="MAIN",$actionType="ACCESS", $defaultValue = "false") {
+	public function checkRole($module,$activity="MAIN",$actionType="ACCESS", $defaultValue = null) {
+		if($defaultValue == null) {
+			$defaultValue = getConfig("SECURITY_POLICY_DEFAULT_ALLOW", false);
+		}
 		// println("XXXX->$module,$activity,$actionType");
 
 		if(!isset($_SESSION["ROLEMODEL2"])) {
@@ -278,9 +281,11 @@ class RoleModel {
   	if(isset($_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr])) {
   		return ($_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr]=="true");
   	} else {
-  		$roleParams = explode(".", $policyStr);
-  		$this->registerRole($roleParams[0], $roleParams[1], $roleParams[2], SITENAME, false, $_SESSION['SESS_GUID'], $defaultValue);
-  		//$this->registerRole($module, $activity, $actionType, SITENAME, false, $_SESSION['SESS_GUID'], $defaultValue);
+  		if(getConfig("SECURITY_POLICY_CREATE_NOTFOUND", false)) {
+  			$roleParams = explode(".", $policyStr);
+	  		$this->registerRole($roleParams[0], $roleParams[1], $roleParams[2], SITENAME, false, $_SESSION['SESS_GUID'], $defaultValue);
+	  		//$this->registerRole($module, $activity, $actionType, SITENAME, false, $_SESSION['SESS_GUID'], $defaultValue);
+  		}
   		$_SESSION["ROLEMODEL2"]['POLICIES'][$policyStr] = $defaultValue;
   		return ($defaultValue=="true");
   	}
