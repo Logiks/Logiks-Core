@@ -238,6 +238,9 @@ class RoleModel {
 	//Check privilege specific task. This is the main function for all validation purpose
   //Uses poolicy string to process requests
 	public function checkRole($module,$activity="MAIN",$actionType="ACCESS", $defaultValue = null) {
+		if(getConfig("SECURITY_POLICY_ENABLE_ADMINRANGE", true)) {
+			if($_SESSION['SESS_PRIVILEGE_ID']<=getConfig("ADMIN_PRIVILEGE_RANGE", 1)) return true;
+		}
 		if($defaultValue == null) {
 			$defaultValue = getConfig("SECURITY_POLICY_DEFAULT_ALLOW", false);
 		}
