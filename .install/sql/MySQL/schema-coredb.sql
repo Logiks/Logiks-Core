@@ -1,91 +1,23 @@
 --
--- MySQL 5.6+
+-- MySQL 8.0+
 --
 
 CREATE TABLE `lgks_access` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `name` varchar(255) DEFAULT NULL,
   `sites` varchar(500) DEFAULT NULL,
   `blocked` enum('true','false') DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 
-
-CREATE TABLE `lgks_privileges` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `guid` varchar(100) NOT NULL DEFAULT 'global',
-  `parent` INT NOT NULL DEFAULT '1',
-  `site` varchar(150) DEFAULT NULL,
-  `name` varchar(35) DEFAULT NULL,
-  `remarks` varchar(255) DEFAULT NULL,
-  `blocked` enum('true','false') DEFAULT 'false',
-  `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
-  `edited_by` varchar(155) NOT NULL,
-  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE `lgks_roles` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `guid` varchar(100) NOT NULL DEFAULT 'global',
-  `site` varchar(50) NOT NULL DEFAULT '*',
-  `name` varchar(150) DEFAULT NULL,
-  `remarks` varchar(255) DEFAULT NULL,
-  `blocked` enum('true','false') DEFAULT 'false',
-  `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
-  `edited_by` varchar(155) NOT NULL,
-  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE `lgks_rolemodel` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `guid` varchar(100) NOT NULL DEFAULT 'global',
-  `site` varchar(150) DEFAULT NULL,
-  `category` varchar(100) NOT NULL DEFAULT 'SYSTEM',
-  `module` varchar(100) NOT NULL,
-  `activity` varchar(255) NOT NULL,
-  `action` varchar(100) NOT NULL DEFAULT '',
-  `policystr` varchar(90) not null,
-  `allow` enum('true','false') NOT NULL DEFAULT 'false',
-  `remarks` varchar(200) DEFAULT NULL,
-  `role_type` varchar(25) NOT NULL DEFAULT 'auto',
-  `privilegehash` varchar(80) NOT NULL,
-  `rolehash` varchar(80) not null,
-  `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
-  `edited_by` varchar(155) NOT NULL,
-  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `rolehash` (`rolehash`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE `lgks_rolescope` (
-   `id` int(10) unsigned not null auto_increment,
-   `guid` varchar(64) not null default 'global',
-   `privilegeid` varchar(80) not null,
-   `scope_title` varchar(90) NOT NULL,
-   `scope_id` varchar(90) NOT NULL,
-   `scope_type` varchar(20) NOT NULL default 'general',
-   `scope_params` text,
-   `remarks` varchar(200),
-   `blocked` enum('false','true') NOT NULL DEFAULT 'false',
-   `created_by` varchar(155) not null,
-   `created_on` timestamp not null default CURRENT_TIMESTAMP,
-   `edited_by` varchar(155) not null,
-   `edited_on` timestamp not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 CREATE TABLE `lgks_cache_sessions` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `userid` varchar(155) NOT NULL,
   `site` varchar(150) NOT NULL,
@@ -96,48 +28,149 @@ CREATE TABLE `lgks_cache_sessions` (
   `session_data` longblob,
   `global_data` longblob,
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+
+
+CREATE TABLE `lgks_links` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
+  `menuid` varchar(25) DEFAULT NULL,
+  `title` varchar(150) DEFAULT NULL,
+  `mode` varchar(150) DEFAULT '*',
+  `category` varchar(255) DEFAULT NULL,
+  `menugroup` varchar(150) DEFAULT NULL,
+  `class` varchar(150) DEFAULT NULL,
+  `target` varchar(55) DEFAULT NULL,
+  `link` varchar(255) DEFAULT '#',
+  `iconpath` varchar(255) DEFAULT NULL,
+  `tips` varchar(255) DEFAULT NULL,
+  `site` varchar(150) DEFAULT '*',
+  `device` varchar(20) DEFAULT '*',
+  `privilege` varchar(1000) DEFAULT '*',
+  `weight` int DEFAULT '10',
+  `onmenu` enum('true','false') DEFAULT 'true',
+  `blocked` enum('true','false') DEFAULT 'false',
+  `rules` text,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+
+
+CREATE TABLE `lgks_privileges` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
+  `parent` int NOT NULL DEFAULT '0',
+  `site` varchar(150) DEFAULT NULL,
+  `name` varchar(35) DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
+  `blocked` enum('true','false') DEFAULT 'false',
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+
+
+CREATE TABLE `lgks_rolemodel` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
+  `site` varchar(150) DEFAULT NULL,
+  `category` varchar(100) NOT NULL DEFAULT 'SYSTEM',
+  `module` varchar(100) NOT NULL,
+  `activity` varchar(255) NOT NULL,
+  `action` varchar(100) DEFAULT NULL,
+  `privilegehash` varchar(80) NOT NULL,
+  `remarks` varchar(200) DEFAULT NULL,
+  `allow` enum('true','false') NOT NULL DEFAULT 'false',
+  `role_type` varchar(25) NOT NULL DEFAULT 'auto',
+  `policystr` varchar(90) NOT NULL,
+  `rolehash` varchar(80) NOT NULL,
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `rolehash` (`rolehash`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+
+
+CREATE TABLE `lgks_roles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `guid` varchar(100) NOT NULL DEFAULT 'global',
+  `site` varchar(150) DEFAULT '*',
+  `name` varchar(35) DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
+  `blocked` enum('true','false') DEFAULT 'false',
+  `created_by` varchar(155) NOT NULL,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+
+
+CREATE TABLE `lgks_rolescope` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `guid` varchar(64) NOT NULL DEFAULT 'global',
+  `privilegeid` varchar(80) NOT NULL,
+  `scope_title` varchar(90) NOT NULL,
+  `scope_id` varchar(90) NOT NULL,
+  `scope_type` varchar(20) NOT NULL DEFAULT 'generic',
+  `scope_params` text,
+  `remarks` varchar(200) DEFAULT NULL,
+  `blocked` enum('false','true') NOT NULL DEFAULT 'false',
+  `created_by` varchar(155) NOT NULL,
+  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `edited_by` varchar(155) NOT NULL,
+  `edited_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `scope_id` (`scope_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+
 
 CREATE TABLE `lgks_security_apikeys` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `api_title` varchar(155) NOT NULL,
-  `api_access` VARCHAR(25) NOT NULL DEFAULT 'multi' COMMENT 'multi,user',
   `api_keys` varchar(150) NOT NULL,
   `api_secret` varchar(250) NOT NULL,
   `api_roles` text,
   `api_userid` varchar(155) NOT NULL,
-  `api_whitelist` varchar(255) NOT NULL,
+  `api_whitelist` text NOT NULL,
   `blocked` enum('false','true') NOT NULL DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 
 
 CREATE TABLE `lgks_security_iplist` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `ipaddress` varchar(30) NOT NULL,
   `allow_type` enum('blacklist','whitelist') DEFAULT 'blacklist',
   `site` varchar(150) NOT NULL DEFAULT '*',
   `active` enum('true','false') DEFAULT 'true',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 
 
 CREATE TABLE `lgks_settings` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `site` varchar(150) DEFAULT '*',
   `userid` varchar(155) NOT NULL,
@@ -145,16 +178,15 @@ CREATE TABLE `lgks_settings` (
   `settings` longblob,
   `scope` varchar(15) NOT NULL DEFAULT 'general',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 
 
 CREATE TABLE `lgks_system_cronjobs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `site` varchar(150) NOT NULL,
   `title` varchar(100) NOT NULL,
@@ -162,30 +194,30 @@ CREATE TABLE `lgks_system_cronjobs` (
   `description` varchar(255) DEFAULT NULL,
   `script_params` text NOT NULL,
   `method` enum('POST','GET','LOCAL') DEFAULT 'POST',
-  `schedule` int(11) DEFAULT '0',
+  `schedule` int DEFAULT '0',
   `last_completed` datetime DEFAULT NULL,
   `run_only_once` enum('true','false') DEFAULT 'false',
   `task_md5_hash` varchar(32) NOT NULL,
   `retired` enum('true','false') DEFAULT 'false',
   `blocked` enum('true','false') DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 
 
 CREATE TABLE `lgks_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `userid` varchar(150) NOT NULL,
   `pwd` varchar(128) NOT NULL,
   `pwd_salt` varchar(128) DEFAULT NULL,
-  `privilegeid` int(11) NOT NULL DEFAULT '7',
-  `accessid` int(11) NOT NULL DEFAULT '1',
-  `groupid` int(11) NOT NULL DEFAULT '0',
-  `roles` varchar(155) NOT NULL DEFAULT '',
+  `privilegeid` int NOT NULL DEFAULT '7',
+  `accessid` int NOT NULL DEFAULT '1',
+  `groupid` int NOT NULL DEFAULT '0',
+  `roles` varchar(155) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL,
   `dob` date DEFAULT NULL,
   `gender` enum('male','female','other') DEFAULT 'male',
@@ -213,32 +245,34 @@ CREATE TABLE `lgks_users` (
   `refid` varchar(30) DEFAULT NULL,
   `security_policy` varchar(25) NOT NULL DEFAULT 'open',
   `last_login` datetime DEFAULT NULL,
-  `last_login_ip` VARCHAR(25) NOT NULL,
+  `last_login_ip` varchar(25) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid` (`userid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+
 
 CREATE TABLE `lgks_users_group` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
-  `group_parent` int NOT NULL DEFAULT 0,
+  `group_parent` int NOT NULL DEFAULT '0',
   `group_name` varchar(150) NOT NULL,
   `group_manager` varchar(155) DEFAULT NULL,
   `group_descs` varchar(255) DEFAULT NULL,
-  `blocked` ENUM('false','true') NOT NULL DEFAULT 'false',
+  `blocked` enum('false','true') NOT NULL DEFAULT 'false',
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+
 
 CREATE TABLE `lgks_users_guid` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL DEFAULT 'global',
   `org_name` varchar(255) DEFAULT NULL,
   `org_email` varchar(255) DEFAULT NULL,
@@ -254,36 +288,9 @@ CREATE TABLE `lgks_users_guid` (
   `account_planid` varchar(155) DEFAULT NULL,
   `remarks` varchar(250) DEFAULT NULL,
   `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edited_by` varchar(155) NOT NULL,
   `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `guid` (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE `lgks_links` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `guid` varchar(100) NOT NULL DEFAULT 'global',
-  `menuid` varchar(25) DEFAULT NULL,
-  `title` varchar(150) DEFAULT NULL,
-  `mode` varchar(150) DEFAULT '*',
-  `category` varchar(255) DEFAULT NULL,
-  `menugroup` varchar(150) DEFAULT NULL,
-  `class` varchar(150) DEFAULT NULL,
-  `target` varchar(55) DEFAULT NULL,
-  `link` varchar(255) DEFAULT '#',
-  `iconpath` varchar(255) DEFAULT NULL,
-  `tips` varchar(255) DEFAULT NULL,
-  `site` varchar(150) DEFAULT '*',
-  `device` varchar(20) DEFAULT '*',
-  `privilege` varchar(1000) DEFAULT '*',
-  `weight` int(11) DEFAULT '10',
-  `onmenu` enum('true','false') DEFAULT 'true',
-  `blocked` enum('true','false') DEFAULT 'false',
-  `rules` text,
-  `created_by` varchar(155) NOT NULL,
-  `created_on` datetime NOT NULL default CURRENT_TIMESTAMP,
-  `edited_by` varchar(155) NOT NULL,
-  `edited_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
