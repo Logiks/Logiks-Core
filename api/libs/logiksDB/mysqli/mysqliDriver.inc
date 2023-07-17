@@ -16,8 +16,12 @@ class mysqliDriver extends AbstractDBDriver {
 			trigger_logikserror("Database ERROR, Database Is Already Open {$keyName}");
 			return false;
 		}
+
+		if(!isset($this->dbParams['port']) || strlen($this->dbParams['port'])<=0) {
+			$this->dbParams['port'] = 3306;
+		}
 		
-		$this->link = @mysqli_connect($this->dbParams['host'],$this->dbParams['user'],$this->dbParams['pwd'],$this->dbParams['database']) or die("MySQL DB Connection Error [{$keyName}] Connection");
+		$this->link = @mysqli_connect($this->dbParams['host'],$this->dbParams['user'],$this->dbParams['pwd'],$this->dbParams['database'], $this->dbParams['port']) or die("MySQL DB Connection Error [{$keyName}] Connection");
 		
 		if (!$this->link) {
 			trigger_logikserror("Database ERROR, Connection Error For {$keyName}");
