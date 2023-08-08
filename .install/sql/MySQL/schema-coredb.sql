@@ -195,6 +195,7 @@ CREATE TABLE `lgks_system_cronjobs` (
   `script_params` text NOT NULL,
   `method` enum('POST','GET','LOCAL') DEFAULT 'POST',
   `schedule` int DEFAULT '0',
+  `start_after` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', 
   `last_completed` datetime DEFAULT NULL,
   `run_only_once` enum('true','false') DEFAULT 'false',
   `task_md5_hash` varchar(32) NOT NULL,
