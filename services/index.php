@@ -21,12 +21,12 @@ if(defined('ROOT')) exit('Only Direct Access Is Allowed');
 define('ROOT',dirname(dirname(__FILE__)) . '/');
 
 // Please uncomment the below code for enabling Preflight Verification System
-// if($_SERVER['REQUEST_METHOD'] == "OPTIONS") {
-// 	header("Access-Control-Allow-Origin: *");
-// 	header("Access-Control-Allow-Headers: *");
-// 	header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-// 	exit();
-// }
+if(isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) == "OPTIONS") {
+	header("Access-Control-Allow-Origin: *");
+	header("Access-Control-Allow-Headers: *");
+	header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+	exit();
+}
 
 require_once (ROOT. "api/commons.php");
 require_once (ROOT. "services/initialize.php");
