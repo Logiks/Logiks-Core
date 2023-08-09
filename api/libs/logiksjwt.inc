@@ -30,12 +30,12 @@ class LogiksJWT {
       $headers = getAllHeaders();
       if(isset($headers['pubkey'])) {
         $secretIV = md5($headers['pubkey']);
-      } elseif(isset($_SESSION['SESS_USER_ID'])) {
-        $secretIV = md5($_SESSION['SESS_USER_ID']);
-      } elseif(isset($_SESSION['SESS_USERID'])) {
-        $secretIV = md5($_SESSION['SESS_USERID']);
+      // } elseif(isset($_SESSION['SESS_USER_ID'])) {
+      //   $secretIV = md5($_SESSION['SESS_USER_ID']);
+      // } elseif(isset($_SESSION['SESS_USERID'])) {
+      //   $secretIV = md5($_SESSION['SESS_USERID']);
       } else {
-        $secretIV = md5(session_id());//md5(time().rand());
+        $secretIV = false;//md5(session_id());//md5(time().rand());
       }
     }
     
@@ -51,11 +51,15 @@ class LogiksJWT {
     } else {
       $secretKey = $jconfigSecret;
     }
+
+    if(!$secretIV) {
+      $secretIV = strrev($secretKey);
+    }
     
     $this->secretKey = $secretKey;
     $this->secretIV = $secretIV;
     
-//     printArray([$secretKey,$secretIV]);
+    // printArray([$secretKey,$secretIV]);exit();
   }
   
   public function generateToken($data=[],$algo="HS256") {

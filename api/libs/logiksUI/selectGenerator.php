@@ -72,6 +72,9 @@ if(!function_exists("generateSelectOptions")) {
 			case 'dataSelector':
 				if(!isset($fieldinfo['orderBy'])) $fieldinfo['orderBy']=null;
 
+				if(isset($fieldinfo['orderby'])) $fieldinfo['orderBy']=$fieldinfo['orderby'];
+				if(isset($fieldinfo['groupby'])) $fieldinfo['groupBy']=$fieldinfo['groupby'];
+
 				$noOption=_ling("No Selection");
 
 				/*if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
@@ -92,6 +95,9 @@ if(!function_exists("generateSelectOptions")) {
 				if(!isset($fieldinfo['col2'])) $fieldinfo['col2']=$fieldinfo['col1'];
 				if(!isset($fieldinfo['where'])) $fieldinfo['where']=null;
 				if(!isset($fieldinfo['orderBy'])) $fieldinfo['orderBy']=null;
+
+				if(isset($fieldinfo['orderby'])) $fieldinfo['orderBy']=$fieldinfo['orderby'];
+				if(isset($fieldinfo['groupby'])) $fieldinfo['groupBy']=$fieldinfo['groupby'];
 
 				/*if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
 					$html.="<option value=''>{$noOption}</option>";
@@ -114,6 +120,9 @@ if(!function_exists("generateSelectOptions")) {
 				if(!isset($fieldinfo['where'])) $fieldinfo['where']=null;
 				if(!isset($fieldinfo['groupBy'])) $fieldinfo['groupBy']=null;
 				if(!isset($fieldinfo['orderBy'])) $fieldinfo['orderBy']=null;
+
+				if(isset($fieldinfo['orderby'])) $fieldinfo['orderBy']=$fieldinfo['orderby'];
+				if(isset($fieldinfo['groupby'])) $fieldinfo['groupBy']=$fieldinfo['groupby'];
 
 				/*if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
 					$html.="<option value=''>{$noOption}</option>";
