@@ -208,6 +208,23 @@ if (!function_exists('printArray')) {
 		}
 		return md5($pwd);
 	}
+	function array_path($arr, $pathStr, $strict = true, $index = 0) {
+	    $path = explode("/", $pathStr);
+	    if($index>count($path)) return $arr;
+	    
+	    if(isset($arr[$path[$index]])) {
+	        if($index<count($path)-1) {
+	            return array_path($arr[$path[$index]], $pathStr, $strict, $index + 1);
+	        } else {
+	            return $arr[$path[$index]];
+	        }
+	    } else {
+	        if($strict)
+	            return false;
+	        else
+	            return $arr;
+	    }
+	}
 	function arrayToHTML($arr=array(),$format="table",$classes="") {
 		$out="";
 		//printArray($arr);
