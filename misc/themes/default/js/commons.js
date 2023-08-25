@@ -26,6 +26,29 @@ String.prototype.toTitle = function(){ 
 	a=a.capitalize();
 	return a;
 }
+Object.prototype.subpath = function(pathStr, strict = true, k = 0) {
+    var arrObj = this;
+    var path = pathStr.split("/");
+    if(k>path.length) return arrObj;
+    //console.log(pathStr, k, path[k], arrObj, arrObj[path[k]], (arrObj[path[k]]!=null && typeof arrObj[path[k]] == "object"));
+    if(arrObj[path[k]]!=null) {
+        if(typeof arrObj[path[k]] == "object") {
+            if(k<path.length-1) {
+                return array_path(arrObj[path[k]], pathStr, strict, k + 1);
+            } else {
+                return arrObj[path[k]];
+            }
+        } else {
+            return arrObj[path[k]];
+        }
+    } else {
+        if(strict)
+            return false;
+        else
+            return arrObj;
+    }
+}
+
 function getWindowSize() {
 	winDimension=null;
 	if(typeof $=="function") {
