@@ -80,6 +80,7 @@ if(!function_exists("generateSelectOptions")) {
 				/*if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
 					$html.="<option value=''>{$noOption}</option>";
 				}*/
+				if(!isset($fieldinfo['groupid'])) return "";
 
 				$html.=createDataSelector($fieldinfo['groupid'],$fieldinfo['orderBy'],$dbKey);
 

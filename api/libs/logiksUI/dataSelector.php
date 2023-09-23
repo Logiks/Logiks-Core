@@ -35,23 +35,16 @@ if(!function_exists("createDataSelector")) {
 		else $table0=$table[0];
     
 		if($col2!=null && strlen($col2)>0) {
-			$sqlObj=_db($dbKey)->_selectQ($table,"$col1,$col2")
-				->_where(array("{$table0}.blocked"=>"false"));
+			$sqlObj=_db($dbKey)->_selectQ($table,"$col1,$col2");
+				// ->_where(array("{$table0}.blocked"=>"false"));
 		} else {
-			$sqlObj=_db($dbKey)->_selectQ($table,"$col1")
-				->_where(array("{$table0}.blocked"=>"false"));
+			$sqlObj=_db($dbKey)->_selectQ($table,"$col1");
+				// ->_where(array("{$table0}.blocked"=>"false"));
 		}
 		if($where!=null) {
 			$sqlObj=$sqlObj->_where($where);
 		}
 		$sqlObj=$sqlObj->_where("length($col1)>0");
-
-		// if(isset($_SESSION['SESS_PRIVILEGE_ID'])) {
-		// 	$sqlObj=$sqlObj->_where(array("privilege"=>"*"))
-		// 		->where("(privilege='*' OR FIND_IN_SET('{$_SESSION['SESS_PRIVILEGE_NAME']}',privilege))");
-		// } else {
-		// 	$sqlObj=$sqlObj->_where(array("privilege"=>"*"));
-		// }
 
 		$colx=$col1;
 		if(strpos($colx,"(")>0) $colx=$col2;
@@ -74,13 +67,6 @@ if(!function_exists("createDataSelector")) {
 		if($where!=null) {
 			$sqlObj=$sqlObj->_where($where);
 		}
-		
-		// if(isset($_SESSION['SESS_PRIVILEGE_ID'])) {
-		// 	$sqlObj=$sqlObj->_where(array("privilege"=>"*"))
-		// 		->where("(privilege='*' OR FIND_IN_SET('{$_SESSION['SESS_PRIVILEGE_NAME']}',privilege))");
-		// } else {
-		// 	$sqlObj=$sqlObj->_where(array("privilege"=>"*"));
-		// }
 
 		if(strlen($groupBy)>0) $sqlObj=$sqlObj->_groupby($groupBy);
 
