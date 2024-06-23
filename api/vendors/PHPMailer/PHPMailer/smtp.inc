@@ -340,7 +340,8 @@ class SMTP
         if (!stream_socket_enable_crypto(
             $this->smtp_conn,
             true,
-            STREAM_CRYPTO_METHOD_TLS_CLIENT
+            //STREAM_CRYPTO_METHOD_TLS_CLIENT
+            STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT
         )) {
             return false;
         }
