@@ -10,7 +10,7 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 class PCronQueue {
-	private $taskToRun=array();
+	public $taskToRun=array();
 	
 	public function __construct() {
 		$this->checkTasks();
@@ -68,7 +68,7 @@ class PCronQueue {
 		$this->taskToRun=$out;
 		return $this->run($autoEcho);
 	}
-	private function checkTasks($taskId=null) {
+	public function checkTasks($taskId=null) {
 		$data=_db(true)->_selectQ(_dbTable("system_cronjobs",true),
 						"id,guid,site,title,scriptpath,script_params,method,schedule,last_completed,run_only_once,task_md5_hash",
 					 ["retired"=>'false',"blocked"=>'false'])->_where("(now()-last_completed>(schedule*60) OR last_completed IS NULL)");
@@ -87,7 +87,7 @@ class PCronQueue {
 		return $out;
 	}
 	
-  private function execute_script($script, $method, $param_array) {
+  	public function execute_script($script, $method, $param_array) {
 		if($script==null || strlen($script)<=0) return false;
 		$type="local";
 		if(strstr($script,"://")) {
@@ -172,9 +172,9 @@ class PCronQueue {
 				return -1;
 			}
 		}
-  }
+  	}
   
-	private function mark_complete($task) {
+	public function mark_complete($task) {
 		$task_id=$task["id"];
 		$tbl1=_dbTable("system_cronjobs",true);
 		$tbl2=_dbTable("log_pcron",true);
@@ -193,7 +193,7 @@ class PCronQueue {
 		_dbQuery($sql1,true);
 	}
     
-  public static function get_tasks($taskId=null) {
+  	public static function get_tasks($taskId=null) {
 		$tbl=_dbTable("system_cronjobs",true);
 
 		$data=_db(true)->_selectQ($tbl,"*")->
