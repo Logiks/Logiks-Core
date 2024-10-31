@@ -10,7 +10,7 @@
 define ('ROOT', dirname(__FILE__) . '/');
 
 ini_set('display_errors', 'On');
-error_reporting('On');
+error_reporting(0);
 
 session_set_cookie_params (3600, 
 		"/",//path

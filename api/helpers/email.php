@@ -13,6 +13,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 //$headers["Return-path"] = "returnpath@address.com"; 
 
 if(!function_exists('isValidEmail')) {
+	
 	if(is_dir(ROOT.VENDORS_FOLDER."PHPMailer/")) {
 		$fs=[
 				ROOT.VENDORS_FOLDER."PHPMailer/PHPMailer/phpmailer.inc",
@@ -23,6 +24,7 @@ if(!function_exists('isValidEmail')) {
 			if(file_exists($f)) include $f;
 		}
 	}
+
 	function isValidEmail($address) {
 		return (!preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
 	}
