@@ -88,6 +88,28 @@ header("Access-Control-Allow-Origin:*");
 //header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
 //print_r($GLOBALS['LOGIKS']["_SERVER"]);exit();
 
+//Check if php_input is required to load the $_POST
+if(isset($_SERVER['REQUEST_METHOD']) && in_array($_SERVER['REQUEST_METHOD'], ["POST", "PUT", "DELETE"])) {
+	$_HEADERS = getallheaders();
+	foreach (getallheaders() as $name => $value) {
+	    $_HEADERS[strtoupper($name)] = $value;
+	}
+	if(strtolower($_HEADERS['CONTENT-TYPE'])=="application/json") {
+		if(count($_POST)<=0) {
+			$json = file_get_contents('php://input');
+			try {
+				$data = json_decode($json, true);
+				if($data) {
+					$_POST = array_merge($_POST, $data);
+					$_REQUEST = array_merge($_REQUEST, $data);
+				}
+			} catch(Exception $e) {
+
+			}
+		}
+	}
+}
+
 include_once ROOT. "api/libs/logiksCache/boot.php";
 
 include_once ROOT. "api/libs/loaders/boot.php";
