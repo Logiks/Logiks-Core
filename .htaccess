@@ -39,6 +39,8 @@ DirectoryIndex index.php index.html index.htm
 	RewriteRule data/ - [F,L]
 
 	RewriteRule services/.* services/index.php [L]
+	#RewriteRule ajax/.* services/index.php [L]
+	#RewriteRule api/.* services/index.php [L]
 
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
@@ -53,11 +55,18 @@ DirectoryIndex index.php index.html index.htm
 	
 	# Send the Vary header to help crawl mobile content
 	Header append Vary User-Agent
+        Header set "Server" "Generic Web Server"
+        #Header edit Set-Cookie ^(.*)$ $1;SameSite=Strict;Secure
+        Header set X-Content-Type-Options "nosniff"
+        Header set X-Xss-Protection "1; mode=block"
+        Header set Content-Security-Policy "default-src 'self' 'unsafe-inline'; img-src *; media-src *; font-src * data:; style-src-elem * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval' "
+
+        Header set X-Frame-Options SAMEORIGIN
 
 	Header set Access-Control-Allow-Origin "*"
 	Header set Access-Control-Max-Age 10000
 	Header set Access-Control-Allow-Methods POST,GET,PUT,DELETE,OPTIONS
-	Header set Access-Control-Allow-Headers Authorization,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,X-Mx-ReqToken,X-Forwarded-For,Keep-Alive,X-Requested-With,If-Modified-Since,jwt-token,client-token,token,appkey,pubkey
+	Header set Access-Control-Allow-Headers Authorization,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,X-Mx-ReqToken,X-Forwarded-For,Keep-Alive,X-Requested-With,If-Modified-Since,jwt-token,client-token,token,appkey,apikey,pubkey
 </IfModule>
 
 <IfModule mod_expires.c>

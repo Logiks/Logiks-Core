@@ -10,7 +10,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!defined("DEBUG_LOG") || DEBUG_LOG) {
 	if(getConfig("APPS_STATUS")!="production" && getConfig("APPS_STATUS")!="prod") {
-		if(!defined("SERVICE_ROOT") || !defined("TEST_ROOT")) {
+		if(!defined("SERVICE_ROOT") && !defined("TEST_ROOT")) {
 			if(isset($_SESSION['REQUEST_PAGE_START'])) $timeStart = $_SESSION['REQUEST_PAGE_START'];
 			elseif(_server("REQUEST_TIME_FLOAT")) {
 				$timeStart = _server("REQUEST_TIME_FLOAT");
