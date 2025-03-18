@@ -124,4 +124,9 @@ function _replace(str, dataObj, regex) {
         return "";
     });
 }
+function jsonToQueryString(json) {
+    return Object.keys(json)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(json[key]))
+        .join('&');
+}
 </script>
