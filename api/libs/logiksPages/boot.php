@@ -16,26 +16,37 @@ include_once dirname(__FILE__)."/LogiksPage.inc";
 include_once dirname(__FILE__)."/LogiksTheme.inc";
 include_once dirname(__FILE__)."/PageIndex.inc";
 
+if(!defined("USE_ASSET_OLDFORMAT")) define("USE_ASSET_OLDFORMAT", false);
+
 if(!function_exists("_css")) {
-	function _cssLink($cssLnk,$themeName=null) {
+	function _cssLink($cssLnk,$themeName=null, $oldFormat = USE_ASSET_OLDFORMAT) {
 		if(is_array($cssLnk) && count($cssLnk)<=0) return false;
 		elseif(is_array($cssLnk) && count($cssLnk)==1 && strlen($cssLnk[0])==0) return false;
 		elseif(is_string($cssLnk)) $cssLnk=explode(",", $cssLnk);
 
 		if($themeName=="*" || $themeName==null) $themeName=APPS_THEME;
 
-		$lx=_service("resources","","raw")."&type=css&src=".implode(",", $cssLnk)."&theme={$themeName}";
+		$hashID = md5(SITENAME.implode(",", $cssLnk));
+		$hashID = "CSS{$hashID}.css";
+		_cache($hashID, json_encode([
+				'src'=>implode(",", $cssLnk),
+				'theme'=>$themeName,
+				'type'=>"css"
+		]));
+
+		if($oldFormat) $lx=_service("resources","","raw")."&type=css&src=".implode(",", $cssLnk)."&theme={$themeName}";
+		else $lx=_service("resources/{$hashID}","","raw");
 
 		return $lx;
 	}
-	function _cssAssets($css,$themeName=null,$browser="",$media="") {
-		$lx = _cssLink($css,$themeName);
+	function _cssAssets($css,$themeName=null,$browser="",$media="", $oldFormat = USE_ASSET_OLDFORMAT) {
+		$lx = _cssLink($css,$themeName, $oldFormat);
 		$html="<link href='{$lx}' rel='stylesheet' type='text/css'";
 		if($media!=null && strlen($media)>0) $html.=" media='$media'";
 		$html.=" />\n";
 		return $html;
 	}
-	function _css($css,$themeName=null,$browser="",$media="") {
+	function _css($css,$themeName=null,$browser="",$media="", $oldFormat = USE_ASSET_OLDFORMAT) {
 		if(!is_array($css)) $css=explode(",", $css);
 
 		$html="\n\n";
@@ -62,22 +73,31 @@ if(!function_exists("_css")) {
 		return $html;
 	}
 
-	function _jsLink($jsLnk,$themeName=null) {
+	function _jsLink($jsLnk,$themeName=null, $oldFormat = USE_ASSET_OLDFORMAT) {
 		if(is_array($jsLnk) && count($jsLnk)<=0) return false;
 		elseif(is_array($jsLnk) && count($jsLnk)==1 && strlen($jsLnk[0])==0) return false;
 		elseif(is_string($jsLnk)) $jsLnk=explode(",", $jsLnk);
 
 		if($themeName=="*" || $themeName==null) $themeName=APPS_THEME;
 
-		$lx=_service("resources","","raw")."&type=js&src=".implode(",", $jsLnk)."&theme={$themeName}";
+		$hashID = md5(SITENAME.implode(",", $jsLnk));
+		$hashID = "JS{$hashID}.js";
+		_cache($hashID, json_encode([
+				'src'=>implode(",", $jsLnk),
+				'theme'=>$themeName,
+				'type'=>"js"
+		]));
+
+		if($oldFormat) $lx=_service("resources","","raw")."&type=js&src=".implode(",", $jsLnk)."&theme={$themeName}";
+		else $lx=_service("resources/{$hashID}","","raw");
 
 		return $lx;
 	}
-	function _jsAssets($js,$themeName=null,$browser="") {
-		$lx = _jsLink($js,$themeName);
+	function _jsAssets($js,$themeName=null,$browser="", $oldFormat = USE_ASSET_OLDFORMAT) {
+		$lx = _jsLink($js,$themeName, $oldFormat);
 		return "<script src='{$lx}' type='text/javascript' language='javascript'></script>\n";
 	}
-	function _js($js,$themeName=null,$browser="") {
+	function _js($js,$themeName=null,$browser="", $oldFormat = USE_ASSET_OLDFORMAT) {
 		if(!is_array($js)) $js=explode(",", $js);
 
 		$html="\n\n";
