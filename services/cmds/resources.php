@@ -33,8 +33,15 @@ if(isset($_REQUEST['encoded']) && $_REQUEST['encoded']=="true") {
 	$_REQUEST['src']=base64_decode($_REQUEST['src']);
 }
 if(strlen($_REQUEST['src'])>0) {
+
+	$resHashID = _cache("RESOURCEHASHID");
+	if(!$resHashID) {
+		$resHashID = uniqid();
+		_cache("RESOURCEHASHID", $resHashID);
+	}
+
 	$originalResourceURI = $_REQUEST['src'];
-	$resourceURIHash = md5(SITENAME.$originalResourceURI.$_REQUEST['type'].$_REQUEST['theme']);
+	$resourceURIHash = md5(SITENAME.$originalResourceURI.$_REQUEST['type'].$_REQUEST['theme'].$resHashID);
 
 	if(!isset($_REQUEST['recache']) || $_REQUEST['recache']!="true") {
 		$cacheData = _cache("RESOURCE{$resourceURIHash}");
