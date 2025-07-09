@@ -10,7 +10,12 @@ if(isset($_REQUEST['avatar'])) {
 	$_REQUEST['authorid']=$avtr[1];
 	$_REQUEST['method']=$avtr[0];
 } elseif(isset($_REQUEST['authorid'])) {
-
+} elseif(isset($_REQUEST['uri'])) {
+	$newMedia = loadMedia($_REQUEST['uri']);
+	if($newMedia!=$_REQUEST['uri']) {
+		header("Location:$newMedia");
+		exit();
+	}
 } elseif(isset($_SESSION['SESS_USER_ID'])) {
 	$_REQUEST['authorid']=$_SESSION['SESS_USER_ID'];
 } else {
