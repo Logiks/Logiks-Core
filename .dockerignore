@@ -1,0 +1,17 @@
+# Docker ignore file
+.git
+.gitignore
+*.md
+README.md
+test-results/
+tmp/logs/*
+tmp/cache/*
+tmp/sessions/*
+.DS_Store
+.idea
+.vscode
+*.log
+node_modules/
+vendor/
+composer.lock
+package-lock.json

@@ -1,0 +1,172 @@
+version: '3.8'
+
+services:
+  # PHP 8.0 Environment
+  php80:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.php80
+    container_name: logiks-php80
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/php80.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+      - logiks-network
+    depends_on:
+      - mysql84
+    environment:
+      - PHP_VERSION=8.0
+      - MYSQL_HOST=mysql84
+      
+  # PHP 8.1 Environment
+  php81:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.php81
+    container_name: logiks-php81
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/php81.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+      - logiks-network
+    depends_on:
+      - mysql84
+    environment:
+      - PHP_VERSION=8.1
+      
+  # PHP 8.2 Environment
+  php82:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.php82
+    container_name: logiks-php82
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/php82.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+      - logiks-network
+    depends_on:
+      - mysql84
+    environment:
+      - PHP_VERSION=8.2
+      
+  # PHP 8.3 Environment
+  php83:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.php83
+    container_name: logiks-php83
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/php83.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+      - logiks-network
+    depends_on:
+      - mysql84
+    environment:
+      - PHP_VERSION=8.3
+      
+  # PHP 8.4 Environment
+  php84:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.php84
+    container_name: logiks-php84
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/php84.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+      - logiks-network
+    depends_on:
+      - mysql84
+    ports:
+      - "8084:80"
+    environment:
+      - PHP_VERSION=8.4
+
+  # MySQL 8.4
+  mysql84:
+    image: mysql:8.4
+    container_name: logiks-mysql84
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_DATABASE: logiks_test
+      MYSQL_USER: logiks
+      MYSQL_PASSWORD: logiks123
+    volumes:
+      - mysql84_data:/var/lib/mysql
+      - ./.install/sql/MySQL:/docker-entrypoint-initdb.d
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf
+    ports:
+      - "3384:3306"
+    networks:
+      - logiks-network
+    command: --default-authentication-plugin=mysql_native_password
+
+  # MySQL 5.7 (for compatibility testing - Oracle MySQL)
+  # Note: For Apple Silicon (ARM64), we use oracle/mysql:8.0 instead as 5.7 doesn't support ARM
+  mysql57:
+    image: mysql:8.0
+    container_name: logiks-mysql57
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_DATABASE: logiks_test
+      MYSQL_USER: logiks
+      MYSQL_PASSWORD: logiks123
+    volumes:
+      - mysql57_data:/var/lib/mysql
+    ports:
+      - "3357:3306"
+    networks:
+      - logiks-network
+    command: --default-authentication-plugin=mysql_native_password
+
+  # phpMyAdmin for database management
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: logiks-phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql84
+      PMA_PORT: 3306
+      PMA_USER: logiks
+      PMA_PASSWORD: logiks123
+    ports:
+      - "8080:80"
+    networks:
+      - logiks-network
+    depends_on:
+      - mysql84
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: logiks-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - logiks-network
+    volumes:
+      - redis_data:/data
+
+  # Memcached for caching
+  memcached:
+    image: memcached:1.6-alpine
+    container_name: logiks-memcached
+    ports:
+      - "11211:11211"
+    networks:
+      - logiks-network
+
+networks:
+  logiks-network:
+    driver: bridge
+
+volumes:
+  mysql84_data:
+  mysql57_data:
+  redis_data:

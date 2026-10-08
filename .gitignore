@@ -1,24 +1,61 @@
-/apps/
-/tmp/
-/logs/
-/tests/tmp/
-/pluginsDev/
-/data/sqlite/testdata.db
-/config/jsonConfig/
-/misc/hooks/
+# Logiks Framework - Git Ignore
+
+# Temporary files
+tmp/cache/*
+tmp/logs/*
+tmp/sessions/*
+!tmp/cache/.gitkeep
+!tmp/logs/.gitkeep
+!tmp/sessions/.gitkeep
+
+# Test results
+test-results/*
+!test-results/.gitkeep
+
+# User data
+data/uploads/*
+!data/.gitkeep
+
+# Dependencies
+vendor/
 node_modules/
-z1/
-z2/
+plugins/vendors/
 
-config/jsonConfig/
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
 
-all_keys.cfg
-*keys.cfg
-keys_*.cfg
+# Docker volumes (data persists separately)
+# But keep the Docker config files
+!docker-compose.yml
+!docker/
 
-.project
-.DS_STORE
-temp.txt
-todos.txt
+# Environment files
+.env
+.env.local
+*.local.php
+
+# Logs
 *.log
 
+# Database dumps
+*.sql.gz
+*.sql.zip
+backup-*.sql
+
+# Compiled/Generated files
+*.cache
+*.compiled
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Lock files
+composer.lock
+package-lock.json
+yarn.lock
