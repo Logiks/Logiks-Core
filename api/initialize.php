@@ -13,7 +13,11 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 if(!isset($initialized)) {
 	ob_start();
 	//clearstatcache();
-	@session_start();
+	
+	// Start session with proper error handling
+	if (session_status() === PHP_SESSION_NONE) {
+		session_start();
+	}
 
 	$startTime=microtime(true);
 	$_SESSION['REQUEST_PAGE_START']=$startTime;
@@ -35,18 +39,40 @@ if(!isset($initialized)) {
 	}
 	
 	include_once 'commons.php';
+	
+	// Apply security headers early to protect all responses
+	if (file_exists(ROOT . 'api/security-headers.php')) {
+		include_once ROOT . 'api/security-headers.php';
+	}
 
 	$currentCookieParams = session_get_cookie_params();
-	$sidvalue = session_id();  
-	setcookie(
-	    'PHPSESSID',//name
-	    $sidvalue,//value
-	    0,//expires at end of session
-	    $currentCookieParams['path'],//path
-	    $currentCookieParams['domain'],//domain
-	    isHTTPS(), //secure
-	    isHTTPS()?false:true //httponly
-	);
+	$sidvalue = session_id();
+	
+	// Security: Set secure session cookie with proper flags
+	// PHP 7.3+ supports array syntax for setcookie
+	if (PHP_VERSION_ID >= 70300) {
+		setcookie('PHPSESSID', $sidvalue, [
+			'expires' => 0,  // Session cookie
+			'path' => $currentCookieParams['path'],
+			'domain' => $currentCookieParams['domain'],
+			'secure' => isHTTPS(),  // Only send over HTTPS
+			'httponly' => true,     // Prevent JavaScript access (XSS protection)
+			'samesite' => 'Lax'     // CSRF protection (Lax for compatibility)
+		]);
+	} else {
+		// PHP < 7.3 fallback: use path parameter with SameSite
+		$sameSite = 'Lax';
+		$path = $currentCookieParams['path'] . '; SameSite=' . $sameSite;
+		setcookie(
+			'PHPSESSID',
+			$sidvalue,
+			0,
+			$path,
+			$currentCookieParams['domain'],
+			isHTTPS(),
+			true  // httponly - FIX: was inverted (isHTTPS()?false:true)
+		);
+	}
 	_envData("SESSION",'REQUEST_PAGE_START',$startTime);
 
 	$dirPath=str_replace(_server("DOCUMENT_ROOT"),'',dirname(_server("SCRIPT_FILENAME"))."/");
