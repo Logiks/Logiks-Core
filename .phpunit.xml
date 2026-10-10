@@ -1,51 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-        backupStaticAttributes="false"
-
-        bootstrap="tests/boot_test.php"
-
-        colors="false"
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
-        forceCoversAnnotation="false"
-        
-        mapTestClassNameToCoveredClassName="false"
-
-        stopOnError="false"
-        stopOnFailure="false"
-        stopOnIncomplete="false"
-        stopOnSkipped="false"
-
-        syntaxCheck="false"
-        verbose="false"
-    >
-
-    <filter>
-        <blacklist>
-                <directory>api/libs/vendor</directory>
-                <directory>apps</directory>
-                <directory>config</directory>
-                <directory>data</directory>
-                <directory>media</directory>
-                <directory>misc</directory>
-                <directory>tmp</directory>
-        </blacklist>
-        <whitelist>
-            
-        </whitelist>
-    </filter>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="false"
+         verbose="false">
+    
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">api</directory>
+        </include>
+        <exclude>
+            <directory>api/vendors</directory>
+            <directory>api/compat</directory>
+        </exclude>
+        <report>
+            <clover outputFile="test-results/coverage/clover.xml"/>
+            <html outputDirectory="test-results/coverage/html"/>
+            <text outputFile="php://stdout" showUncoveredFiles="false"/>
+        </report>
+    </coverage>
 
     <testsuites>
-        <testsuite name="Logiks Test Suite">
-            <directory prefix='test_' suffix='.php'>tests/</directory>
+        <testsuite name="Unit">
+            <directory>tests/unit</directory>
         </testsuite>
-        <testsuite name="Logiks Plugin Suite">
-            <directory prefix='test_' suffix='.php'>plugins/</directory>
+        <testsuite name="Security">
+            <directory>tests/security</directory>
+        </testsuite>
+        <testsuite name="Helpers">
+            <directory>tests/helpers</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/integration</directory>
+        </testsuite>
+        <testsuite name="Legacy">
+            <directory prefix="test_" suffix=".php">tests</directory>
+            <exclude>tests/unit</exclude>
+            <exclude>tests/security</exclude>
+            <exclude>tests/helpers</exclude>
+            <exclude>tests/integration</exclude>
         </testsuite>
     </testsuites>
-  
-    <logging>
-        <log type="coverage-clover" target="tmp/clover.xml"/>
-    </logging>
+    
+    <php>
+        <env name="APP_ENV" value="testing"/>
+    </php>
 </phpunit>
