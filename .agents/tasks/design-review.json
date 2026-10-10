@@ -1,0 +1,118 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    {
+      "id": 1,
+      "severity": "HIGH",
+      "title": "Database.dbParams() Signature Mismatch",
+      "location": "Design section 1.2, PreparedStatementBuilder.php line 38",
+      "problem": "Design calls dbParams() expecting array return, but actual method takes $key parameter and returns string. Code will fail at runtime.",
+      "fix": "Change to: $this->driverType = $database->dbParams('driver'); if (!$this->driverType) { $this->driverType = 'mysqli'; }"
+    },
+    {
+      "id": 2,
+      "severity": "HIGH",
+      "title": "Database Class Missing Metadata Properties",
+      "location": "Design section 1.2, Database Class Extension",
+      "problem": "Design adds public properties to Database class while claiming 'DO NOT modify existing Database classes'. Direct contradiction. Also inconsistent with Database's private property pattern.",
+      "fix": "Either store metadata in PreparedStatementBuilder itself (Option A), or explicitly document as breaking change with exact insertion point (Option B)"
+    },
+    {
+      "id": 3,
+      "severity": "HIGH",
+      "title": "Test Coverage Calculation Unverified",
+      "location": "Design section 3.1, Test Coverage Calculation",
+      "problem": "Claims 35% coverage based on unverified assumptions: 324 files × 100 lines × 20% testable = arbitrary. Calculates exact line counts (1,200 lines, 1,105 covered) for code that doesn't exist yet.",
+      "fix": "Run actual baseline coverage report first. Set targets as percentage increases from measured baseline, not absolute numbers. Measure after implementation, don't guess before."
+    },
+    {
+      "id": 4,
+      "severity": "HIGH",
+      "title": "Configuration Loading Order Ambiguity",
+      "location": "Design section 2.4, Integration into configurator.php",
+      "problem": "Says 'add at the beginning' without specifying before which line. No precedence rule when value exists in both .env and .cfg. EnvLoader uses define() but no handling of already-defined constants.",
+      "fix": "Specify exact line number in configurator.php. Document precedence rule (.cfg overrides .env). Update EnvLoader.loadIntoConfig() to check if(!defined($key)) before defining."
+    },
+    {
+      "id": 5,
+      "severity": "MEDIUM",
+      "title": "PreparedStatementBuilder Execute Return Type Inconsistency",
+      "location": "Design section 1.2, PreparedStatementBuilder::execute()",
+      "problem": "Returns QueryResult|bool but UPDATE with 0 affected rows returns false (looks like error). Line 'return ($affectedRows >= 0 || $insertId > 0)' is wrong.",
+      "fix": "Return true for successful execution even if 0 rows affected. Only return false on actual errors. Add clear documentation of return semantics."
+    },
+    {
+      "id": 6,
+      "severity": "MEDIUM",
+      "title": "CSRFProtection Token Name Generation Not Session-Safe",
+      "location": "Design section 1.3, CSRFProtection.php generate()",
+      "problem": "Uses SITENAME constant without checking if defined. Will fail in CLI context or early bootstrap. No session_start check before accessing $_SESSION.",
+      "fix": "Add: $siteName = defined('SITENAME') ? SITENAME : 'logiks'; Check if(!isset($_SESSION)) and return empty token with warning."
+    },
+    {
+      "id": 7,
+      "severity": "MEDIUM",
+      "title": "SecurityHeaders Integration Point Incorrect",
+      "location": "Design section 1.4, Integration into initialize.php",
+      "problem": "Says 'after line 30' but doesn't specify whether inside or outside if(!isset($initialized)) block. Line numbers will shift after session cookie fix.",
+      "fix": "Use landmark: 'Inside if(!isset($initialized)) block, immediately after include_once commons.php'. Add file_exists() check for phased deployment."
+    },
+    {
+      "id": 8,
+      "severity": "NIT",
+      "title": "InputValidator Regex Rule Array Syntax Unclear",
+      "location": "Design section 1.3, InputValidator.php",
+      "problem": "Shows both ['regex' => 'pattern'] and [['regex' => 'pattern']] without explaining double nesting.",
+      "fix": "Add explicit example showing the array format is for use within a rules array: ['url' => ['required', ['regex' => '/pattern/']]]"
+    },
+    {
+      "id": 9,
+      "severity": "NIT",
+      "title": "Type Declaration Migration Strategy Missing Edge Cases",
+      "location": "Design section 2.2",
+      "problem": "Only shows simple type coercion. No guidance for functions accepting multiple types (string|array) or third-party code calling framework functions.",
+      "fix": "Add section on functions accepting multiple types (use no type hint for PHP 7.x). Add backward compatibility assertion tests."
+    },
+    {
+      "id": 10,
+      "severity": "NIT",
+      "title": "Missing Error Handling in EnvLoader File Operations",
+      "location": "Design section 2.4, EnvLoader.php load()",
+      "problem": "file() call can throw warnings if file becomes unreadable between existence check and read. No try-catch or error suppression.",
+      "fix": "Use @file() and check for false return: if ($lines === false) { trigger_logikserror(...); return false; }"
+    },
+    {
+      "id": 11,
+      "severity": "NIT",
+      "title": "Request Wrapper Missing Content-Type Handling",
+      "location": "Design section 2.3, Request.php",
+      "problem": "Only handles form data ($_GET, $_POST). Modern APIs use JSON bodies via php://input. No content-type detection.",
+      "fix": "Add Request::json() and Request::jsonGet() methods to parse JSON request bodies for API endpoints."
+    },
+    {
+      "id": 12,
+      "severity": "NIT",
+      "title": "PHPUnit Bootstrap Disables Output Buffering",
+      "location": "Design section 3.1, tests/bootstrap.php",
+      "problem": "Unconditionally calls ob_end_clean() but Logiks framework uses output buffering. Tests including framework files will have buffering killed.",
+      "fix": "Remove ob_end_clean() from bootstrap. Let framework manage its own buffering. Use PHPUnit's expectOutputString() for output testing."
+    },
+    {
+      "id": 13,
+      "severity": "NIT",
+      "title": "Security.cfg Example Conflicts with Existing File",
+      "location": "Design section 1.4",
+      "problem": "Shows adding config but doesn't specify whether to append, replace, or merge with existing security.cfg content.",
+      "fix": "Specify: 'APPEND to end of config/security.cfg after line 18' with exact content block to add."
+    }
+  ],
+  "reviewDoc": "/Users/bismaymohapatra/Workspace/Active/Logiks-PHP/Code/Logiks-Core/.worktrees/security-hardening/.agents/tasks/design-review.md",
+  "summary": {
+    "highSeverity": 4,
+    "mediumSeverity": 3,
+    "nitSeverity": 6,
+    "verified": 13,
+    "unverified": 7,
+    "recommendation": "Design requires rework to fix Database class API assumptions and test coverage measurement approach before implementation can begin."
+  }
+}
