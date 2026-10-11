@@ -82,7 +82,7 @@ if (!function_exists('printArray')) {
 	}
 	function clean($str) {
 		$str = @trim($str);
-		if(get_magic_quotes_gpc()) {
+		if(false) {//get_magic_quotes_gpc()
 			$str = stripslashes($str);
 		}
 		$str=cleanForDB($str);
@@ -103,7 +103,7 @@ if (!function_exists('printArray')) {
         return substr($haystack, 0,strpos($haystack, $needle));
     }
 	function strip($value) {
-		//if(get_magic_quotes_gpc() != 0)
+		//if(false != 0)//get_magic_quotes_gpc()
 		if(is_array($value))  {
 			if (array_is_associative($value) ) {
 				foreach( $value as $k=>$v) {
