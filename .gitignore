@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /apps/
 /tmp/
 /logs/
@@ -6,15 +7,51 @@
 /data/sqlite/testdata.db
 /config/jsonConfig/
 /misc/hooks/
+=======
+# Logiks Framework - Git Ignore
+
+# Temporary files
+tmp/*
+tmp/cache/*
+tmp/logs/*
+tmp/sessions/*
+!tmp/cache/.gitkeep
+!tmp/logs/.gitkeep
+!tmp/sessions/.gitkeep
+
+# Apps Folder
+apps/*
+
+# Test results
+test-results/*
+!test-results/.gitkeep
+
+# User data
+data/uploads/*
+!data/.gitkeep
+
+# Dependencies
+vendor/
+>>>>>>> 53f8abb (Cookie fixes)
 node_modules/
 z1/
 z2/
 
 config/jsonConfig/
 
+<<<<<<< HEAD
 all_keys.cfg
 *keys.cfg
 keys_*.cfg
+=======
+# Config Files
+config/jsonConfig/*.json
+
+# Docker volumes (data persists separately)
+# But keep the Docker config files
+!docker-compose.yml
+!docker/
+>>>>>>> 53f8abb (Cookie fixes)
 
 .project
 .DS_STORE
@@ -22,4 +59,25 @@ temp.txt
 todos.txt
 *.log
 
+<<<<<<< HEAD
 todos.md
+=======
+# Database dumps
+*.sql.gz
+*.sql.zip
+backup-*.sql
+
+# Compiled/Generated files
+*.cache
+*.compiled
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Lock files
+composer.lock
+package-lock.json
+yarn.lock
+info.php
+>>>>>>> 53f8abb (Cookie fixes)

@@ -333,7 +333,7 @@ class LogiksConfig {
           $GLOBALS['CONFIG'][$name] = LogiksConfig::processServerStrings($value);
         break;
         case "COOKIE":
-          setcookie($name,LogiksConfig::processServerStrings($value),time() + (86400 * 1)); // 86400 = 1 day
+		  setcookie($name,LogiksConfig::processServerStrings($value),time() + (86400 * 1),"/",'', isHTTPS());// 86400 = 1 day
         break;
         case "ENV":
           $_ENV[$name] = LogiksConfig::processServerStrings($value);

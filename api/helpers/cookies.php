@@ -10,7 +10,7 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists("deleteCookie")) {
 	function deleteCookie($name,$path="/") {
-		setcookie($name, "", -1, $path);
+		setcookie($name, "", -1, $path,'', isHTTPS());
 		if(isset($_COOKIE[$name])) unset($_COOKIE[$name]);
 	}
 

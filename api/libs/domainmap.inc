@@ -149,8 +149,8 @@ class DomainMap {
   }
   protected function setupAppSite($site) {
     if(!defined("SITENAME")) define('SITENAME',$site);
-    setcookie('LGKS_SESS_SITE',SITENAME,time()+3600,"/",null, isHTTPS());
-    //setcookie('LGKS_SESS_SITE',SITENAME,time()+3600,"/",null, isHTTPS(), (isHTTPS()?false:true));
+    setcookie('LGKS_SESS_SITE',SITENAME,time()+3600,"/",'', isHTTPS());
+    //setcookie('LGKS_SESS_SITE',SITENAME,time()+3600,"/",'', isHTTPS(), (isHTTPS()?false:true));
     $_REQUEST['site']=SITENAME;
     return SITENAME;
   }

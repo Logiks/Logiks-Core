@@ -425,10 +425,10 @@ function startNewSession($userid, $domain, $params=array()) {
 	header("SESSION-KEY:".$_SESSION['SESS_TOKEN'],false);
 	header("SESSION-MAUTH:".$_SESSION['MAUTH_KEY'],false);
 
-	setcookie("LOGIN", "true", time()+36000,"/",null, isHTTPS());
-	setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000,"/",null, isHTTPS());
-	setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000,"/",null, isHTTPS());
-	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000,"/",null, isHTTPS());
+	setcookie("LOGIN", "true", time()+36000,"/",'', isHTTPS());
+	setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000,"/",'', isHTTPS());
+	setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000,"/",'', isHTTPS());
+	setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000,"/",'', isHTTPS());
 	
 	$cnt = _db(true)->_selectQ(_dbTable("cache_sessions",true),"count(*) as cnt","created_on<DATE_SUB(NOW(), INTERVAL 1 MONTH)")->_GET();
 	if($cnt[0]['cnt']>10000) {
@@ -487,10 +487,10 @@ function restoreOldSession($sessionData, $userid, $domain, $params=array()) {
 		foreach($logData['session_data'] as $key => $value) {
 			$_SESSION[$key]=$value;
 		}
-		setcookie("LOGIN", "true", time()+36000);
-		setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000);
-		setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000);
-		setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000);
+		setcookie("LOGIN", "true", time()+36000,"/",'', isHTTPS());
+		setcookie("USER", $_SESSION['SESS_USER_ID'], time()+36000,"/",'', isHTTPS());
+		setcookie("TOKEN", $_SESSION['SESS_TOKEN'], time()+36000,"/",'', isHTTPS());
+		setcookie("SITE", $_SESSION['SESS_LOGIN_SITE'], time()+36000,"/",'', isHTTPS());
 
 		//$logData['global_data']$GLOBALS
 		//printArray($_SESSION);exit();
