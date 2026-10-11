@@ -1,4 +1,5 @@
-<<<<<<< HEAD
+# Logiks Framework - Git Ignore
+
 /apps/
 /tmp/
 /logs/
@@ -7,8 +8,8 @@
 /data/sqlite/testdata.db
 /config/jsonConfig/
 /misc/hooks/
-=======
-# Logiks Framework - Git Ignore
+
+
 
 # Temporary files
 tmp/*
@@ -32,18 +33,17 @@ data/uploads/*
 
 # Dependencies
 vendor/
->>>>>>> 53f8abb (Cookie fixes)
 node_modules/
 z1/
 z2/
 
 config/jsonConfig/
 
-<<<<<<< HEAD
+
 all_keys.cfg
 *keys.cfg
 keys_*.cfg
-=======
+
 # Config Files
 config/jsonConfig/*.json
 
@@ -51,7 +51,6 @@ config/jsonConfig/*.json
 # But keep the Docker config files
 !docker-compose.yml
 !docker/
->>>>>>> 53f8abb (Cookie fixes)
 
 .project
 .DS_STORE
@@ -59,9 +58,9 @@ temp.txt
 todos.txt
 *.log
 
-<<<<<<< HEAD
+
 todos.md
-=======
+
 # Database dumps
 *.sql.gz
 *.sql.zip
@@ -80,4 +79,3 @@ composer.lock
 package-lock.json
 yarn.lock
 info.php
->>>>>>> 53f8abb (Cookie fixes)
