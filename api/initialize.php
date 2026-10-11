@@ -40,11 +40,6 @@ if(!isset($initialized)) {
 	
 	include_once 'commons.php';
 	
-	// Apply security headers early to protect all responses
-	if (file_exists(ROOT . 'api/security-headers.php')) {
-		include_once ROOT . 'api/security-headers.php';
-	}
-
 	$currentCookieParams = session_get_cookie_params();
 	$sidvalue = session_id();
 	
@@ -110,6 +105,11 @@ if(!isset($initialized)) {
 
 	if(PRINT_PHP_HEADERS) header("X-Powered-By: ".Framework_Title." [".Framework_Site."]",false);
 
+    // Apply security headers early to protect all responses
+	if (file_exists(ROOT . 'api/security-headers.php')) {
+		include_once ROOT . 'api/security-headers.php';
+	}
+	
 	require_once ROOT. "api/libs/errorLogs/boot.php";
 
 	LogiksConfig::fixPHPINIConfigs();

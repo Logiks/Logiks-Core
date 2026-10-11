@@ -12,6 +12,12 @@ define ('ROOT', dirname(__FILE__) . '/');
 ini_set('display_errors', 'On');
 error_reporting(0);
 
+// Enable if core debugging is required
+// error_reporting(E_ALL);
+// ini_set('display_errors', '1');
+// ini_set('display_startup_errors', '1');
+// ini_set('log_errors', '1');
+
 session_set_cookie_params (3600, 
 		"/",//path
 	    null,//domain
