@@ -70,6 +70,32 @@ if(!function_exists("getPWDHash")) {
 		return ($pwdHash===$newHash);
 	}
 
+	/*
+	 * Decrypts the password a login page sent encrypted (AES-CBC with zero padding, the scheme the
+	 * removed mcrypt Rijndael-128 code used). $saltHex is the session LOGINSALT used as key and $ivHex
+	 * the client's pubkey, both hex strings. Returns the password, or false if it cannot be decrypted.
+	 */
+	function decryptLoginPassword($payloadB64, $saltHex, $ivHex) {
+		if(!function_exists("openssl_decrypt")) return false;
+		if(!is_string($payloadB64) || !is_string($saltHex) || !is_string($ivHex)) return false;
+		if(!ctype_xdigit($saltHex) || !ctype_xdigit($ivHex) || strlen($saltHex)%2 || strlen($ivHex)%2) return false;
+
+		$key=pack("H*", $saltHex);
+		$iv=pack("H*", $ivHex);
+		$encrypted=base64_decode($payloadB64, true);
+		if($encrypted===false || $encrypted==="" || strlen($iv)!==16 || strlen($encrypted)%16!==0) return false;
+
+		//mcrypt zero-padded a short key up to the next valid AES size; keep that behaviour
+		$len=strlen($key);
+		if($len>32 || $len==0) return false;
+		$size=$len<=16?16:($len<=24?24:32);
+		$key=str_pad($key, $size, "\0");
+
+		$plain=openssl_decrypt($encrypted, "aes-".($size*8)."-cbc", $key, OPENSSL_RAW_DATA|OPENSSL_ZERO_PADDING, $iv);
+		if($plain===false) return false;
+		return trim($plain);
+	}
+
 	function isValidMd5($md5Hash) {
 	    return preg_match('/^[a-f0-9]{32}$/', $md5Hash);
 	}

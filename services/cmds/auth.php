@@ -95,18 +95,12 @@ if(isset($_SESSION["SESS_AUTH_OTP"]) && is_array($_SESSION["SESS_AUTH_OTP"])) {
 }
 
 if(isset($_SESSION['LOGINSALT']) && isset($_REQUEST['pubkey'])) {
-	$key = pack("H*", $_SESSION['LOGINSALT']);
-	$iv =  pack("H*", $_REQUEST['pubkey']);
-	
-	$encrypted = base64_decode($pwd);
-	$pwdFinal = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $encrypted, MCRYPT_MODE_CBC, $iv);
-	
-	$pwd=trim($pwdFinal);
-	
-// 	$encrypted = base64_decode($userid);
-// 	$useridFinal = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $encrypted, MCRYPT_MODE_CBC, $iv);
-	
-// 	$userid=trim($useridFinal);
+	//mcrypt was removed in PHP 7.2; decryptLoginPassword() is its OpenSSL replacement (same AES-128-CBC zero-padded scheme)
+	$pwdFinal = decryptLoginPassword($pwd, $_SESSION['LOGINSALT'], $_REQUEST['pubkey']);
+	if($pwdFinal===false) {
+		relink("Unable to read the encrypted password, please reload the login page",$domain);
+	}
+	$pwd=$pwdFinal;
 }
 /*
 CLEAR_OLD_SESSION=true

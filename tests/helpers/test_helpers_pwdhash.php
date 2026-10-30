@@ -25,7 +25,7 @@ class test_helpers_pwdhash extends LogiksTestCase {
 	public function test_matchPWD() {
 		setConfig("PWD_HASH_TYPE","logiks");
 
-		$salt=strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
+		$salt=strtr(base64_encode(random_bytes(16)), '+', '.');
 
 		$algo_actual = getPWDHash('test',$salt);
 		if(is_array($algo_actual)) $algo_actual=$algo_actual['hash'];

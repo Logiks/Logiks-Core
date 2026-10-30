@@ -198,30 +198,33 @@ if (!function_exists('printArray')) {
 	function splitByCaps($string){
 		return preg_replace('/([a-z0-9])?([A-Z])/','$1 $2',$string);
 	}
+	//Hashes $txt with the given method. Note md5/sha1/des are not suitable for passwords, use getPWDHash() for those.
 	function getHash($txt,$method="md5") {
-		$unique_salt=getConfig("HASH_SALT");
+		$unique_salt=function_exists("getConfig")?(string)getConfig("HASH_SALT"):"";
 		switch($method) {
 			case "md5":
-				return md5($pwd);
+				return md5($txt);
 			case "sha1":
-				return sha1($pwd);
+				return sha1($txt);
 			case "blowfish":
-				$p=crypt($pwd, '$2a$10$'.$unique_salt);
-				return substr($p,strlen('$2a$10$'.$unique_salt));
+				//bcrypt needs exactly 22 salt characters from [./A-Za-z0-9]
+				$bsalt=substr(preg_replace('/[^.\/A-Za-z0-9]/','.',str_pad($unique_salt,22,'.')),0,22);
+				$p=crypt($txt, '$2a$10$'.$bsalt);
+				return substr($p,strlen('$2a$10$'.$bsalt));
 			case "des":
-				$p=crypt($pwd, 'rl');
+				$p=crypt($txt, 'rl');
 				return substr($p,2);
 			case "sha256":
-				$p=crypt($pwd, '$5$rounds=5000$'.$unique_salt);
+				$p=crypt($txt, '$5$rounds=5000$'.substr($unique_salt,0,16));
 				return $p;
 			case "method1":
-				$hash = sha1($unique_salt.$pwd);
+				$hash = sha1($unique_salt.$txt);
 				for ($i = 0; $i < 1000; $i++) {
 					$hash = sha1($hash);
 				}
 				return $hash;
 		}
-		return md5($pwd);
+		return md5($txt);
 	}
 	function array_path($arr, $pathStr, $strict = true, $index = 0) {
 	    $path = explode("/", $pathStr);
