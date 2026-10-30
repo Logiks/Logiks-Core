@@ -5,7 +5,12 @@ Logiks-Core :: Framework
 [![GitHub issues](https://img.shields.io/github/issues/Logiks/Logiks-Core.svg)](https://github.com/Logiks/Logiks-Core/issues)
 [![Software license](https://img.shields.io/github/license/Logiks/Logiks-Core.svg?style=for-the-badge)](https://github.com/Logiks/Logiks-Core/blob/master/license.txt)
 
-## Logiks 4.1 is now fully compatible with PHP 7.0
+## Logiks 6.0
+
+> **Security notice**
+> - To report a vulnerability, **do not** open a public issue. Email **security@openlogiks.org**. See `SECURITY.md` for the disclosure policy, supported versions and hardening guidance.
+> - Before going to production: serve over HTTPS (`FORCE_HTTPS=true`), generate your own unique `HASH_SALT` and `JWT_SECRET` in `config/security.cfg` (e.g. `openssl rand -hex 32`) and never commit them, and review the production checklist in `SECURITY.md`.
+> - The login endpoint, services and APIs are rate limited and CSRF-checked by default; see `config/security.cfg` (`RATELIMIT_*`, `LOGIN_RATELIMIT_*`, `CSRF_MODE`).
 
 
 Logiks Framework is an open source high-performance web application building platform. It applies RAD principles along with agile concepts for building and deploying web based PHP projects basically AppSites. Logiks is basically built around SRTP principle of project development with prime concern being Developer's ease of creating projects.
@@ -17,7 +22,7 @@ Instead of reinventing the wheel every time you begin a new project, check out a
 ### Quick list of features:
 
 + Flexible MIT licensing
-+ Compatible with versions PHP 5.6.0 and greater
++ Compatible with PHP 7.4 and greater (PHP 8.1+ recommended; PHP versions that are end-of-life upstream receive no security fixes)
 + API first approach, start by building and integrating great API
 + Integrated database interaction
 + Application scaffolding
@@ -37,7 +42,8 @@ Instead of reinventing the wheel every time you begin a new project, check out a
 + Works from any web site directory, with little Apache configuration involved
 
 ### Server Requirments
-+ PHP 7.0+
++ PHP 7.4+ (8.1+ recommended)
++ Composer, to install the PHP dependencies (see below)
 + Supported Servers : Apache/Web Server with .htaccess capabilities
 + Supported OS : Windows 2000/XP/Vista/Server, CentOS, Any Linux 
 + Supported DBs: Mysql, MariaDB, SQLite, APIDB (MongoDB, ElasticSearch, many more)
@@ -45,6 +51,7 @@ Instead of reinventing the wheel every time you begin a new project, check out a
 
 ### PHP Extensions Required
 + Curl Libs
++ mbstring, openssl, json
 
 ### PHP.ini Configurations
 + Make sure you turn off notices in your php.ini file: 
@@ -72,6 +79,15 @@ Instead of reinventing the wheel every time you begin a new project, check out a
 + Web Installer At <https://github.com/Logiks/Logiks-Installer-Web>
 + Bash Installer At <https://github.com/Logiks/Logiks-Installer-Bash>
 
+
+### Installing Dependencies
+PHP dependencies (Smarty, Monolog, PHPMailer) are managed by Composer and installed into `plugins/vendors/`:
+
+```bash
+composer install --no-dev --optimize-autoloader
+```
+
+The framework loads `plugins/vendors/autoload.php` automatically. Copies of older versions bundled in `api/vendors/` are only a fallback for installs where Composer has not been run, and are deprecated: they contain known vulnerabilities (Smarty 3.1.27, PHPMailer 5.2.10) and should not be used in production. Run `composer audit` regularly.
 
 ### Installation
 Complete installation instruction can be found at <https://github.com/Logiks/Logiks-Core/wiki/Installation>

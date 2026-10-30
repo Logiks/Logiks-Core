@@ -16,21 +16,27 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
   private $smartyEngine=null;
 
   public function __construct($allowPHP=NULL) {
-    $GLOBALS['classPath'][]=API_FOLDER."vendors/smarty/smarty/";
-    $GLOBALS['classPath'][]=API_FOLDER."vendors/smarty/smarty/plugins/";
-    $GLOBALS['classPath'][]=API_FOLDER."vendors/smarty/smarty/sysplugins/";
+    //Composer-installed Smarty (plugins/vendors/) is autoloaded; the bundled 3.1.27 copy is only a fallback
+    $bundledSmarty=!class_exists('Smarty');
+    if($bundledSmarty) {
+      $GLOBALS['classPath'][]=API_FOLDER."vendors/smarty/smarty/";
+      $GLOBALS['classPath'][]=API_FOLDER."vendors/smarty/smarty/plugins/";
+      $GLOBALS['classPath'][]=API_FOLDER."vendors/smarty/smarty/sysplugins/";
+    }
     $GLOBALS['classPath'][]=API_FOLDER."libs/logiksTemplate/plugins/smarty/";
 
 	
     if($allowPHP==NULL) {
         $allowPHP=getConfig("TEMPLATE_ALLOW_PHP");
     }
-    if($allowPHP) {
+    //SmartyBC ({php} tags) only exists in Smarty 3; Smarty 4+ never executes PHP inside templates
+    if($allowPHP && class_exists('SmartyBC')) {
       $sm=new SmartyBC();
     } else {
+      if($allowPHP) _log("TEMPLATE_ALLOW_PHP is ignored, the installed Smarty does not support PHP in templates","templates",LogiksLogger::LOG_WARNING);
       $sm=new Smarty();
     }
-    $sm->php_handling=Smarty::PHP_ALLOW;
+    if(defined('Smarty::PHP_ALLOW')) $sm->php_handling=Smarty::PHP_ALLOW;
     //$sm->allow_php_tag=true;
     //$sm->allow_php_templates=true;
 
@@ -55,7 +61,7 @@ class SmartyTemplateEngine extends AbstractTemplateEngine {
     	mkdir($sm->cache_dir,0755,true);
     }
 
-    $sm->debug_tpl=API_FOLDER."vendors/smarty/smarty/debug.tpl";
+    if($bundledSmarty) $sm->debug_tpl=API_FOLDER."vendors/smarty/smarty/debug.tpl";
 
     $sm->setCompileCheck(getConfig("TEMPLATE_COMPILE_CHECK"));
     $sm->setCacheLifetime(getConfig("TEMPLATE_EXPIRY"));

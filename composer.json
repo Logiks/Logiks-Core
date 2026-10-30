@@ -2,32 +2,48 @@
 	"name": "logiks/logiks-core",
 	"type": "project",
 	"description": "Logiks Framework Core",
-	"keywords": ["logiks", "framework", "php"],
+	"keywords": [
+		"logiks",
+		"framework",
+		"php"
+	],
 	"homepage": "https://openlogiks.org/",
 	"license": "MIT",
-	"authors": [{
-		"name": "Bismay K Mohapatra",
-		"email": "bismay4u@gmail.com",
-		"homepage": "https://openlogiks.org/",
-		"role": "Admin"
-	}, {
-		"name": "Kshyana Prava Hati",
-		"email": "kshyana23@gmail.com",
-		"homepage": "https://openlogiks.org/",
-		"role": "Admin"
-	}],
+	"authors": [
+		{
+			"name": "Bismay K Mohapatra",
+			"email": "bismay4u@gmail.com",
+			"homepage": "https://openlogiks.org/",
+			"role": "Admin"
+		},
+		{
+			"name": "Kshyana Prava Hati",
+			"email": "kshyana23@gmail.com",
+			"homepage": "https://openlogiks.org/",
+			"role": "Admin"
+		}
+	],
 	"config": {
-		"vendor-dir": "plugins/vendors/"
+		"vendor-dir": "plugins/vendors/",
+		"sort-packages": true,
+		"optimize-autoloader": true
 	},
 	"require": {
-		
+		"php": ">=7.4",
+		"ext-json": "*",
+		"ext-mbstring": "*",
+		"ext-openssl": "*",
+		"smarty/smarty": "^4.5",
+		"monolog/monolog": "^2.9",
+		"phpmailer/phpmailer": "^6.9"
 	},
 	"require-dev": {
-		
+		"phpunit/phpunit": "^9.6"
 	},
 	"scripts": {
-		"post-autoload-dump":""
+		"test": "phpunit -c .phpunit.xml",
+		"audit-deps": "composer audit"
 	},
-	"minimum-stability": "dev",
+	"minimum-stability": "stable",
 	"prefer-stable": true
 }

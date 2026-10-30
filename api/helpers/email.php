@@ -14,7 +14,8 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 if(!function_exists('isValidEmail')) {
 	
-	if(is_dir(ROOT.VENDORS_FOLDER."PHPMailer/")) {
+	//Bundled PHPMailer 5 is only a fallback for installs without `composer install`
+	if(!class_exists("PHPMailer",false) && is_dir(ROOT.VENDORS_FOLDER."PHPMailer/")) {
 		$fs=[
 				ROOT.VENDORS_FOLDER."PHPMailer/PHPMailer/phpmailer.inc",
 				ROOT.VENDORS_FOLDER."PHPMailer/PHPMailer/smtp.inc",

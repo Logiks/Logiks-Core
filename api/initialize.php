@@ -34,8 +34,8 @@ if(!isset($initialized)) {
 	// define("FORCE_HTTPS",true);
 	
 	// Load PHP 8.x compatibility layer first
-	if (file_exists(ROOT . 'api/compat/php8-compat.php')) {
-		include_once ROOT . 'api/compat/php8-compat.php';
+	if (file_exists(ROOT . 'api/compact/php8-compat.php')) {
+		include_once ROOT . 'api/compact/php8-compat.php';
 	}
 	
 	include_once 'commons.php';

@@ -529,7 +529,6 @@
 		if(is_array($str)) return $this->cleanArr($str);
 
 		$str = @trim($str);
-		//if(get_magic_quotes_gpc()) {$str=stripslashes($str);}
 		//$str=@mysql_real_escape_string($str);
 
 		$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a", ";");

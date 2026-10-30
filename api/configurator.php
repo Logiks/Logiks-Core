@@ -33,6 +33,11 @@ if(!function_exists('loadConfigs')) {
 
 	//For getting output of config system.
 	function getConfig($name,$defaultValue = false) {
+		//Secrets can come from the real environment (LOGIKS_HASH_SALT, LOGIKS_JWT_SECRET) so they need not live in config files
+		if($name==="HASH_SALT" || $name==="JWT_SECRET") {
+			$envVal=getenv("LOGIKS_".$name);
+			if($envVal!==false && $envVal!=="") return $envVal;
+		}
 		$val = LogiksConfig::getInstance()->getConfig($name);
 		if($val===false) return $defaultValue;
 		return $val;

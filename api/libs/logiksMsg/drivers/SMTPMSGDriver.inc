@@ -7,7 +7,8 @@
  * Author: Bismay Kumar Mohapatra bismay4u@gmail.com
  * Version: 1.0
  */
-if(is_dir(ROOT.VENDORS_FOLDER."PHPMailer/")) {
+//Bundled PHPMailer 5 is only a fallback for installs without `composer install`
+if(!class_exists("PHPMailer",false) && is_dir(ROOT.VENDORS_FOLDER."PHPMailer/")) {
 	$fs=[
 			ROOT.VENDORS_FOLDER."PHPMailer/PHPMailer/phpmailer.inc",
 			ROOT.VENDORS_FOLDER."PHPMailer/PHPMailer/smtp.inc",

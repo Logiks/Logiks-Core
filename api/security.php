@@ -60,9 +60,10 @@ if(!function_exists("session_check")) {
 // 		}
 // 	}
 	
+	//X-Forwarded-For is honoured only from proxies listed in RATELIMIT_TRUSTED_PROXIES, otherwise any client could forge its IP.
 	function get_client_ip() {
-		if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
-        return $_SERVER['REMOTE_ADDR'];
+		require_once __DIR__."/libs/logiksValidation/RateLimit.php";
+		return RateLimit::clientIp();
 	}
 
 	function isAdminSite($site=SITENAME) {

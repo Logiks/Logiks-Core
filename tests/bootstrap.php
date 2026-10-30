@@ -38,6 +38,11 @@ if (file_exists(ROOT . 'plugins/vendors/autoload.php')) {
 	require_once ROOT . 'plugins/vendors/autoload.php';
 }
 
+// logikstestcase.inc extends the pre-PHPUnit 6 class name; alias it to the namespaced one
+if (!class_exists('PHPUnit_Framework_TestCase') && class_exists('PHPUnit\\Framework\\TestCase')) {
+	class_alias('PHPUnit\\Framework\\TestCase', 'PHPUnit_Framework_TestCase');
+}
+
 // Load framework test case base class if it exists
 if (file_exists(ROOT . 'api/libs/logikstestcase.inc')) {
 	require_once ROOT . 'api/libs/logikstestcase.inc';
@@ -54,7 +59,7 @@ function requireFrameworkFile($file) {
 }
 
 // Load essential framework files for testing
-requireFrameworkFile('api/compat/php8-compat.php');
+requireFrameworkFile('api/compact/php8-compat.php');
 requireFrameworkFile('api/commons.php');
 
 echo "Logiks Framework Test Bootstrap Loaded\n";

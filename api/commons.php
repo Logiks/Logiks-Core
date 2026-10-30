@@ -10,6 +10,13 @@ if(!defined('ROOT')) exit('No direct script access allowed');
 
 include_once __DIR__."/libs/logikssession.inc";
 
+//Composer dependencies are installed into plugins/vendors/ (see composer.json, run `composer install`).
+//Loaded here so every entry point (pages, services, CLI) gets them before anything needs a class.
+if(file_exists(ROOT."plugins/vendors/autoload.php")) {
+	require_once ROOT."plugins/vendors/autoload.php";
+	include_once __DIR__."/compact/vendors-compat.php";
+}
+
 if (!function_exists('printArray')) {
 	function printArray($arr,$noPrint=false) {
 		if($arr==null) return;
@@ -69,7 +76,19 @@ if (!function_exists('printArray')) {
 		$data=str_replace("?-->","?>",$data);
 		return $data;
 	}
+	/**
+	 * @deprecated Manual escaping is not a safe defence against SQL injection.
+	 * Use PreparedStatementBuilder (api/libs/logiksDB/PreparedStatementBuilder.php) or bound parameters.
+	 */
 	function cleanForDB($data) {
+		static $warned=false;
+		if(!$warned) {
+			$warned=true;
+			if(function_exists("_log")) _log("cleanForDB() is deprecated, use PreparedStatementBuilder or bound parameters","security",LogiksLogger::LOG_NOTICE);
+		}
+		return _cleanForDBImpl($data);
+	}
+	function _cleanForDBImpl($data) {
 		$data=cleanCode($data);
 		//$data=mysqli::real_escape_string($data);
 		
@@ -82,10 +101,7 @@ if (!function_exists('printArray')) {
 	}
 	function clean($str) {
 		$str = @trim($str);
-		if(false) {//get_magic_quotes_gpc()
-			$str = stripslashes($str);
-		}
-		$str=cleanForDB($str);
+		$str=_cleanForDBImpl($str);
 		return $str;
 	}
 	function htmlClean($value) {
@@ -103,7 +119,6 @@ if (!function_exists('printArray')) {
         return substr($haystack, 0,strpos($haystack, $needle));
     }
 	function strip($value) {
-		//if(false != 0)//get_magic_quotes_gpc()
 		if(is_array($value))  {
 			if (array_is_associative($value) ) {
 				foreach( $value as $k=>$v) {

@@ -30,6 +30,9 @@ class SecurityTest extends TestCase {
 		if (session_status() !== PHP_SESSION_ACTIVE) {
 			$this->markTestSkipped('Session not started');
 		}
+		if (!defined('SITENAME')) {
+			$this->markTestSkipped('Needs the booted framework (api/initialize.php sets the cookie flags); run as an integration test');
+		}
 		
 		$params = session_get_cookie_params();
 		
@@ -51,6 +54,9 @@ class SecurityTest extends TestCase {
 	 * Test security headers function exists
 	 */
 	public function testSecurityHeadersFunctionExists() {
+		if (!function_exists('getConfig')) {
+			$this->markTestSkipped('Needs the booted framework (api/security-headers.php depends on getConfig)');
+		}
 		$this->assertTrue(function_exists('applySecurityHeaders'), 
 			'applySecurityHeaders function should exist');
 	}

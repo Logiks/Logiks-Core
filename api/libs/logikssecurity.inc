@@ -7,6 +7,9 @@
  * Version: 1.0
  */
 
+require_once __DIR__."/logiksValidation/RateLimit.php";
+require_once __DIR__."/logiksValidation/CSRFProtection.php";
+
  class LogiksSecurity {
 
    public function checkPageRequest() {
@@ -24,8 +27,13 @@
    }
 
    public function checkServiceRequest() {
+     $this->checkServiceInput();
+
      if(REQUEST_CHECK_BLACKLIST) $this->isBlacklisted("SCMD-".$_REQUEST['scmd'],SITENAME);
      if(REQUEST_CHECK_BADBOT) $this->checkBadBot(true);
+
+     $this->checkRateLimit("svc");
+     $this->checkCSRF();
 
      $this->checkSiteMode();
      $this->checkDevMode();
@@ -35,12 +43,104 @@
    }
 
    public function checkAPIRequest() {
+     if(isset($_REQUEST['scmd'])) $this->checkServiceInput();
+
      if(REQUEST_CHECK_BLACKLIST) $this->isBlacklisted("SCMD-".$_REQUEST['scmd'],SITENAME);
      if(REQUEST_CHECK_BADBOT) $this->checkBadBot(true);
+
+     $this->checkRateLimit("api");
 
      $this->checkSiteMode();
 
      runHooks("apiSecurityChecks");
+   }
+
+   /*
+   * Validates the request parameters that are turned into file paths by the service
+   * layer (scmd, slugpath). Anything outside a conservative whitelist is rejected, so
+   * a crafted value can never walk out of the services/modules folders.
+   */
+   public function checkServiceInput() {
+     $rules=[
+         'scmd'=>'/^[A-Za-z0-9_\-.:@\/]+$/',
+         'slugpath'=>'/^[A-Za-z0-9_\-.\/]*$/',
+       ];
+     foreach($rules as $key=>$pattern) {
+       if(!isset($_REQUEST[$key])) continue;
+       $v=$_REQUEST[$key];
+       if(!is_string($v) || strpos($v,'..')!==false || !preg_match($pattern,$v)) {
+         _log("Rejected service request, illegal {$key}","security",LogiksLogger::LOG_ALERT,["client_ip"=>RateLimit::clientIp()]);
+         http_response_code(400);
+         printServiceErrorMsg(400, "Illegal Service Request");
+         exit();
+       }
+     }
+   }
+
+   /*
+   * Per-client request throttling for services and APIs. Counters are kept in tmp/ratelimit/.
+   * Config (config/security.cfg): RATELIMIT_ENABLED, RATELIMIT_SERVICE_MAX, RATELIMIT_SERVICE_WINDOW.
+   * Fails open: if the counter store is unwritable the request is allowed (and logged by the web server),
+   * because a storage problem must not take the whole service layer down.
+   */
+   public function checkRateLimit($bucket="svc") {
+     if(!$this->configEnabled("RATELIMIT_ENABLED",true)) return true;
+     if(PHP_SAPI==="cli") return true;
+
+     $max=(int)getConfig("RATELIMIT_SERVICE_MAX",1200);
+     $window=(int)getConfig("RATELIMIT_SERVICE_WINDOW",60);
+     if($max<=0 || $window<=0) return true;
+
+     $limit=new RateLimit(null,true);
+     $ip=RateLimit::clientIp();
+     if(!$limit->check("{$bucket}:{$ip}",$max,$window)) {
+       _log("Rate limit exceeded","security",LogiksLogger::LOG_WARNING,["client_ip"=>$ip,"bucket"=>$bucket]);
+       http_response_code(429);
+       header("Retry-After: ".$limit->retryAfter());
+       printServiceErrorMsg(429, "Too Many Requests");
+       exit();
+     }
+     return true;
+   }
+
+   /*
+   * CSRF protection for state-changing service calls (POST/PUT/PATCH/DELETE).
+   * Config CSRF_MODE: off | log (default, records failures but allows) | enforce (rejects with 403).
+   * The token is read from the csrf_token field or the X-CSRF-Token header, and the current
+   * token is sent to the client in the X-CSRF-Token response header.
+   * Requests without a session cookie (token/API-key clients) cannot be forged through a
+   * browser and are exempt.
+   */
+   public function checkCSRF() {
+     $mode=strtolower((string)getConfig("CSRF_MODE","log"));
+     if($mode!=="log" && $mode!=="enforce") return true;
+     if(PHP_SAPI==="cli") return true;
+     if(session_status()!==PHP_SESSION_ACTIVE) return true;
+
+     header("X-CSRF-Token: ".CSRFProtection::getToken(),true);
+
+     $method=strtoupper(_server('REQUEST_METHOD'));
+     if(!in_array($method,["POST","PUT","PATCH","DELETE"])) return true;
+     if(!isset($_COOKIE[session_name()])) return true;
+
+     $token=isset($_SERVER['HTTP_X_CSRF_TOKEN'])?$_SERVER['HTTP_X_CSRF_TOKEN']:(isset($_POST['csrf_token'])?$_POST['csrf_token']:'');
+     if(is_string($token) && CSRFProtection::validateToken($token,false)) return true;
+
+     _log("CSRF validation failed ({$mode})","security",LogiksLogger::LOG_ALERT,[
+         "client_ip"=>RateLimit::clientIp(),"scmd"=>isset($_REQUEST['scmd'])?$_REQUEST['scmd']:null,"method"=>$method
+       ]);
+     if($mode==="enforce") {
+       http_response_code(403);
+       printServiceErrorMsg(403, "CSRF validation failed");
+       exit();
+     }
+     return false;
+   }
+
+   protected function configEnabled($key,$default=true) {
+     $v=getConfig($key);
+     if($v===false) return $default;
+     return !in_array(strtolower((string)$v),["false","0","off","no",""],true);
    }
 
    /*

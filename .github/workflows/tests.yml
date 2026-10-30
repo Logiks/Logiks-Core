@@ -1,0 +1,30 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, openssl, json, mysqli, sqlite3, fileinfo
+          coverage: none
+
+      - name: Install dependencies (into plugins/vendors/)
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Check dependencies for known vulnerabilities
+        run: composer audit
+
+      - name: Security tests
+        run: composer test -- --testsuite Security

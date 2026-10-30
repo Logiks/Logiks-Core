@@ -46,6 +46,10 @@ if (!function_exists('get_magic_quotes_runtime')) {
 // MYSQL_* Constants Compatibility (Removed in PHP 7.0)
 // ============================================================================
 
+// Only when mysqli is loaded: the MYSQL_* aliases are defined from MYSQLI_* constants, which do not
+// exist on SQLite-only installs.
+if (extension_loaded('mysqli')) {
+
 // Fetch type constants
 if (!defined('MYSQL_ASSOC')) {
     define('MYSQL_ASSOC', MYSQLI_ASSOC);  // 1
@@ -90,6 +94,8 @@ if (!defined('MYSQL_TYPE_DECIMAL')) {
     define('MYSQL_TYPE_STRING', MYSQLI_TYPE_STRING);
     define('MYSQL_TYPE_GEOMETRY', MYSQLI_TYPE_GEOMETRY);
 }
+
+} // extension_loaded('mysqli')
 
 // ============================================================================
 // Enhanced Error Handling for PHP 8.x

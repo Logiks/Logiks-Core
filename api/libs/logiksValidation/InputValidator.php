@@ -7,7 +7,7 @@
  * @package    Logiks
  * @subpackage Validation
  * @author     Logiks Security Team
- * @version    4.2
+ * @version    6.0
  * @since      PHP 7.4
  */
 
@@ -107,7 +107,7 @@ class InputValidator {
 			}
 			
 			// Skip remaining rules if field is optional and empty
-			if ($ruleName !== 'required' && ($value === null || $value === '')) {
+			if ($ruleName !== 'required' && ($value === null || $value === '' || $this->isNoFileUpload($value))) {
 				continue;
 			}
 			
@@ -181,7 +181,7 @@ class InputValidator {
 	 * Validate required field
 	 */
 	protected function validateRequired(string $field, $value, array $params): bool {
-		if ($value === null || $value === '' || (is_array($value) && empty($value))) {
+		if ($value === null || $value === '' || (is_array($value) && empty($value)) || $this->isNoFileUpload($value)) {
 			$this->addError($field, $this->getMessage($field, 'required', 
 				ucfirst(str_replace('_', ' ', $field)) . ' is required'));
 			return false;
@@ -231,7 +231,10 @@ class InputValidator {
 	protected function validateMin(string $field, $value, array $params): bool {
 		$min = $params[0] ?? 0;
 		
-		if (is_numeric($value)) {
+		if ($this->isFileUpload($value)) {
+			$valid = ((int) $value['size'] / 1024) >= $min;
+			$message = ucfirst(str_replace('_', ' ', $field)) . ' must be at least ' . $min . ' KB';
+		} elseif (is_numeric($value)) {
 			$valid = $value >= $min;
 			$message = ucfirst(str_replace('_', ' ', $field)) . ' must be at least ' . $min;
 		} else {
@@ -253,7 +256,10 @@ class InputValidator {
 	protected function validateMax(string $field, $value, array $params): bool {
 		$max = $params[0] ?? 0;
 		
-		if (is_numeric($value)) {
+		if ($this->isFileUpload($value)) {
+			$valid = ((int) $value['size'] / 1024) <= $max;
+			$message = ucfirst(str_replace('_', ' ', $field)) . ' must be at most ' . $max . ' KB';
+		} elseif (is_numeric($value)) {
 			$valid = $value <= $max;
 			$message = ucfirst(str_replace('_', ' ', $field)) . ' must be at most ' . $max;
 		} else {
@@ -269,6 +275,107 @@ class InputValidator {
 		return true;
 	}
 	
+	/**
+	 * Extension => allowed MIME types, for the "mimes" rule
+	 */
+	protected static $mimeMap = [
+		'jpg'  => ['image/jpeg'],
+		'jpeg' => ['image/jpeg'],
+		'png'  => ['image/png'],
+		'gif'  => ['image/gif'],
+		'webp' => ['image/webp'],
+		'pdf'  => ['application/pdf'],
+		'txt'  => ['text/plain'],
+		'csv'  => ['text/csv', 'text/plain', 'application/csv'],
+		'json' => ['application/json', 'text/plain'],
+		'zip'  => ['application/zip'],
+		'docx' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'],
+		'xlsx' => ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip'],
+	];
+
+	/**
+	 * Is $value shaped like an entry of $_FILES (single file)?
+	 */
+	protected function isFileUpload($value): bool {
+		return is_array($value)
+			&& isset($value['tmp_name'], $value['error'], $value['name'], $value['size'])
+			&& !is_array($value['tmp_name']);
+	}
+
+	/**
+	 * Is $value a $_FILES entry where the user chose no file?
+	 */
+	protected function isNoFileUpload($value): bool {
+		return $this->isFileUpload($value) && (int) $value['error'] === UPLOAD_ERR_NO_FILE;
+	}
+
+	/**
+	 * Whether the path was really uploaded via HTTP POST. Overridable for tests.
+	 */
+	protected function isUploadedFile(string $path): bool {
+		return is_uploaded_file($path);
+	}
+
+	/**
+	 * Validate an uploaded file: no upload error, and the temp file really came
+	 * from this request's HTTP upload.
+	 */
+	protected function validateFile(string $field, $value, array $params): bool {
+		$label = ucfirst(str_replace('_', ' ', $field));
+
+		if (!$this->isFileUpload($value)) {
+			$this->addError($field, $this->getMessage($field, 'file', $label . ' must be an uploaded file'));
+			return false;
+		}
+		if ((int) $value['error'] !== UPLOAD_ERR_OK) {
+			$this->addError($field, $this->getMessage($field, 'file', $label . ' upload failed'));
+			return false;
+		}
+		if (!$this->isUploadedFile((string) $value['tmp_name'])) {
+			$this->addError($field, $this->getMessage($field, 'file', $label . ' is not a valid upload'));
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Validate an uploaded file's type: the client-supplied extension must be in
+	 * the list AND the real content type (detected from the file itself) must
+	 * match that extension. Extensions not in the built-in map are rejected.
+	 *
+	 * Usage: 'avatar' => 'required|file|mimes:jpg,png|max:2048'  (max is in KB)
+	 */
+	protected function validateMimes(string $field, $value, array $params): bool {
+		$label = ucfirst(str_replace('_', ' ', $field));
+		$allowed = array_map('strtolower', array_map('trim', $params));
+
+		if (!$this->isFileUpload($value)) {
+			$this->addError($field, $this->getMessage($field, 'mimes', $label . ' must be an uploaded file'));
+			return false;
+		}
+
+		$ext = strtolower(pathinfo((string) $value['name'], PATHINFO_EXTENSION));
+		$mimes = static::$mimeMap[$ext] ?? null;
+		$valid = $mimes !== null && in_array($ext, $allowed, true);
+
+		if ($valid) {
+			$real = null;
+			if (function_exists('finfo_open') && is_readable((string) $value['tmp_name'])) {
+				$finfo = finfo_open(FILEINFO_MIME_TYPE);
+				$real = $finfo ? finfo_file($finfo, (string) $value['tmp_name']) : null;
+				$finfo = null; // freed automatically (finfo_close() is deprecated since PHP 8.5)
+			}
+			$valid = $real !== null && in_array($real, $mimes, true);
+		}
+
+		if (!$valid) {
+			$this->addError($field, $this->getMessage($field, 'mimes',
+				$label . ' must be a file of type: ' . implode(', ', $allowed)));
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Validate alphanumeric
 	 */

@@ -117,6 +117,8 @@ include_once ROOT. "api/system.php";
 include_once ROOT. "api/security.php";
 include_once ROOT. "api/app.php";
 
+loadComposerAutoloaders();
+
 logiksServiceBoot();
 
 include_once ROOT. "api/libs/logiksUser/boot.php";

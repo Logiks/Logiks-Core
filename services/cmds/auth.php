@@ -38,6 +38,20 @@ else $domain=SITENAME;
 
 loadConfigs(ROOT . "config/auth.cfg");
 include ROOT."api/helpers/pwdhash.php";
+
+// Brute-force protection: throttle attempts per login id and per client IP (fails closed)
+require_once ROOT."api/libs/logiksValidation/RateLimit.php";
+if(!in_array(strtolower((string)getConfig("RATELIMIT_ENABLED","true")),["false","0","off","no"],true)) {
+	$loginLimiter=new RateLimit();
+	$loginWindow=(int)getConfig("LOGIN_RATELIMIT_WINDOW",300);
+	$loginKeys=["login:ip:".RateLimit::clientIp()=>(int)getConfig("LOGIN_RATELIMIT_IP_MAX",20)];
+	if($userid!='') $loginKeys["login:user:".strtolower($userid)]=(int)getConfig("LOGIN_RATELIMIT_MAX",5);
+	foreach($loginKeys as $loginKey=>$loginMax) {
+		if(!$loginLimiter->check($loginKey,$loginMax,$loginWindow)) {
+			relink("Too many login attempts. Please try again in ".ceil($loginLimiter->retryAfter()/60)." minute(s).",$domain);
+		}
+	}
+}
 //include ROOT."api/security.php";
 
 /*
@@ -332,6 +346,9 @@ function checkBlacklists($data,$domain,$dbLink,$userid) {
 //LogBook Checking
 function initializeLogin($userid,$domain,$params=array()) {
 	startNewSession($userid, $domain, $params);
+
+	//Successful login clears the per-user failure counter (the per-IP counter keeps running)
+	(new RateLimit())->reset("login:user:".strtolower($userid));
 
 	_log("Login Successfull @{$_SESSION['SESS_USER_ID']}","login",LogiksLogger::LOG_INFO,[
 				"guid"=>$_SESSION['SESS_GUID'],

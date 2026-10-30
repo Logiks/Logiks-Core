@@ -234,7 +234,7 @@ class LogiksLogger {
               $params2=$lr->_replace($param['formatter']['params2']);
             } else $params2=null;
 
-            include_once ROOT."api/vendors/Monolog/".str_replace("\\", "/", $param['formatter']['class']).".php";
+            if(!class_exists($param['formatter']['class'])) include_once ROOT."api/vendors/Monolog/".str_replace("\\", "/", $param['formatter']['class']).".php";
 
 
             $formatter = new $param['formatter']['class']($params1, $params2);
@@ -259,7 +259,7 @@ class LogiksLogger {
             $level=$param['level'];
           } else $level=LOG_DEFAULT_LEVEL;
 
-          include_once ROOT."api/vendors/Monolog/".str_replace("\\", "/", $clz).".php";
+          if(!class_exists($clz)) include_once ROOT."api/vendors/Monolog/".str_replace("\\", "/", $clz).".php";
 
           if($params1==null) {
             $handler = new $clz();
