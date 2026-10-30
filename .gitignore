@@ -9,7 +9,7 @@
 /config/jsonConfig/
 /misc/hooks/
 /z/
-
+.agents/
 
 # Temporary files
 tmp/*
